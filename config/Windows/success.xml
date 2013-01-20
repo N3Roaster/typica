@@ -1,0 +1,10 @@
+<window id="success">
+    <layout type="vertical">
+        <label>Success</label>
+        <button type="push" id="ok" name="Okay" />
+    </layout>
+    <program>
+        var button = findChildObject(this, 'ok');
+        button.clicked.connect(this.close);
+    </program>
+</window>

@@ -1,0 +1,758 @@
+<window id="print">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Title:</label>
+            <line id="title" />
+        </layout>
+        <layout type="horizontal">
+            <label>Subtitle:</label>
+            <line id="subtitle" />
+        </layout>
+        <layout type="horizontal">
+            <label>% weight loss:</label>
+            <line id="loss" validator="numeric" />
+            <label>Tolerance:</label>
+            <line id="tolerance" validator="numeric" />
+        </layout>
+        <layout type="horizontal">
+            <label>Additional notes:</label>
+            <line id="notes" />
+        </layout>
+        <layout type="horizontal">
+            <label>Measurement column:</label>
+            <line id="addmeasurement" validator="integer" />
+            <button name="Add column" type="push" id="ambutton" />
+            <line id="mcols" writable="false" />
+        </layout>
+        <layout type="horizontal">
+            <label>Annotation column:</label>
+            <line id="addnote" validator="integer" />
+            <button name="Add column" type="push" id="anbutton" />
+            <line id="ncols" writable="false" />
+        </layout>
+        <button name="Print" type="push" id="export" />
+    </layout>
+    <program>
+        <![CDATA[
+            var window = this;
+            var exportButton = findChildObject(this, 'export');
+            exportButton.enable = false;
+            var mcoldisp = findChildObject(this, 'mcols');
+            mcoldisp.enable = false;
+            var ncoldisp = findChildObject(this, 'ncols');
+            ncoldisp.enable = false;
+            var mbutton = findChildObject(this, 'ambutton');
+            var msource = findChildObject(this, 'addmeasurement');
+            var mdest = findChildObject(this, 'mcols');
+            mbutton.clicked.connect(function() {
+                if(window.marray === undefined)
+                {
+                    window.marray = new Array();
+                }
+                window.marray.push(Number(msource.text));
+                mdest.text = window.marray.toString();
+                msource.text = '';
+                if(window.narray === undefined)
+                {} else { exportButton.enable = true;}
+            });
+            var abutton = findChildObject(window, 'anbutton');
+            var asource = findChildObject(window, 'addnote');
+            var adest = findChildObject(window, 'ncols');
+            abutton.clicked.connect(function() {
+                if(window.narray === undefined)
+                {
+                    window.narray = new Array();
+                }
+                window.narray.push(Number(asource.text));
+                adest.text = window.narray.toString();
+                asource.text = '';
+                if(window.marray === undefined)
+                { } else { exportButton.enable = true;}
+            });
+            var titleField = findChildObject(window, 'title');
+            var subTitleField = findChildObject(window, 'subtitle');
+            exportButton.clicked.connect(function() {
+                window.log.clearOutputColumns();
+                for(var i = 0; i < window.marray.length; i++)
+                {
+                    window.log.addOutputTemperatureColumn(window.marray[i]);
+                }
+                for(var i = 0; i < window.narray.length; i++)
+                {
+                    window.log.addOutputAnnotationColumn(window.narray[i]);
+                }
+                var unitdesc = log.displayUnits();
+                if(unitdesc != 10144)
+                {
+                    log.setDisplayUnits(10144);
+                }
+                var tempFilename = log.saveTemporary();
+                log.setDisplayUnits(unitdesc);
+                var sourceFile = new QFile(tempFilename);
+                sourceFile.open(3);
+                var tf2 = tempFilename + ".xml";
+                var destFile = new QFile(tf2);
+                destFile.open(3);
+                var input = new XmlReader(sourceFile);
+                var output = new XmlWriter(destFile);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeStartElement("title");
+                output.writeCDATA(titleField.text);
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeStartElement("h1");
+                output.writeAttribute("style", "font-size:100%;font-weight:bold");
+                output.writeCDATA(titleField.text);
+                output.writeEndElement();
+                output.writeStartElement("h2");
+                output.writeAttribute("style", "font-size:100%;font-weight:normal");
+                output.writeCDATA(subTitleField.text);
+                output.writeEndElement();
+                output.writeStartElement("div");
+                output.writeAttribute("style", "width:7.5in");
+                output.writeStartElement("div");
+                output.writeAttribute("style", "float:left;width:2.5in");
+                output.writeStartElement("table");
+                output.writeStartElement("tr");
+                output.writeStartElement("th");
+                output.writeCDATA("Time");
+                output.writeEndElement();
+                input.readNext();
+                var colMap = new Array();
+                var tempMap = new Array();
+                while(input.name() != "roast")
+                {
+                    if(input.isStartElement())
+                    {
+                        if(input.name() == "tempseries")
+                        {
+                            colMap.push(input.attribute("name"));
+                            tempMap.push(input.attribute("name"));
+                        }
+                        if(input.name() == "noteseries")
+                        {
+                            colMap.push(input.attribute("name"));
+                        }
+                    }
+                    input.readNext();
+                }
+                for(var i = 0; i < colMap.length; i++)
+                {
+                    output.writeStartElement("th");
+                    output.writeCDATA(colMap[i]);
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                var rowBuffer = new Array();
+                var nextTime = 0;
+                input.readNext();
+                var inputReady = false;
+                var annotationRead = false;
+                var tm = 0;
+                var ts = 0;
+                while(!input.atEnd())
+                {
+                    if(input.isStartElement())
+                    {
+                        if(input.name() == "time")
+                        {
+                            rowBuffer[0] = input.readElementText();
+                            inputReady = true;
+                        }
+                        if(input.name() == "temperature")
+                        {
+                            for (var i = 0; i < colMap.length; i++)
+                            {
+                                if(colMap[i] == input.attribute("series"))
+                                {
+                                    if(log.displayUnits() == 10143)
+                                    {
+                                        rowBuffer[i + 1] = Math.floor((input.readElementText() - 32) * 5 / 9);
+                                    }
+                                    else
+                                    {
+                                        rowBuffer[i + 1] = Math.floor(input.readElementText());
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        if(input.name() == "annotation")
+                        {
+                            for (var i = 0; i < colMap.length; i++)
+                            {
+                                if(colMap[i] == input.attribute("series"))
+                                {
+                                    rowBuffer[i + 1] = input.readElementText();
+                                    break;
+                                }
+                            }
+                            annotationRead = true;
+                        }
+                        if(input.name() == "tuple")
+                        {
+                            if(inputReady)
+                            {
+                                var ta1 = rowBuffer[0].split(":");
+                                var ta2 = ta1[1].split(".");
+                                if(Number(ta1[0]) == tm)
+                                {
+                                    if(Number(ta2[0]) == ts)
+                                    {
+                                        annotationRead = false;
+                                        output.writeStartElement("tr");
+                                        for(var i = 0; i < rowBuffer.length; i++)
+                                        {
+                                            output.writeStartElement("td");
+                                            output.writeAttribute("align", "center");
+                                            output.writeAttribute("style", "font-size: 80%");
+                                            if(i == 0)
+                                            {
+                                                output.writeCDATA(rowBuffer[i].split(".")[0]);
+                                            }
+                                            else
+                                            {
+                                                output.writeCDATA(rowBuffer[i]);
+                                            }
+                                            output.writeEndElement();
+                                        }
+                                        output.writeEndElement();
+                                        nextTime += 30;
+                                        tm = Math.floor(nextTime / 60);
+                                        ts = nextTime % 60;
+                                    }
+                                }
+                                if(annotationRead)
+                                {
+                                    output.writeStartElement("tr");
+                                    for(var i = 0; i < rowBuffer.length; i++)
+                                    {
+                                        output.writeStartElement("td");
+                                        output.writeAttribute("align", "center");
+                                        output.writeAttribute("style", "font-size: 80%");
+                                        output.writeCDATA(rowBuffer[i]);
+                                        output.writeEndElement();
+                                    }
+                                    output.writeEndElement();
+                                    annotationRead = false;
+                                }
+                            }
+                            rowBuffer = new Array();
+                        }
+                    }
+                    input.readNext();
+                }
+                output.writeStartElement("tr");
+                for(var i = 0; i < rowBuffer.length; i++)
+                {
+                    output.writeStartElement("td");
+                    output.writeAttribute("align", "center");
+                    output.writeAttribute("style", "font-size: 80%");
+                    output.writeCDATA(rowBuffer[i]);
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("div");
+                output.writeAttribute("style", "width=4.5in;float=right");
+                output.writeStartElement("svg");
+                output.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
+                output.writeAttribute("version", "1.1");
+                output.writeAttribute("width", "4.5in");
+                output.writeAttribute("height", "3.4in");
+                output.writeAttribute("viewbox", "0 0 400 400");
+                output.writeStartElement("rect");
+                output.writeAttribute("width", "4.5in");
+                output.writeAttribute("height", "3.4in");
+                output.writeAttribute("style", "fill:none;stroke-width:3;stroke:rgb(64,64,64)");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "0.1in");
+                output.writeAttribute("y", "1.3in");
+                output.writeAttribute("font-size", "12");
+                output.writeAttribute("transform", "rotate(-90 40,150)");
+                if(log.displayUnits() == 10143)
+                {
+                    output.writeCDATA("Temperature (°C)");
+                }
+                else
+                {
+                    output.writeCDATA("Temperature (°F)");
+                }
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "1.9in");
+                output.writeAttribute("y", "3.3in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("Time (minutes)");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "0.4in");
+                output.writeAttribute("x2", "0.4in");
+                output.writeAttribute("y1", "0.1in");
+                output.writeAttribute("y2", "2.9in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "0.5in");
+                output.writeAttribute("x2", "4.4in");
+                output.writeAttribute("y1", "3in");
+                output.writeAttribute("y2", "3in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "0.4in");
+                output.writeAttribute("x2", "4.4in");
+                output.writeAttribute("y1", "2.9in");
+                output.writeAttribute("y2", "2.9in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                if(log.displayUnits() != 10143)
+                {
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.3in");
+                    output.writeAttribute("y", "2.95in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("0");
+                    output.writeEndElement();
+                }
+                if(log.displayUnits() == 10143)
+                {
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "2.22in");
+                    output.writeAttribute("y2", "2.22in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "2.27in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("50");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "1.71in");
+                    output.writeAttribute("y2", "1.71in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "1.76in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("100");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "1.21in");
+                    output.writeAttribute("y2", "1.21in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "1.26in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("150");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "0.7in");
+                    output.writeAttribute("y2", "0.7in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "0.75in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("200");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "0.2in");
+                    output.writeAttribute("y2", "0.2in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "0.25in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("250");
+                    output.writeEndElement();
+                }
+                else
+                {
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "2.34in");
+                    output.writeAttribute("y2", "2.34in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "2.39in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("100");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "1.78in");
+                    output.writeAttribute("y2", "1.78in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "1.83in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("200");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "1.22in");
+                    output.writeAttribute("y2", "1.22in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "1.27in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("300");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "0.66in");
+                    output.writeAttribute("y2", "0.66in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "0.71in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("400");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "0.4in");
+                    output.writeAttribute("x2", "4.4in");
+                    output.writeAttribute("y1", "0.1in");
+                    output.writeAttribute("y2", "0.1in");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                    output.writeEndElement();
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0.18in");
+                    output.writeAttribute("y", "0.15in");
+                    output.writeAttribute("font-size", "12");
+                    output.writeCDATA("500");
+                    output.writeEndElement();
+                }
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "0.5in");
+                output.writeAttribute("x2", "0.5in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "0.47in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("0");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "0.89in");
+                output.writeAttribute("x2", "0.89in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "0.86in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("2");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "1.28in");
+                output.writeAttribute("x2", "1.28in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "1.25in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("4");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "1.67in");
+                output.writeAttribute("x2", "1.67in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "1.64in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("6");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "2.06in");
+                output.writeAttribute("x2", "2.06in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "2.03in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("8");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "2.45in");
+                output.writeAttribute("x2", "2.45in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "2.39in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("10");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "2.84in");
+                output.writeAttribute("x2", "2.84in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "2.78in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("12");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "3.23in");
+                output.writeAttribute("x2", "3.23in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "3.17in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("14");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "3.62in");
+                output.writeAttribute("x2", "3.62in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "3.56in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("16");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "4.01in");
+                output.writeAttribute("x2", "4.01in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "3.95in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("18");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "4.4in");
+                output.writeAttribute("x2", "4.4in");
+                output.writeAttribute("y1", "2.95in");
+                output.writeAttribute("y2", "3.05in");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "4.34in");
+                output.writeAttribute("y", "3.16in");
+                output.writeAttribute("font-size", "12");
+                output.writeCDATA("20");
+                output.writeEndElement();
+                sourceFile.close();
+                sourceFile.open(3);
+                input = new XmlReader(sourceFile);
+
+                var lineStyles = new Array();
+                lineStyles.push("stroke:rgb(255,0,0);stroke-width:1");
+                lineStyles.push("stroke:rgb(0,255,0);stroke-width:1");
+                lineStyles.push("stroke:rgb(0,0,255);stroke-width:1");
+                lineStyles.push("stroke:rgb(255,255,0);stroke-width:1");
+                lineStyles.push("stroke:rgb(255,0,255);stroke-width:1");
+                lineStyles.push("stroke:rgb(0,255,255);stroke-width:1");
+                var check1 = false;
+                var drawable = false;
+                var previousX;
+                var currentX;
+                var previousY = new Array();
+                input.readNext();
+                while(!input.atEnd())
+                {
+                    if(input.isStartElement())
+                    {
+                        if(input.name() == "time")
+                        {
+                            if(check1)
+                            {
+                                previousX = currentX;
+                            }
+                            var tstring = input.readElementText();
+                            var tsplit1 = tstring.split(":");
+                            var tsplit2 = tsplit1[1].split(".");
+                            currentX = 0.5 + (Number(tsplit1[0])*0.195) + (Number(tsplit2[0])*0.00325);// + (Number(tsplit2[1]) * 0.00000325);
+                            if(check1)
+                            {
+                                drawable = true;
+                            }
+                            check1 = true;
+                        }
+                        if(input.name() == "temperature")
+                        {
+                            var series;
+                            for(var i = 0; i < tempMap.length; i++)
+                            {
+                                if(tempMap[i] == input.attribute("series"))
+                                {
+                                    series = i;
+                                    break;
+                                }
+                            }
+                            var currentY = 2.9 - Number(input.readElementText()) * 0.0056;
+                            if(drawable)
+                            {
+                                output.writeStartElement("line");
+                                output.writeAttribute("style", lineStyles[series % 6]);
+                                output.writeAttribute("x1", String(previousX)+"in");
+                                output.writeAttribute("x2", String(currentX)+"in");
+                                output.writeAttribute("y1", String(previousY[series])+"in");
+                                output.writeAttribute("y2", String(currentY)+"in");
+                                output.writeEndElement();
+                            }
+                            previousY[series] = currentY;
+                        }
+                    }
+                    input.readNext();
+                }
+                sourceFile.remove();
+                sourceFile.close();
+                output.writeEndElement();
+                output.writeStartElement("div");
+                output.writeAttribute("style", "margin-left:3in;margin-top:0.5in");
+                var lossField = findChildObject(window, 'loss');
+                var tolField = findChildObject(window, 'tolerance');
+                if(lossField.text != "")
+                {
+                    output.writeStartElement("p");
+                    output.writeCDATA("Weight loss: ");
+                    output.writeCDATA(lossField.text);
+                    if(tolField.text != "")
+                    {
+                        output.writeCDATA("±");
+                        output.writeCDATA(tolField.text);
+                    }
+                    output.writeCDATA("%");
+                    output.writeEndElement();
+                    output.writeStartElement("table");
+                    output.writeStartElement("tr");
+                    output.writeStartElement("th");
+                    output.writeCDATA("Roasted");
+                    output.writeEndElement();
+                    output.writeStartElement("th");
+                    output.writeCDATA("Green");
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    var green;
+                    var roasted;
+                    var loss = (Number(lossField.text) + Number(tolField.text)) / 100;
+                    for(roasted = 1; roasted < 30; roasted++)
+                    {
+                        green = (1/-(loss-1)) * roasted;
+                        if(green > 30)
+                        {
+                            break;
+                        }
+                        if(roasted % 5 == 0)
+                        {
+                            output.writeStartElement("tr");
+                            output.writeStartElement("td");
+                            output.writeAttribute("align", "center");
+                            output.writeCDATA(roasted);
+                            output.writeEndElement();
+                            output.writeStartElement("td");
+                            output.writeAttribute("align", "center");
+                            output.writeCDATA(green.toFixed(2));
+                            output.writeEndElement();
+                            output.writeEndElement();
+                        }
+                    }
+                    roasted--;
+                    if(roasted % 5 > 0)
+                    {
+                        green = (1/-(loss-1)) * roasted;
+                        output.writeStartElement("tr");
+                        output.writeStartElement("td");
+                        output.writeAttribute("align", "center");
+                        output.writeCDATA(roasted);
+                        output.writeEndElement();
+                        output.writeStartElement("td");
+                        output.writeAttribute("align", "center");
+                        output.writeCDATA(green.toFixed(2));
+                        output.writeEndElement();
+                        output.writeEndElement();
+                    }
+                    output.writeEndElement();
+                }
+                var noteField = findChildObject(window, 'notes');
+                if(noteField.text != "")
+                {
+                    output.writeStartElement("p");
+                    output.writeCDATA(noteField.text);
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                var printView = new WebView;
+                destFile.close();
+                printView.load(tf2);
+                printView.print();
+                destFile.remove();
+                window.close();
+            });
+        ]]>
+    </program>
+</window>

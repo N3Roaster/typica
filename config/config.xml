@@ -1,0 +1,44 @@
+<application>
+    <include src="Windows/print.xml" />
+    <include src="Windows/export.xml" />
+    <include src="Windows/setsampleparameters.xml" />
+    <include src="Windows/productionroaster.xml" />
+    <include src="Windows/newbatch.xml" />
+    <include src="Windows/importprofiles.xml" />
+    <include src="Windows/navigation.xml" />
+    <include src="Windows/success.xml" />
+    <include src="Windows/roastmanager.xml" />
+    <include src="Windows/history.xml" />
+    <include src="Windows/greeninventory.xml" />
+    <include src="Windows/newroaster.xml" />
+    <include src="Windows/batchdetailsnew.xml" />
+    <include src="Windows/offline.xml" />
+    <include src="Windows/cuppingsession.xml" />
+    <include src="Windows/cuppingitemselection.xml" />
+    <include src="Windows/cuppingsampleselection.xml" />
+    <include src="Windows/cuppingsamplepoints.xml" />
+    <include src="Windows/cuppingsessionlist.xml" />
+    <include src="Windows/cuppingform.xml" />
+    <include src="Windows/cuppingformsbysession.xml" />
+    <include src="Windows/cuppingsessionsummary.xml" />
+    <include src="Windows/cuppingsummary.xml" />
+    <include src="Windows/purchase.xml" />
+	<include src="Windows/invoicelist.xml" />
+	<include src="Windows/invoiceinfo.xml" />
+	<include src="Windows/editinvoice.xml" />
+	<include src="Windows/editinvoiceitem.xml" />
+	<include src="Windows/editfee.xml" />
+	<include src="Windows/optime.xml" />
+	<include src="Windows/greensales.xml" />
+	<program>
+		var loggingWindow;
+		var currentBatchInfo;
+		var navwindow = createWindow("navwindow");
+		var aadapt;
+		var badapt;
+		var azero;
+		var bzero;
+		navwindow.windowTitle = "Typica - Choose Your Path";
+	</program>
+</application>
+		

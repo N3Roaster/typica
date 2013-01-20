@@ -1,0 +1,197 @@
+<window id="inventoryreport">
+	<reporttitle>Inventory:->Current Inventory and Availability Projection</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Sort Order:</label>
+            <sqldrop id="sort" />
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = "Typica - Current Inventory and Availability Projection";
+            var report = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                report.print();
+            });
+            var sortBox = findChildObject(this, 'sort');
+            sortBox.addItem("Coffee A-Z");
+            sortBox.addItem("Coffee Z-A");
+            sortBox.addItem("Stock Ascending");
+            sortBox.addItem("Stock Descending");
+            sortBox.addItem("Sacks Ascending");
+            sortBox.addItem("Sacks Descending");
+            sortBox.addItem("Unit Cost Ascending");
+            sortBox.addItem("Unit Cost Descending");
+            sortBox.addItem("Stock Cost Ascending");
+            sortBox.addItem("Stock Cost Descending");
+            sortBox.addItem("Use Rate Ascending");
+            sortBox.addItem("Use Rate Descending");
+            sortBox.addItem("Availability Shortest-Longest");
+            sortBox.addItem("Availability Longest-Shortest");
+            sortBox.currentIndex = QSettings.value("inventory_sort", 0);
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            function refresh() {
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", "Current Inventory and Availability Projection");
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", "Current Inventory and Availability Projection");
+                output.writeTextElement("p", "This is a report showing how much of each coffee is available, the cost of that coffee, the daily rate of use for that coffee, and the date the coffee will be gone if use continues at the current rate.");
+                output.writeStartElement("table");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Coffee");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("th", "Stock (Kg)");
+						break;
+					case 1:
+						output.writeTextElement("th", "Stock (Lb)");
+						break;
+				}
+                output.writeTextElement("th", "Sacks");
+                output.writeTextElement("th", "Unit Cost");
+                output.writeTextElement("th", "Stock Cost");
+                output.writeTextElement("th", "Use Rate");
+                output.writeTextElement("th", "Availability");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+                var query = new QSqlQuery();
+                var q = "SELECT name, (quantity / :conversion)::numeric(12,2) AS quantity, (quantity / (SELECT conversion FROM lb_bag_conversion WHERE item = id))::numeric(12,2) AS sacks, (SELECT cost * :conversion2 FROM purchase WHERE item = id)::numeric(12,2) AS cost, (quantity * (SELECT cost FROM purchase WHERE item = id))::numeric(12,2) AS stock_cost, (SELECT rate / :conversion3 FROM coffee_history WHERE coffee_history.id = items.id)::numeric(12,2) AS rate, (SELECT out FROM coffee_history WHERE coffee_history.id = items.id) AS out FROM items WHERE quantity > 0 ";
+                switch(sortBox.currentIndex)
+                {
+                    case 0:
+                        q = q + "ORDER BY name ASC";
+                        break;
+                    case 1:
+                        q = q + "ORDER BY name DESC";
+                        break;
+                    case 2:
+                        q = q + "ORDER BY quantity ASC";
+                        break;
+                    case 3:
+                        q = q + "ORDER BY quantity DESC";
+                        break;
+                    case 4:
+                        q = q + "ORDER BY sacks ASC";
+                        break;
+                    case 5:
+                        q = q + "ORDER BY sacks DESC";
+                        break;
+                    case 6:
+                        q = q + "ORDER BY cost ASC";
+                        break;
+                    case 7:
+                        q = q + "ORDER BY cost DESC";
+                        break;
+                    case 8:
+                        q = q + "ORDER BY stock_cost ASC";
+                        break;
+                    case 9:
+                        q = q + "ORDER BY stock_cost DESC";
+                        break;
+                    case 10:
+                        q = q + "ORDER BY rate ASC";
+                        break;
+                    case 11:
+                        q = q + "ORDER BY rate DESC";
+                        break;
+                    case 12:
+                        q = q + "ORDER BY out ASC";
+                        break;
+                    case 13:
+                        q = q + "ORDER BY out DESC";
+                        break;
+                }
+                query.prepare(q);
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						query.bind(":conversion", 2.2);
+						query.bind(":conversion2", 2.2);
+						query.bind(":conversion3", 2.2);
+						break;
+					case 1:
+						query.bind(":conversion", 1);
+						query.bind(":conversion2", 1);
+						query.bind(":conversion3", 1);
+						break;
+				}
+				query.exec();
+                while(query.next())
+                {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", query.value(0));
+                    output.writeTextElement("td", query.value(1));
+                    output.writeTextElement("td", query.value(2));
+                    output.writeTextElement("td", query.value(3));
+                    output.writeTextElement("td", query.value(4));
+                    output.writeTextElement("td", query.value(5));
+                    output.writeTextElement("td", query.value(6));
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeStartElement("tfoot");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Totals");
+                query.prepare("SELECT (sum(quantity) / :conversion)::numeric(12,2), sum(quantity * (SELECT cost FROM purchase WHERE item = id))::numeric(12,2) FROM items WHERE quantity > 0");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						query.bind(":conversion", 2.2);
+						break;
+					case 1:
+						query.bind(":conversion", 1);
+						break;
+				}
+				query.exec();
+                query.next();
+                output.writeTextElement("td", query.value(0));
+                output.writeTextElement("td", "");
+                output.writeTextElement("td", "");
+                output.writeTextElement("td", query.value(1));
+                output.writeTextElement("td", "");
+                output.writeTextElement("td", "");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                report.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+            sortBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("inventory_sort", sortBox.currentIndex);
+                refresh();
+            });
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
+        ]]>
+    </program>
+</window>

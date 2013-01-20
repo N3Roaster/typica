@@ -1,0 +1,83 @@
+<window id="newroasted">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>New Roasted Coffee:</label>
+            <line id="name" />
+            <button id="ok" type="push" name="Add New Coffee" />
+        </layout>
+        <layout type="horizontal">
+            <layout type="vertical">
+                <label>Current Items:</label>
+                <sqldrop data="0" display="1" showdata="false" id="currentitems">
+                    <query>SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name</query>
+                </sqldrop>
+                <button id="remove" type="push" name="Remove Item" />
+            </layout>
+            <layout type="vertical">
+                <label>Discontinued Items:</label>
+                <sqldrop data="0" display="1" showdata="false" id="pastitems">
+                    <query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id NOT IN (SELECT item FROM current_items) ORDER BY name</query>
+                </sqldrop>
+                <button id="restore" type="push" name="Restore Item" />
+            </layout>
+        </layout>
+    </layout>
+    <program>
+        <![CDATA[
+            this.displayStatus("Ready.");
+            var itemname = findChildObject(this, 'name');
+            var newItemButton = findChildObject(this, 'ok');
+            var window = this;
+            var drop1 = findChildObject(this, 'currentitems');
+            var drop2 = findChildObject(this, 'pastitems');
+            var removeButton = findChildObject(this, 'remove');
+            var restoreButton = findChildObject(this, 'restore');
+            removeButton.clicked.connect(function() {
+                var q = "DELETE FROM current_items WHERE item = :id";
+                query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":id", drop1.currentData());
+                query.exec();
+                query = query.invalidate();
+                drop1.clear();
+                drop2.clear();
+                drop1.addSqlOptions("SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name");
+                drop2.addSqlOptions("SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id NOT IN (SELECT item FROM current_items) ORDER BY name");
+                window.displayStatus("Item removed.");
+            });
+            restoreButton.clicked.connect(function() {
+                var q = "INSERT INTO current_items VALUES (:id)";
+                query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":id", drop2.currentData());
+                query.exec();
+                query = query.invalidate();
+                drop1.clear();
+                drop2.clear();
+                drop1.addSqlOptions("SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name");
+                drop2.addSqlOptions("SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id NOT IN (SELECT item FROM current_items) ORDER BY name");
+                window.displayStatus("Item restored.");
+            });
+            newItemButton.clicked.connect(function() {
+                var q = "INSERT INTO items VALUES (default, :name, NULL, 'lb', 0, 'Coffee: Roasted') RETURNING id";
+                query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":name", itemname.text);
+                query.exec();
+                query.next();
+                var i = query.value(0);
+                q = "INSERT INTO current_items VALUES(:id)";
+                query.prepare(q);
+                query.bind(":id", i);
+                query.exec();
+                query = query.invalidate();
+                itemname.text = "";
+                drop1.clear();
+                drop2.clear();
+                drop1.addSqlOptions("SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name");
+                drop2.addSqlOptions("SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id NOT IN (SELECT item FROM current_items) ORDER BY name");
+                window.displayStatus("Item added.");
+            });
+        ]]>
+    </program>
+</window>

@@ -1,0 +1,263 @@
+<window id="sessionlist">
+    <layout type="vertical">
+        <sqlview id="table" />
+    </layout>
+    <program>
+        <![CDATA[
+            var table = findChildObject(this, 'table');
+            table.setQuery("SELECT id, name, time FROM cupping_sessions WHERE open = true ORDER BY time DESC");
+            table.openEntry.connect(function(arg) {
+                var q = "SELECT event FROM cupping_sessions WHERE id = :id";
+                var query = new QSqlQuery;
+                query.prepare(q);
+                query.bind(":id", arg);
+                query.exec();
+                query.next();
+                var formwindow = createWindow("cuppingform");
+                formwindow.windowTitle = "Typica - Cupping";
+                var sessionfield = findChildObject(formwindow, 'session');
+                sessionfield.text = arg;
+                var eventfield = findChildObject(formwindow, 'event');
+                eventfield.text = query.value(0);
+                q = "SELECT sample FROM cupping_samples WHERE session = :id ORDER BY position ASC";
+                query.prepare(q);
+                query.bind(":id", Number(arg));
+                query.exec();
+                var view = findChildObject(formwindow, 'form');
+                view.setMaximumElementHeight(300);
+                view.setMaximumElementWidth(1100);
+                while(query.next())
+                {
+                    view.addElements(1);
+                    var element = view.elementAt(view.elements() - 1)
+                    var sampleBox = findChildObject(element, 'sampleID');
+                    sampleBox.text = query.value(0);
+                    var aromaScale = findChildObject(element, 'aroma');
+                    var aromaBox = findChildObject(element, 'aromabox');
+                    aromaScale.finalChanged.connect(aromaBox.setValue);
+                    aromaBox['valueChanged(double)'].connect(aromaScale.setFinalValue);
+                    var flavorScale = findChildObject(element, 'flavor');
+                    var flavorBox = findChildObject(element, 'flavorbox');
+                    flavorScale.finalChanged.connect(flavorBox.setValue);
+                    flavorBox['valueChanged(double)'].connect(flavorScale.setFinalValue);
+                    var acidityScale = findChildObject(element, 'acidity');
+                    var acidityBox = findChildObject(element, 'aciditybox');
+                    acidityScale.finalChanged.connect(acidityBox.setValue);
+                    acidityBox['valueChanged(double)'].connect(acidityScale.setFinalValue);
+                    var bodyScale = findChildObject(element, 'body');
+                    var bodyBox = findChildObject(element, 'bodybox');
+                    bodyScale.finalChanged.connect(bodyBox.setValue);
+                    bodyBox['valueChanged(double)'].connect(bodyScale.setFinalValue);
+                    var balanceScale = findChildObject(element, 'balance');
+                    var balanceBox = findChildObject(element, 'balancebox');
+                    balanceScale.finalChanged.connect(balanceBox.setValue);
+                    balanceBox['valueChanged(double)'].connect(balanceScale.setFinalValue);
+                    var aftertasteScale = findChildObject(element, 'aftertaste');
+                    var aftertasteBox = findChildObject(element, 'aftertastebox');
+                    aftertasteScale.finalChanged.connect(aftertasteBox.setValue);
+                    aftertasteBox['valueChanged(double)'].connect(aftertasteScale.setFinalValue);
+                    var overallScale = findChildObject(element, 'overall');
+                    var overallBox = findChildObject(element, 'overallbox');
+                    overallScale.finalChanged.connect(overallBox.setValue);
+                    overallBox['valueChanged(double)'].connect(overallScale.setFinalValue);
+                    var uc1 = findChildObject(element, 'u1');
+                    var uc2 = findChildObject(element, 'u2');
+                    var uc3 = findChildObject(element, 'u3');
+                    var uc4 = findChildObject(element, 'u4');
+                    var uc5 = findChildObject(element, 'u5');
+                    var cc1 = findChildObject(element, 'c1');
+                    var cc2 = findChildObject(element, 'c2');
+                    var cc3 = findChildObject(element, 'c3');
+                    var cc4 = findChildObject(element, 'c4');
+                    var cc5 = findChildObject(element, 'c5');
+                    var sc1 = findChildObject(element, 's1');
+                    var sc2 = findChildObject(element, 's2');
+                    var sc3 = findChildObject(element, 's3');
+                    var sc4 = findChildObject(element, 's4');
+                    var sc5 = findChildObject(element, 's5');
+                    var uniformityBox = findChildObject(element, 'uniformity');
+                    var cleancupBox = findChildObject(element, 'cleancup');
+                    var sweetnessBox = findChildObject(element, 'sweetness');
+                    uc1.checked = true;
+                    uc2.checked = true;
+                    uc3.checked = true;
+                    uc4.checked = true;
+                    uc5.checked = true;
+                    cc1.checked = true;
+                    cc2.checked = true;
+                    cc3.checked = true;
+                    cc4.checked = true;
+                    cc5.checked = true;
+                    sc1.checked = true;
+                    sc2.checked = true;
+                    sc3.checked = true;
+                    sc4.checked = true;
+                    sc5.checked = true;
+                    uniformityBox.value = 10;
+                    cleancupBox.value = 10;
+                    sweetnessBox.value = 10;
+                    var recalculateUniformity = function() {
+                        for(var i = 0; i < view.elements(); i++)
+                        {
+                            var u = 0;
+                            uc1 = findChildObject(view.elementAt(i), 'u1');
+                            uc2 = findChildObject(view.elementAt(i), 'u2');
+                            uc3 = findChildObject(view.elementAt(i), 'u3');
+                            uc4 = findChildObject(view.elementAt(i), 'u4');
+                            uc5 = findChildObject(view.elementAt(i), 'u5');
+                            uniformityBox = findChildObject(view.elementAt(i), 'uniformity');
+                            if(uc1.checked)
+                            {
+                                u += 2;
+                            }
+                            if(uc2.checked)
+                            {
+                                u += 2;
+                            }
+                            if(uc3.checked)
+                            {
+                                u += 2;
+                            }
+                            if(uc4.checked)
+                            {
+                                u += 2;
+                            }
+                            if(uc5.checked)
+                            {
+                                u += 2;
+                            }
+                            uniformityBox.value = u;
+                        }
+                    };
+                    uc1.clicked.connect(recalculateUniformity);
+                    uc2.clicked.connect(recalculateUniformity);
+                    uc3.clicked.connect(recalculateUniformity);
+                    uc4.clicked.connect(recalculateUniformity);
+                    uc5.clicked.connect(recalculateUniformity);
+                    var recalculateCleancup = function()
+                    {
+                        for(var i = 0; i < view.elements(); i++)
+                        {
+                            var c = 0;
+                            cc1 = findChildObject(view.elementAt(i), 'c1');
+                            cc2 = findChildObject(view.elementAt(i), 'c2');
+                            cc3 = findChildObject(view.elementAt(i), 'c3');
+                            cc4 = findChildObject(view.elementAt(i), 'c4');
+                            cc5 = findChildObject(view.elementAt(i), 'c5');
+                            cleancupBox = findChildObject(view.elementAt(i), 'cleancup');
+                            if(cc1.checked)
+                            {
+                                c += 2;
+                            }
+                            if(cc2.checked)
+                            {
+                                c += 2;
+                            }
+                            if(cc3.checked)
+                            {
+                                c += 2;
+                            }
+                            if(cc4.checked)
+                            {
+                                c += 2;
+                            }
+                            if(cc5.checked)
+                            {
+                                c += 2;
+                            }
+                            cleancupBox.value = c;
+                        }
+                    };
+                    cc1.clicked.connect(recalculateCleancup);
+                    cc2.clicked.connect(recalculateCleancup);
+                    cc3.clicked.connect(recalculateCleancup);
+                    cc4.clicked.connect(recalculateCleancup);
+                    cc5.clicked.connect(recalculateCleancup);
+                    var recalculateSweetness = function() {
+                        for(var i = 0; i < view.elements(); i++)
+                        {
+                            sc1 = findChildObject(view.elementAt(i), 's1');
+                            sc2 = findChildObject(view.elementAt(i), 's2');
+                            sc3 = findChildObject(view.elementAt(i), 's3');
+                            sc4 = findChildObject(view.elementAt(i), 's4');
+                            sc5 = findChildObject(view.elementAt(i), 's5');
+                            sweetnessBox = findChildObject(view.elementAt(i), 'sweetness');
+                            var s = 0;
+                            if(sc1.checked)
+                            {
+                                s += 2;
+                            }
+                            if(sc2.checked)
+                            {
+                                s += 2;
+                            }
+                            if(sc3.checked)
+                            {
+                                s += 2;
+                            }
+                            if(sc4.checked)
+                            {
+                                s += 2;
+                            }
+                            if(sc5.checked)
+                            {
+                                s += 2;
+                            }
+                            sweetnessBox.value = s;
+                        }
+                    };
+                    sc1.clicked.connect(recalculateSweetness);
+                    sc2.clicked.connect(recalculateSweetness);
+                    sc3.clicked.connect(recalculateSweetness);
+                    sc4.clicked.connect(recalculateSweetness);
+                    sc5.clicked.connect(recalculateSweetness);
+                    var totalBox = findChildObject(element, 'totalscore');
+                    var finalBox = findChildObject(element, 'finalscore');
+                    var taintBox = findChildObject(element, 'taints');
+                    var faultBox = findChildObject(element, 'faults');
+                    totalBox.enabled = false;
+                    finalBox.enabled = false;
+                    var recalculateTotals = function() {
+                        for(var i = 0; i < view.elements(); i++)
+                        {
+                            aromaBox = findChildObject(view.elementAt(i), 'aromabox');
+                            flavorBox = findChildObject(view.elementAt(i), 'flavorbox');
+                            acidityBox = findChildObject(view.elementAt(i), 'aciditybox');
+                            bodyBox = findChildObject(view.elementAt(i), 'bodybox');
+                            balanceBox = findChildObject(view.elementAt(i), 'balancebox');
+                            aftertasteBox = findChildObject(view.elementAt(i), 'aftertastebox');
+                            overallBox = findChildObject(view.elementAt(i), 'overallbox');
+                            uniformityBox = findChildObject(view.elementAt(i), 'uniformity');
+                            cleancupBox = findChildObject(view.elementAt(i), 'cleancup');
+                            sweetnessBox = findChildObject(view.elementAt(i), 'sweetness');
+                            taintBox = findChildObject(view.elementAt(i), 'taints');
+                            faultBox = findChildObject(view.elementAt(i), 'faults');
+                            totalBox = findChildObject(view.elementAt(i), 'totalscore');
+                            finalBox = findChildObject(view.elementAt(i), 'finalscore');
+                            var total = aromaBox.value + flavorBox.value + acidityBox.value + bodyBox.value + balanceBox.value + aftertasteBox.value + overallBox.value + uniformityBox.value + cleancupBox.value + sweetnessBox.value;
+                            var taints = -(taintBox.value * 2);
+                            var faults = -(faultBox.value * 4);
+                            var final = total + taints + faults;
+                            totalBox.value = total;
+                            finalBox.value = final;
+                        }
+                    };
+                    aromaBox['valueChanged(double)'].connect(recalculateTotals);
+                    taintBox['valueChanged(double)'].connect(recalculateTotals);
+                    faultBox['valueChanged(double)'].connect(recalculateTotals);
+                    flavorBox['valueChanged(double)'].connect(recalculateTotals);
+                    acidityBox['valueChanged(double)'].connect(recalculateTotals);
+                    bodyBox['valueChanged(double)'].connect(recalculateTotals);
+                    balanceBox['valueChanged(double)'].connect(recalculateTotals);
+                    aftertasteBox['valueChanged(double)'].connect(recalculateTotals);
+                    overallBox['valueChanged(double)'].connect(recalculateTotals);
+                    uniformityBox['valueChanged(double)'].connect(recalculateTotals);
+                    cleancupBox['valueChanged(double)'].connect(recalculateTotals);
+                    sweetnessBox['valueChanged(double)'].connect(recalculateTotals);
+                    recalculateTotals();
+                }
+                formwindow.showMaximized();
+            });
+        ]]>
+    </program>
+</window>

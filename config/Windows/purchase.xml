@@ -1,0 +1,396 @@
+<window id="purchase">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <button name="Add Item" type="push" id="newForm" />
+            <label>Date:</label>
+            <calendar id="date"/>
+            <label>Vendor:</label>
+            <sqldrop data="0" display="0" showdata="false" editable="true" id="vendor">
+                <query>SELECT DISTINCT vendor FROM purchase UNION SELECT '' ORDER BY vendor ASC</query>
+            </sqldrop>
+            <label>Invoice:</label>
+            <line id="invoice" />
+        </layout>
+        <formarray id="form">
+            <layout type="grid">
+                <row>
+                    <column><label>Item:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="name">
+                            <query>SELECT DISTINCT name FROM coffees UNION SELECT '' ORDER BY name ASC</query>
+                        </sqldrop>
+                    </column>
+                    <column />
+                    <column><label>Reference:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="reference">
+                            <query>SELECT DISTINCT reference FROM coffees UNION SELECT '' ORDER BY reference ASC</query>
+                        </sqldrop>
+                    </column>
+                </row>
+                <row>
+                    <column><label>Quantity:</label></column>
+                    <column>
+                        <line validator="numeric" id="quantity" />
+                    </column>
+                    <column />
+                    <column><label>Unit:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="false" id="units">
+                            <query>SELECT * FROM (VALUES('Lb'),('Kg')) AS q (unit)</query>
+                        </sqldrop>
+                    </column>
+                </row>
+                <row>
+                    <column><label>Cost:</label></column>
+                    <column>
+                        <line validator="numeric" id="cost" />
+                    </column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="false" id="costModifier">
+                            <query>SELECT 'per unit' UNION SELECT 'total'</query>
+                        </sqldrop>
+                    </column>
+                </row>
+                <row>
+                    <column><label>Origin:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="origin">
+                            <query>SELECT DISTINCT origin FROM coffees UNION SELECT '' ORDER BY origin ASC</query>
+                        </sqldrop>
+                    </column>
+                    <column />
+                    <column><label>Region:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="region">
+                            <query>SELECT DISTINCT region FROM coffees UNION SELECT '' ORDER BY region ASC</query>
+                        </sqldrop>
+                    </column>
+                </row>
+                <row>
+                    <column><label>Producer</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="producer">
+                            <query>SELECT DISTINCT producer FROM coffees UNION SELECT '' ORDER BY producer ASC</query>
+                        </sqldrop>
+                    </column>
+                    <column />
+                    <column><label>Grade:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="grade">
+                            <query>SELECT DISTINCT grade FROM coffees UNION SELECT '' ORDER BY grade ASC</query>
+                        </sqldrop>
+                    </column>
+                </row>
+                <row>
+                    <column><label>Milling:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="milling">
+                            <query>SELECT DISTINCT milling FROM coffees UNION SELECT '' ORDER BY milling ASC</query>
+                        </sqldrop>
+                    </column>
+                    <column />
+                    <column><label>Drying:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="drying">
+                            <query>SELECT DISTINCT drying FROM coffees UNION SELECT '' ORDER BY drying ASC</query>
+                        </sqldrop>
+                    </column>
+                </row>
+                <row>
+                    <column><label>Bags:</label></column>
+                    <column>
+                        <line validator="numeric" id="bags" />
+                    </column>
+                    <column>
+                        <button type="check" id="isDecaf" name="Decaffeinated" />
+                    </column>
+                    <column><label>by method:</label></column>
+                    <column>
+                        <sqldrop data="0" display="0" showdata="false" editable="true" id="decafMethod">
+                            <query>SELECT DISTINCT decaf_method FROM decaf_coffees UNION SELECT '' ORDER BY decaf_method ASC</query>
+                        </sqldrop>
+                    </column>
+                </row>
+                <row>
+                    <column colspan="2">
+                        <line id="certdisplay" writable="false" />
+                    </column>
+                    <column column="2">
+                        <button type="push" name="Add Certification" id="addcert" />
+                    </column>
+                    <column colspan="2">
+                        <line id="certification" />
+                    </column>
+                </row>
+            </layout>
+        </formarray>
+        <layout type="horizontal">
+            <layout type="vertical">
+                <label>Fees:</label>
+                <sqltablearray columns="2" id="fees">
+                    <column name="Fee Description" />
+                    <column name="Amount" />
+                </sqltablearray>
+            </layout>
+            <button name="Submit" type="push" id="submit" />
+        </layout>
+    </layout>
+    <program>
+        <![CDATA[
+            var window = this;
+			var convertToPounds = function(w, u) {
+				switch(u) {
+					case "g":
+						return w * 0.0022;
+					case "oz":
+						return w * 0.0625;
+					case "Kg":
+						return w * 2.2;
+				}
+				return w;
+			};
+			var convertToPerPounds = function(w, u) {
+				switch(u) {
+					case "g":
+						return w / 0.0022;
+					case "oz":
+						return w / 0.0625;
+					case "Kg":
+						return w / 2.2;
+				}
+				return w;
+			};
+            this.windowTitle = 'Typica - Coffee Purchase';
+            var form = findChildObject(this, 'form');
+            form.setMaximumElementHeight(320);
+            var appendForm = function() {
+                form.addElements(1);
+                var thisCoffee = form.elementAt(form.elements() - 1);
+                var decafButton = findChildObject(thisCoffee, 'isDecaf');
+                var methodField = findChildObject(thisCoffee, 'decafMethod');
+                methodField.enabled = false;
+                decafButton.stateChanged.connect(function(state) {
+                    if(state == 0)
+                    {
+                        methodField.enabled = false;
+                    }
+                    else
+                    {
+                        methodField.enabled = true;
+                    }
+                });
+                var certificationButton = findChildObject(thisCoffee, 'addcert');
+                var certSource = findChildObject(thisCoffee, 'certification');
+                var certTarget = findChildObject(thisCoffee, 'certdisplay');
+                certificationButton.clicked.connect(function() {
+                    if(thisCoffee.certificationArray === undefined)
+                    {
+                        thisCoffee.certificationArray = new Array();
+                    }
+                    thisCoffee.certificationArray.push(certSource.text);
+                    certTarget.text = thisCoffee.certificationArray.toString();
+                    certSource.text = '';
+                });
+            };
+            appendForm();
+            var itemButton = findChildObject(this, 'newForm');
+            itemButton.clicked.connect(function() {
+                appendForm();
+            });
+            var invoiceField = findChildObject(this, 'invoice');
+            var vendorField = findChildObject(this, 'vendor');
+            var feesTable = findChildObject(this, 'fees');
+            var submitButton = findChildObject(this, 'submit');
+            var dateField = findChildObject(this, 'date');
+            submitButton.clicked.connect(function() {
+                var query = new QSqlQuery;
+                var q = "INSERT INTO invoices VALUES (default, :invoice, :vendor, :date) RETURNING id";
+                query.prepare(q);
+                query.bind(":invoice", invoiceField.text);
+                query.bind(":vendor", vendorField.currentText);
+                query.bind(":date", dateField.date);
+                query.exec();
+                query.next();
+                var invoiceNumber = query.value(0);
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var current = form.elementAt(i);
+                    var nameEntry = findChildObject(current, 'name');
+                    var quantityEntry = findChildObject(current, 'quantity');
+					var unitEntry = findChildObject(current, 'units');
+                    var costEntry = findChildObject(current, 'cost');
+                    var originEntry = findChildObject(current, 'origin');
+                    var decafSelection = findChildObject(current, 'isDecaf');
+                    var decafEntry = findChildObject(current, 'decafMethod');
+                    if(nameEntry.currentText == '')
+                    {
+                        continue;
+                    }
+                    if(quantityEntry.text == '')
+                    {
+                        continue;
+                    }
+                    if(costEntry.text == '')
+                    {
+                        continue;
+                    }
+                    if(originEntry.currentText == '')
+                    {
+                        continue;
+                    }
+                    if(decafSelection.checked)
+                    {
+                        if(decafEntry.currentText == '')
+                        {
+                            continue;
+                        }
+                    }
+                    if(decafSelection.checked)
+                    {
+                        q = "INSERT INTO decaf_coffees VALUES (default, :name, :reference, :unit, 0, 'Coffee: Unroasted', :origin, :region, :producer, :grade, :milling, :drying, :decafMethod) RETURNING id";
+                    }
+                    else
+                    {
+                        q = "INSERT INTO coffees VALUES (default, :name, :reference, :unit, 0, 'Coffee: Unroasted', :origin, :region, :producer, :grade, :milling, :drying) RETURNING id";
+                    }
+                    query.prepare(q);
+                    query.bind(":name", nameEntry.currentText);
+                    var referenceEntry = findChildObject(current, 'reference');
+                    if(referenceEntry.currentText == '')
+                    {
+                        query.bind(":reference", null);
+                    }
+                    else
+                    {
+                        query.bind(":reference", referenceEntry.currentText);
+                    }
+					query.bind(":unit", 'lb');
+                    query.bind(":origin", originEntry.currentText);
+                    var regionEntry = findChildObject(current, 'region');
+                    if(regionEntry.currentText == '')
+                    {
+                        query.bind(":region", null);
+                    }
+                    else
+                    {
+                        query.bind(":region", regionEntry.currentText);
+                    }
+                    var producerEntry = findChildObject(current, 'producer');
+                    if(producerEntry.currentText == '')
+                    {
+                        query.bind(":producer", null);
+                    }
+                    else
+                    {
+                        query.bind(":producer", producerEntry.currentText);
+                    }
+                    var gradeEntry = findChildObject(current, 'grade');
+                    if(gradeEntry.currentText == '')
+                    {
+                        query.bind(":grade", null);
+                    }
+                    else
+                    {
+                        query.bind(":grade", gradeEntry.currentText);
+                    }
+                    var millingEntry = findChildObject(current, 'milling');
+                    if(millingEntry.currentText == '')
+                    {
+                        query.bind(":milling", null);
+                    }
+                    else
+                    {
+                        query.bind(":milling", millingEntry.currentText);
+                    }
+                    var dryingEntry = findChildObject(current, 'drying');
+                    if(dryingEntry.currentText == '')
+                    {
+                        query.bind(":drying", null);
+                    }
+                    else
+                    {
+                        query.bind(":drying", dryingEntry.currentText);
+                    }
+                    if(decafSelection.checked)
+                    {
+                        query.bind(":decafMethod", decafEntry.currentText);
+                    }
+                    query.exec();
+                    query.next();
+                    var item_id = query.value(0);
+                    q = "INSERT INTO purchase VALUES(:time, :item, :quantity, :cost, :vendor)";
+                    query.prepare(q);
+                    query.bind(":time", dateField.date);
+                    query.bind(":item", item_id);
+                    query.bind(":quantity", convertToPounds(parseFloat(quantityEntry.text), unitEntry.currentText));
+                    var costModifier = findChildObject(current, 'costModifier');
+                    if(costModifier.currentText == 'per unit')
+                    {
+                        query.bind(":cost", convertToPerPounds(parseFloat(costEntry.text), unitEntry.currentText));
+                    }
+                    else
+                    {
+                        query.bind(":cost", Number(costEntry.text) / convertToPounds(parseFloat(quantityEntry.text), unitEntry.currentText));
+                    }
+                    query.bind(":vendor", vendorField.currentText);
+                    query.exec();
+                    q = "INSERT INTO lb_bag_conversion VALUES(:item, :conversion)";
+                    query.prepare(q);
+                    query.bind(":item", item_id);
+                    var bagsEntry = findChildObject(current, 'bags');
+                    var conversion = convertToPounds(parseFloat(quantityEntry.text), unitEntry.currentText) / Number(bagsEntry.text);
+                    query.bind(":conversion", conversion);
+                    query.exec();
+                    q = "INSERT INTO invoice_items VALUES(:id, 'PURCHASE', :item, :description, :cost)";
+                    query.prepare(q);
+                    query.bind(":id", invoiceNumber);
+                    query.bind(":item", item_id);
+                    query.bind(":description", nameEntry.currentText);
+                    if(costModifier.currentText == 'per unit')
+                    {
+                        query.bind(":cost", Number(costEntry.text) * Number(quantityEntry.text));
+                    }
+                    else
+                    {
+                        query.bind(":cost", Number(costEntry.text));
+                    }
+                    query.exec();
+                    var certifications = findChildObject(current, 'certdisplay');
+                    var certlist = certifications.text.split(",");
+                    q = "INSERT INTO certifications VALUES (:item, :certification)";
+                    query.prepare(q);
+                    query.bind(":item", item_id);
+                    for(var j = 0; j < certlist.length; j++)
+                    {
+                        query.bind(":certification", certlist[j]);
+                        query.exec();
+                    }
+                }
+                var descriptionArray = sqlToArray(feesTable.columnArray(0, 0));
+                var q = "INSERT INTO invoice_items VALUES (:id, 'FEE', NULL, :description, :cost)";
+                query.prepare(q);
+                query.bind(":id", invoiceNumber);
+                if(descriptionArray.length > 0)
+                {
+                    for(var i = 0; i < descriptionArray.length; i++)
+                    {
+                        if(feesTable.data(i, 0, 0).value == '')
+                        {
+                            continue;
+                        }
+                        if(feesTable.data(i, 1, 0).value == '')
+                        {
+                            continue;
+                        }
+                        query.bind(":description", feesTable.data(i, 0, 0).value);
+                        query.bind(":cost", Number(feesTable.data(i, 1, 0).value));
+                        query.exec();
+                    }
+                }
+                window.close();
+            });
+            this.showMaximized();
+        ]]>
+    </program>
+</window>

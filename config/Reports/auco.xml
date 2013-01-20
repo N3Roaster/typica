@@ -1,0 +1,141 @@
+<window id="useandcostreport">
+	<reporttitle>Production:->Average Use and Cost by Origin</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Sort Order:</label>
+            <sqldrop id="sort" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = "Typica - Average Use and Cost by Origin";
+            var report = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                report.print();
+            });
+            var sortBox = findChildObject(this, 'sort');
+            sortBox.addItem("Origin A-Z");
+            sortBox.addItem("Origin Z-A");
+            sortBox.addItem("Avg. Rate Ascending");
+            sortBox.addItem("Avg. Rate Descending");
+            sortBox.addItem("Avg. Cost Ascending");
+            sortBox.addItem("Avg. Cost Descending");
+            sortBox.currentIndex = QSettings.value("auco_sort", 0);
+            function refresh() {
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", "Recent Use and Cost by Origin");
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", "Average Use and Cost by Origin");
+                output.writeTextElement("p", "This is a report of average rate of use in pounds per day and cost of unroasted coffee.");
+                output.writeStartElement("table");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeStartElement("th");
+                output.writeAttribute("colspan", "3");
+                output.writeCharacters("Regular Coffees");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Origin");
+                output.writeTextElement("th", "Avg. Rate");
+                output.writeTextElement("th", "Avg. Cost");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+                var query = new QSqlQuery();
+                switch(sortBox.currentIndex)
+                {
+                    case 0:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY origin ASC");
+                        break;
+                    case 1:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY origin DESC");
+                        break;
+                    case 2:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY rate ASC");
+                        break;
+                    case 3:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY rate DESC");
+                        break;
+                    case 4:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY cost ASC");
+                        break;
+                    case 5:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY cost DESC");
+                        break;
+                }
+                while(query.next())
+                {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", query.value(0));
+                    output.writeTextElement("td", query.value(1));
+                    output.writeTextElement("td", query.value(2));
+                    output.writeEndElement();
+                }
+                output.writeStartElement("tr");
+                output.writeStartElement("th");
+                output.writeAttribute("colspan", "3");
+                output.writeCharacters("Decaffeinated Coffees");
+                output.writeEndElement();
+                output.writeEndElement();
+                switch(sortBox.currentIndex)
+                {
+                    case 0:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY origin ASC");
+                        break;
+                    case 1:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY origin DESC");
+                        break;
+                    case 2:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY rate ASC");
+                        break;
+                    case 3:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY rate DESC");
+                        break;
+                    case 4:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY cost ASC");
+                        break;
+                    case 5:
+                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY cost DESC");
+                        break;
+                }
+                while(query.next())
+                {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", query.value(0));
+                    output.writeTextElement("td", query.value(1));
+                    output.writeTextElement("td", query.value(2));
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                report.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+            sortBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("auco_sort", sortBox.currentIndex);
+                refresh();
+            });
+        ]]>
+    </program>
+</window>

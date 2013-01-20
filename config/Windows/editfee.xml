@@ -1,0 +1,40 @@
+<window id="invoicefeedetail">
+	<layout type="vertical">
+		<layout type="grid">
+			<row>
+				<column><label>Description</label></column>
+				<column><line id="description" /></column>
+			</row>
+			<row>
+				<column><label>Cost</label></column>
+				<column><line id="cost" validator="numeric"/></column>
+			</row>
+		</layout>
+		<button name="submit" type="push" id="submit" />
+	</layout>
+	<program>
+		<![CDATA[
+			window = this;
+			this.windowTitle = 'Typica - Fee Detail';
+			var descField = findChildObject(this, 'description');
+			var costField = findChildObject(this, 'cost');
+			this.dataSet = function() {
+				descField.text = window.rowData[2];
+				costField.text = window.rowData[4];
+			};
+			button = findChildObject(this, 'submit');
+			button.clicked.connect(function() {
+				var query = new QSqlQuery();
+				query.prepare("UPDATE invoice_items SET description = :name, cost = :cost WHERE invoice_id = :id AND record_type = 'FEE' AND item_id = NULL AND description = :oldname AND cost = :oldcost");
+				query.bind(":name", descField.text);
+				query.bind(":cost", Number(costField.text));
+				query.bind(":id", Number(window.rowData[1]);
+				query.bind(":oldname", window.rowData[2]);
+				query.bind(":oldcost", window.rowData[4]);
+				query.exec();
+				query = query.invalidate();
+				window.close();
+			});
+		]]>
+	</program>
+</window>

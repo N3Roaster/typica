@@ -1,0 +1,28 @@
+<window id="invoicelist">
+	<layout type="vertical">
+		<sqlview id="table" />
+	</layout>
+	<program>
+		<![CDATA[
+			this.windowTitle = "Typica - Invoice List";
+			var table = findChildObject(this, 'table');
+			table.setQuery("SELECT id, time, invoice, vendor FROM invoices ORDER BY time DESC");
+			table.openEntry.connect(function(arg) {
+				var info = createWindow("invoiceinfo");
+				info.setInvoiceID(arg);
+				var query = new QSqlQuery();
+				query.exec("SELECT time, invoice, vendor FROM invoices WHERE id = " + arg);
+				query.next();
+				var timefield = findChildObject(info, 'date');
+				timefield.text = query.value(0);
+				var vendorfield = findChildObject(info, 'vendor');
+				vendorfield.text = query.value(2);
+				var invoicefield = findChildObject(info, 'invoice');
+				invoicefield.text = query.value(1);
+				var itemtable = findChildObject(info, 'itemtable');
+				itemtable.setQuery("SELECT record_type, item_id, description, (SELECT reference FROM items WHERE id = item_id) AS reference, (SELECT cost FROM purchase WHERE item = item_id) AS unit_cost, (SELECT quantity FROM purchase WHERE item = item_id) AS quantity, ((SELECT quantity FROM purchase WHERE item = item_id)/(SELECT conversion FROM lb_bag_conversion WHERE item = item_id))::numeric(12,2) AS sacks, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'PURCHASE' UNION SELECT record_type, NULL, description, NULL, NULL, NULL, NULL, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'FEE' ORDER BY item_id");
+				query = query.invalidate();
+			});
+		]]>
+	</program>
+</window>

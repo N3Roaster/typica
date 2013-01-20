@@ -1,0 +1,136 @@
+<window id="productionreport">
+	<reporttitle>Production:->Recent Average Weekly Coffee Production</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Sort Order:</label>
+            <sqldrop id="sort" />
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = "Typica - Recent Average Weekly Coffee Production";
+            var report = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                report.print();
+            });
+            var sortBox = findChildObject(this, 'sort');
+            sortBox.addItem("Roasted Coffee A-Z");
+            sortBox.addItem("Roasted Coffee Z-A");
+            sortBox.addItem("Weekly Use Ascending");
+            sortBox.addItem("Weekly Use Descending");
+            sortBox.currentIndex = QSettings.value("rwacp_sort", 3);
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            function refresh() {
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", "Recent Average Weekly Coffee Production");
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", "Recent Average Weekly Coffee Production");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("p", "This is a report of average weekly coffee production in kilograms over the past 28 days.");
+						break;
+					case 1:
+						output.writeTextElement("p", "This is a report of average weekly coffee production in pounds over the past 28 days.");
+						break;
+				}
+                output.writeStartElement("table");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Roasted Coffee");
+                output.writeTextElement("th", "Weekly Use");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+				var q = "SELECT (SELECT name FROM items WHERE id = roasted_id) AS name, ((sum(roasted_quantity) / 4) / :conversion)::numeric(18,2) AS weekly FROM roasting_log WHERE time > current_date - integer '28' AND roasted_quantity > 0 GROUP BY roasted_id ORDER BY "
+                switch(sortBox.currentIndex)
+                {
+                    case 0:
+						q += "name ASC";
+                        break;
+                    case 1:
+						q += "name DESC";
+						break;
+                    case 2:
+						q += "weekly ASC";
+						break;
+                    case 3:
+						q += "weekly DESC";
+						break;
+                }
+				var query = new QSqlQuery();
+				query.prepare(q);
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						query.bind(":conversion", 2.2);
+						break;
+					case 1:
+						query.bind(":conversion", 1);
+						break;
+				}
+                query.exec();
+                while(query.next())
+                {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", query.value(0));
+                    output.writeTextElement("td", query.value(1));
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeStartElement("tfoot")
+                output.writeTextElement("th", "Total");
+                query.prepare("SELECT (sum(roasted_quantity) / 4 / :conversion)::numeric(18,2) FROM roasting_log WHERE time > current_date - integer '28' AND roasted_quantity > 0");
+                switch(unitBox.currentIndex)
+				{
+					case 0:
+						query.bind(":conversion", 2.2);
+						break;
+					case 1:
+						query.bind(":conversion", 1);
+						break;
+				}
+				query.exec();
+				query.next();
+                output.writeTextElement("td", query.value(0));
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                report.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+            sortBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("rwacp_sort", sortBox.currentIndex);
+                refresh();
+            });
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
+        ]]>
+    </program>
+</window>

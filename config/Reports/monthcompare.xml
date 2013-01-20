@@ -1,0 +1,163 @@
+﻿<window id="pytdprodcomp">
+	<reporttitle>Production:->Previous Year Production Comparison By Month</reporttitle>
+    <layout type="vertical">
+		<layout type="horizontal">
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = "Typica - Previous Year Production Comparison By Month";
+            var view = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                view.print();
+            });
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
+            function refresh() {
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", "Previous Year Production Comparison By Month");
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", "Previous Year Production Comparison By Month");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("p", "This report compares total roasted coffee production in kilograms with the previous year on a monthly basis.");
+						break;
+					case 1:
+						output.writeTextElement("p", "This report compares total roasted coffee production in pounds with the previous year on a monthly basis.");
+						break;
+				}
+                output.writeStartElement("table");
+                output.writeAttribute("style", "page-break-after:auto;");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Month");
+				var query = new QSqlQuery();
+				query.exec("SELECT EXTRACT(YEAR FROM 'now'::date) AS current_year");
+				query.next();
+				var current_year = query.value(0);
+                output.writeTextElement("th", current_year-1);
+                output.writeTextElement("th", current_year);
+                output.writeTextElement("th", "Change");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+				var month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+				var current_data = new Array();
+				var previous_data = new Array();
+				for(var i = 0; i < 12; i++) {
+					var q = "SELECT SUM(roasted_quantity) FROM roasting_log WHERE roasted_id IS NOT NULL AND time > '"
+					q += current_year;
+					q += "-";
+					q += 1+i;
+					q += "-01' AND time < '";
+					if(i == 11) {
+						q += 1+current_year;
+					} else {
+						q += current_year;
+					}
+					q += "-";
+					if(i == 11) {
+						q += "01"
+					} else {
+						q += 2+i;
+					}
+					q += "-01'";
+					query.exec(q);
+					query.next();
+					current_data.push(query.value(0));
+				}
+				for(var i = 0; i < 12; i++) {
+					var q = "SELECT SUM(roasted_quantity) FROM roasting_log WHERE roasted_id IS NOT NULL AND time > '"
+					q += current_year-1;
+					q += "-";
+					q += 1+i;
+					q += "-01' AND time < '";
+					if(i == 11) {
+						q += current_year;
+					} else {
+						q += current_year-1;
+					}
+					q += "-";
+					if(i == 11) {
+						q += "01"
+					} else {
+						q += 2+i;
+					}
+					q += "-01'";
+					query.exec(q);
+					query.next();
+					previous_data.push(query.value(0));
+				}
+				query = query.invalidate();
+				for(var i = 0; i < 12; i++) {
+					output.writeStartElement("tr");
+					output.writeTextElement("td", month_names[i]);
+					switch(unitBox.currentIndex)
+					{
+						case 0:
+							output.writeTextElement("td", Number(previous_data[i] / 2.2).toFixed(2));
+							output.writeTextElement("td", Number(current_data[i] / 2.2).toFixed(2));
+							output.writeTextElement("td", Number((current_data[i] - previous_data[i]) / 2.2).toFixed(2));
+							break;
+						case 1:
+							output.writeTextElement("td", Number(previous_data[i]).toFixed(2));
+							output.writeTextElement("td", Number(current_data[i]).toFixed(2));
+							output.writeTextElement("td", Number(current_data[i]-previous_data[i]).toFixed(2));
+							break;
+					}
+					output.writeEndElement();
+				}
+                output.writeEndElement();
+                output.writeStartElement("tfoot");
+                output.writeTextElement("th", "Totals");
+				var current_total = current_data.reduce(function(a,b) {return Number(a) + Number(b);}, 0);
+				var previous_total = previous_data.reduce(function(a,b) {return Number(a) + Number(b);}, 0);
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("td", (previous_total/2.2).toFixed(2));
+						output.writeTextElement("td", (current_total/2.2).toFixed(2));
+						output.writeTextElement("td", ((current_total-previous_total)/2.2).toFixed(2));
+						break;
+					case 1:
+						output.writeTextElement("td", previous_total.toFixed(2));
+						output.writeTextElement("td", current_total.toFixed(2));
+						output.writeTextElement("td", (current_total-previous_total).toFixed(2));
+						break;
+				}
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                view.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+        ]]>
+    </program>
+</window>

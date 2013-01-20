@@ -1,0 +1,8 @@
+<window id="allforms">
+    <layout type="vertical">
+        <label>All forms in session:</label>
+        <sqlview id="data" />
+        <label>Average scores by sample:</label>
+        <sqlview id="averages" />
+    </layout>
+</window>

@@ -1,0 +1,101 @@
+<window id="inventory">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <sqldrop data="0" display="1" showdata="true" id="item">
+                <query><![CDATA[SELECT id, name FROM coffees WHERE quantity <> 0 ORDER BY name ASC]]></query>
+            </sqldrop>
+            <line id="quantity" />
+            <sqldrop id="units" />
+            <button type="push" name="Update" id="update" />
+        </layout>
+        <textarea id="current" />
+    </layout>
+    <program>
+        <![CDATA[
+			var units = findChildObject(this, 'units');
+			units.addItem("bag");
+			units.addItem("lb");
+			var items = findChildObject(this, 'item');
+			var status = findChildObject(this, 'current');
+			var q = "SELECT quantity FROM items WHERE id = ";
+			q = q + items.currentData();
+			query = new QSqlQuery();
+			query.exec(q);
+			query.next();
+			var text = items.currentText;
+			text = text + " Current inventory: ";
+			text = text + query.value(0);
+			text = text + " pounds (";
+			q = "SELECT ";
+			q = q + query.value(0);
+			q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+			q = q + items.currentData();
+			q = q + ")";
+			query.exec(q);
+			query.next();
+			text = text + query.value(0);
+			text = text + " bags)";
+            query = query.invalidate();
+			status.plainText = text;
+			var button = findChildObject(this, 'update');
+			var value = findChildObject(this, 'quantity');
+			button.clicked.connect(function() {
+				q = "INSERT INTO inventory VALUES ('now', ";
+				q = q + items.currentData();
+				q = q + ", ";
+				if(units.currentText == "lb") {
+					q = q + value.text;
+				} else {
+					q = q + value.text;
+					q = q + " * (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+					q = q + items.currentData();
+					q = q + ")";
+				}
+				q = q + ")";
+                query = new QSqlQuery();
+				query.exec(q);
+				text = items.currentText;
+				q = "SELECT quantity FROM items WHERE id = ";
+				q = q + items.currentData();
+				query.exec(q);
+				query.next();
+				text = text + " Current inventory: ";
+				text = text + query.value(0);
+				text = text + " pounds (";
+				q = "SELECT ";
+				q = q + query.value(0);
+				q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+				q = q + items.currentData();
+				q = q + ")";
+				query.exec(q);
+				query.next();
+				text = text + query.value(0);
+				text = text + " bags)";
+				status.plainText = text;
+                query = query.invalidate();
+			});
+			items['currentIndexChanged(int)'].connect(function() {
+				q = "SELECT quantity FROM items WHERE id = ";
+				q = q + items.currentData();
+                query = new QSqlQuery();
+				query.exec(q);
+				query.next();
+				var text = items.currentText;
+				text = text + " Current inventory: ";
+				text = text + query.value(0);
+				text = text + " pounds (";
+				q = "SELECT ";
+				q = q + query.value(0);
+				q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+				q = q + items.currentData();
+				q = q + ")";
+				query.exec(q);
+				query.next();
+				text = text + query.value(0);
+				text = text + " bags)";
+				status.plainText = text;
+                query = query.invalidate();
+			});
+        ]]>
+    </program>
+</window>

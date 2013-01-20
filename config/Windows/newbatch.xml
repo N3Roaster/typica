@@ -1,0 +1,322 @@
+<window id="batchWindow">
+    <menu name="Batch">
+        <item id="new" shortcut="Ctrl+N">New Batch…</item>
+    </menu>
+    <layout type="vertical">
+        <layout type="horizontal">
+			<label>Machine:</label>
+			<line id="machine" writable="false" />
+			<label>Unit:</label>
+			<sqldrop id="unit" />
+            <stretch />
+        </layout>
+        <layout type="horizontal">
+            <label>Roasted Coffee:</label>
+            <sqldrop data="0" display="1" showdata="true" id="roasted">
+                <null />
+                <query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
+            </sqldrop>
+            <stretch />
+        </layout>
+        <label>Green Coffee:</label>
+        <sqltablearray columns="2" id="greens">
+            <column name="Coffee" delegate="sql" showdata="true" null="false" data="0" display="1">SELECT id, name FROM coffees WHERE quantity &lt;&gt; 0 ORDER BY name</column>
+            <column name="Weight" />
+        </sqltablearray>
+        <layout type="horizontal">
+            <label>Green Weight:</label>
+            <line id="green" writable="false">0.0</line>
+        </layout>
+        <layout type="horizontal">
+            <button name="Load Profile" type="push" id="load" />
+            <button name="No Profile" type="push" id="noprofile" />
+        </layout>
+        <layout type="horizontal">
+            <label>Time:</label>
+            <line id="time" writable="false" />
+            <label>Duration:</label>
+            <line id="duration" writable="false" />
+        </layout>
+        <layout type="horizontal">
+            <label>Roasted Weight:</label>
+            <line id="roast" validator="numeric" />
+            <label>Weight Loss:</label>
+            <line id="wloss" writable="false" />
+            <button type="check" id="approval" name="Approved" />
+        </layout>
+        <layout type="horizontal">
+            <label>Annotation:</label>
+            <textarea id="annotation" />
+        </layout>
+        <layout type="horizontal">
+            <button name="Submit" id="submit" type="push" />
+            <button name="Save log as target profile" type="check" id="target" />
+        </layout>
+    </layout>
+    <program>
+        <![CDATA[
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("g");
+			unitBox.addItem("Kg");
+			unitBox.addItem("oz");
+			unitBox.addItem("lb");
+			unitBox.currentIndex = (QSettings.value("script/batch_unit", unitBox.findText("lb")));
+			var machine = findChildObject(this, "machine");
+			machine.setText(selectedRoasterName + " (" + selectedRoasterID + ")");
+			var newMenu = findChildObject(this, 'new');
+			newMenu.triggered.connect(function() {
+				var bwindow = createWindow("batchWindow");
+				bwindow.windowTitle = "Typica - New Batch";
+			});
+			var batch = this;
+			var table = findChildObject(this, 'greens');
+			var green = findChildObject(this, 'green');
+			var model = table.model();
+            var lossField = findChildObject(this, 'wloss');
+            lossField.maximumWidth = 80;
+            var roasted = findChildObject(this, 'roasted');
+            var roastwt = findChildObject(this, 'roast');
+            roastwt.maximumWidth = 80;
+			model.dataChanged.connect(function() {
+				green.text = table.columnSum(1, 0);
+				table.resizeColumnToContents(0);
+                if(parseFloat(green.text) > 0)
+                {
+                    if(parseFloat(roastwt.text) > 0)
+                    {
+                        lossField.text = (((parseFloat(green.text) - parseFloat(roastwt.text)) / parseFloat(green.text)) * 100).toFixed(2) + "%";
+                    }
+                    else
+                    {
+                        lossField.text = "100%";
+                    }
+                }
+			});
+            roastwt.textChanged.connect(function() {
+                if(parseFloat(green.text) > 0)
+                {
+                    if(parseFloat(roastwt.text) > 0)
+                    {
+                        lossField.text = (((parseFloat(green.text) - parseFloat(roastwt.text)) / parseFloat(green.text)) * 100).toFixed(2) + "%";
+                    }
+                    else
+                    {
+                        lossField.text = "100%";
+                    }
+                }
+            });
+			var convertToPounds = function(w, u) {
+				switch(u) {
+					case "g":
+						return w * 0.0022;
+					case "oz":
+						return w * 0.0625;
+					case "Kg":
+						return w * 2.2;
+				}
+				return w;
+			};
+            var profilebutton = findChildObject(this, 'load');
+            profilebutton.setEnabled(false);
+            roasted['currentIndexChanged(int)'].connect(function() {
+                var query = new QSqlQuery();
+                var q = "SELECT EXISTS(SELECT 1 FROM item_files WHERE item = ";
+                q = q + roasted.currentData();
+                q = q + ")";
+                query.exec(q);
+                if(query.next())
+                {
+                    if(query.value(0) == 'false')
+                    {
+                        profilebutton.setEnabled(false);
+                    }
+                    else
+                    {
+                        profilebutton.setEnabled(true);
+                    }
+                }
+                else
+                {
+                    profilebutton.setEnabled(false);
+                }
+                var title = "Typica - New Batch (";
+                title = title + roasted.currentText;
+                title = title + ")";
+                batch.windowTitle = title;
+                q = "SELECT unroasted_id FROM roasting_log WHERE roasted_id = ";
+                q = q + roasted.currentData();
+                q = q + " AND time = (SELECT max(time) FROM roasting_log WHERE roasted_id = ";
+                q = q + roasted.currentData();
+                q = q + ")";
+                query.exec(q);
+                if(query.next())
+                {
+                    var unroasted_items = sqlToArray(query.value(0));
+                    var names = [];
+                    q = "SELECT name FROM items WHERE id = :id AND quantity <> 0";
+                    query.prepare(q);
+                    var allInStock = true;
+                    for(var i = 0; i < unroasted_items.length; i++)
+                    {
+                        query.bind("id", unroasted_items[i]);
+                        query.exec();
+                        if(query.next())
+                        {
+                            names[i] = query.value(0);
+                        }
+                        else
+                        {
+                            allInStock = false;
+                        }
+                    }
+                    if(allInStock)
+                    {
+                        for(var i = 0; i < unroasted_items.length; i++)
+                        {
+                            table.setData(i, 0, names[i], 0);
+                            table.setData(i, 0, unroasted_items[i], 32);
+                        }
+                    }
+                }
+            });
+			profilebutton.clicked.connect(function() {
+				currentBatchInfo = batch;
+				query = new QSqlQuery();
+                var q = "SELECT files FROM item_files WHERE item = :item AND time = (SELECT max(time) FROM item_files WHERE item = :again)";
+				query.prepare(q);
+                query.bind(":item", Number(roasted.currentData()));
+                query.bind(":again", Number(roasted.currentData()));
+				query.exec();
+				if(query.next())
+				{
+					var files = query.value(0);
+					files = files.replace("{", "(");
+					files = files.replace("}", ")");
+					q = "SELECT file, name FROM files WHERE id IN ";
+					q = q + files;
+					q = q + " AND type = 'profile'";
+					query.exec(q);
+					if(query.next())
+					{
+						var targetseries = -1;
+						var buffer = new QBuffer(query.value(0));
+						var pname = query.value(1);
+						var input = new XMLInput(buffer, 1);
+						var graph = findChildObject(navigationwindow.loggingWindow, 'graph');
+						var log = findChildObject(navigationwindow.loggingWindow, 'log');
+						log.clear();
+						graph.clear();
+						input.newTemperatureColumn.connect(log.setHeaderData);
+						input.newTemperatureColumn.connect(function(col, text) {
+							if(text == navigationwindow.loggingWindow.targetcolumnname)
+							{
+								targetseries = col;
+							}
+						});
+						input.newAnnotationColumn.connect(log.setHeaderData);
+						input.measure.connect(graph.newMeasurement);
+						input.measure.connect(log.newMeasurement);
+						input.measure.connect(function(data, series) {
+							if(series == targetseries)
+							{
+								targetDetector.newMeasurement(data);
+							}
+						});
+						input.annotation.connect(log.newAnnotation);
+						var lc;
+						input.lastColumn.connect(function(c) {
+							lc = c;
+							QSettings.setValue("liveColumn", c + 1);
+							navigationwindow.loggingWindow.postLoadColumnSetup(c)
+						});
+					}
+				}
+                query = query.invalidate();
+				navigationwindow.loggingWindow.windowTitle = "Typica - " + pname;
+				navigationwindow.loggingWindow.raise();
+				navigationwindow.loggingWindow.activateWindow();
+				input.input();
+				log.newAnnotation("End", 1, lc);
+			});
+			var noprofilebutton = findChildObject(this, 'noprofile');
+			noprofilebutton.clicked.connect(function() {
+				currentBatchInfo = batch;
+				navigationwindow.loggingWindow.raise();
+				navigationwindow.loggingWindow.activateWindow();
+			});
+			var submitbutton = findChildObject(this, 'submit');
+			var timefield = findChildObject(this, 'time');
+			var notes = findChildObject(this, 'annotation');
+			/*
+			var machine = findChildObject(this, 'machine');
+            machine.currentIndex = QSettings.value("batchmachine_last", 0);
+            machine['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("batchmachine_last", machine.currentIndex);
+            });
+			*/
+			var duration = findChildObject(this, 'duration');
+			var approval = findChildObject(this, 'approval');
+			var target = findChildObject(this, 'target');
+			submitbutton.clicked.connect(function() {
+				checkQuery = new QSqlQuery();
+				checkQuery.exec("SELECT 1 FROM machine WHERE id = " + selectedRoasterID);
+				if(!checkQuery.next())
+				{
+					checkQuery.prepare("INSERT INTO machine VALUES(:id, :name)");
+					checkQuery.bind(":id", selectedRoasterID);
+					checkQuery.bind(":name", selectedRoasterName);
+					checkQuery.exec();
+				}
+				checkQuery = checkQuery.invalidate();
+				var q = "INSERT INTO files VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
+				query = new QSqlQuery();
+				query.prepare(q);
+				query.bind(":name", timefield.text + " " + roasted.currentText);
+				query.bindFileData(":data", batch.tempData);
+				query.exec();
+				query.next();
+				var fileno = query.value(0);
+				var file = new QFile(batch.tempData);
+				file.remove();
+				var q2 = "INSERT INTO roasting_log VALUES(:time, ";
+				q2 = q2 + table.columnArray(0, 32);
+				q2 = q2 + ", ";
+				for(var i = 0; table.data(i, 1, 0).value != ""; i++)
+				{
+					table.setData(i, 1, convertToPounds(parseFloat(table.data(i, 1, 0)), unitBox.currentText) ,32)
+				}
+				q2 = q2 + table.columnArray(1, 32);
+				q2 = q2 + ", ";
+				q2 = q2 + convertToPounds(parseFloat(green.text), unitBox.currentText);
+				q2 = q2 + ", ";
+				q2 = q2 + roasted.currentData();
+				q2 = q2 + ", ";
+				q2 = q2 + convertToPounds(parseFloat(roastwt.text), unitBox.currentText);
+				q2 = q2 + ", 'ROAST', :annotation, ";
+				q2 = q2 + selectedRoasterID;
+				q2 = q2 + ", :duration, :approval, NULL, NULL, NULL, NULL, '{";
+				q2 = q2 + fileno;
+				q2 = q2 + "}')";
+				query2 = new QSqlQuery();
+				query2.prepare(q2);
+				query2.bind(":time", timefield.text);
+				query2.bind(":annotation", notes.plainText);
+				query2.bind(":duration", duration.text);
+				query2.bind(":approval", approval.checked);
+				query2.exec();
+                query2 = query2.invalidate();
+				if(target.checked) {
+					var q3 = "INSERT INTO item_files VALUES(:time, :item, '{";
+					q3 = q3 + fileno;
+					q3 = q3 + "}')";
+					query.prepare(q3);
+					query.bind(":time", timefield.text);
+					query.bind(":item", roasted.currentData());
+					query.exec();
+				}
+                query = query.invalidate();
+				batch.close();
+			});
+        ]]>
+    </program>
+</window>

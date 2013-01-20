@@ -1,0 +1,118 @@
+﻿<window id="offline">
+    <layout type="vertical">
+        <splitter type="horizontal" id="logsplit">
+            <measurementtable id="log">
+                <column>Time</column>
+                <column>Bean</column>
+                <column>Air</column>
+                <column>Note</column>
+            </measurementtable>
+            <graph id="graph" />
+        </splitter>
+    </layout>
+	<menu name="File">
+		<item id="save" shortcut="Ctrl+S">Save…</item>
+		<item id="print" shortcut="Ctrl+P">Print…</item>
+		<item id="export">Export CSV…</item>
+		<item id="svgexport">Export XHTML+SVG…</item>
+		<item id="quit" shortcut="Ctrl+Q">Quit</item>
+	</menu>
+	<menu name="Log">
+		<item id="showC">Display Celsius</item>
+		<item id="showF">Display Fahrenheit</item>
+		<separator />
+		<item id="ms">Millisecond View</item>
+		<item id="1s">1 Second View</item>
+		<item id="5s">5 Second View</item>
+		<item id="10s">10 Second View</item>
+		<item id="15s">15 Second View</item>
+		<item id="30s">30 Second View</item>
+		<item id="1m">1 Minute View</item>
+	</menu>
+	<program>
+		<![CDATA[
+			var window = this;
+			var splitter = findChildObject(this, 'logsplit');
+			splitter.restoreState("script/offlineViewSplitter");
+			window.saveTemperatureColumns = new Array();
+			window.saveAnnotationColumns = new Array();
+			this.aboutToClose.connect(function() {
+				splitter.saveState("script/offlineViewSplitter");
+			});
+			var log = findChildObject(this, 'log');
+			var graph = findChildObject(this, 'graph');
+			var setLogOutputColumns = function() {
+				log.clearOutputColumns();
+				for(var c = 0; c < window.saveTemperatureColumns.length; c++)
+				{
+					log.addOutputTemperatureColumn(window.saveTemperatureColumns[c]);
+				}
+				for(var c = 0; c < window.saveAnnotationColumns.length; c++)
+				{
+					log.addOutputAnnotationColumn(window.saveAnnotationColumns[c]);
+				}
+			};
+			var saveMenu = findChildObject(this, 'save');
+			saveMenu.triggered.connect(function() {
+				var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
+				if(filename != "") {
+					var file = new QFile(filename);
+					setLogOutputColumns();
+					log.saveXML(file);
+					QSettings.setValue("script/lastDir", dir(filename));
+				}
+			});
+			var printMenu = findChildObject(this, 'print');			
+			printMenu.triggered.connect(function() {
+				var exportWindow = createWindow("print");
+				exportWindow.windowTitle = "Typica - Print";
+				exportWindow.log = log;
+			});
+			var exportMenu = findChildObject(this, 'export');
+			exportMenu.triggered.connect(function() {
+				var filename = QFileDialog.getSaveFileName(window, "Export CSV As…", QSettings.value("script/lastDir", "") + "/");
+				if(filename != "") {
+					var file = new QFile(filename);
+					setLogOutputColumns();
+					log.saveCSV(file);
+					QSettings.setValue("script/lastDir", dir(filename));
+				}
+			});
+			var svgExportMenu = findChildObject(this, 'svgexport');
+			svgExportMenu.triggered.connect(function() {
+				var exportWindow = createWindow("exportWindow");
+				exportWindow.windowTitle = "Typica - Export XHTML+SVG";
+				exportWindow.log = log;
+			});
+			var quitMenu = findChildObject(this, 'quit');
+			quitMenu.triggered.connect(function() {
+				window.close();
+				Application.quit();
+			});
+			var showC = findChildObject(this, 'showC');
+			showC.triggered.connect(function() {
+				log.setDisplayUnits(TemperatureDisplay.Celsius);
+				graph.showC();
+			});
+			var showF = findChildObject(this, 'showF');
+			showF.triggered.connect(function() {
+				log.setDisplayUnits(TemperatureDisplay.Fahrenheit);
+				graph.showF();
+			});
+			var v1 = findChildObject(this, 'ms');
+			v1.triggered.connect(log.LOD_ms);
+			var v2 = findChildObject(this, '1s');
+			v2.triggered.connect(log.LOD_1s);
+			var v3 = findChildObject(this, '5s');
+			v3.triggered.connect(log.LOD_5s);
+			var v4 = findChildObject(this, '10s');
+			v4.triggered.connect(log.LOD_10s);
+			var v5 = findChildObject(this, '15s');
+			v5.triggered.connect(log.LOD_15s);
+			var v6 = findChildObject(this, '30s');
+			v6.triggered.connect(log.LOD_30s);
+			var v7 = findChildObject(this, '1m');
+			v7.triggered.connect(log.LOD_1m);
+		]]>
+	</program>
+</window>

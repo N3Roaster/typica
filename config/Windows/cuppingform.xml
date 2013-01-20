@@ -1,0 +1,470 @@
+<window id="cuppingform">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Grader:</label>
+            <line id="grader" />
+            <label>Session:</label>
+            <line id="session" writable="false" />
+            <label>Event:</label>
+            <line id="event" writable="false" />
+        </layout>
+        <formarray id="form">
+            <layout type="grid">
+                <row>
+                    <column><label>Sample ID</label></column>
+                    <column><label>Notes</label></column>
+                    <column rowspan="5">
+                        <layout type="stack" id="attributes">
+                            <page>
+                                <layout type="grid">
+                                    <row>
+                                        <column>
+                                            <layout type="vertical">
+                                                <label>Aroma</label>
+                                                <layout type="horizontal">
+                                                    <hscale id="aroma" />
+                                                    <spinbox min="0" max="10" decimals="2" step="0.01" id="aromabox" />
+                                                </layout>
+                                                <layout type="horizontal">
+                                                    <layout type="vertical">
+                                                        <label>Dry</label>
+                                                        <vscale id="dry" />
+                                                    </layout>
+                                                    <layout type="vertical">
+                                                        <label>Break</label>
+                                                        <vscale id="break" />
+                                                    </layout>
+                                                    <layout type="vertical">
+                                                        <label>Aroma Notes</label>
+                                                        <textarea id="aromanotes" />
+                                                    </layout>
+                                                </layout>
+                                            </layout>
+                                        </column>
+                                        <column stretch="100">
+                                            <label></label>
+                                        </column>
+                                    </row>
+                                </layout>
+                            </page>
+                            <page>
+                                <layout type="grid">
+                                    <row>
+                                        <column><label>Flavor</label></column>
+                                        <column><label>Acidity</label></column>
+                                        <column><label>Body</label></column>
+                                    </row>
+                                    <row>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <hscale id="flavor" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.01" id="flavorbox" />
+                                            </layout>
+                                        </column>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <hscale id="acidity" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.01" id="aciditybox" />
+                                            </layout>
+                                        </column>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <hscale id="body" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.01" id="bodybox" />
+                                            </layout>
+                                        </column>
+                                    </row>
+                                    <row>
+                                        <column column="1">
+                                            <layout type="vertical">
+                                                <label>Intensity</label>
+                                                <layout type="horizontal">
+                                                    <vscale id="acidityintensity" />
+                                                    <layout type="vertical">
+                                                        <label>Acidity Notes</label>
+                                                        <textarea id="aciditynotes" />
+                                                    </layout>
+                                                </layout>
+                                            </layout>
+                                        </column>
+                                        <column>
+                                            <layout type="vertical">
+                                                <label>Level</label>
+                                                <layout type="horizontal">
+                                                    <vscale id="bodylevel" />
+                                                    <layout type="vertical">
+                                                        <label>Body Notes</label>
+                                                        <textarea id="bodynotes" />
+                                                    </layout>
+                                                </layout>
+                                            </layout>
+                                        </column>
+                                    </row>
+                                </layout>
+                            </page>
+                            <page>
+                                <layout type="grid">
+                                    <row>
+                                        <column><label>Balance</label></column>
+                                        <column><label>Aftertaste</label></column>
+                                        <column><label>Overall</label></column>
+                                    </row>
+                                    <row>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <hscale id="balance" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.01" id="balancebox" />
+                                            </layout>
+                                        </column>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <hscale id="aftertaste" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.01" id="aftertastebox" />
+                                            </layout>
+                                        </column>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <hscale id="overall" />
+                                                <spinbox min="0" max="10" decimals="2" step = "0.01" id="overallbox" />
+                                            </layout>
+                                        </column>
+                                    </row>
+                                    <row>
+                                        <column>
+                                            <textarea id="balancenotes" />
+                                        </column>
+                                        <column>
+                                            <textarea id="aftertastenotes" />
+                                        </column>
+                                    </row>
+                                </layout>
+                            </page>
+                            <page>
+                                <layout type="grid">
+                                    <row>
+                                        <column><label>Uniformity</label></column>
+                                        <column><label>Clean Cup</label></column>
+                                        <column><label>Sweetness</label></column>
+                                    </row>
+                                    <row>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <button type="check" id="u1" name="" />
+                                                <button type="check" id="u2" name="" />
+                                                <button type="check" id="u3" name="" />
+                                                <button type="check" id="u4" name="" />
+                                                <button type="check" id="u5" name="" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.1" id="uniformity" />
+                                            </layout>
+                                        </column>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <button type="check" id="c1" name="" />
+                                                <button type="check" id="c2" name="" />
+                                                <button type="check" id="c3" name="" />
+                                                <button type="check" id="c4" name="" />
+                                                <button type="check" id="c5" name="" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.1" id="cleancup" />
+                                            </layout>
+                                        </column>
+                                        <column>
+                                            <layout type="horizontal">
+                                                <button type="check" id="s1" name="" />
+                                                <button type="check" id="s2" name="" />
+                                                <button type="check" id="s3" name="" />
+                                                <button type="check" id="s4" name="" />
+                                                <button type="check" id="s5" name="" />
+                                                <spinbox min="0" max="10" decimals="2" step="0.1" id="sweetness" />
+                                            </layout>
+                                        </column>
+                                    </row>
+                                    <row>
+                                        <column>
+                                            <textarea id="uniformityNotes" />
+                                        </column>
+                                    </row>
+                                </layout>
+                            </page>
+                        </layout>
+                    </column>
+                    <column><label>Total Score</label></column>
+                    <column>
+                        <spinbox decimals="2" step="0.01" min="0" max="100" id="totalscore" />
+                    </column>
+                </row>
+                <row>
+                    <column><line id="sampleID" writable="false" /></column>
+                    <column rowspan="4"><textarea id="notes" /></column>
+                    <column column="3"><label>Taints</label></column>
+                    <column>
+                        <spinbox decimals="0" step="1" id="taints" />
+                    </column>
+                </row>
+                <row>
+                    <column column="3"><label>Faults</label></column>
+                    <column>
+                        <spinbox decimals="0" step="1" id="faults" />
+                    </column>
+                </row>
+                <row>
+                    <column column="3"><label>Final Score</label></column>
+                    <column>
+                        <spinbox decimals="2" step="0.01" min="-20" max="100" id="finalscore" />
+                    </column>
+                </row>
+            </layout>
+        </formarray>
+        <button type="push" id="submit" name="Submit" />
+    </layout>
+    <menu name="File">
+        <item id="quit" shortcut="Ctrl+Q">Quit</item>
+    </menu>
+    <menu name="Sections">
+        <item id="p1" shortcut="Ctrl+1">Aroma</item>
+        <item id="p2" shortcut="Ctrl+2">Flavor, Acidity, Body</item>
+        <item id="p3" shortcut="Ctrl+3">Balance, Aftertaste, Overall</item>
+        <item id="p4" shortcut="Ctrl+4">Uniformity, Clean Cup, Sweetness</item>
+        <item id="next" shortcut="Ctrl+=">Next Section</item>
+        <item id="prev" shortcut="Ctrl+-">Previous Section</item>
+    </menu>
+    <program>
+        <![CDATA[
+            var window = this;
+            var form = findChildObject(this, 'form')
+            var m1 = findChildObject(this, 'p1');
+            var m2 = findChildObject(this, 'p2');
+            var m3 = findChildObject(this, 'p3');
+            var m4 = findChildObject(this, 'p4');
+            var mnext = findChildObject(this, 'next');
+            var mprev = findChildObject(this, 'prev');
+            m1.triggered.connect(function() {
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var section = findChildObject(form.elementAt(i), 'attributes');
+                    section.setCurrentIndex(0);
+                }
+            });
+            m2.triggered.connect(function() {
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var section = findChildObject(form.elementAt(i), 'attributes');
+                    section.setCurrentIndex(1);
+                }
+            });
+            m3.triggered.connect(function() {
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var section = findChildObject(form.elementAt(i), 'attributes');
+                    section.setCurrentIndex(2);
+                }
+            });
+            m4.triggered.connect(function() {
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var section = findChildObject(form.elementAt(i), 'attributes');
+                    section.setCurrentIndex(3);
+                }
+            });
+            mnext.triggered.connect(function() {
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var section = findChildObject(form.elementAt(i), 'attributes');
+                    section.setCurrentIndex((section.currentIndex + 1) % 4);
+                }
+            });
+            mprev.triggered.connect(function() {
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var section = findChildObject(form.elementAt(i), 'attributes');
+                    section.setCurrentIndex((section.currentIndex + 3) % 4);
+                }
+            });
+            var quitMenu = findChildObject(this, 'quit');
+            quitMenu.triggered.connect(function() {
+                window.close();
+                Application.quit();
+            });
+            var submit = findChildObject(this, 'submit');
+            var grader = findChildObject(this, 'grader');
+            var session = findChildObject(this, 'session');
+            submit.clicked.connect(function() {
+                for(var i = 0; i < form.elements(); i++)
+                {
+                    var sampleBox = findChildObject(form.elementAt(i), 'sampleID');
+                    var outfile = new QBuffer("");
+                    outfile.open(3);
+                    var output = new XmlWriter(outfile);
+                    output.writeStartDocument("1.0");
+                    output.writeDTD("<!DOCTYPE cuppingsession>");
+                    output.writeStartElement("session");
+                    output.writeAttribute("samples", "1");
+                    output.writeAttribute("formtype", "T1");
+                    output.writeStartElement("grader");
+                    output.writeCDATA(grader.text);
+                    output.writeEndElement();
+                    output.writeStartElement("form");
+                    var aromaScale = findChildObject(form.elementAt(i), 'aroma');
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "aroma");
+                    output.writeAttribute("initial", aromaScale.initialValue);
+                    var aromaBox = findChildObject(form.elementAt(i), 'aromabox');
+                    output.writeAttribute("value", aromaBox.cleanText);
+                    output.writeEmptyElement("qualifier");
+                    output.writeAttribute("name", "dry");
+                    var dryScale = findChildObject(form.elementAt(i), 'dry');
+                    output.writeAttribute("value", dryScale.value);
+                    output.writeEmptyElement("qualifier");
+                    var breakScale = findChildObject(form.elementAt(i), 'break');
+                    output.writeAttribute("name", "break");
+                    output.writeAttribute("value", breakScale.value);
+                    output.writeStartElement("notes");
+                    var aromaNotes = findChildObject(form.elementAt(i), 'aromanotes');
+                    output.writeCDATA(aromaNotes.plainText);
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "flavor");
+                    var flavorScale = findChildObject(form.elementAt(i), 'flavor');
+                    output.writeAttribute("initial", flavorScale.initialValue);
+                    var flavorBox = findChildObject(form.elementAt(i), 'flavorbox');
+                    output.writeAttribute("value", flavorBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "acidity");
+                    var acidityScale = findChildObject(form.elementAt(i), 'acidity');
+                    output.writeAttribute("initial", acidityScale.initialValue);
+                    var acidityBox = findChildObject(form.elementAt(i), 'aciditybox');
+                    output.writeAttribute("value", acidityBox.cleanText);
+                    output.writeStartElement("qualifier");
+                    output.writeAttribute("name", "intensity");
+                    var intensityScale = findChildObject(form.elementAt(i), 'acidityintensity');
+                    output.writeAttribute("value", intensityScale.value);
+                    output.writeEndElement();
+                    output.writeStartElement("notes");
+                    var acidityNotes = findChildObject(form.elementAt(i), 'aciditynotes');
+                    output.writeCDATA(acidityNotes.plainText);
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "body");
+                    var bodyScale = findChildObject(form.elementAt(i), 'body');
+                    output.writeAttribute("initial", bodyScale.initialValue);
+                    var bodyBox = findChildObject(form.elementAt(i), 'bodybox');
+                    output.writeAttribute("value", bodyBox.cleanText);
+                    output.writeStartElement("qualifier");
+                    output.writeAttribute("name", "level");
+                    var levelScale = findChildObject(form.elementAt(i), 'bodylevel');
+                    output.writeAttribute("value", levelScale.value);
+                    output.writeEndElement();
+                    output.writeStartElement("notes");
+                    var bodyNotes = findChildObject(form.elementAt(i), 'bodynotes');
+                    output.writeCDATA(bodyNotes.plainText);
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "balance");
+                    var balanceScale = findChildObject(form.elementAt(i), 'balance');
+                    output.writeAttribute("initial", balanceScale.initialValue);
+                    var balanceBox = findChildObject(form.elementAt(i), 'balancebox');
+                    output.writeAttribute("value", balanceBox.cleanText);
+                    output.writeStartElement("notes")
+                    var balanceNotes = findChildObject(form.elementAt(i), 'balancenotes');
+                    output.writeCDATA(balanceNotes.plainText);
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "aftertaste");
+                    var aftertasteScale = findChildObject(form.elementAt(i), 'aftertaste');
+                    output.writeAttribute("initial", aftertasteScale.initialValue);
+                    var aftertasteBox = findChildObject(form.elementAt(i), 'aftertastebox');
+                    output.writeAttribute("value", aftertasteBox.cleanText);
+                    output.writeStartElement("notes");
+                    var aftertasteNotes = findChildObject(form.elementAt(i), 'aftertastenotes');
+                    output.writeCDATA(aftertasteNotes.plainText);
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "overall");
+                    var overallScale = findChildObject(form.elementAt(i), 'overall');
+                    output.writeAttribute("initial", overallScale.initialValue);
+                    var overallBox = findChildObject(form.elementAt(i), 'overallbox');
+                    output.writeAttribute("value", overallBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "uniformity");
+                    var uniformityBox = findChildObject(form.elementAt(i), 'uniformity');
+                    output.writeAttribute("value", uniformityBox.cleanText);
+                    output.writeStartElement("notes");
+                    var uniformityNotes = findChildObject(form.elementAt(i), 'uniformityNotes');
+                    output.writeCDATA(uniformityNotes.plainText);
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "cleancup");
+                    var cleancupBox = findChildObject(form.elementAt(i), 'cleancup');
+                    output.writeAttribute("value", cleancupBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "sweetness");
+                    var sweetnessBox = findChildObject(form.elementAt(i), 'sweetness');
+                    output.writeAttribute("value", sweetnessBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "total");
+                    var totalBox = findChildObject(form.elementAt(i), 'totalscore');
+                    output.writeAttribute("value", totalBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "taints");
+                    var taintBox = findChildObject(form.elementAt(i), 'taints');
+                    output.writeAttribute("value", taintBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "faults");
+                    var faultBox = findChildObject(form.elementAt(i), 'faults');
+                    output.writeAttribute("value", faultBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "final");
+                    var finalBox = findChildObject(form.elementAt(i), 'finalscore');
+                    output.writeAttribute("value", finalBox.cleanText);
+                    output.writeEndElement();
+                    output.writeStartElement("attribute");
+                    output.writeAttribute("name", "sample");
+                    output.writeAttribute("value", sampleBox.text);
+                    output.writeEndElement();
+                    output.writeStartElement("notes");
+                    var sampleNotes = findChildObject(form.elementAt(i), 'notes');
+                    output.writeCDATA(sampleNotes.plainText);
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeEndDocument();
+                    var q = "INSERT INTO cuppingform_t1 VALUES(:session, :sample, :position, :grader, :finalscore, :notes, :serialization, :aroma, :flavor, :aftertaste, :acidity, :body, :uniformity, :balance, :cleancup, :sweetness, :overall, :total)";
+                    var query = new QSqlQuery;
+                    query.prepare(q);
+                    query.bind(":session", Number(session.text));
+                    query.bind(":sample", sampleBox.text);
+                    query.bind(":position", i + 1);
+                    query.bind(":grader", grader.text);
+                    query.bind(":finalscore", Number(finalBox.cleanText));
+                    query.bind(":notes", sampleNotes.plainText);
+                    query.bindDeviceData(":serialization", outfile);
+                    query.bind(":aroma", Number(aromaBox.cleanText));
+                    query.bind(":flavor", Number(flavorBox.cleanText));
+                    query.bind(":aftertaste", Number(aftertasteBox.cleanText));
+                    query.bind(":acidity", Number(acidityBox.cleanText));
+                    query.bind(":body", Number(bodyBox.cleanText));
+                    query.bind(":uniformity", Number(uniformityBox.cleanText));
+                    query.bind(":balance", Number(balanceBox.cleanText));
+                    query.bind(":cleancup", Number(cleancupBox.cleanText));
+                    query.bind(":sweetness", Number(sweetnessBox.cleanText));
+                    query.bind(":overall", Number(overallBox.cleanText));
+                    query.bind(":total", Number(totalBox.cleanText));
+                    query.exec();
+                }
+                window.close();
+            });
+        ]]>
+    </program>
+</window>

@@ -1,0 +1,246 @@
+<window id="session">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Event:</label>
+            <line id="event" />
+            <label>Session:</label>
+            <line id="session" />
+            <label>Date:</label>
+            <calendar id="date" />
+            <button name="Blind" id="blind" type="check" />
+            <button name="Add Sample" id="sample" type="push" />
+            <button name="Add Item" id="additem" type="push" />
+        </layout>
+        <formarray id="form">
+            <layout type="vertical">
+                <layout type="horizontal">
+                    <label>Sample ID:</label>
+                    <line id="sample" />
+                    <label>Roasted At:</label>
+                    <line id="time" writable="false" />
+                    <label>On:</label>
+                    <line id="machine" writable="false" />
+                </layout>
+                <layout type="horizontal">
+                    <label>Time:</label>
+                    <line id="duration" writable="false" />
+                    <label>Bean Temperature:</label>
+                    <line id="temp" writable="false" />
+                    <label>Annotation:</label>
+                    <line id="note" writable="false" />
+                </layout>
+                <layout type="horizontal">
+                    <label>Item:</label>
+                    <line id="item" writable="false" />
+                    <label>Table Position:</label>
+                    <line id="position" />
+                </layout>
+            </layout>
+        </formarray>
+        <button type="push" name="Create Session" id="submit" />
+    </layout>
+    <program>
+        <![CDATA[
+            var window = this;
+            this.showMaximized();
+            var samples = findChildObject(this, 'form');
+            var addSampleButton = findChildObject(this, 'sample');
+            var addItemButton = findChildObject(this, 'additem');
+            var submitButton = findChildObject(this, 'submit');
+            addItemButton.clicked.connect(function() {
+                var selectWindow = createWindow("sampleitemselection");
+                var itemdrop = findChildObject(selectWindow, 'item');
+                var button1 = findChildObject(selectWindow, 'additem');
+                button1.clicked.connect(function() {
+                    samples.addElements(1);
+                    sampleID = findChildObject(samples.elementAt(samples.elements() - 1), 'sample');
+                    sampleID.text = itemdrop.currentText;
+                    position = findChildObject(samples.elementAt(samples.elements() - 1), 'position');
+                    position.text = samples.elements();
+                    itemID = findChildObject(samples.elementAt(samples.elements() - 1), 'item');
+                    itemID.text = itemdrop.currentData();
+                    selectWindow.close();
+                });
+                var itemname = findChildObject(selectWindow, 'itemname');
+                var button2 = findChildObject(selectWindow, 'newitem');
+                button2.clicked.connect(function() {
+                    samples.addElements(1);
+                    sampleID = findChildObject(samples.elementAt(samples.elements() - 1), 'sample');
+                    sampleID.text = itemname.text;
+                    position = findChildObject(samples.elementAt(samples.elements() - 1), 'position');
+                    position.text = samples.elements();
+                    var q = "INSERT INTO items VALUES(default, :name, NULL, 'lb', 0, 'Coffee: Sample') RETURNING id";
+                    var query = new QSqlQuery;
+                    query.prepare(q);
+                    query.bind(":name", itemname.text);
+                    query.exec();
+                    query.next();
+                    itemID = findChildObject(samples.elementAt(samples.elements() - 1), 'item');
+                    itemID.text = query.value(0);
+                    selectWindow.close();
+                });
+            });
+            addSampleButton.clicked.connect(function() {
+                var selectWindow = createWindow("sampleselection");
+                var sampleTable = findChildObject(selectWindow, 'table');
+                sampleTable.openEntry.connect(function(arg) {
+                    var q = "SELECT files FROM roasting_log WHERE time = :time";
+                    var query = new QSqlQuery;
+                    query.prepare(q);
+                    query.bind(":time", arg);
+                    var batchTime = arg;
+                    query.exec();
+                    var file = null;
+                    while(query.next())
+                    {
+                        var files = sqlToArray(query.value(0));
+                        for(var i = 0; i < files.length; i++)
+                        {
+                            q = "SELECT type FROM files WHERE id = :id";
+                            query.prepare(q);
+                            query.bind(":id", files[i]);
+                            query.exec();
+                            query.next();
+                            if(query.value(0) == "profile")
+                            {
+                                q = "SELECT file FROM files WHERE id = :id";
+                                query.prepare(q);
+                                query.bind(":id", files[i]);
+                                query.exec();
+                                query.next();
+                                file = query.value(0);
+                                break;
+                            }
+                        }
+                        if(file)
+                        {
+                            break;
+                        }
+                    }
+                    if(file)
+                    {
+                        var pointwindow = createWindow("selectsamples");
+                        var selectButton = findChildObject(pointwindow, 'select');
+                        selectButton.clicked.connect(function() {
+                            var checkbox;
+                            var sampleID;
+                            var roastTime;
+                            var machineID;
+                            var sampleDuration;
+                            var sampleBeanTemperature;
+                            var sampleAnnotation;
+                            var position;
+                            for(var i = 0; i < selectform.elements(); i++)
+                            {
+                                checkbox = findChildObject(selectform.elementAt(i), 'include');
+                                if(checkbox.checked)
+                                {
+                                    samples.addElements(1);
+                                    sampleID = findChildObject(samples.elementAt(samples.elements() - 1), 'sample');
+                                    roastTime = findChildObject(samples.elementAt(samples.elements() - 1), 'time');
+                                    machineID = findChildObject(samples.elementAt(samples.elements() - 1), 'machine');
+                                    sampleDuration = findChildObject(samples.elementAt(samples.elements() - 1), 'duration');
+                                    sampleBeanTemperature = findChildObject(samples.elementAt(samples.elements() - 1), 'temp');
+                                    sampleAnnotation = findChildObject(samples.elementAt(samples.elements() - 1), 'note');
+                                    position = findChildObject(samples.elementAt(samples.elements() - 1), 'position');
+                                    sampleDuration.text = findChildObject(selectform.elementAt(i), 'time').text;
+                                    sampleBeanTemperature.text = findChildObject(selectform.elementAt(i), 'temp').text;
+                                    sampleAnnotation.text = findChildObject(selectform.elementAt(i), 'note').text;
+                                    sampleID.text = sampleAnnotation.text;
+                                    roastTime.text = batchTime;
+                                    var q2 = "SELECT machine FROM roasting_log WHERE time = :time";
+                                    var query2 = new QSqlQuery;
+                                    query2.prepare(q2);
+                                    query2.bind(":time", batchTime);
+                                    query2.exec();
+                                    query2.next();
+                                    machineID.text = query2.value(0);
+                                    position.text = samples.elements();
+                                }
+                            }
+                            pointwindow.close();
+                        });
+                        pointwindow.hide();
+                        var buffer = new QBuffer(file);
+                        buffer.open(1);
+                        var xq = new XQuery;
+                        xq.bind("profile", buffer);
+                        xq.setQuery('for $t in doc($profile) //tuple where exists ($t/annotation) return (string($t/time), ";", string($t/temperature[1]), ";", string($t/annotation), "~")');
+                        var result = xq.exec();
+                        buffer.close();
+                        var records = result.split("~");
+                        var selectform = findChildObject(pointwindow, 'form');
+                        var time;
+                        var temp;
+                        var note;
+                        for(var i = 0; i < records.length - 1; i++)
+                        {
+                            selectform.addElements(1);
+                            var record = records[i];
+                            var fields = record.split(";");
+                            time = findChildObject(selectform.elementAt(i), 'time');
+                            time.text = fields[0].replace(/^\s+|\s+$/g,"");
+                            temp = findChildObject(selectform.elementAt(i), 'temp');
+                            temp.text = fields[1].replace(/^\s+|\s+$/g,"");
+                            note = findChildObject(selectform.elementAt(i), 'note');
+                            note.text = fields[2].replace(/^\s+|\s+$/g,"");
+                        }
+                        pointwindow.showMaximized();
+                    }
+                });
+            });
+            submitButton.clicked.connect(function() {
+                var q = "INSERT INTO cupping_sessions VALUES (default, :event, :name, :time, :blind, true, NULL) RETURNING id";
+                var query = new QSqlQuery;
+                query.prepare(q);
+                var eventField = findChildObject(window, 'event');
+                if(eventField.text == "")
+                {
+                    query.bind(":event", null);
+                }
+                else
+                {
+                    query.bind(":event", eventField.text);
+                }
+                var nameField = findChildObject(window, 'session');
+                query.bind(":name", nameField.text);
+                var timeField = findChildObject(window, 'date');
+                query.bind(":time", timeField.date);
+                var blindBox = findChildObject(window, 'blind');
+                query.bind(":blind", blindBox.checked);
+                query.exec();
+                query.next();
+                var newSessionID = query.value(0);
+                q = "INSERT INTO cupping_samples VALUES(:session, :sample, :position, :type, :time, :machine, :point, :item)";
+                query.prepare(q);
+                query.bind(":session", newSessionID);
+                var element;
+                for(var i = 0; i < samples.elements(); i++)
+                {
+                    element = samples.elementAt(i);
+                    query.bind(":sample", findChildObject(element, 'sample').text);
+                    query.bind(":position", Number(findChildObject(element, 'position').text));
+                    var elementItem = findChildObject(element, 'item');
+                    if(elementItem.text == "")
+                    {
+                        query.bind(":type", "SAMPLE");
+                        query.bind(":time", findChildObject(element, 'time').text);
+                        query.bind(":machine", Number(findChildObject(element, 'machine').text));
+                        query.bind(":point", findChildObject(element, 'duration').text);
+                        query.bind(":item", null);
+                    }
+                    else
+                    {
+                        query.bind(":type", "ITEM");
+                        query.bind(":time", null);
+                        query.bind(":machine", null);
+                        query.bind(":point", null);
+                        query.bind(":item", elementItem.text);
+                    }
+                    query.exec();
+                }
+                window.close();
+            });
+        ]]>
+    </program>
+</window>

@@ -1,0 +1,462 @@
+<window id="pytdprodcomp">
+	<reporttitle>Production:->Previous Year Production Comparison</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Start Date:</label>
+            <calendar id="startdate" />
+            <label>End Date:</label>
+            <calendar id="enddate" />
+            <label>Days to Average</label>
+            <line validator="integer" id="days">7</line>
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = "Typica - Previous Year Production Comparison";
+            var startDateField = findChildObject(this, 'startdate');
+            startDateField.setDate(startDateField.year(), 1, 1);
+            var endDateField = findChildObject(this, 'enddate');
+            var view = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                view.print();
+            });
+            var avgField = findChildObject(this, 'days');
+            function refresh() {
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", "Previous Year Production Comparison");
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", "Previous Year Production Comparison");
+                output.writeTextElement("p", "This report provides an itemized and overall comparison of roasted coffee production for the dates specified with those dates in the previous year. A chart of this data along with percent change and rolling average of the percent change is also produced.");
+                output.writeStartElement("table");
+                output.writeAttribute("style", "page-break-after:auto;");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Coffee");
+                output.writeTextElement("th", "Previous");
+                output.writeTextElement("th", "Current");
+                output.writeTextElement("th", "Change");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+                var query = new QSqlQuery();
+                query.exec("START TRANSACTION");
+                print(query.executedQuery());
+                var curStartDate = "'"+startDateField.year()+"-"+startDateField.month()+"-"+startDateField.day()+"'";
+                query.exec("SELECT "+curStartDate+"::date - interval '1 year', '"+endDateField.year()+"-"+endDateField.month()+"-"+endDateField.day()+"'::date - interval '1 year' + interval '1 day', '"+endDateField.year()+"-"+endDateField.month()+"-"+endDateField.day()+"'::date + interval '1 day'");
+                print(query.executedQuery());
+                query.next();
+                var curEndDate = "'"+query.value(2)+"'";
+                var prevStartDate = "'"+query.value(0)+"'";
+                var prevEndDate = "'"+query.value(1)+"'";
+                var q = "CREATE TEMPORARY TABLE previous ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS p FROM roasting_log WHERE time > "+prevStartDate+" AND time < "+prevEndDate+" AND roasted_id IS NOT NULL GROUP BY roasted_id";
+                query.exec(q);
+                print(query.executedQuery());
+                q = "CREATE TEMPORARY TABLE current ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS c FROM roasting_log WHERE time > "+curStartDate+" AND time < "+curEndDate+" AND roasted_id IS NOT NULL GROUP BY roasted_id";
+                query.exec(q);
+                print(query.executedQuery());
+                query.exec("INSERT INTO previous SELECT roasted_id, 0 FROM current WHERE roasted_id NOT IN (SELECT roasted_id FROM previous)");
+                print(query.executedQuery());
+                query.exec("INSERT INTO current SELECT roasted_id, 0 FROM previous WHERE roasted_id NOT IN (SELECT roasted_id FROM current)");
+                print(query.executedQuery());
+                query.exec("CREATE TEMPORARY TABLE comp ON COMMIT DROP AS SELECT previous.roasted_id, p, c FROM previous LEFT OUTER JOIN current ON previous.roasted_id = current.roasted_id");
+                print(query.executedQuery());
+                query.exec("SELECT (SELECT name FROM items WHERE id = roasted_id) AS name, p, c, (c-p) FROM comp WHERE p > 0 OR c > 0 ORDER BY name");
+                print(query.executedQuery());
+                while(query.next())
+                {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", query.value(0));
+                    output.writeTextElement("td", query.value(1));
+                    output.writeTextElement("td", query.value(2));
+                    output.writeTextElement("td", query.value(3));
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeStartElement("tfoot");
+                output.writeTextElement("th", "Totals");
+                query.exec("SELECT sum(p), sum(c), sum(c-p) FROM comp");
+                print(query.executedQuery());
+                query.next();
+                output.writeTextElement("td", query.value(0));
+                output.writeTextElement("td", query.value(1));
+                output.writeTextElement("td", query.value(2));
+                output.writeEndElement();
+                query.exec("ABORT");
+                print(query.executedQuery());
+                output.writeEndElement();
+                output.writeStartElement("svg");
+                output.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
+                output.writeAttribute("width", "7.5in");
+                output.writeAttribute("height", "6.3in");
+                output.writeStartElement("g");
+                output.writeAttribute("transform", "translate(0,470)");
+                output.writeStartElement("g");
+                output.writeAttribute("transform", "scale(1,-1)");
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "40");
+                output.writeAttribute("x2", "40");
+                output.writeAttribute("y1", "0");
+                output.writeAttribute("y2", "450");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "50");
+                output.writeAttribute("x2", "650");
+                output.writeAttribute("y1", "-10");
+                output.writeAttribute("y2", "-10");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                output.writeEndElement();
+                output.writeStartElement("line");
+                output.writeAttribute("x1", "660");
+                output.writeAttribute("x2", "660");
+                output.writeAttribute("y1", "0");
+                output.writeAttribute("y2", "450");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                output.writeEndElement();
+                var query = new QSqlQuery();
+                var q = "SELECT "+curEndDate+"::date - "+curStartDate+"::date";
+                query.exec(q);
+                query.next();
+                var days = query.value(0);
+                var dates = new Array();
+                var curpounds = new Array();
+                var prevpounds = new Array();
+                var change = new Array();
+                var avgchange = new Array();
+                var i;
+                for(i = 0; i < days; i++)
+                {
+                    q = "SELECT "+curStartDate+"::date + "+(i+1);
+                    query.exec(q);
+                    query.next();
+                    dates[i] = query.value(0);
+                    q = "SELECT sum(roasted_quantity) FROM roasting_log WHERE time > "+curStartDate+" AND time < '"+dates[i]+"'";
+                    query.exec(q);
+                    if(query.next())
+                    {
+                        curpounds[i] = query.value(0);
+                    }
+                    else
+                    {
+                        curpounds[i] = 0;
+                    }
+                    q = "SELECT sum(roasted_quantity) FROM roasting_log WHERE time > "+curStartDate+"::date - '1 year'::interval AND time < '"+dates[i]+"'::date - '1 year'::interval";
+                    query.exec(q);
+                    if(query.next())
+                    {
+                        prevpounds[i] = query.value(0);
+                    }
+                    else
+                    {
+                        prevpounds[i] = 0;
+                    }
+                    if(curpounds[i] > 0)
+                    {
+                        change[i] = (curpounds[i] - prevpounds[i])/curpounds[i];
+                    }
+                    else
+                    {
+                        if(prevpounds[i] > 0)
+                        {
+                            change[i] = -1;
+                        }
+                        else
+                        {
+                            change[i] = 0;
+                        }
+                    }
+                    if(i > (parseInt(avgField.text)-2))
+                    {
+                        var sum = 0;
+                        var j;
+                        for(j = 0; j < parseInt(avgField.text); j++)
+                        {
+                            sum += change[i-j];
+                        }
+                        avgchange[i] = sum / parseInt(avgField.text);
+                    }
+                }
+                var maxy1 = 0;
+                while(maxy1 < Math.max(curpounds[days - 1], prevpounds[days - 1]))
+                {
+                    maxy1 += 100;
+                }
+                var pos = 0;
+                while(pos <= maxy1)
+                {
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "35");
+                    output.writeAttribute("x2", "45");
+                    output.writeAttribute("y1", (450/maxy1)*pos);
+                    output.writeAttribute("y2", (450/maxy1)*pos);
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                    output.writeEndElement();
+                    pos += 100;
+                }
+                var n = Math.min.apply(Math, change);
+                var m = Math.max.apply(Math, change);
+                var miny2 = 0;
+                var maxy2;
+                if(n < 0)
+                {
+                    while(miny2 > n)
+                    {
+                        miny2 -= 0.1;
+                    }
+                    maxy2 = miny2;
+                }
+                else
+                {
+                    while(miny2 < n)
+                    {
+                        miny2 += 0.1;
+                    }
+                    miny2 -= 0.1;
+                    maxy2 = miny2;
+                }
+                while(maxy2 < m)
+                {
+                    maxy2 += 0.1;
+                }
+                var range = maxy2 - miny2;
+                pos = miny2;
+                while(pos <= maxy2)
+                {
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", "655");
+                    output.writeAttribute("x2", "665");
+                    output.writeAttribute("y1", (pos-miny2)*(4.5/(range*100))*10000);
+                    output.writeAttribute("y2", (pos-miny2)*(4.5/(range*100))*10000);
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                    output.writeEndElement();
+                    pos += 0.1;
+                }
+                pos = 0;
+                while(pos < days)
+                {
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", 50+((600/(days-1))*pos));
+                    output.writeAttribute("x2", 50+((600/(days-1))*pos));
+                    output.writeAttribute("y1", "-5");
+                    output.writeAttribute("y2", "-15");
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                    output.writeEndElement();
+                    pos += 7;
+                }
+                output.writeStartElement("line");
+                output.writeAttribute("x1", 50+((600/(days-1))*(days-1)));
+                output.writeAttribute("x2", 50+((600/(days-1))*(days-1)));
+                output.writeAttribute("y1", "-5");
+                output.writeAttribute("y2", "-15");
+                output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                output.writeEndElement();
+                pos = 1;
+                while(pos < days)
+                {
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", 50+((600/(days-1))*(pos - 1)));
+                    output.writeAttribute("x2", 50+((600/(days-1))*pos));
+                    output.writeAttribute("y1", (prevpounds[pos-1]/maxy1)*450);
+                    output.writeAttribute("y2", (prevpounds[pos]/maxy1)*450);
+                    output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", 50+((600/(days-1))*(pos - 1)));
+                    output.writeAttribute("x2", 50+((600/(days-1))*pos));
+                    output.writeAttribute("y1", (curpounds[pos-1]/maxy1)*450);
+                    output.writeAttribute("y2", (curpounds[pos]/maxy1)*450);
+                    output.writeAttribute("style", "stroke:rgb(255,0,0);stroke-width:1;");
+                    output.writeEndElement();
+                    output.writeStartElement("line");
+                    output.writeAttribute("x1", 50+((600/(days-1))*(pos-1)));
+                    output.writeAttribute("x2", 50+((600/(days-1))*pos));
+                    output.writeAttribute("y1", (change[pos-1]-miny2)*(4.5/(range*100))*10000);
+                    output.writeAttribute("y2", (change[pos]-miny2)*(4.5/(range*100))*10000);
+                    output.writeAttribute("style", "stroke:rgb(0,255,0);stroke-width:1;");
+                    output.writeEndElement();
+                    if(pos > (parseInt(avgField.text)-1))
+                    {
+                        output.writeStartElement("line");
+                        output.writeAttribute("x1", 50+((600/(days-1))*(pos-1)));
+                        output.writeAttribute("x2", 50+((600/(days-1))*pos));
+                        output.writeAttribute("y1", (avgchange[pos-1]-miny2)*(4.5/(range*100))*10000);
+                        output.writeAttribute("y2", (avgchange[pos]-miny2)*(4.5/(range*100))*10000);
+                        output.writeAttribute("style", "stroke:rgb(0,0,255);stroke-width:1;");
+                        output.writeEndElement();
+                    }
+                    pos++;
+                }            
+                output.writeEndElement();
+                i = 0;
+                while(i <= maxy1)
+                {
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "0");
+                    output.writeAttribute("y", -((450/maxy1)*i)+5);
+                    output.writeAttribute("font-size", "12");
+                    output.writeCharacters(i);
+                    output.writeEndElement();
+                    i += 100;
+                }
+                i = miny2;
+                while(i <= maxy2)
+                {
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", "670");
+                    output.writeAttribute("y", -((i-miny2)*(4.5/(range*100))*10000)+5);
+                    output.writeAttribute("font-size", "12");
+                    output.writeCharacters(Number(i*100).toFixed(0)+"%");
+                    output.writeEndElement();
+                    i += 0.1;
+                }
+                i = 0;
+                while(i <= days-1)
+                {
+                    output.writeStartElement("text");
+                    output.writeAttribute("x", 45+((600/(days-1))*i));
+                    output.writeAttribute("y", "20");
+                    output.writeAttribute("font-size", "12");
+                    output.writeAttribute("transform", "rotate(90 "+(45+((600/(days-1))*i))+",20)");
+                    q = "SELECT ('"+dates[i]+"'::date - '1 day'::interval)::date";
+                    query.exec(q);
+                    query.next();
+                    var ds = query.value(0);
+                    var parts = ds.split("-");
+                    switch(parts[1])
+                    {
+                        case '01':
+                            ds = "January ";
+                            break;
+                        case '02':
+                            ds = "February ";
+                            break;
+                        case '03':
+                            ds = "March ";
+                            break;
+                        case '04':
+                            ds = "April ";
+                            break;
+                        case '05':
+                            ds = "May ";
+                            break;
+                        case '06':
+                            ds = "June ";
+                            break;
+                        case '07':
+                            ds = "July ";
+                            break;
+                        case '08':
+                            ds = "August ";
+                            break;
+                        case '09':
+                            ds = "September ";
+                            break;
+                        case '10':
+                            ds = "October ";
+                            break;
+                        case '11':
+                            ds = "November ";
+                            break;
+                        case '12':
+                            ds = "December ";
+                            break;
+                    }
+                    ds = ds + Number(parts[2]);
+                    output.writeCharacters(ds);
+                    output.writeEndElement();
+                    if(i == days-1)
+                    {
+                        break;
+                    }
+                    i += 7;
+                    if(i > days-1)
+                    {
+                        i = days - 1;
+                    }
+                }            
+                output.writeStartElement("rect");
+                output.writeAttribute("fill", "rgb(0,0,0)");
+                output.writeAttribute("x", "45");
+                output.writeAttribute("y", "110");
+                output.writeAttribute("width", "24");
+                output.writeAttribute("height", "12");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "75");
+                output.writeAttribute("y", "120");
+                output.writeAttribute("font-size", "12");
+                output.writeCharacters("Previous Year Pounds");
+                output.writeEndElement();
+                output.writeStartElement("rect");
+                output.writeAttribute("fill", "rgb(255,0,0)");
+                output.writeAttribute("x", "195");
+                output.writeAttribute("y", "110");
+                output.writeAttribute("width", "24");
+                output.writeAttribute("height", "12");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "225");
+                output.writeAttribute("y", "120");
+                output.writeAttribute("font-size", "12");
+                output.writeCharacters("Current Year Pounds");
+                output.writeEndElement();
+                output.writeStartElement("rect");
+                output.writeAttribute("fill", "rgb(0,255,0)");
+                output.writeAttribute("x", "345");
+                output.writeAttribute("y", "110");
+                output.writeAttribute("width", "24");
+                output.writeAttribute("height", "12");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "375");
+                output.writeAttribute("y", "120");
+                output.writeAttribute("font-size", "12");
+                output.writeCharacters("% Change");
+                output.writeEndElement();
+                output.writeStartElement("rect");
+                output.writeAttribute("fill", "rgb(0,0,255)");
+                output.writeAttribute("x", "495");
+                output.writeAttribute("y", "110");
+                output.writeAttribute("width", "24");
+                output.writeAttribute("height", "12");
+                output.writeEndElement();
+                output.writeStartElement("text");
+                output.writeAttribute("x", "525");
+                output.writeAttribute("y", "120");
+                output.writeAttribute("font-size", "12");
+                output.writeCharacters("Average % Change");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                view.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+            startDateField.dateChanged.connect(function() {
+                refresh();
+            });
+            endDateField.dateChanged.connect(function() {
+                refresh();
+            });
+        ]]>
+    </program>
+</window>

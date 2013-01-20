@@ -1,0 +1,64 @@
+<window id="cuppingsessionsummary">
+    <layout type="vertical">
+        <layout type="grid">
+            <row>
+                <column><label>Session ID:</label></column>
+                <column><line id="session" writable="false" /></column>
+            </row>
+            <row>
+                <column><label>Event:</label></column>
+                <column><line id="event" writable="false" /></column>
+            </row>
+            <row>
+                <column><label>Session Name:</label></column>
+                <column><line id="name" writable="false" /></column>
+            </row>
+            <row>
+                <column><label>Session Date:</label></column>
+                <column><calendar id="date" /></column>
+            </row>
+        </layout>
+        <button type="check" name="Session is open" id="open" />
+        <label>Session Notes</label>
+        <textarea id="notes" />
+        <layout type="horizontal">
+            <button name="View Session Data" id="data" type="push" />
+            <button name="Submit" id="submit" type="push" />
+        </layout>
+    </layout>
+    <program>
+        <![CDATA[
+            var window = this;
+            var dateWidget = findChildObject(this, 'date');
+            dateWidget.enabled = false;
+            var viewbutton = findChildObject(this, 'data');
+            var idField = findChildObject(this, 'session');
+            viewbutton.clicked.connect(function() {
+                var datascreen = createWindow("allforms");
+                var datatable = findChildObject(datascreen, 'data');
+                var averagetable = findChildObject(datascreen, 'averages');
+                var q1 = "SELECT sample, grader, finalscore, aroma, flavor, aftertaste, acidity, body, uniformity, balance, cleancup, sweetness, overall, total FROM cuppingform_t1 WHERE session = ";
+                q1 = q1 + idField.text;
+                q1 = q1 + " ORDER BY sample";
+                datatable.setQuery(q1);
+                var q2 = "SELECT sample, avg(finalscore)::numeric(4,2) AS finalscore, avg(aroma)::numeric(4,2) AS aroma, avg(flavor)::numeric(4,2) AS flavor, avg(aftertaste)::numeric(4,2) AS aftertaste, avg(acidity)::numeric(4,2) AS acidity, avg(body)::numeric(4,2) AS body, avg(uniformity)::numeric(4,2) AS uniformity, avg(balance)::numeric(4,2) AS balance, avg(cleancup)::numeric(4,2) AS cleancup, avg(sweetness)::numeric(4,2) AS sweetness, avg(overall)::numeric(4,2) AS overall, avg(total)::numeric(4,2) AS total FROM cuppingform_t1 WHERE session = ";
+                q2 = q2 + idField.text;
+                q2 = q2 + " GROUP BY sample, position ORDER BY position";
+                averagetable.setQuery(q2);
+            });
+            var submit = findChildObject(this, 'submit');
+            var openBox = findChildObject(this, 'open');
+            var notes = findChildObject(this, 'notes');
+            submit.clicked.connect(function() {
+                var query = new QSqlQuery;
+                query.prepare("UPDATE cupping_sessions SET open = :open, note = :note WHERE id = :id");
+                query.bind(":id", Number(idField.text));
+                query.bind(":open", openBox.checked);
+                query.bind(":note", notes.plainText);
+                query.exec();
+                window.close();
+            });
+        ]]>
+    </program>
+</window>
+

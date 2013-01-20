@@ -1,0 +1,120 @@
+<window id="fypurchase">
+	<reporttitle>Purchase:->Coffee Purchase Previous Years Comparison</reporttitle>
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Start Date:</label>
+			<calendar id="startdate" />
+			<label>End Date:</label>
+			<calendar id="enddate" />
+			<stretch />
+		</layout>
+		<webview id="report" />
+	</layout>
+	<menu name="File">
+		<item id="print" shortcut="Ctrl+P">Print</item>
+	</menu>
+	<program>
+		<![CDATA[
+			this.windowTitle = "Typica - Coffee Purchase Previous Years Comparison";
+			var startDateField = findChildObject(this, 'startdate');
+			var query = new QSqlQuery();
+			query.exec("SELECT EXTRACT(YEAR FROM time) FROM purchase WHERE time = (SELECT min(time) FROM purchase)");
+			query.next();
+			startDateField.setDate(query.value(0), 1, 1);
+			var endDateField = findChildObject(this, 'enddate');
+			endDateField.setDate(endDateField.year(), 12, 31);
+			var view = findChildObject(this, 'report');
+			var printMenu = findChildObject(this, 'print');
+			printMenu.triggered.connect(function() {
+				view.print();
+			});
+			function refresh() {
+				var buffer = new QBuffer;
+				buffer.open(3);
+				var output = new XmlWriter(buffer);
+				output.writeStartDocument("1.0");
+				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+				output.writeTextElement("title", "Coffee Purchase Previous Years Comparison");
+				output.writeEndElement();
+				output.writeStartElement("body");
+				output.writeTextElement("h1", "Coffee Purchase Previous Years Comparison");
+				output.writeStartElement("table");
+				output.writeAttribute("style", "page-break-after:auto;");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+				output.writeEmptyElement("th");
+				for(var i = startDateField.year(); i <= endDateField.year(); i++)
+				{
+					output.writeTextElement("th", i);
+				}
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeStartElement("tbody");
+				output.writeStartElement("tr");
+				output.writeTextElement("th", "Sacks Purchased");
+				var j = 0;
+				var sacks = new Array;
+				for(var i = startDateField.year(); i <= endDateField.year(); i++)
+				{
+					var q = "SELECT sum(quantity/(SELECT conversion FROM lb_bag_conversion WHERE item = purchase.item)) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
+					query.exec(q);
+					query.next();
+					output.writeTextElement("td", query.value(0));
+					sacks[j] = query.value(0);
+					j++;
+				}
+				output.writeEndElement();
+				output.writeStartElement("tr");
+				output.writeTextElement("th", "Pounds Purchased");
+				j = 0;
+				var pounds = new Array;
+				for(var i = startDateField.year(); i <= endDateField.year(); i++)
+				{
+					var q = "SELECT sum(quantity) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
+					query.exec(q);
+					query.next();
+					output.writeTextElement("td", query.value(0));
+					pounds[j] = query.value(0);
+					j++;
+				}
+				output.writeEndElement();
+				output.writeStartElement("tr");
+				output.writeTextElement("th", "Cost");
+				j = 0;
+				var cost = new Array;
+				for(var i = startDateField.year(); i <= endDateField.year(); i++)
+				{
+					var q = "SELECT sum(cost*quantity)::numeric(12,2) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
+					query.exec(q);
+					query.next();
+					output.writeTextElement("td", query.value(0));
+					cost[j] = query.value(0);
+					j++;
+				}
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeStartElement("tfoot");
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndDocument();
+				view.setContent(buffer);
+				buffer.close();
+			}
+			refresh();
+			startDateField.dateChanged.connect(function() {
+				refresh();
+			});
+			endDateField.dateChanged.connect(function() {
+				refresh();
+			});
+		]]>
+	</program>
+</window>
+

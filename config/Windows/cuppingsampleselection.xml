@@ -1,0 +1,9 @@
+<window id="sampleselection">
+    <layout type="vertical">
+        <sqlview id="table" />
+    </layout>
+    <program>
+        var table = findChildObject(this, 'table');
+        table.setQuery("SELECT time, name, unroasted_total_quantity AS green, roasted_quantity AS roasted, weight_loss AS loss, duration FROM short_log ORDER BY time DESC");
+    </program>
+</window>

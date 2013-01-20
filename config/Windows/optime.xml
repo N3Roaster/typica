@@ -1,0 +1,78 @@
+<window id="optime">
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Machine:</label>
+			<sqldrop data="0" display="1" showdata="true" id="machine">
+				<query>SELECT id, name FROM machine ORDER BY name</query>
+			</sqldrop>
+			<stretch />
+		</layout>
+		<layout type="horizontal">
+			<label>Start Time:</label>
+			<line id="starttime" writable="false" />
+			<button name="Start Roaster" type="push" id="start" />
+		</layout>
+		<layout type="horizontal">
+			<label>Stop Time:</label>
+			<line id="stoptime" writable="false" />
+			<button name="Stop Roaster" type="push" id="stop" />
+		</layout>
+		<layout type="horizontal">
+			<label>Duration:</label>
+			<line id="duration" writable="false" />
+			<button name="Submit" type="push" id="submit" />
+		</layout>
+	</layout>
+	<program>
+		<![CDATA[
+			var window = this;
+			var startbutton = findChildObject(this, "start");
+			var stopbutton = findChildObject(this, "stop");
+			var submitbutton = findChildObject(this, "submit");
+			stopbutton.setEnabled(false);
+			submitbutton.setEnabled(false);
+			var startline = findChildObject(this, "starttime");
+			var stopline = findChildObject(this, "stoptime");
+			var durationline = findChildObject(this, "duration");
+			var machine = findChildObject(this, "machine");
+			machine.currentIndex = QSettings.value("lastMachineStarted", 0);
+			machine['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("lastMachineStarted", machine.currentIndex);
+			});
+			startbutton.clicked.connect(function() {
+				query = new QSqlQuery();
+				query.exec("SELECT now()::timestamp without time zone");
+				query.next();
+				var result = query.value(0);
+				query = query.invalidate();
+				startline.text = result.replace('T', ' ');
+				stopbutton.setEnabled(true);
+			});
+			stopbutton.clicked.connect(function() {
+				query = new QSqlQuery();
+				query.exec("SELECT now()::timestamp without time zone");
+				query.next();
+				var result = query.value(0);
+				stopline.text = result.replace('T', ' ');
+				var q = "SELECT '" + stopline.text + "'::timestamp - '" + startline.text + "'::timestamp";
+				query.exec(q);
+				query.next();
+				durationline.text = query.value(0);
+				query = query.invalidate();
+				submitbutton.setEnabled(true);
+			});
+			submitbutton.clicked.connect(function() {
+				query = new QSqlQuery();
+				var q = "INSERT INTO operational_time VALUES (:machine, :start, :stop, :duration)";
+				query.prepare(q);
+				query.bind(":machine", machine.currentData());
+				query.bind(":start", startline.text);
+				query.bind(":stop", stopline.text);
+				query.bind(":duration", durationline.text);
+				query.exec();
+				query = query.invalidate();
+				window.close();
+			});
+		]]>
+	</program>
+</window>

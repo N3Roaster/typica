@@ -1,0 +1,29 @@
+<window id="finsessionlist">
+    <layout type="vertical">
+        <sqlview id="table" />
+    </layout>
+    <program>
+        var table = findChildObject(this, 'table');
+        table.setQuery("SELECT id, open, event, name, time FROM cupping_sessions ORDER BY time DESC");
+        table.openEntry.connect(function(arg) {
+            var summarywindow = createWindow("cuppingsessionsummary");
+            var idfield = findChildObject(summarywindow, 'session');
+            idfield.text = arg.toString();
+            var query = new QSqlQuery;
+            query.prepare("SELECT event, name, time, open, note FROM cupping_sessions WHERE id = :sessionID");
+            query.bind(":sessionID", Number(arg));
+            query.exec();
+            query.next();
+            var eventfield = findChildObject(summarywindow, 'event');
+            eventfield.text = query.value(0);
+            var sessionfield = findChildObject(summarywindow, 'name');
+            sessionfield.text = query.value(1);
+            var datefield = findChildObject(summarywindow, 'date');
+            datefield.date = query.value(2);
+            var openbox = findChildObject(summarywindow, 'open');
+            openbox.checked = query.value(3);
+            var notes = findChildObject(summarywindow, 'notes');
+            notes.plainText = query.value(4);
+        });
+    </program>
+</window>

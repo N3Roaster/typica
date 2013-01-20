@@ -1,0 +1,16 @@
+<window id="selectsamples">
+    <layout type="vertical">
+        <formarray id="form">
+            <layout type="horizontal">
+                <button type="check" name="Cup:" id="include" />
+                <label>Time:</label>
+                <line id="time" writable="false" />
+                <label>Bean Temperature:</label>
+                <line id="temp" writable="false" />
+                <label>Annotation:</label>
+                <line id="note" writable="false" />
+            </layout>
+        </formarray>
+        <button id="select" name="Add to Session" type="push" />
+    </layout>
+</window>

@@ -1,0 +1,61 @@
+<window id="sampleitemselection">
+    <layout type="grid">
+        <row>
+            <column colspan="5">
+                <label>Add Existing Item to Cupping Session</label>
+            </column>
+        </row>
+        <row>
+            <column>
+                <label>Category:</label>
+            </column>
+            <column>
+                <sqldrop data="0" display="0" showdata="false" id="category">
+                    <query>SELECT DISTINCT category FROM items WHERE category LIKE 'Coffee:%'</query>
+                </sqldrop>
+            </column>
+            <column>
+                <label>Item:</label>
+            </column>
+            <column>
+                <sqldrop data="0" display="1" showdata="true" id="item" />
+            </column>
+            <column>
+                <button type="push" name="Add Item" id="additem" />
+            </column>
+        </row>
+        <row>
+            <column colspan="5">
+                <label>Add New Item to Cupping Session</label>
+            </column>
+        </row>
+        <row>
+            <column>
+                <label>Item:</label>
+            </column>
+            <column colspan="3">
+                <line id="itemname" />
+            </column>
+            <column column="4">
+                <button type="push" name="New Item" id="newitem" />
+            </column>
+        </row>
+    </layout>
+    <program>
+        <![CDATA[
+            var categorydrop = findChildObject(this, 'category');
+            var itemdrop = findChildObject(this, 'item');
+            var q = "SELECT id, name FROM items WHERE category = '";
+            q = q + categorydrop.currentText;
+            q = q + "' ORDER BY name";
+            itemdrop.addSqlOptions(q);
+            categorydrop['currentIndexChanged(QString)'].connect(function(arg) {
+                itemdrop.clear();
+                q = "SELECT id, name FROM items WHERE category = '";
+                q = q + arg;
+                q = q + "' ORDER BY name";
+                itemdrop.addSqlOptions(q);
+            });
+        ]]>
+    </program>
+</window>

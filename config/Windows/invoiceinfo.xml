@@ -1,0 +1,51 @@
+<window id="invoiceinfo">
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Date:</label>
+			<line id="date" writable="false" />
+			<label>Vendor:</label>
+			<line id="vendor" writable="false" />
+			<label>Invoice:</label>
+			<line id="invoice" writable="false" />
+			<button id="edit" name="Edit" type="push" />
+		</layout>
+		<sqlview id="itemtable" />
+	</layout>
+	<program>
+		<![CDATA[
+			var window = this;
+			var table = findChildObject(this, 'itemtable');
+			this.setInvoiceID = function(arg) {
+				window.invoiceID = arg;
+				window.windowTitle = "Typica - Invoice Details " + arg;
+			};
+			button = findChildObject(this, 'edit');
+			button.clicked.connect(function() {
+				var editInvoiceDetails = createWindow("editinvoice");
+				editInvoiceDetails.invoiceID = window.invoiceID;
+				var invoiceLine = findChildObject(editInvoiceDetails, 'invoice');
+				var localInvoiceLine = findChildObject(window, 'invoice');
+				invoiceLine.text = localInvoiceLine.text;
+				editInvoiceDetails.invoiceID = window.invoiceID;
+			});
+			table.openEntryRow.connect(function(arg) {
+				if(table.data(arg, 0) == 'PURCHASE') {
+					var itemWindow = createWindow("invoiceitemdetail");
+					itemWindow.rowData = [];
+					for(var i = 0; i < 8; i++) {
+						itemWindow.rowData[i] = table.data(arg, i);
+					}
+					itemWindow.dataSet();
+				}
+				else {
+					var feeWindow = createWindow("invoicefeedetail");
+					feeWindow.rowData = [];
+					for(var i = 0; i < 8; i++) {
+						feeWindow.rowData[i] = table.data(arg, i);
+					}
+					feeWindow.dataSet();
+				}
+			});
+		]]>
+	</program>
+</window>

@@ -1,0 +1,32 @@
+<window id="editinvoice">
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Invoice:</label>
+			<line id="invoice" />
+		</layout>
+		<layout type="horizontal">
+			<button type="push" id="cancel" name="Cancel" />
+			<button type="push" id="submit" name="Submit" />
+		</layout>
+	</layout>
+	<program>
+		<![CDATA[
+			var window = this;
+			var submit = findChildObject(this, 'submit');
+			var invoiceLine = findChildObject(this, 'invoice');
+			submit.clicked.connect(function() {
+				var query = new QSqlQuery();
+				query.prepare("UPDATE invoices SET invoice = :invoice WHERE id = :id");
+				query.bind(":invoice", invoiceLine.text);
+				query.bind(":id", window.invoiceID);
+				query.exec();
+				query = query.invalidate;
+				window.close();
+			});
+			var cancel = findChildObject(this, 'cancel');
+			cancel.clicked.connect(function() {
+				window.close();
+			});
+		]]>
+	</program>
+</window>

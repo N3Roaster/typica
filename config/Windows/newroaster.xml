@@ -1,0 +1,32 @@
+<window id="newroaster">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Roaster Name:</label>
+            <line id="name" />
+        </layout>
+        <layout type="horizontal">
+            <label>Roaster Number:</label>
+            <line id="id" />
+        </layout>
+        <button name="Submit" id="submit" type="push" />
+    </layout>
+    <program>
+        <![CDATA[
+			var button = findChildObject(this, 'submit');
+			var rname = findChildObject(this, 'name');
+			var rnumber = findChildObject(this, 'id');
+			var nrwindow = this;
+			button.clicked.connect(function() {
+				var q = "INSERT INTO machine VALUES (";
+				q = q + rnumber.text;
+				q = q + ", :name)";
+				query = new QSqlQuery();
+				query.prepare(q);
+				query.bind(":name", rname.text);
+				query.exec();
+                query = query.invalidate();
+				nrwindow.close();
+			});
+        ]]>
+    </program>
+</window>

@@ -1,0 +1,79 @@
+﻿<window id="greensales">
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Date:</label>
+			<calendar id="date" />
+			<label>Customer:</label>
+			<line id="customer" />
+			<label>Weight Unit:</label>
+			<sqldrop data="0" display="0" showdata="false" editable="false" id="units" />
+		</layout>
+		<sqltablearray columns="2" id="coffees">
+			<column name="Coffee" delegate="sql" showdata="true" null="false" data="0" display="1">
+				<![CDATA[
+					SELECT id, name FROM coffees WHERE quantity <> 0 ORDER BY name
+				]]>
+			</column>
+			<column name="Weight" delegate="numeric" />
+		</sqltablearray>
+		<button name="Submit" id="submit" type="push" />
+	</layout>
+	<program>
+		<![CDATA[
+			var window = this;
+			this.windowTitle = 'Typica - Enter Green Coffee Sales';
+			var unitBox = findChildObject(this, 'units');
+			unitBox.addItem("g");
+			unitBox.addItem("Kg");
+			unitBox.addItem("oz");
+			unitBox.addItem("lb");
+			var convertToPounds = function(w, u) {
+				switch(u)
+				{
+					case "g":
+						return w * 0.0022;
+					case "oz":
+						return w * 0.0625;
+					case "Kg":
+						return w * 2.2;
+				}
+				return w;
+			};
+			var dateField = findChildObject(this, 'date');
+			var customerField = findChildObject(this, 'customer');
+			var items = findChildObject(this, 'coffees');
+			var submit = findChildObject(this, 'submit');
+			submit.clicked.connect(function() {
+				var query = new QSqlQuery();
+				query.prepare("INSERT INTO sale VALUES(:time, :item, :quantity, :customer)");
+				query.bind(":time", dateField.text);
+				if(customerField.text == "") {
+					query.bind(":customer", null);
+				}
+				else {
+					query.bind(":customer", customerField.text);
+				}
+				var coffeesArray = sqlToArray(items.columnArray(0, 32));
+				if(coffeesArray.length > 0)
+				{
+					for(var i = 0; i < coffeesArray.length; i++)
+					{
+						if(items.data(i, 0, 32).value == '')
+						{
+							continue;
+						}
+						if(items.data(i, 1, 0).value == '')
+						{
+							continue;
+						}
+						query.bind(":item", items.data(i, 0, 32).value);
+						query.bind(":quantity", convertToPounds(items.data(i, 1, 0).value, unitBox.currentText));
+						query.exec();
+					}
+				}
+				query = query.invalidate();
+				window.close();
+			});
+		]]>
+	</program>
+</window>

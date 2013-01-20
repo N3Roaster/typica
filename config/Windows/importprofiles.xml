@@ -1,0 +1,36 @@
+<window id="importTargets">
+    <layout type="horizontal">
+        <sqldrop data="0" display="1" showdata="true" id="roasted">
+            <query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
+        </sqldrop>
+        <button name="File…" id="file" type="push" />
+    </layout>
+    <program>
+        var button = findChildObject(this, 'file');
+        var box = findChildObject(this, 'roasted');
+        var win = this;
+        button.clicked.connect(function() {
+            var filename = QFileDialog.getOpenFileName(win, 'Open Log…', QSettings.value('script/lastDir', '') + '/');
+            if(filename != '') {
+                QSettings.setValue("script/lastDir", dir(filename));
+                var q = "INSERT INTO files VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
+                query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":name", baseName(filename));
+                query.bindFileData(":data", filename);
+                query.exec();
+                query.next();
+                var fileno = query.value(0);
+                var id = box.currentData();
+                q = "INSERT INTO item_files VALUES('now', ";
+                q = q + id;
+                q = q + ", '{";
+                q = q + fileno;
+                q = q + "}')";
+                query.exec(q);
+                query = query.invalidate();
+                var success = createWindow("success");
+            }
+        });
+    </program>
+</window>

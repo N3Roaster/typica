@@ -1,0 +1,276 @@
+<window id="basicWindow">
+    <layout type="vertical">
+        <splitter type = "vertical" id = "main">
+            <splitter type = "horizontal" id = "indicators">
+                <decoration name="Bean Temperature" type="vertical">
+                    <lcdtemperature id = "beans" />
+                </decoration>
+                <decoration name="Air Temperature" type="vertical">
+                    <lcdtemperature id = "environment" />
+                </decoration>
+                <decoration name="Batch Timer" type="vertical">
+                    <lcdtimer format="mm:ss" id="batch" />
+                </decoration>
+            </splitter>
+            <widget id="widget">
+                <layout type="horizontal">
+                    <button name="Start Batch" type="push" id="startbutton" />
+                    <button name="Stop Batch" type="annotation" id="stopbutton" series="1" column="3" annotation="End" />
+                    <spinbox id="manometer" series="1" column="3" min="0" max="10" step="0.1" decimals="1" />
+                    <button name="New Sample" type="annotation" id="sample" series="1" column="3" annotation="Sample %1" />
+                </layout>
+            </widget>
+            <splitter type="horizontal" id="logsplit">
+                <measurementtable id="log">
+                    <column>Time</column>
+                    <column>Bean</column>
+                    <column>Air</column>
+                    <column>Note</column>
+                    <column>.</column>
+                    <column>.</column>
+                    <column>.</column>
+                </measurementtable>
+                <graph id="graph" />
+            </splitter>
+        </splitter>
+    </layout>
+    <menu name="File">
+        <item id="open" shortcut="Ctrl+O">Open…</item>
+        <item id="save" shortcut="Ctrl+S">Save…</item>
+        <item id="export">Export CSV…</item>
+        <item id="quit" shortcut="Ctrl+Q">Quit</item>
+    </menu>
+    <menu name="Batch">
+        <item id="new" shortcut="Ctrl+N">New Batch…</item>
+    </menu>
+    <menu name="Log">
+        <item id="clear" shortcut="Ctrl+L">Clear Log</item>
+        <separator />
+        <item id="ms">Millisecond View</item>
+        <item id="1s">1 Second View</item>
+        <item id="5s">5 Second View</item>
+        <item id="10s">10 Second View</item>
+        <item id="15s">15 Second View</item>
+        <item id="30s">30 Second View</item>
+        <item id="1m">1 Minute View</item>
+        <separator />
+        <item id="manual" shortcut="Ctrl+E">Manual Entry</item>
+    </menu>
+    <program>
+        lc = 1;
+        this.restoreSizeAndPosition('window');
+        var vsplit = findChildObject(this, 'main');
+        vsplit.restoreState("script/mainSplitter");
+        var isplit = findChildObject(this, 'indicators');
+        isplit.restoreState("script/instrumentSplitter");
+        var lsplit = findChildObject(this, 'logsplit');
+        lsplit.restoreState("script/logSplitter");
+        var log = findChildObject(this, 'log');
+        this.show();
+        log.restoreState("script/log", 7);
+        var window = this;
+        this.aboutToClose.connect(function() {
+            window.saveSizeAndPosition("window");
+            vsplit.saveState("script/mainSplitter");
+            isplit.saveState("script/instrumentSplitter");
+            lsplit.saveState("script/logSplitter");
+            log.saveState("script/log", 7);
+            loggingWindow = undefined;
+        });
+        vsplit.restoreState("script/mainSplitter");
+        isplit.restoreState("script/instrumentSplitter");
+        lsplit.restoreState("script/logSplitter");
+        var device = new DAQ('Dev1');
+        var bchannel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeJ);
+        var achannel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeJ);
+        device.setClockRate(2.0);
+        device.start();
+        beanDisplay = findChildObject(this, 'beans');
+        envDisplay = findChildObject(this, 'environment');
+        bchannel.newData.connect(beanDisplay.setValue);
+        achannel.newData.connect(envDisplay.setValue);
+        var epoch = new QTime;
+        epoch = epoch.currentTime;
+        var boffset = new MeasurementTimeOffset(epoch);
+        var aoffset = new MeasurementTimeOffset(epoch);
+        badapt = new MeasurementAdapter(1);
+        aadapt = new MeasurementAdapter(2);
+        bzero = new ZeroEmitter(1);
+        azero = new ZeroEmitter(2);
+        bchannel.newData.connect(boffset.newMeasurement);
+        achannel.newData.connect(aoffset.newMeasurement);
+        boffset.measurement.connect(badapt.newMeasurement);
+        aoffset.measurement.connect(aadapt.newMeasurement);
+        bchannel.newData.connect(bzero.newMeasurement);
+        achannel.newData.connect(azero.newMeasurement);
+        var graph = findChildObject(this, 'graph');
+        bzero.measurement.connect(log.newMeasurement);
+        bzero.measurement.connect(graph.newMeasurement);
+        azero.measurement.connect(log.newMeasurement);
+        azero.measurement.connect(graph.newMeasurement);
+        var timer = findChildObject(this, 'batch');
+        timer.autoReset = true;
+        var start = findChildObject(this, 'startbutton');
+        start.clicked.connect(function() {
+            var epoch = new QTime();
+            epoch = epoch.currentTime();
+            timer.startTimer();
+            boffset.setZeroTime(epoch);
+            aoffset.setZeroTime(epoch);
+            bzero.emitZero();
+            azero.emitZero();
+            aadapt.measurement.connect(log.newMeasurement);
+            aadapt.measurement.connect(graph.newMeasurement);
+            badapt.measurement.connect(log.newMeasurement);
+            badapt.measurement.connect(graph.newMeasurement);
+            if(typeof(currentBatchInfo) == 'undefined') { } else {
+                var query = new QSqlQuery();
+                query.exec("SELECT now()::timestamp without time zone");
+                query.next();
+                var result = query.value(0);
+                var timefield = findChildObject(currentBatchInfo, 'time');
+                timefield.text = result.replace('T', ' ');
+            }
+        });
+        start.setFocus();
+        var spin = findChildObject(this, 'manometer');
+        spin.annotation.connect(log.newAnnotation);
+        var stop = findChildObject(this, 'stopbutton');
+        stop.annotation.connect(log.newAnnotation);
+        stop.clicked.connect(timer.stopTimer);
+        stop.clicked.connect(function() {
+            badapt.measurement.disconnect(log.newMeasurement);
+            badapt.measurement.disconnect(graph.newMeasurement);
+            aadapt.measurement.disconnect(log.newMeasurement);
+            aadapt.measurement.disconnect(graph.newMeasurement);
+            spin.resetChange();
+            if(typeof(currentBatchInfo) == 'undefined') { } else {
+                var duration = log.lastTime(lc);
+                var durfield = findChildObject(currentBatchInfo, 'duration');
+                durfield.text = duration;
+                log.clearOutputColumns();
+                log.addOutputTemperatureColumn(lc);
+                log.addOutputTemperatureColumn(lc + 1);
+                log.addOutputAnnotationColumn(lc + 2);
+                var filename = log.saveTemporary();
+                currentBatchInfo.tempData = filename;
+                currentBatchInfo.raise();
+                currentBatchInfo.activateWindow();
+            }
+        });
+        var sample = findChildObject(this, 'sample');
+        sample.annotation.connect(log.newAnnotation);
+        var openMenu = findChildObject(this, 'open');
+        var window = this;
+        openMenu.triggered.connect(function() {
+            var filename = QFileDialog.getOpenFileName(window, 'Open Log…', QSettings.value('script/lastDir', '') + '/');
+            if(filename != '') {
+                var file = new QFile(filename);
+                var input = new XMLInput(file, 1);
+                input.newTemperatureColumn.connect(log.setHeaderData);
+                input.newAnnotationColumn.connect(log.setHeaderData);
+                input.measure.connect(graph.newMeasurement);
+                input.measure.connect(log.newMeasurement);
+                input.annotation.connect(log.newAnnotation);
+                input.lastColumn.connect(function(c) {
+                    lc = c + 1;
+                    badapt.setColumn(c + 1);
+                    aadapt.setColumn(c + 2);
+                    bzero.setColumn(c + 1);
+                    azero.setColumn(c + 2);
+                    stop.setTemperatureColumn(c + 1);
+                    stop.setAnnotationColumn(c + 3);
+                    sample.setTemperatureColumn(c + 1);
+                    sample.setAnnotationColumn(c + 3);
+                    spin.setTemperatureColumn(c + 1);
+                    spin.setAnnotationColumn(c + 3);
+                    log.setHeaderData(c + 1, "Bean");
+                    log.setHeaderData(c + 2, "Air");
+                    log.setHeaderData(c + 3, "Note");
+                });
+                input.input();
+                window.windowTitle = 'Typica - ' + baseName(filename);
+                QSettings.setValue("script/lastDir", dir(filename));
+            }
+        });
+        var quitMenu = findChildObject(this, 'quit');
+        quitMenu.triggered.connect(function() {
+            window.close();
+            Application.quit();
+        });
+        var saveMenu = findChildObject(this, 'save');
+        saveMenu.triggered.connect(function() {
+            var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
+            if(filename != "") {
+                var file = new QFile(filename);
+                log.clearOutputColumns();
+                log.addOutputTemperatureColumn(lc);
+                log.addOutputTemperatureColumn(lc + 1);
+                log.addOutputAnnotationColumn(lc + 2);
+                log.saveXML(file);
+                QSettings.setValue("script/lastDir", dir(filename));
+            }
+        });
+        var exportMenu = findChildObject(this, 'export');
+        exportMenu.triggered.connect(function() {
+            var filename = QFileDialog.getSaveFileName(window, "Export CSV As…", QSettings.value("script/lastDir", "") + "/");
+            if(filename != "") {
+                var file = new QFile(filename);
+                log.clearOutputColumns();
+                log.addOutputTemperatureColumn(lc);
+                log.addOutputTemperatureColumn(lc + 1);
+                log.addOutputAnnotationColumn(lc + 2);
+                log.saveCSV(file);
+                QSettings.setValue("script/lastDir", dir(filename));
+            }
+        });
+        var clear = findChildObject(this, 'clear');
+        clear.triggered.connect(log.clear);
+        clear.triggered.connect(graph.clear);
+        clear.triggered.connect(function() {
+            window.windowTitle = "Typica";
+            log.setHeaderData(0, "Time");
+            log.setHeaderData(1, "Bean");
+            log.setHeaderData(2, "Air");
+            log.setHeaderData(3, "Note");
+            log.setHeaderData(4, "");
+            log.setHeaderData(5, "");
+            log.setHeaderData(6, "");
+            lc = 1;
+            badapt.setColumn(1);
+            aadapt.setColumn(2);
+            bzero.setColumn(1);
+            azero.setColumn(2);
+            stop.setTemperatureColumn(1);
+            stop.setAnnotationColumn(3);
+            sample.setTemperatureColumn(1);
+            sample.setAnnotationColumn(3);
+            spin.setTemperatureColumn(1);
+            spin.setAnnotationColumn(3);
+        });
+        var v1 = findChildObject(this, 'ms');
+        v1.triggered.connect(log.LOD_ms);
+        var v2 = findChildObject(this, '1s');
+        v2.triggered.connect(log.LOD_1s);
+        var v3 = findChildObject(this, '5s');
+        v3.triggered.connect(log.LOD_5s);
+        var v4 = findChildObject(this, '10s');
+        v4.triggered.connect(log.LOD_10s);
+        var v5 = findChildObject(this, '15s');
+        v5.triggered.connect(log.LOD_15s);
+        var v6 = findChildObject(this, '30s');
+        v6.triggered.connect(log.LOD_30s);
+        var v7 = findChildObject(this, '1m');
+        v7.triggered.connect(log.LOD_1m);
+        var manual = findChildObject(this, 'manual');
+        manual.triggered.connect(function() {
+            var entry = new LogEditWindow();
+            entry.show();
+        });
+        var newMenu = findChildObject(this, 'new');
+        newMenu.triggered.connect(function() {
+            var bwindow = createWindow("batchWindow");
+            bwindow.windowTitle = "Typica - New Batch";
+        });
+    </program>
+</window>

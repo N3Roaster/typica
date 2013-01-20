@@ -1,0 +1,393 @@
+﻿<window id="dailyproduction">
+	<reporttitle>Production:->Daily Production Report (Detailed)</reporttitle>
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Date:</label>
+			<calendar id="reportdate" />
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
+			<label>Temperature Unit:</label>
+			<sqldrop id="tempunit" />
+			<stretch />
+		</layout>
+		<webview id="report" />
+	</layout>
+	<menu name="File">
+		<item id="print" shortcut="Ctrl+P">Print</item>
+	</menu>
+	<program>
+		<![CDATA[
+			this.windowTitle = "Typica - Daily Production Report";
+			var dateField = findChildObject(this, 'reportdate');
+			var view = findChildObject(this, 'report');
+			var printMenu = findChildObject(this, 'print');
+			printMenu.triggered.connect(function() {
+				view.print();
+			});
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
+			var tempUnit = findChildObject(this, 'tempunit');
+			tempUnit.addItem("Celsius");
+			tempUnit.addItem("Fahrenheit");
+			tempUnit.currentIndex = QSettings.value("script/report_temperature", 1);
+			tempUnit['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_temperature", tempUnit.currentIndex);
+				refresh();
+			});
+			function refresh() {
+				var buffer = new QBuffer;
+				buffer.open(3);
+				var output = new XmlWriter(buffer);
+				output.writeStartDocument("1.0");
+				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+				output.writeStartElement("html");
+				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+				output.writeStartElement("head");
+				output.writeTextElement("title", "Daily Production Report");
+				output.writeEndElement();
+				output.writeStartElement("body");
+				var dateString = "" + dateField.year() + "-" + dateField.month() + "-" + dateField.day();
+				output.writeTextElement("h1", "Daily Production Report: " + dateString);
+				output.writeTextElement("h2", "Batches Roasted");
+				var query = new QSqlQuery();
+				var q = "SELECT time, machine, (SELECT name FROM machine WHERE id = machine), (SELECT name FROM items WHERE id = roasted_id), unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, annotation, duration, files FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1') ORDER BY time";
+				query.exec(q);
+				var times = new Array();
+				var machines = new Array();
+				output.writeStartElement("table");
+				output.writeAttribute("rules", "groups");
+				output.writeAttribute("cellpadding", "3px");
+				output.writeStartElement("thead");
+				output.writeStartElement("tr");
+				output.writeTextElement("th", "Time");
+				output.writeTextElement("th", "Machine");
+				output.writeTextElement("th", "Batch ID");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("th", "Green Weights (Kg)");
+						break;
+					case 1:
+						output.writeTextElement("th", "Green Weights (Lb)");
+						break;
+				}
+				output.writeTextElement("th", "Green Coffees");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("th", "Roasted Weight (Kg)");
+						break;
+					case 1:
+						output.writeTextElement("th", "Roasted Weight (Lb)");
+						break;
+				}
+				output.writeTextElement("th", "Roasted Coffee");
+				output.writeTextElement("th", "% Weight Loss");
+				output.writeTextElement("th", "Duration");
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeStartElement("tbody");
+				while(query.next())
+				{
+					times.push(query.value(0));
+					machines.push(query.value(1));
+					output.writeStartElement("tr");
+					output.writeTextElement("td", String(query.value(0)).split("T")[1]);
+					output.writeTextElement("td", query.value(2));
+					output.writeTextElement("td", query.value(11));
+					var unroastedWeightsList = sqlToArray(query.value(5));
+					output.writeStartElement("td");
+					for(var i = 0; i < unroastedWeightsList.length; i++)
+					{
+						if(i != 0)
+						{
+							output.writeEmptyElement("br");
+						}
+						switch(unitBox.currentIndex)
+						{
+							case 0:
+								output.writeCDATA((unroastedWeightsList[i]/2.2).toFixed(unroastedWeightsList[i].split('.').length > 1 ? unroastedWeightsList[i].split('.')[1].length : 0));
+								break;
+							case 1:
+								output.writeCDATA(unroastedWeightsList[i]);
+								break;
+						}
+					}
+					if(unroastedWeightsList.length > 1)
+					{
+						output.writeCDATA("Total: ");
+						switch(unitBox.currentIndex)
+						{
+							case 0:
+								output.writeCDATA((query.value(6)/2.2).toFixed(query.value(6).split('.').length > 1 ? query.value(6).split('.')[1].length : 0));
+								break;
+							case 1:
+								output.writeCDATA(query.value(6));
+								break;
+						}
+					}
+					output.writeEndElement();
+					var unroastedList = sqlToArray(query.value(4));
+					output.writeStartElement("td");
+					for(var i = 0;  i < unroastedList.length; i++)
+					{
+						var greensQuery = new QSqlQuery();
+						greensQuery.prepare("SELECT name FROM items WHERE id = :id");
+						greensQuery.bind(":id", Number(unroastedList[i]));
+						greensQuery.exec();
+						if(i != 0)
+						{
+							output.writeEmptyElement("br");
+						}
+						greensQuery.next();
+						output.writeCDATA(greensQuery.value(0) + " (" + unroastedList[i] + ")");
+					}
+					output.writeEndElement();
+					switch(unitBox.currentIndex)
+					{
+						case 0:
+							output.writeCDATA((query.value(8)/2.2).toFixed(query.value(8).split('.').length > 1 ? query.value(8).split('.')[1].length : 0));
+							break;
+						case 1:
+							output.writeCDATA(query.value(8));
+							break;
+					}
+					output.writeTextElement("td", query.value(3) + " (" + query.value(7) + ")");
+					if(Number(query.value(6)) > 0) {
+						var loss = (Number(query.value(6)) - Number(query.value(8)))/Number(query.value(6));
+						loss *= 100;
+						output.writeTextElement("td", loss.toFixed(2)+"%");
+					} else {
+						output.writeTextElement("td", "Undefined");
+					}
+					output.writeTextElement("td", query.value(10));
+					output.writeEndElement();
+					if(query.value(9) != "")
+					{
+						output.writeStartElement("tr");
+						output.writeEmptyElement("td");
+						output.writeStartElement("td");
+						output.writeAttribute("colspan", "8");
+						output.writeTextElement("em", query.value(9));
+						output.writeEndElement();
+						output.writeEndElement();
+					}
+					var files = sqlToArray(query.value(11));
+					var annotations = annotationFromRecord(files[0]);
+					output.writeStartElement("tr");
+					output.writeStartElement("td");
+					output.writeAttribute("colspan", "9");
+					output.writeTextElement("strong", "Profile Summary");
+					var buffer2 = new QBuffer("<points>"+annotations+"</points>");
+					buffer2.open(1);
+					var colQuery = new XQuery;
+					colQuery.bind("profile", buffer2);
+					colQuery.setQuery('for $i in doc($profile)//tuple[1]/temperature/@series return (string($i), ";")');
+					var result = colQuery.exec();
+					buffer2.close();
+					var seriesHeaders = new Array();
+					seriesHeaders.push("Time");
+					var records = result.split(";");
+					for(var i = 0; i < records.length - 1; i++) {
+						seriesHeaders.push(records[i].replace(/^\s+|\s+$/g,""));
+					}
+					seriesHeaders.push("Note");
+					output.writeStartElement("table");
+					output.writeStartElement("thead");
+					output.writeStartElement("tr");
+					for(var i = 0; i < seriesHeaders.length; i++) {
+						if(i > 0 && i < seriesHeaders.length - 1) {
+							switch(tempUnit.currentIndex)
+							{
+								case 0:
+									output.writeTextElement("th", seriesHeaders[i] + " (°C)");
+									break;
+								case 1:
+									output.writeTextElement("th", seriesHeaders[i] + " (°F)");
+									break;
+							}
+						} else {
+							output.writeTextElement("th", seriesHeaders[i]);
+						}
+					}
+					output.writeEndElement();
+					output.writeEndElement();
+					buffer2.open(1);
+					var rq = 'for $t in doc($profile) //tuple return (string($t/time), ";", ';
+					for(var i = 0; i < seriesHeaders.length - 2; i++) {
+						rq = rq + 'string($t/temperature[' + Number(i+1) + ']), ";", ';
+					}
+					rq = rq + 'string($t/annotation), "~")';
+					colQuery.setQuery(rq);
+					var annotationData = colQuery.exec();
+					buffer2.close();
+					output.writeStartElement("tbody");
+					var annotationRecords = annotationData.split("~");
+					for(var i = 0; i < annotationRecords.length - 1; i++) {
+						output.writeStartElement("tr");
+						var annotationRow = annotationRecords[i].split(";");
+						for(var j = 0; j < annotationRow.length; j++) {
+							output.writeStartElement("td");
+							output.writeAttribute("style", "border-left: 1px solid #000000");
+							if(j > 0) {
+								output.writeAttribute("align", "center");
+							}
+							if(j > 0 && j < annotationRow.length - 1) {
+								switch(tempUnit.currentIndex)
+								{
+									case 0:
+										output.writeCharacters(((Number(annotationRow[j].replace(/^\s+|\s+$/g,""))-32)*5/9).toFixed(2));
+										break;
+									case 1:
+										output.writeCharacters(Number(annotationRow[j].replace(/^\s+|\s+$/g,"")).toFixed(2));
+										break;
+								}
+							}
+							else {
+								output.writeCharacters(annotationRow[j].replace(/^\s+|\s+$/g,""));
+							}
+							output.writeEndElement();
+						}
+						output.writeEndElement();
+					}
+					output.writeEndElement();
+					output.writeEndElement();	
+					output.writeEndElement();
+					output.writeEndElement();
+				}
+				output.writeEndElement();
+				output.writeStartElement("tfoot");
+				output.writeStartElement("tr");
+				output.writeEmptyElement("td");
+				output.writeEmptyElement("td");
+				output.writeStartElement("td");
+				output.writeTextElement("strong", "Totals:");
+				output.writeEndElement();
+				q = "SELECT sum(unroasted_total_quantity), sum(roasted_quantity), sum(duration) FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1')";
+				query.exec(q);
+				query.next();
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("td", (query.value(0)/2.2).toFixed(query.value(0).split('.').length > 1 ? query.value(0).split('.')[1].length : 0));
+						break;
+					case 1:
+						output.writeTextElement("td", query.value(0));
+						break;
+				}
+				output.writeEmptyElement("td");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("td", (query.value(1)/2.2).toFixed(query.value(1).split('.').length > 1 ? query.value(1).split('.')[1].length : 0));
+						break;
+					case 1:
+						output.writeTextElement("td", query.value(1));
+						break;
+				}
+				output.writeEmptyElement("td");
+				output.writeEmptyElement("td"); 
+				output.writeTextElement("td", query.value(2));
+				output.writeEndElement();
+				output.writeEndElement(); //tfoot
+				output.writeEndElement(); //table
+				output.writeTextElement("h2", "Inventory");
+				output.writeStartElement("table");
+				output.writeAttribute("rules", "groups");
+				output.writeAttribute("cellpadding", "3px");
+				output.writeStartElement("thead");
+				output.writeStartElement("tr");
+				output.writeTextElement("th", "Green Coffee");
+				output.writeTextElement("th", "Starting Inventory");
+				output.writeTextElement("th", "Ending Inventory");
+				output.writeTextElement("th", "Change");
+				output.writeTextElement("th", "Availability");
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeStartElement("tbody");
+				q = "SELECT DISTINCT item, (SELECT name FROM items WHERE id = item) AS name, (SELECT out FROM coffee_history WHERE id = item) FROM all_transactions WHERE time > '" + dateString + "' AND time < '" + dateString + "'::date + integer '1' ORDER BY name ASC";
+				query.exec(q)
+				var subQuery = new QSqlQuery();
+				var qq;
+				while(query.next())
+				{
+					output.writeStartElement("tr");
+					output.writeTextElement("td", query.value(1));
+					qq = "SELECT balance FROM item_history(" + query.value(0) + ") WHERE time = (SELECT max(time) FROM all_transactions WHERE time < '" + dateString + "' AND item = " + query.value(0) + ") OR time = (SELECT max(time) FROM all_transactions WHERE time < '" + dateString + "'::date + integer '1' AND item = " + query.value(0) + ") ORDER BY time ASC";
+					subQuery.exec(qq);
+					var startValue = 0;
+					var endValue = 0;
+					if(subQuery.next())
+					{
+						switch(unitBox.currentIndex)
+						{
+							case 0:
+								output.writeTextElement("td", (subQuery.value(0)/2.2).toFixed(subQuery.value(0).split('.').length > 1 ? subQuery.value(0).split('.')[1].length : 0));
+								break;
+							case 1:
+								output.writeTextElement("td", subQuery.value(0));
+								break;
+						}
+						startValue = subQuery.value(0);
+					}
+					else
+					{
+						output.writeEmptyElement("td");
+					}
+					if(subQuery.next())
+					{
+						switch(unitBox.currentIndex)
+						{
+							case 0:
+								output.writeTextElement("td", (subQuery.value(0)/2.2).toFixed(subQuery.value(0).split('.').length > 1 ? subQuery.value(0).split('.')[1].length : 0));
+								break;
+							case 1:
+								output.writeTextElement("td", subQuery.value(0));
+								break;
+						}
+						endValue = subQuery.value(0);
+					}
+					else
+					{
+						output.writeEmptyElement("td");
+					}
+					var startPrec = startValue.split('.').length > 1 ? startValue.split('.')[1].length : 0;
+					var endPrec = endValue.split('.').length > 1 ? endValue.split('.')[1].length : 0;
+					switch(unitBox.currentIndex)
+					{
+						case 0:
+							output.writeTextElement("td", (Number(endValue/2.2) - Number(startValue/2.2)).toFixed(Math.max(startPrec, endPrec)));
+							break;
+						case 1:
+							output.writeTextElement("td", (Number(endValue) - Number(startValue)).toFixed(Math.max(startPrec, endPrec)));
+							break;
+					}					
+					output.writeTextElement("td", query.value(2));
+					output.writeEndElement();
+				}
+				output.writeEndElement();
+				output.writeStartElement("tfoot");
+				
+				output.writeEndElement();
+				output.writeEndElement();//End of inventory table
+				
+				
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndDocument();
+				view.setContent(buffer);
+				buffer.close();
+			}
+			refresh();
+			dateField.dateChanged.connect(function() {
+				refresh();
+			});
+		]]>
+	</program>
+</window>

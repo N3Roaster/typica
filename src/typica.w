@@ -23,7 +23,7 @@
 \def\pn{Typica}
 \def\filebase{typica}
 \def\version{1.4.3 \number\year-\number\month-\number\day}
-\def\years{2007--2012}
+\def\years{2007--2013}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip

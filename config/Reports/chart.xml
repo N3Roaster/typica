@@ -457,6 +457,9 @@
             endDateField.dateChanged.connect(function() {
                 refresh();
             });
+			avgField.editingFinished.connect(function() {
+				refresh();
+			});
         ]]>
     </program>
 </window>

@@ -23,3 +23,4 @@ RESOURCES += \
     resources.qrc
 
 RC_FILE = typica.rc
+ICON = resources/icons/appicons/logo.icns

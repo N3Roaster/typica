@@ -4,6 +4,8 @@
         <layout type="horizontal">
             <label>Sort Order:</label>
             <sqldrop id="sort" />
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
             <stretch />
         </layout>
         <webview id="report" />
@@ -27,6 +29,14 @@
             sortBox.addItem("Avg. Cost Ascending");
             sortBox.addItem("Avg. Cost Descending");
             sortBox.currentIndex = QSettings.value("auco_sort", 0);
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
             function refresh() {
                 var buffer = new QBuffer;
                 buffer.open(3);
@@ -40,7 +50,15 @@
                 output.writeEndElement();
                 output.writeStartElement("body");
                 output.writeTextElement("h1", "Average Use and Cost by Origin");
-                output.writeTextElement("p", "This is a report of average rate of use in pounds per day and cost of unroasted coffee.");
+				switch(unitBox.currentIndex)
+				{
+					case 0:
+						output.writeTextElement("p", "This is a report of average rate of use in kilograms per day and cost of unroasted coffee.");
+						break;
+					case 1:
+						output.writeTextElement("p", "This is a report of average rate of use in pounds per day and cost of unroasted coffee.");
+						break;
+				}
                 output.writeStartElement("table");
                 output.writeAttribute("rules", "groups");
                 output.writeAttribute("cellpadding", "3px");
@@ -59,27 +77,34 @@
                 output.writeEndElement();
                 output.writeStartElement("tbody");
                 var query = new QSqlQuery();
+				var conversion = 1;
+				if(unitBox.currentIndex == 0) {
+					conversion = 2.2;
+				}
                 switch(sortBox.currentIndex)
                 {
                     case 0:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY origin ASC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY origin ASC");
                         break;
                     case 1:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY origin DESC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY origin DESC");
                         break;
                     case 2:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY rate ASC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY rate ASC");
                         break;
                     case 3:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY rate DESC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY rate DESC");
                         break;
                     case 4:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY cost ASC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY cost ASC");
                         break;
                     case 5:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY cost DESC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY cost DESC");
                         break;
                 }
+				query.bind(":conversion", conversion);
+				query.bind(":conversion2", conversion);
+				query.exec();
                 while(query.next())
                 {
                     output.writeStartElement("tr");
@@ -97,24 +122,27 @@
                 switch(sortBox.currentIndex)
                 {
                     case 0:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY origin ASC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY origin ASC");
                         break;
                     case 1:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY origin DESC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY origin DESC");
                         break;
                     case 2:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY rate ASC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY rate ASC");
                         break;
                     case 3:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY rate DESC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY rate DESC");
                         break;
                     case 4:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY cost ASC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY cost ASC");
                         break;
                     case 5:
-                        query.exec("SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, (SELECT avg(cost) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY cost DESC");
+						query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY cost DESC");
                         break;
                 }
+				query.bind(":conversion", conversion);
+				query.bind(":conversion2", conversion);
+				query.exec();
                 while(query.next())
                 {
                     output.writeStartElement("tr");

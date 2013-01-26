@@ -29,6 +29,7 @@
                 view.print();
             });
             var avgField = findChildObject(this, 'days');
+			var unitBox = findChildObject(this, 'unit');
 			unitBox.addItem("Kg");
 			unitBox.addItem("Lb");
 			unitBox.currentIndex = QSettings.value("script/report_unit", 1);

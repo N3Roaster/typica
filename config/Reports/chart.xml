@@ -434,7 +434,14 @@
                 output.writeAttribute("x", "75");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-                output.writeCharacters("Previous Year Pounds");
+				switch(unitBox.currentIndex) {
+					case 0:
+						output.writeCharacters("Previous Year Kg");
+						break;
+					case 1:
+						output.writeCharacters("Previous Year Lb");
+						break;
+				}
                 output.writeEndElement();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(255,0,0)");
@@ -447,7 +454,14 @@
                 output.writeAttribute("x", "225");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-                output.writeCharacters("Current Year Pounds");
+				switch(unitBox.currentIndex) {
+					case 0:
+						output.writeCharacters("Current Year Kg");
+						break;
+					case 1:
+						output.writeCharacters("Current Year Lb");
+						break;
+				}
                 output.writeEndElement();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(0,255,0)");

@@ -205,11 +205,23 @@
                         avgchange[i] = sum / parseInt(avgField.text);
                     }
                 }
+				// Calculate the domain of the primary y axis.
                 var maxy1 = 0;
+				var increment = 100; // Starting increment is 100 Lb.
+				if(unitBox.currentIndex == 0) {
+					increment = 110; // Starting increment is 50 Kg if Kg is requested.
+				}
                 while(maxy1 < Math.max(curpounds[days - 1], prevpounds[days - 1]))
                 {
-                    maxy1 += 100;
+					maxy1 += increment;
                 }
+				// Calculate the number of grid lines and loosen spacing if there are too many.
+				var divisions = maxy1 / increment;
+				while(divisions > 10) {
+					increment *= 2;
+					divisions = maxy1 / increment;
+				}
+				// Draw y axis grid lines.
                 var pos = 0;
                 while(pos <= maxy1)
                 {
@@ -220,7 +232,7 @@
                     output.writeAttribute("y2", (450/maxy1)*pos);
                     output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
                     output.writeEndElement();
-                    pos += 100;
+					pos += increment;
                 }
                 var n = Math.min.apply(Math, change);
                 var m = Math.max.apply(Math, change);
@@ -323,9 +335,17 @@
                     output.writeAttribute("x", "0");
                     output.writeAttribute("y", -((450/maxy1)*i)+5);
                     output.writeAttribute("font-size", "12");
-                    output.writeCharacters(i);
+					switch(unitBox.currentIndex) {
+						case 0:
+							output.writeCharacters((i / 2.2).toFixed(0));
+							break;
+						case 1:
+						default:
+							output.writeCharacters(i);
+							break;
+					}
                     output.writeEndElement();
-                    i += 100;
+                    i += increment;
                 }
                 i = miny2;
                 while(i <= maxy2)

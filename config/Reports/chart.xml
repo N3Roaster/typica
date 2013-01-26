@@ -8,6 +8,8 @@
             <calendar id="enddate" />
             <label>Days to Average</label>
             <line validator="integer" id="days">7</line>
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
             <stretch />
         </layout>
         <webview id="report" />
@@ -27,7 +29,19 @@
                 view.print();
             });
             var avgField = findChildObject(this, 'days');
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
             function refresh() {
+				var conversion = 1;
+				if(unitBox.currentIndex == 0) {
+					conversion = 2.2;
+				}
                 var buffer = new QBuffer;
                 buffer.open(3);
                 var output = new XmlWriter(buffer);
@@ -48,57 +62,56 @@
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
                 output.writeTextElement("th", "Coffee");
-                output.writeTextElement("th", "Previous");
-                output.writeTextElement("th", "Current");
-                output.writeTextElement("th", "Change");
+				switch(unitBox.currentIndex) {
+					case 0:
+						output.writeTextElement("th", "Previous (Kg)");
+						output.writeTextElement("th", "Current (Kg)");
+						output.writeTextElement("th", "Change (Kg)");
+						break;
+					case 1:
+						output.writeTextElement("th", "Previous (Lb)");
+						output.writeTextElement("th", "Current (Lb)");
+						output.writeTextElement("th", "Change (Lb)");
+						break;
+				}
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
                 var query = new QSqlQuery();
                 query.exec("START TRANSACTION");
-                print(query.executedQuery());
                 var curStartDate = "'"+startDateField.year()+"-"+startDateField.month()+"-"+startDateField.day()+"'";
                 query.exec("SELECT "+curStartDate+"::date - interval '1 year', '"+endDateField.year()+"-"+endDateField.month()+"-"+endDateField.day()+"'::date - interval '1 year' + interval '1 day', '"+endDateField.year()+"-"+endDateField.month()+"-"+endDateField.day()+"'::date + interval '1 day'");
-                print(query.executedQuery());
                 query.next();
                 var curEndDate = "'"+query.value(2)+"'";
                 var prevStartDate = "'"+query.value(0)+"'";
                 var prevEndDate = "'"+query.value(1)+"'";
                 var q = "CREATE TEMPORARY TABLE previous ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS p FROM roasting_log WHERE time > "+prevStartDate+" AND time < "+prevEndDate+" AND roasted_id IS NOT NULL GROUP BY roasted_id";
                 query.exec(q);
-                print(query.executedQuery());
                 q = "CREATE TEMPORARY TABLE current ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS c FROM roasting_log WHERE time > "+curStartDate+" AND time < "+curEndDate+" AND roasted_id IS NOT NULL GROUP BY roasted_id";
                 query.exec(q);
-                print(query.executedQuery());
                 query.exec("INSERT INTO previous SELECT roasted_id, 0 FROM current WHERE roasted_id NOT IN (SELECT roasted_id FROM previous)");
-                print(query.executedQuery());
                 query.exec("INSERT INTO current SELECT roasted_id, 0 FROM previous WHERE roasted_id NOT IN (SELECT roasted_id FROM current)");
-                print(query.executedQuery());
                 query.exec("CREATE TEMPORARY TABLE comp ON COMMIT DROP AS SELECT previous.roasted_id, p, c FROM previous LEFT OUTER JOIN current ON previous.roasted_id = current.roasted_id");
-                print(query.executedQuery());
                 query.exec("SELECT (SELECT name FROM items WHERE id = roasted_id) AS name, p, c, (c-p) FROM comp WHERE p > 0 OR c > 0 ORDER BY name");
-                print(query.executedQuery());
                 while(query.next())
                 {
                     output.writeStartElement("tr");
                     output.writeTextElement("td", query.value(0));
-                    output.writeTextElement("td", query.value(1));
-                    output.writeTextElement("td", query.value(2));
-                    output.writeTextElement("td", query.value(3));
+					output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
+					output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
+					output.writeTextElement("td", (query.value(3) / conversion).toFixed(2));
                     output.writeEndElement();
                 }
                 output.writeEndElement();
                 output.writeStartElement("tfoot");
                 output.writeTextElement("th", "Totals");
                 query.exec("SELECT sum(p), sum(c), sum(c-p) FROM comp");
-                print(query.executedQuery());
                 query.next();
-                output.writeTextElement("td", query.value(0));
-                output.writeTextElement("td", query.value(1));
-                output.writeTextElement("td", query.value(2));
+				output.writeTextElement("td", (query.value(0) / conversion).toFixed(2));
+				output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
+				output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
                 output.writeEndElement();
                 query.exec("ABORT");
-                print(query.executedQuery());
                 output.writeEndElement();
                 output.writeStartElement("svg");
                 output.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
@@ -192,11 +205,23 @@
                         avgchange[i] = sum / parseInt(avgField.text);
                     }
                 }
+				// Calculate the domain of the primary y axis.
                 var maxy1 = 0;
+				var increment = 100; // Starting increment is 100 Lb.
+				if(unitBox.currentIndex == 0) {
+					increment = 110; // Starting increment is 50 Kg if Kg is requested.
+				}
                 while(maxy1 < Math.max(curpounds[days - 1], prevpounds[days - 1]))
                 {
-                    maxy1 += 100;
+					maxy1 += increment;
                 }
+				// Calculate the number of grid lines and loosen spacing if there are too many.
+				var divisions = maxy1 / increment;
+				while(divisions > 10) {
+					increment *= 2;
+					divisions = maxy1 / increment;
+				}
+				// Draw y axis grid lines.
                 var pos = 0;
                 while(pos <= maxy1)
                 {
@@ -207,7 +232,7 @@
                     output.writeAttribute("y2", (450/maxy1)*pos);
                     output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
                     output.writeEndElement();
-                    pos += 100;
+					pos += increment;
                 }
                 var n = Math.min.apply(Math, change);
                 var m = Math.max.apply(Math, change);
@@ -310,9 +335,17 @@
                     output.writeAttribute("x", "0");
                     output.writeAttribute("y", -((450/maxy1)*i)+5);
                     output.writeAttribute("font-size", "12");
-                    output.writeCharacters(i);
+					switch(unitBox.currentIndex) {
+						case 0:
+							output.writeCharacters((i / 2.2).toFixed(0));
+							break;
+						case 1:
+						default:
+							output.writeCharacters(i);
+							break;
+					}
                     output.writeEndElement();
-                    i += 100;
+                    i += increment;
                 }
                 i = miny2;
                 while(i <= maxy2)
@@ -401,7 +434,14 @@
                 output.writeAttribute("x", "75");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-                output.writeCharacters("Previous Year Pounds");
+				switch(unitBox.currentIndex) {
+					case 0:
+						output.writeCharacters("Previous Year Kg");
+						break;
+					case 1:
+						output.writeCharacters("Previous Year Lb");
+						break;
+				}
                 output.writeEndElement();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(255,0,0)");
@@ -414,7 +454,14 @@
                 output.writeAttribute("x", "225");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-                output.writeCharacters("Current Year Pounds");
+				switch(unitBox.currentIndex) {
+					case 0:
+						output.writeCharacters("Current Year Kg");
+						break;
+					case 1:
+						output.writeCharacters("Current Year Lb");
+						break;
+				}
                 output.writeEndElement();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(0,255,0)");

@@ -6,6 +6,8 @@
 			<calendar id="startdate" />
 			<label>End Date:</label>
 			<calendar id="enddate" />
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
 			<stretch />
 		</layout>
 		<webview id="report" />
@@ -27,6 +29,14 @@
 			var printMenu = findChildObject(this, 'print');
 			printMenu.triggered.connect(function() {
 				view.print();
+			});
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
 			});
 			function refresh() {
 				var buffer = new QBuffer;
@@ -70,13 +80,22 @@
 				}
 				output.writeEndElement();
 				output.writeStartElement("tr");
-				output.writeTextElement("th", "Pounds Purchased");
+				switch(unitBox.currentIndex) {
+					case 0:
+						output.writeTextElement("th", "Kilos Purchased");
+						break;
+					case 1:
+						output.writeTextElement("th", "Pounds Purchased");
+						break;
+				}
 				j = 0;
 				var pounds = new Array;
 				for(var i = startDateField.year(); i <= endDateField.year(); i++)
 				{
-					var q = "SELECT sum(quantity) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
-					query.exec(q);
+					var q = "SELECT (sum(quantity) / :conversion)::numeric(12,2) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
+					query.prepare(q);
+					query.bind(":conversion", unitBox.currentIndex == 0 ? 2.2 : 1);
+					query.exec();
 					query.next();
 					output.writeTextElement("td", query.value(0));
 					pounds[j] = query.value(0);

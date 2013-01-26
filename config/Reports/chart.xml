@@ -97,9 +97,9 @@
                 {
                     output.writeStartElement("tr");
                     output.writeTextElement("td", query.value(0));
-					output.writeTextElement("td", query.value(1) / conversion);
-					output.writeTextElement("td", query.value(2) / conversion);
-					output.writeTextElement("td", query.value(3) / conversion);
+					output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
+					output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
+					output.writeTextElement("td", (query.value(3) / conversion).toFixed(2));
                     output.writeEndElement();
                 }
                 output.writeEndElement();
@@ -107,9 +107,9 @@
                 output.writeTextElement("th", "Totals");
                 query.exec("SELECT sum(p), sum(c), sum(c-p) FROM comp");
                 query.next();
-				output.writeTextElement("td", query.value(0) / conversion);
-				output.writeTextElement("td", query.value(1) / conversion);
-				output.writeTextElement("td", query.value(2) / conversion);
+				output.writeTextElement("td", (query.value(0) / conversion).toFixed(2));
+				output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
+				output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
                 output.writeEndElement();
                 query.exec("ABORT");
                 output.writeEndElement();

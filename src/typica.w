@@ -2795,7 +2795,7 @@ expected results from {\tt t1 == t2}, {\tt t1 < t2}, {\tt t1 > t2} and
 similar comparative operations.
 
 @<Functions for scripting@>=
-QScriptValue QTime_valueOf(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QTime_valueOf(QScriptContext *context, QScriptEngine *)
 {
 	QTime self = getself<QTime>(context);
 	int retval = (self.hour() * 60 * 60 * 1000) + (self.minute() * 60 * 1000) +

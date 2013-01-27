@@ -12453,7 +12453,7 @@ value.setProperty("valueOf",engine->newFunction(QTime_valueOf));
 /*:113*//*114:*/
 #line 2797 "./typica.w"
 
-QScriptValue QTime_valueOf(QScriptContext*context,QScriptEngine*engine)
+QScriptValue QTime_valueOf(QScriptContext*context,QScriptEngine*)
 {
 QTime self= getself<QTime> (context);
 int retval= (self.hour()*60*60*1000)+(self.minute()*60*1000)+

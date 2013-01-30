@@ -16,8 +16,12 @@ TARGET =
 DEPENDPATH += .
 
 # Input
-HEADERS += moc_typica.cpp
-SOURCES += typica.cpp
+HEADERS += moc_typica.cpp \
+    helpmenu.h \
+    abouttypica.h
+SOURCES += typica.cpp \
+    helpmenu.cpp \
+    abouttypica.cpp
 
 RESOURCES += \
     resources.qrc

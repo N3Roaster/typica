@@ -842,6 +842,13 @@ various Qt modules.
 #include <QtXmlPatterns>
 #include <QtWebKit>
 
+@ New code is being written in separate files in a long term effort to improve
+organization of the code. The result of this is that some additional headers
+are required here.
+
+@<Header files to include@>=
+#include "helpmenu.h"
+
 @** The Scripting Engine.
 
 \noindent The main enhancement of \pn{} version 1.1 is the introduction of a
@@ -3894,14 +3901,8 @@ if(element.hasChildNodes())
 {
 	@<Process window children@>@;
 }
-if(window)
-{
-	window->show();
-}
-else
-{
-	qDebug() << "Error! Window invalidated";
-}
+@<Insert help menu@>@;
+window->show();
 
 @ Three element types make sense as top level children of a {\tt <window>}
 element. An element representing a layout element can be used to apply that
@@ -4025,6 +4026,8 @@ while(j < menuItems.count())
 	}
 	j++;
 }
+
+@i helpmenu.w
 
 @ A layout can contain a number of different elements including a variety of
 widget types and other layouts. This function is responsible for applying any
@@ -5642,6 +5645,8 @@ QScriptValue QComboBox_findText(QScriptContext *context, QScriptEngine *engine)
 	QComboBox *self = getself<QComboBox *>(context);
 	return QScriptValue(engine, self->findText(argument<QString>(0, context)));
 }
+
+@i abouttypica.w
 
 @** A representation of temperature measurements.
 

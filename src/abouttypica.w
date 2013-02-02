@@ -11,6 +11,8 @@ browser or email client.
 
 @(abouttypica.h@>=
 #include <QMainWindow>
+#include <QWebView>
+#include <QFile>
 
 #ifndef AboutTypicaHeader
 #define AboutTypicaHeader
@@ -38,6 +40,12 @@ through a set of tabs.
 @<AboutTypica implementation@>=
 AboutTypica::AboutTypica() : QMainWindow(NULL)
 {
-
+	QFile aboutFile(":/resources/html/about.html");
+	aboutFile.open(QIODevice::ReadOnly);
+	QByteArray content = aboutFile.readAll();
+	QWebView *banner = new QWebView;
+ 	banner->setHtml(content, QUrl("qrc:/resources/html/about.html"));
+	aboutFile.close();
+	setCentralWidget(banner);
 }
 

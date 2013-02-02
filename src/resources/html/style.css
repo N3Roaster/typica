@@ -1,0 +1,36 @@
+body {
+	background-color: rgb(235,239,249);
+}
+#page {
+	background-color: rgb(255,255,255);
+}
+h1 {
+	font-size: 24px;
+}
+#topbanner {
+	background-color: rgb(235,239,249);
+	height: 96px;
+	margin-bottom: 2px;
+}
+#topbanner img {
+	float: left;
+}
+#topbanner h1 {
+	padding-top: 20px;
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+}
+h2 {
+	font-size: 20px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-top: 0px;
+}
+#topmatter {
+	background-color: rgb(235,239,249);
+}
+#maintext {
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-bottom: 10px;
+}

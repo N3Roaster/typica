@@ -2,6 +2,8 @@
 #line 12 "./abouttypica.w"
 
 #include <QMainWindow> 
+#include <QWebView> 
+#include <QFile> 
 
 #ifndef AboutTypicaHeader
 #define AboutTypicaHeader

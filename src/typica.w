@@ -8245,10 +8245,10 @@ this would match the graphic representation rather than altering it when later
 reviewing the batch.
 
 @<Synthesize measurements for slow hardware@>=
-if(lastMeasurement[tempcolumn].time() < measure.time()
+if(lastMeasurement[tempcolumn].time() < measure.time())
 {
 	QList<QTime> timelist;
-	for(QTime i = lastMeasurement[tempcolumn].addSecs(1); i < measure.time(); i = i.addSecs(1))
+	for(QTime i = lastMeasurement[tempcolumn].time().addSecs(1); i < measure.time(); i = i.addSecs(1))
 	{
 		timelist.append(i);
 	}

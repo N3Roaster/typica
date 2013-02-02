@@ -3575,10 +3575,10 @@ void ZoomLog::newMeasurement(Measurement measure,int tempcolumn)
 /*330:*/
 #line 8247 "./typica.w"
 
-if(lastMeasurement[tempcolumn].time()<measure.time()
+if(lastMeasurement[tempcolumn].time()<measure.time())
 {
 QList<QTime> timelist;
-for(QTime i= lastMeasurement[tempcolumn].addSecs(1);i<measure.time();i= i.addSecs(1))
+for(QTime i= lastMeasurement[tempcolumn].time().addSecs(1);i<measure.time();i= i.addSecs(1))
 {
 timelist.append(i);
 }

@@ -1,4 +1,4 @@
-/*222:*/
+/*223:*/
 #line 12 "./abouttypica.w"
 
 #include <QMainWindow> 
@@ -15,4 +15,4 @@ AboutTypica();
 
 #endif
 
-/*:222*/
+/*:223*/

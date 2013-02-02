@@ -8170,6 +8170,7 @@ The first measurement is always added to each model.
 @<ZoomLog Implementation@>=
 void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 {
+	@<Synthesize measurements for slow hardware@>@;
 	model_ms->newMeasurement(measure, tempcolumn);
 	if(lastMeasurement.contains(tempcolumn))
 	{
@@ -8218,6 +8219,37 @@ MeasurementModel *m;
 foreach(m, modelSet)
 {
 	m->newMeasurement(measure, tempcolumn);
+}
+
+@ Some measurement hardware in use cannot guarantee delivery of at least one
+measurement per second. This causes problems for the current |ZoomLog|
+implementation as, for example, if there is no measurement at a time where
+the seconds are divisible by 5, there will be no entry in that view. This can
+result in situations where the |ZoomLog| at its default view of one measurement
+every 30 seconds might not display any data at all aside from the first
+measurement, the last measurement, and any measurement that happens to have an
+annotation associated with it. The solution in this case is to synthesize
+measurements so that the |ZoomLog| thinks it gets at least one measurement
+every second.
+
+The current approach simply replicates the last measurement every second until
+the time for the most recent measurement is reached, however it would likely be
+better to interpolate values between the two most recent real measurements as
+this would match the graphic representation rather than altering it when later
+reviewing the batch.
+
+@<Synthesize measurements for slow hardware@>=
+if(lastMeasurement[tempcolumn].time() < measure.time()
+{
+	QList<QTime> timelist;
+	for(QTime i = lastMeasurement[tempcolumn].addSecs(1); i < measure.time(); i = i.addSecs(1))
+	{
+		timelist.append(i);
+	}
+	for(int i = 0; i < timelist.size(); i++)
+	{
+		newMeasurement(Measurement(measure.temperature(), timelist[i], measure.scale()), tempcolumn);
+	}
 }
 
 @ New to \pn{} 1.4 is the concept of a current column set. This was added to

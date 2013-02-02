@@ -746,11 +746,17 @@ undertaking to distribute a binary created from this code, you may want to
 either determine your rights with regard to these libraries or modify the
 program to remove them.
 
-The following is an overview of the structure of \pn:
-
-@d PROGRAM_NAME "Typica"
+As CWEB generates files with the wrong extension, we leave the default
+generated file empty.
 
 @c
+/* Nothing to see here. */
+
+@ The following is an overview of the structure of \pn:
+
+@(typica.cpp@>=
+#define PROGRAM_NAME "Typica"
+
 @<Header files to include@>@/
 @<Class declarations@>@/
 @<Function prototypes for scripting@>@/
@@ -7904,6 +7910,8 @@ of line items is initialized when the second measurement is taken. Subsequent
 measurements are able to simply append new line segments to the list.
 
 @<GraphView Implementation@>=
+#define FULLTIMETOINT(t) (t.msec() + (t.second() * 1000) +  (t.minute() * 60 * 1000))
+
 void GraphView::newMeasurement(Measurement measure, int tempcolumn)@/
 {@/
 	double offset = 0;
@@ -7948,8 +7956,6 @@ with sufficiently high sample rates, many data points will map to the same pixel
 even with the minor data loss below.
 
 In the case of the first measurement,
-
-@d FULLTIMETOINT(t) (t.msec() + (t.second() * 1000) + (t.minute() * 60 * 1000))
 
 @<Handle the first measurement@>=
 int x = FULLTIMETOINT(measure.time())/1000;
@@ -9873,9 +9879,9 @@ if(nt != s)
 number of seconds in a base time, and the difference between the two. The
 value loaded into oseconds could probably be cached.
 
-@d TIMETOINT(t) ((t.hour() * 60 * 60) + (t.minute() * 60) + (t.second()))
-
 @<Load seconds since base time into r@>=
+#define TIMETOINT(t) ((t.hour() * 60 * 60) + (t.minute() * 60) + (t.second()))
+
 time = QTime::currentTime();
 cseconds = TIMETOINT(time);
 oseconds = TIMETOINT(relative);
@@ -9914,9 +9920,9 @@ if(time != s)
 timer starts. The clock that triggers time updates must also be started. The
 timer also needs to reset its value if that behavior is desired.
 
-@d TIMESUBTRACT(t1, t2) (t1.addSecs(-(TIMETOINT(t2))).addMSecs(-t2.msec()))
-
 @<TimerDisplay Implementation@>=
+#define TIMESUBTRACT(t1, t2) (t1.addSecs(-(TIMETOINT(t2))).addSecs(-t2.msec()))
+
 void TimerDisplay::startTimer()@t\2\2@>@/
 {@t\1@>@/
 	if(!running)@/
@@ -11639,9 +11645,9 @@ setting up the settings object and localization in addition to the normal
 responsibilities of |QApplication|. In addition to declaring the class, we also
 define a macro that returns the |Application| instance.
 
-@d AppInstance (qobject_cast<@[Application *@]>(qApp))
-
 @<Class declarations@>=
+#define AppInstance (qobject_cast<@[Application *@]>(qApp))
+
 class NodeInserter;
 class DeviceTreeModel;
 class Application : public QApplication@/

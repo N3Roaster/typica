@@ -848,6 +848,13 @@ various Qt modules.
 #include <QtXmlPatterns>
 #include <QtWebKit>
 
+@ New code is being written in separate files in a long term effort to improve
+organization of the code. The result of this is that some additional headers
+are required here.
+
+@<Header files to include@>=
+#include "helpmenu.h"
+
 @** The Scripting Engine.
 
 \noindent The main enhancement of \pn{} version 1.1 is the introduction of a
@@ -3900,14 +3907,8 @@ if(element.hasChildNodes())
 {
 	@<Process window children@>@;
 }
-if(window)
-{
-	window->show();
-}
-else
-{
-	qDebug() << "Error! Window invalidated";
-}
+@<Insert help menu@>@;
+window->show();
 
 @ Three element types make sense as top level children of a {\tt <window>}
 element. An element representing a layout element can be used to apply that
@@ -4031,6 +4032,8 @@ while(j < menuItems.count())
 	}
 	j++;
 }
+
+@i helpmenu.w
 
 @ A layout can contain a number of different elements including a variety of
 widget types and other layouts. This function is responsible for applying any
@@ -5648,6 +5651,8 @@ QScriptValue QComboBox_findText(QScriptContext *context, QScriptEngine *engine)
 	QComboBox *self = getself<QComboBox *>(context);
 	return QScriptValue(engine, self->findText(argument<QString>(0, context)));
 }
+
+@i abouttypica.w
 
 @** A representation of temperature measurements.
 
@@ -8171,6 +8176,7 @@ The first measurement is always added to each model.
 @<ZoomLog Implementation@>=
 void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 {
+	@<Synthesize measurements for slow hardware@>@;
 	model_ms->newMeasurement(measure, tempcolumn);
 	if(lastMeasurement.contains(tempcolumn))
 	{
@@ -8219,6 +8225,37 @@ MeasurementModel *m;
 foreach(m, modelSet)
 {
 	m->newMeasurement(measure, tempcolumn);
+}
+
+@ Some measurement hardware in use cannot guarantee delivery of at least one
+measurement per second. This causes problems for the current |ZoomLog|
+implementation as, for example, if there is no measurement at a time where
+the seconds are divisible by 5, there will be no entry in that view. This can
+result in situations where the |ZoomLog| at its default view of one measurement
+every 30 seconds might not display any data at all aside from the first
+measurement, the last measurement, and any measurement that happens to have an
+annotation associated with it. The solution in this case is to synthesize
+measurements so that the |ZoomLog| thinks it gets at least one measurement
+every second.
+
+The current approach simply replicates the last measurement every second until
+the time for the most recent measurement is reached, however it would likely be
+better to interpolate values between the two most recent real measurements as
+this would match the graphic representation rather than altering it when later
+reviewing the batch.
+
+@<Synthesize measurements for slow hardware@>=
+if(lastMeasurement[tempcolumn].time() < measure.time())
+{
+	QList<QTime> timelist;
+	for(QTime i = lastMeasurement[tempcolumn].time().addSecs(1); i < measure.time(); i = i.addSecs(1))
+	{
+		timelist.append(i);
+	}
+	for(int i = 0; i < timelist.size(); i++)
+	{
+		newMeasurement(Measurement(measure.temperature(), timelist[i], measure.scale()), tempcolumn);
+	}
 }
 
 @ New to \pn{} 1.4 is the concept of a current column set. This was added to

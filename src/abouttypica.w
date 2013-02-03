@@ -13,6 +13,9 @@ browser or email client.
 #include <QMainWindow>
 #include <QWebView>
 #include <QFile>
+#include <QtDebug>
+#include <QMessageBox>
+#include <QDesktopServices>
 
 #ifndef AboutTypicaHeader
 #define AboutTypicaHeader
@@ -22,6 +25,8 @@ class AboutTypica : public QMainWindow
 	Q_OBJECT
 	public:
 		AboutTypica();
+	public slots:
+		void linkClicked(const QUrl &url);
 };
 
 #endif
@@ -47,5 +52,31 @@ AboutTypica::AboutTypica() : QMainWindow(NULL)
  	banner->setHtml(content, QUrl("qrc:/resources/html/about.html"));
 	aboutFile.close();
 	setCentralWidget(banner);
+	QWebPage *page = banner->page();
+	page->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
+	connect(page, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 }
 
+@ In order to display the About Qt window, we detect a special URL from a link
+clicked in the about box.
+
+@<AboutTypica implementation@>=
+void AboutTypica::linkClicked(const QUrl &url)
+{
+	if(url.scheme() == "typica")
+	{
+		QString address(url.toEncoded());
+		if(address == "typica://aboutqt")
+		{
+			QMessageBox::aboutQt(this);
+		}
+		else
+		{
+			qDebug() << "Unexpected link. Got: " << address;
+		}
+	}
+	else
+	{
+		QDesktopServices::openUrl(url);
+	}
+}

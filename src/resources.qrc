@@ -14,5 +14,6 @@
         <file>resources/icons/appicons/logo96.png</file>
         <file>resources/html/about.html</file>
         <file>resources/html/style.css</file>
+        <file>resources/fonts/entypo.ttf</file>
     </qresource>
 </RCC>

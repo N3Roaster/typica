@@ -12367,6 +12367,8 @@ int main(int argc, char **argv)@/
 	int *c = &argc;
 	Application app(*c, argv);
 	@<Set up icons@>@;
+	@<Set up fonts@>@;
+	
 	QSettings settings;
 	
 	@<Register device configuration widgets@>@;
@@ -12391,6 +12393,15 @@ themeSearchPath.append(":/resources/icons/tango");
 QIcon::setThemeSearchPaths(themeSearchPath);
 QIcon::setThemeName(":/resources/icons/tango");
 app.setWindowIcon(QIcon(":/resources/icons/appicons/logo.svg"));
+
+@ Similarly some elements make use of a special font which is loaded from
+resource data.
+
+@<Set up fonts@>=
+QFile entypo(":/resources/fonts/entypo.ttf");
+entypo.open(QIODevice::ReadOnly);
+QFontDatabase::addApplicationFontFromData(entypo.readAll());
+entypo.close();
 
 @ Some widgets provided by \pn{} require access to a database in order to work.
 To simplify using these widgets, the application will request information

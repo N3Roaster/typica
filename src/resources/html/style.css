@@ -12,6 +12,10 @@ h1 {
 	height: 96px;
 	margin-bottom: 2px;
 }
+#topbanner a {
+	text-decoration: none;
+	color: black;
+}
 #topbanner img {
 	float: left;
 }
@@ -33,4 +37,10 @@ h2 {
 	margin-left: 10px;
 	margin-right: 10px;
 	padding-bottom: 10px;
+}
+.icons {
+	font-family: Entypo
+}
+.icons a {
+	text-decoration: none;
 }

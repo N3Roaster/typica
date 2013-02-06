@@ -14862,6 +14862,8 @@ class DeviceConfigurationWindow : public QMainWindow
 		void addDevice();
 		void removeNode();
 		void newSelection(const QModelIndex &index);
+	@[private slots@]:@/
+		void resizeColumn();
 	private:@/
 		QDomDocument document;
 		DeviceTreeModel *model;
@@ -14896,7 +14898,9 @@ DeviceConfigurationWindow::DeviceConfigurationWindow() : QMainWindow(NULL),
 	document = AppInstance->deviceConfiguration();
 	model = new DeviceTreeModel;
 	view->setModel(model);
+	view->setTextElideMode(Qt::ElideNone);
 	view->expandAll();
+	view->resizeColumnToContents(0);
 	connect(model, SIGNAL(modelReset()), view, SLOT(expandAll()));
 	QHBoxLayout *treeButtons = new QHBoxLayout;
 	QToolButton *addDeviceButton = new QToolButton;
@@ -14924,6 +14928,10 @@ DeviceConfigurationWindow::DeviceConfigurationWindow() : QMainWindow(NULL),
 	        this, SLOT(newSelection(QModelIndex)));
 	connect(model, SIGNAL(rowsInserted(QModelIndex, int, int)),
 	        view, SLOT(expand(QModelIndex)));
+	connect(model, SIGNAL(rowsInserted(QModelIndex, int, int)),
+	        this, SLOT(resizeColumn()));
+	connect(model, SIGNAL(rowsRemoved(QModelIndex, int, int)),
+	        this, SLOT(resizeColumn()));
 }
 
 @ Adding a new top level node to the model is just a matter of extracting the
@@ -14962,6 +14970,18 @@ void DeviceConfigurationWindow::newSelection(const QModelIndex &index)
 		configArea->setWidget(editor);
 		editor->show();
 	}
+}
+
+@ As nodes are added deeper in the device hierarchy or as nodes obtain longer
+names, the nodes names may be elided by default rather than indicate that the
+view can be scrolled horizontally. There has been feedback that this behavior
+is not preferred so instead as the model data changes we expand the column
+instead.
+
+@<DeviceConfigurationWindow implementation@>=
+void DeviceConfigurationWindow::resizeColumn()
+{
+	view->resizeColumnToContents(0);
 }
 
 @ At least for the initial testing of this feature it will be useful if we can

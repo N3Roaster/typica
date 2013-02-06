@@ -162,68 +162,90 @@
 			confwindow.show();
 		});
         <![CDATA[
-				query = new QSqlQuery();
-                query.exec("CREATE TABLE certifications (item bigint NOT NULL, certification text NOT NULL)");
-                query.exec("CREATE TABLE cupping_samples (session bigint NOT NULL, sample text NOT NULL, position bigint NOT NULL, type text NOT NULL, \"time\" timestamp without time zone, machine bigint, point text, item bigint)");
-                query.exec("CREATE TABLE cupping_sessions (id bigserial NOT NULL, event text, name text NOT NULL, \"time\" timestamp without time zone NOT NULL, blind boolean NOT NULL, open boolean NOT NULL, note text)");
-                query.exec("CREATE TABLE cuppingforms (session bigint NOT NULL, sample text NOT NULL, position bigint NOT NULL, grader text, finalscore numeric, notes text, serialization text)");
-                query.exec("CREATE TABLE cuppingform_t1 (aroma numeric, flavor numeric, aftertaste numeric, acidity numeric, body numeric, uniformity numeric, balance numeric, cleancup numeric, sweetness numeric, overall numeric, total numeric) INHERITS (cuppingforms)");
-                query.exec("CREATE TABLE invoices (id bigserial PRIMARY KEY NOT NULL, invoice text, vendor text NOT NULL, \"time\" timestamp without time zone NOT NULL)");
-                query.exec("CREATE TABLE invoice_items (invoice_id bigint NOT NULL, record_type text NOT NULL, item_id bigint, description text NOT NULL, cost numeric NOT NULL)");
-				query.exec("CREATE TABLE transactions (\"time\" timestamp without time zone NOT NULL, item bigint NOT NULL)");
-				query.exec("CREATE TABLE inventory (quantity numeric NOT NULL) INHERITS (transactions)");
-				query.exec("CREATE TABLE loss (quantity numeric NOT NULL, reason text) INHERITS (transactions)");
-				query.exec("CREATE TABLE make (quantity numeric NOT NULL) INHERITS (transactions)");
-				query.exec("CREATE TABLE purchase (quantity numeric NOT NULL, cost numeric NOT NULL, vendor text NOT NULL) INHERITS (transactions)");
-				query.exec("CREATE TABLE sale (quantity numeric NOT NULL, customer text) INHERITS (transactions)");
-				query.exec("CREATE TABLE use (quantity numeric NOT NULL) INHERITS (transactions)");
-				query.exec("CREATE VIEW all_transactions AS ((((SELECT purchase.\"time\", purchase.item, purchase.quantity, purchase.cost, purchase.vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'PURCHASE' AS type FROM purchase UNION SELECT use.\"time\", use.item, use.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'USE' AS type FROM use) UNION SELECT inventory.\"time\", inventory.item, inventory.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'INVENTORY' AS type FROM inventory) UNION SELECT loss.\"time\", loss.item, loss.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, loss.reason, NULL::unknown AS customer, 'LOSS' AS type FROM loss) UNION SELECT make.\"time\", make.item, make.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'MAKE' AS type FROM make) UNION SELECT sale.\"time\", sale.item, sale.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, sale.customer, 'SALE' AS type FROM sale");
-				query.exec("CREATE FUNCTION time_range(bigint) RETURNS integer AS $$ BEGIN IF (SELECT quantity FROM items WHERE id = $1) > 0 THEN RETURN (SELECT current_date - min(time)::date + 1 FROM use WHERE item = $1); ELSE RETURN (SELECT max(time)::date - min(time)::date + 1 FROM use WHERE item = $1); END IF; END; $$ LANGUAGE plpgsql STRICT");
-				query.exec("CREATE TABLE items(id bigint NOT NULL, name text NOT NULL, reference text, unit text NOT NULL, quantity numeric DEFAULT 0, category text)");
-				query.exec("CREATE SEQUENCE items_id_seq INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1");
-				query.exec("CREATE TABLE coffees(origin text NOT NULL, region text, producer text, grade text, milling text, drying text) INHERITS (items)");
-				query.exec("CREATE VIEW coffee_history AS SELECT coffees.id, coffees.name, coffees.origin, coffees.quantity AS stock, (SELECT sum(use.quantity) AS sum FROM use WHERE (use.item = coffees.id)) AS used, time_range(coffees.id) AS \"interval\", ((SELECT (sum(use.quantity) / (time_range(use.item))::numeric) FROM use WHERE (use.item = coffees.id) GROUP BY use.item))::numeric(10,2) AS rate, (SELECT (('now'::text)::date + ((coffees.quantity / (SELECT (sum(use.quantity) / (time_range(use.item))::numeric) FROM use WHERE (use.item = coffees.id) GROUP BY use.item)))::integer)) AS \"out\" FROM coffees WHERE (coffees.id IN (SELECT use.item FROM use)) ORDER BY coffees.origin");
-				query.exec("CREATE TABLE current_items (item bigint NOT NULL)");
-				query.exec("CREATE TABLE decaf_coffees (decaf_method text NOT NULL) INHERITS (coffees)");
-				query.exec("CREATE TABLE files (id bigint NOT NULL, name text NOT NULL, type text NOT NULL, note text, file bytea NOT NULL)");
-				query.exec("CREATE TABLE item_files(\"time\" timestamp without time zone NOT NULL, item bigint NOT NULL, files bigint[] NOT NULL)");
-				query.exec("CREATE TYPE item_transaction_with_balance AS (\"time\" timestamp without time zone, item bigint, quantity numeric, cost numeric, vendor text, reason text, customer text, type text, balance numeric)");
-				query.exec("CREATE TABLE lb_bag_conversion (item bigint NOT NULL, conversion numeric NOT NULL)");
-				query.exec("CREATE TABLE machine (id bigint NOT NULL, name text NOT NULL)");
-				query.exec("CREATE VIEW regular_coffees AS SELECT coffees.id, coffees.name, coffees.reference, coffees.unit, coffees.quantity, coffees.category, coffees.origin, coffees.region, coffees.producer, coffees.grade, coffees.milling, coffees.drying FROM coffees WHERE (NOT (coffees.id IN (SELECT decaf_coffees.id FROM decaf_coffees)))");
-				query.exec("CREATE TABLE roasting_log (\"time\" timestamp without time zone NOT NULL, unroasted_id bigint[], unroasted_quantity numeric[], unroasted_total_quantity numeric, roasted_id bigint, roasted_quantity numeric, transaction_type text NOT NULL, annotation text, machine bigint NOT NULL, duration interval, approval boolean, humidity numeric, barometric numeric, indoor_air numeric, outdoor_air numeric, files bigint[])");
-				query.exec("CREATE VIEW short_log AS SELECT roasting_log.\"time\", (SELECT items.name FROM items WHERE (items.id = roasting_log.roasted_id)) AS name, roasting_log.unroasted_total_quantity, roasting_log.roasted_quantity, ((((roasting_log.unroasted_total_quantity - roasting_log.roasted_quantity) / roasting_log.unroasted_total_quantity) * (100)::numeric))::numeric(12,2) AS weight_loss, roasting_log.duration FROM roasting_log ORDER BY roasting_log.\"time\"");
-				query.exec("CREATE FUNCTION add_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = quantity + NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
-				query.exec("CREATE FUNCTION bags_in_stock(bigint) RETURNS numeric AS $_$SELECT quantity / (SELECT conversion FROM lb_bag_conversion WHERE item = id) FROM items WHERE id = $1;$_$ LANGUAGE sql IMMUTABLE STRICT");
-				query.exec("CREATE FUNCTION calculate_inventory_balance() RETURNS trigger AS $$ DECLARE old_quantity numeric; BEGIN old_quantity := (SELECT balance FROM working WHERE time = (SELECT max(time) FROM working)); IF old_quantity IS NULL THEN old_quantity := 0; END IF; IF NEW.type = 'PURCHASE' OR NEW.type = 'MAKE' THEN NEW.balance := old_quantity + NEW.quantity; ELSE IF NEW.type = 'INVENTORY' THEN NEW.balance := NEW.quantity; ELSE IF NEW.type = 'USE' OR NEW.type = 'SALE' OR NEW.type = 'LOSS' THEN NEW.balance := old_quantity - NEW.quantity; END IF; END IF; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
-				query.exec("CREATE FUNCTION item_history(bigint) RETURNS SETOF item_transaction_with_balance AS $_$ DECLARE r item_transaction_with_balance; BEGIN CREATE TEMPORARY TABLE working(time timestamp without time zone, item bigint, quantity numeric, cost numeric, vendor text, reason text, customer text, type text, balance numeric) ON COMMIT DROP; CREATE TRIGGER quantity_update BEFORE INSERT ON working FOR EACH ROW EXECUTE PROCEDURE calculate_inventory_balance(); INSERT INTO working SELECT time, item, quantity, cost, vendor, reason, customer, type, NULL AS balance FROM all_transactions WHERE item = $1 ORDER BY time ASC; FOR r IN SELECT time, item, quantity, cost, vendor, reason, customer, type, balance FROM working LOOP RETURN NEXT r; END LOOP; DROP TABLE working; RETURN; END; $_$ LANGUAGE plpgsql");
-				query.exec("CREATE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
-				query.exec("CREATE FUNCTION log_make_update() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity <> OLD.roasted_quantity AND NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
-				query.exec("CREATE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN WHILE i <= u LOOP INSERT INTO use VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; RETURN NEW; END; $$ LANGUAGE plpgsql");
-				query.exec("CREATE FUNCTION replace_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
-				query.exec("CREATE FUNCTION subtract_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = quantity - NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
-				query.exec("CREATE SEQUENCE files_id_seq START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1");
-				query.exec("ALTER TABLE files ALTER COLUMN id SET DEFAULT nextval('files_id_seq'::regclass)");
-				query.exec("ALTER TABLE items ALTER COLUMN id SET DEFAULT nextval('items_id_seq'::regclass)");
-				query.exec("ALTER TABLE ONLY files ADD CONSTRAINT file_pkey PRIMARY KEY (id)");
-				query.exec("ALTER TABLE ONLY items ADD CONSTRAINT items_pkey PRIMARY KEY (id)");
-				query.exec("ALTER TABLE ONLY lb_bag_conversion ADD CONSTRAINT lb_bag_conversion_item_key UNIQUE (item)");
-				query.exec("ALTER TABLE ONLY roasting_log ADD CONSTRAINT roasting_log_pkey PRIMARY KEY (\"time\", machine)");
-				query.exec("CREATE INDEX itemcategories ON items USING btree (category)");
-				query.exec("CREATE INDEX itemnames ON items USING btree (name)");
-				query.exec("CREATE INDEX roasting_log_index ON roasting_log USING btree (\"time\")");
-				query.exec("CREATE INDEX transactionitems ON transactions USING btree (item)");
-				query.exec("CREATE INDEX transactiontimes ON transactions USING btree (\"time\")");
-				query.exec("CREATE TRIGGER add_inventory_trigger AFTER INSERT ON purchase FOR EACH ROW EXECUTE PROCEDURE add_inventory()");
-				query.exec("CREATE TRIGGER add_inventory_trigger AFTER INSERT ON make FOR EACH ROW EXECUTE PROCEDURE add_inventory()");
-				query.exec("CREATE TRIGGER log_use_trigger AFTER INSERT ON roasting_log FOR EACH ROW EXECUTE PROCEDURE log_use()");
-				query.exec("CREATE TRIGGER replace_inventory_trigger AFTER INSERT ON inventory FOR EACH ROW EXECUTE PROCEDURE replace_inventory()");
-				query.exec("CREATE TRIGGER subtract_inventory_trigger AFTER INSERT ON loss FOR EACH ROW EXECUTE PROCEDURE subtract_inventory()");
-				query.exec("CREATE TRIGGER subtract_inventory_trigger AFTER INSERT ON sale FOR EACH ROW EXECUTE PROCEDURE subtract_inventory()");
-				query.exec("CREATE TRIGGER subtract_inventory_trigger AFTER INSERT ON use FOR EACH ROW EXECUTE PROCEDURE subtract_inventory()");
-				query.exec("ALTER TABLE ONLY item_files ADD CONSTRAINT item_files_item_fkey FOREIGN KEY (item) REFERENCES items(id)");
-				query.exec("ALTER TABLE ONLY transactions ADD CONSTRAINT transactions_item_fkey FOREIGN KEY (item) REFERENCES items(id)");
-				query = query.invalidate();
+		var DBCreateBase = function() {
+			var query = new QSqlQuery();
+            query.exec("CREATE TABLE IF NOT EXISTS certifications (item bigint NOT NULL, certification text NOT NULL)");
+            query.exec("CREATE TABLE IF NOT EXISTS cupping_samples (session bigint NOT NULL, sample text NOT NULL, position bigint NOT NULL, type text NOT NULL, \"time\" timestamp without time zone, machine bigint, point text, item bigint)");
+            query.exec("CREATE TABLE cupping_sessions (id bigserial NOT NULL, event text, name text NOT NULL, \"time\" timestamp without time zone NOT NULL, blind boolean NOT NULL, open boolean NOT NULL, note text)");
+            query.exec("CREATE TABLE IF NOT EXISTS cuppingforms (session bigint NOT NULL, sample text NOT NULL, position bigint NOT NULL, grader text, finalscore numeric, notes text, serialization text)");
+            query.exec("CREATE TABLE IF NOT EXISTS cuppingform_t1 (aroma numeric, flavor numeric, aftertaste numeric, acidity numeric, body numeric, uniformity numeric, balance numeric, cleancup numeric, sweetness numeric, overall numeric, total numeric) INHERITS (cuppingforms)");
+            query.exec("CREATE TABLE IF NOT EXISTS invoices (id bigserial PRIMARY KEY NOT NULL, invoice text, vendor text NOT NULL, \"time\" timestamp without time zone NOT NULL)");
+            query.exec("CREATE TABLE IF NOT EXISTS invoice_items (invoice_id bigint NOT NULL, record_type text NOT NULL, item_id bigint, description text NOT NULL, cost numeric NOT NULL)");
+			query.exec("CREATE TABLE IF NOT EXISTS transactions (\"time\" timestamp without time zone NOT NULL, item bigint NOT NULL)");
+			query.exec("CREATE TABLE IF NOT EXISTS inventory (quantity numeric NOT NULL) INHERITS (transactions)");
+			query.exec("CREATE TABLE IF NOT EXISTS loss (quantity numeric NOT NULL, reason text) INHERITS (transactions)");
+			query.exec("CREATE TABLE IF NOT EXISTS make (quantity numeric NOT NULL) INHERITS (transactions)");
+			query.exec("CREATE TABLE IF NOT EXISTS purchase (quantity numeric NOT NULL, cost numeric NOT NULL, vendor text NOT NULL) INHERITS (transactions)");
+			query.exec("CREATE TABLE IF NOT EXISTS sale (quantity numeric NOT NULL, customer text) INHERITS (transactions)");
+			query.exec("CREATE TABLE IF NOT EXISTS use (quantity numeric NOT NULL) INHERITS (transactions)");
+			query.exec("CREATE VIEW all_transactions AS ((((SELECT purchase.\"time\", purchase.item, purchase.quantity, purchase.cost, purchase.vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'PURCHASE' AS type FROM purchase UNION SELECT use.\"time\", use.item, use.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'USE' AS type FROM use) UNION SELECT inventory.\"time\", inventory.item, inventory.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'INVENTORY' AS type FROM inventory) UNION SELECT loss.\"time\", loss.item, loss.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, loss.reason, NULL::unknown AS customer, 'LOSS' AS type FROM loss) UNION SELECT make.\"time\", make.item, make.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, NULL::unknown AS customer, 'MAKE' AS type FROM make) UNION SELECT sale.\"time\", sale.item, sale.quantity, NULL::unknown AS cost, NULL::unknown AS vendor, NULL::unknown AS reason, sale.customer, 'SALE' AS type FROM sale");
+			query.exec("CREATE FUNCTION time_range(bigint) RETURNS integer AS $$ BEGIN IF (SELECT quantity FROM items WHERE id = $1) > 0 THEN RETURN (SELECT current_date - min(time)::date + 1 FROM use WHERE item = $1); ELSE RETURN (SELECT max(time)::date - min(time)::date + 1 FROM use WHERE item = $1); END IF; END; $$ LANGUAGE plpgsql STRICT");
+			query.exec("CREATE TABLE IF NOT EXISTS items(id bigint NOT NULL, name text NOT NULL, reference text, unit text NOT NULL, quantity numeric DEFAULT 0, category text)");
+			query.exec("CREATE SEQUENCE items_id_seq INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1");
+			query.exec("CREATE TABLE IF NOT EXISTS coffees(origin text NOT NULL, region text, producer text, grade text, milling text, drying text) INHERITS (items)");
+			query.exec("CREATE VIEW coffee_history AS SELECT coffees.id, coffees.name, coffees.origin, coffees.quantity AS stock, (SELECT sum(use.quantity) AS sum FROM use WHERE (use.item = coffees.id)) AS used, time_range(coffees.id) AS \"interval\", ((SELECT (sum(use.quantity) / (time_range(use.item))::numeric) FROM use WHERE (use.item = coffees.id) GROUP BY use.item))::numeric(10,2) AS rate, (SELECT (('now'::text)::date + ((coffees.quantity / (SELECT (sum(use.quantity) / (time_range(use.item))::numeric) FROM use WHERE (use.item = coffees.id) GROUP BY use.item)))::integer)) AS \"out\" FROM coffees WHERE (coffees.id IN (SELECT use.item FROM use)) ORDER BY coffees.origin");
+			query.exec("CREATE TABLE IF NOT EXISTS current_items (item bigint NOT NULL)");
+			query.exec("CREATE TABLE IF NOT EXISTS decaf_coffees (decaf_method text NOT NULL) INHERITS (coffees)");
+			query.exec("CREATE TABLE IF NOT EXISTS files (id bigint NOT NULL, name text NOT NULL, type text NOT NULL, note text, file bytea NOT NULL)");
+			query.exec("CREATE TABLE IF NOT EXISTS item_files(\"time\" timestamp without time zone NOT NULL, item bigint NOT NULL, files bigint[] NOT NULL)");
+			query.exec("CREATE TYPE item_transaction_with_balance AS (\"time\" timestamp without time zone, item bigint, quantity numeric, cost numeric, vendor text, reason text, customer text, type text, balance numeric)");
+			query.exec("CREATE TABLE IF NOT EXISTS lb_bag_conversion (item bigint NOT NULL, conversion numeric NOT NULL)");
+			query.exec("CREATE TABLE IF NOT EXISTS machine (id bigint NOT NULL, name text NOT NULL)");
+			query.exec("CREATE VIEW regular_coffees AS SELECT coffees.id, coffees.name, coffees.reference, coffees.unit, coffees.quantity, coffees.category, coffees.origin, coffees.region, coffees.producer, coffees.grade, coffees.milling, coffees.drying FROM coffees WHERE (NOT (coffees.id IN (SELECT decaf_coffees.id FROM decaf_coffees)))");
+			query.exec("CREATE TABLE IF NOT EXISTS roasting_log (\"time\" timestamp without time zone NOT NULL, unroasted_id bigint[], unroasted_quantity numeric[], unroasted_total_quantity numeric, roasted_id bigint, roasted_quantity numeric, transaction_type text NOT NULL, annotation text, machine bigint NOT NULL, duration interval, approval boolean, humidity numeric, barometric numeric, indoor_air numeric, outdoor_air numeric, files bigint[])");
+			query.exec("CREATE VIEW short_log AS SELECT roasting_log.\"time\", (SELECT items.name FROM items WHERE (items.id = roasting_log.roasted_id)) AS name, roasting_log.unroasted_total_quantity, roasting_log.roasted_quantity, ((((roasting_log.unroasted_total_quantity - roasting_log.roasted_quantity) / roasting_log.unroasted_total_quantity) * (100)::numeric))::numeric(12,2) AS weight_loss, roasting_log.duration FROM roasting_log ORDER BY roasting_log.\"time\"");
+			query.exec("CREATE FUNCTION add_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = quantity + NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE FUNCTION bags_in_stock(bigint) RETURNS numeric AS $_$SELECT quantity / (SELECT conversion FROM lb_bag_conversion WHERE item = id) FROM items WHERE id = $1;$_$ LANGUAGE sql IMMUTABLE STRICT");
+			query.exec("CREATE FUNCTION calculate_inventory_balance() RETURNS trigger AS $$ DECLARE old_quantity numeric; BEGIN old_quantity := (SELECT balance FROM working WHERE time = (SELECT max(time) FROM working)); IF old_quantity IS NULL THEN old_quantity := 0; END IF; IF NEW.type = 'PURCHASE' OR NEW.type = 'MAKE' THEN NEW.balance := old_quantity + NEW.quantity; ELSE IF NEW.type = 'INVENTORY' THEN NEW.balance := NEW.quantity; ELSE IF NEW.type = 'USE' OR NEW.type = 'SALE' OR NEW.type = 'LOSS' THEN NEW.balance := old_quantity - NEW.quantity; END IF; END IF; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE FUNCTION item_history(bigint) RETURNS SETOF item_transaction_with_balance AS $_$ DECLARE r item_transaction_with_balance; BEGIN CREATE TEMPORARY TABLE working(time timestamp without time zone, item bigint, quantity numeric, cost numeric, vendor text, reason text, customer text, type text, balance numeric) ON COMMIT DROP; CREATE TRIGGER quantity_update BEFORE INSERT ON working FOR EACH ROW EXECUTE PROCEDURE calculate_inventory_balance(); INSERT INTO working SELECT time, item, quantity, cost, vendor, reason, customer, type, NULL AS balance FROM all_transactions WHERE item = $1 ORDER BY time ASC; FOR r IN SELECT time, item, quantity, cost, vendor, reason, customer, type, balance FROM working LOOP RETURN NEXT r; END LOOP; DROP TABLE working; RETURN; END; $_$ LANGUAGE plpgsql");
+			query.exec("CREATE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE FUNCTION log_make_update() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity <> OLD.roasted_quantity AND NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN WHILE i <= u LOOP INSERT INTO use VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE FUNCTION replace_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE FUNCTION subtract_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = quantity - NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE SEQUENCE files_id_seq START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1");
+			query.exec("ALTER TABLE files ALTER COLUMN id SET DEFAULT nextval('files_id_seq'::regclass)");
+			query.exec("ALTER TABLE items ALTER COLUMN id SET DEFAULT nextval('items_id_seq'::regclass)");
+			query.exec("ALTER TABLE ONLY files ADD CONSTRAINT file_pkey PRIMARY KEY (id)");
+			query.exec("ALTER TABLE ONLY items ADD CONSTRAINT items_pkey PRIMARY KEY (id)");
+			query.exec("ALTER TABLE ONLY lb_bag_conversion ADD CONSTRAINT lb_bag_conversion_item_key UNIQUE (item)");
+			query.exec("ALTER TABLE ONLY roasting_log ADD CONSTRAINT roasting_log_pkey PRIMARY KEY (\"time\", machine)");
+			query.exec("CREATE INDEX itemcategories ON items USING btree (category)");
+			query.exec("CREATE INDEX itemnames ON items USING btree (name)");
+			query.exec("CREATE INDEX roasting_log_index ON roasting_log USING btree (\"time\")");
+			query.exec("CREATE INDEX transactionitems ON transactions USING btree (item)");
+			query.exec("CREATE INDEX transactiontimes ON transactions USING btree (\"time\")");
+			query.exec("CREATE TRIGGER add_inventory_trigger AFTER INSERT ON purchase FOR EACH ROW EXECUTE PROCEDURE add_inventory()");
+			query.exec("CREATE TRIGGER add_inventory_trigger AFTER INSERT ON make FOR EACH ROW EXECUTE PROCEDURE add_inventory()");
+			query.exec("CREATE TRIGGER log_use_trigger AFTER INSERT ON roasting_log FOR EACH ROW EXECUTE PROCEDURE log_use()");
+			query.exec("CREATE TRIGGER replace_inventory_trigger AFTER INSERT ON inventory FOR EACH ROW EXECUTE PROCEDURE replace_inventory()");
+			query.exec("CREATE TRIGGER subtract_inventory_trigger AFTER INSERT ON loss FOR EACH ROW EXECUTE PROCEDURE subtract_inventory()");
+			query.exec("CREATE TRIGGER subtract_inventory_trigger AFTER INSERT ON sale FOR EACH ROW EXECUTE PROCEDURE subtract_inventory()");
+			query.exec("CREATE TRIGGER subtract_inventory_trigger AFTER INSERT ON use FOR EACH ROW EXECUTE PROCEDURE subtract_inventory()");
+			query.exec("ALTER TABLE ONLY item_files ADD CONSTRAINT item_files_item_fkey FOREIGN KEY (item) REFERENCES items(id)");
+			query.exec("ALTER TABLE ONLY transactions ADD CONSTRAINT transactions_item_fkey FOREIGN KEY (item) REFERENCES items(id)");
+			query.exec("INSERT INTO TypicaFeatures VALUES('base-features', TRUE, 1)");
+			query = query.invalidate();
+		};
+		query = new QSqlQuery();
+		/* A table keeps track of database versioning information. This table is created
+		   if required. */
+		query.exec("CREATE TABLE IF NOT EXISTS TypicaFeatures (feature TEXT PRIMARY KEY, enabled boolean, version bigint)");
+		/* At the moment everything we're interested in is covered in the base-features
+		   row, but this can be extended later if needed. Each row encodes if certain
+		database structures exist and what version of those structures exist. */
+		query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'base-features'");
+		if(query.next())
+		{
+			if(query.value(2) < 1)
+			{
+				DBCreateBase();
+			}
+		}
+		else
+		{
+			DBCreateBase();
+		}
         ]]>
     </program>
 </window>

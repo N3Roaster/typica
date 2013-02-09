@@ -29,37 +29,47 @@
 			</column>
 		</row>
 		<row>
-			<column>	
+			<column>
 				<button name="Batch Log" id="history" type="push" />
 			</column>
 		</row>
 		<row>
-			<column>	
-				<button name="New Cupping Session" id="createcupping" type="push" />
+			<column>
+				<button name="New Cupping Session" id="createcupping"
+type="push" />
 			</column>
 		</row>
 		<row>
-			<column>	
-				<button name="Join Cupping Session" id="joincupping" type="push" />
+			<column>
+				<button name="Join Cupping Session" id="joincupping" type="push"
+/>
 			</column>
 		</row>
 		<row>
-			<column>	
-				<button name="Summarize Cupping Session" id="sumcupping" type="push" />
+			<column>
+				<button name="Summarize Cupping Session" id="sumcupping"
+type="push" />
 			</column>
 		</row>
 		<row>
-			<column>	
-				<button name="Import Target Roast Profiles" id="target" type="push" />
+			<column>
+				<button name="View Target Roast Profiles" id="profilehistory"
+					type="push" />
 			</column>
 		</row>
 		<row>
-			<column>	
+			<column>
+				<button name="Import Target Roast Profiles" id="target"
+type="push" />
+			</column>
+		</row>
+		<row>
+			<column>
 				<button name="Invoice List" id="invoicelist" type="push" />
 			</column>
 		</row>
 		<row>
-			<column>	
+			<column>
 				<button name="Enter Green Coffee Sales" id="greensales" type="push" />
 			</column>
 		</row>
@@ -86,6 +96,10 @@
 			QSettings.setValue("database/dbname", "");
 			QSettings.setValue("database/user", "");
 			QSettings.setValue("database/password", "");
+		});
+		var profilehistory = findChildObject(this, 'profilehistory');
+		profilehistory.clicked.connect(function() {
+			createWindow("profilehistory");
 		});
 		var greensalesbutton = findChildObject(this, 'greensales');
 		greensalesbutton.clicked.connect(function() {

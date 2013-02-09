@@ -30,6 +30,7 @@
 	<include src="Windows/editfee.xml" />
 	<include src="Windows/optime.xml" />
 	<include src="Windows/greensales.xml" />
+	<include src="Windows/profilehistory.xml" />
 	<program>
 		var loggingWindow;
 		var currentBatchInfo;

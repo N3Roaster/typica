@@ -1,0 +1,133 @@
+<window id="profilehistory">
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Coffee:</label>
+			<sqldrop data="0" display="1" showdata="false" editable="false" id="coffees">
+				<query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
+			</sqldrop>
+			<stretch />
+		</layout>
+		<splitter type="horizontal" id="outersplitter">
+			<widget>
+				<layout type="vertical">
+					<sqlview id="profilelist" />
+				</layout>
+			</widget>
+			<widget>
+				<layout type="vertical">
+					<layout type="horizontal">
+						<button name="Set as Current Target Roast Profile"
+							id="setcurrent" type="push" />
+						<stretch />
+					</layout>
+					<splitter type="horizontal">
+						<measurementtable id="log" />
+						<graph id = "graph" />
+					</splitter>
+				</layout>
+			</widget>
+		</splitter>
+	</layout>
+	<menu name="Log">
+		<item id="showC">Display Celsius</item>
+		<item id="showF">Display Fahrenheit</item>
+		<separator />
+		<item id="ms">Millisecond view</item>
+		<item id="1s">1 Second View</item>
+		<item id="5s">5 Second View</item>
+		<item id="10s">10 Second View</item>
+		<item id="15s">15 Second View</item>
+		<item id="30s">30 Second View</item>
+		<item id="1m">1 Minute View</item>
+	</menu>
+	<program>
+	<![CDATA[
+		var profileList = findChildObject(this, 'profilelist');
+		var coffeelist = findChildObject(this, 'coffees');
+		var graph = findChildObject(this, 'graph');
+		var log = findChildObject(this, 'log');
+		var setCurrent = findChildObject(this, 'setcurrent');
+		setCurrent.enabled = false;
+		var currentProfileID;
+		setCurrent.clicked.connect(function() {
+			var query = new QSqlQuery();
+			query.prepare("INSERT INTO item_files VALUES('now', :coffee, :profile)");
+			query.bind(":coffee", coffeelist.currentData());
+			query.bind(":profile", "{" + currentProfileID + "}");
+			query.exec();
+			query = query.invalidate();
+			listProfiles(coffeelist.currentData());
+		});
+		var listProfiles = function(roastedID) {
+			q = "SELECT time, files[1] AS profile FROM item_files WHERE item =";
+			q += roastedID;
+			q += " ORDER BY time DESC";
+			profileList.setQuery(q);
+		};
+		var displayProfile = function(profileID) {
+			currentProfileID = profileID;
+			setCurrent.enabled = true;
+			var query = new QSqlQuery();
+			query.prepare("SELECT file FROM files WHERE id = :id");
+			query.bind(":id", profileID);
+			query.exec();
+			if(query.next())
+			{
+				var buffer = new QBuffer(query.value(0));
+				var input = new XMLInput(buffer, 1);
+				input.newTemperatureColumn.connect(log.setHeaderData);
+				input.newAnnotationColumn.connect(log.setHeaderData);
+				input.measure.connect(graph.newMeasurement);
+				input.measure.connect(log.newMeasurement);
+				var lc;
+				input.lastColumn.connect(function(c) {
+					lc = c;
+				});
+				input.annotation.connect(function(annotation, mc, nc) {
+					for(var i = mc; i < lc; i++) {
+						log.newAnnotation(annotation, i, nc);
+					}
+				});
+				input.input();
+			}
+			query = query.invalidate();
+		};
+		coffeelist['currentIndexChanged(int)'].connect(function() {
+			listProfiles(coffeelist.currentData());
+			setCurrent.enabled = false;
+			log.clear();
+			graph.clear();
+		});
+		listProfiles(coffeelist.currentData());
+		profileList.openEntryRow.connect(function(row) {
+			log.clear();
+			graph.clear();
+			displayProfile(profileList.data(row, 1));
+		});
+		var v1 = findChildObject(this, 'ms');
+        v1.triggered.connect(log.LOD_ms);
+        var v2 = findChildObject(this, '1s');
+        v2.triggered.connect(log.LOD_1s);
+        var v3 = findChildObject(this, '5s');
+        v3.triggered.connect(log.LOD_5s);
+        var v4 = findChildObject(this, '10s');
+        v4.triggered.connect(log.LOD_10s);
+        var v5 = findChildObject(this, '15s');
+        v5.triggered.connect(log.LOD_15s);
+        var v6 = findChildObject(this, '30s');
+        v6.triggered.connect(log.LOD_30s);
+        var v7 = findChildObject(this, '1m');
+        v7.triggered.connect(log.LOD_1m);
+		var showC = findChildObject(this, 'showC');
+		showC.triggered.connect(function() {
+			log.setDisplayUnits(TemperatureDisplay.Celsius);
+			graph.showC();
+		});
+		var showF = findChildObject(this, 'showF');
+		showF.triggered.connect(function() {
+			log.setDisplayUnits(TemperatureDisplay.Fahrenheit);
+			graph.showF();
+		});
+	]]>
+	</program>
+</window>

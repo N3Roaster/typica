@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.4.3
+Name=Typica
+GenericName=Coffee Roasting
+Comment=Data acquisition, reporting, and management for coffee roasters
+Exec=typica
+Icon=typica
+Terminal=false
+Type=Application
+Categories=Coffee;Qt;
+StartupNotify=true

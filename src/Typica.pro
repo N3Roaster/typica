@@ -24,3 +24,4 @@ RESOURCES += \
 
 RC_FILE = typica.rc
 ICON = resources/icons/appicons/logo.icns
+QMAKE_INFO_PLIST = resources/Info.plist

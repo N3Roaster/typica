@@ -1541,9 +1541,9 @@ engine->globalObject().setProperty("QLineEdit", value);
 @ The constructor is trivial.
 
 @<Functions for scripting@>=
-QScriptValue constructQLineEdit(QScriptContext *context, QScriptEngine *engine)
+QScriptValue constructQLineEdit(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QLineExit(text));
+	QScriptValue object = engine->newQObject(new QLineEdit());
 	setQLineEditProperties(object, engine);
 	return object;
 }

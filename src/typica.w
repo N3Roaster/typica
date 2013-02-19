@@ -22,7 +22,7 @@
 \mark{\noexpand\nullsec0{A Note on Notation}}
 \def\pn{Typica}
 \def\filebase{typica}
-\def\version{1.4.3 \number\year-\number\month-\number\day}
+\def\version{1.5 \number\year-\number\month-\number\day}
 \def\years{2007--2013}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
@@ -60,10 +60,10 @@
 	distribute, sublicense, and/or sell copies of the Software, and to permit
 	persons to whom the Software is furnished to do so, subject to the following
 	conditions:\medskip
-	
+
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.\medskip
-	
+
 	THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -71,24 +71,24 @@
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 	IN THE SOFTWARE.
-	
+
 	\bigskip\noindent Parts of \pn{} are from QextSerialPort which is used under the
 	MIT license as follows:
-	
+
 	\bigskip\noindent Copyright \copyright\ 2000--2003 Wayne Roth
-	
+
     \noindent Copyright \copyright\ 2004--2007 Stefan Sander
-    
+
 	\noindent Copyright \copyright\ 2007 Michal Policht
-    
+
 	\noindent Copyright \copyright\ 2008 Brandon Fosdick
-    
+
 	\noindent Copyright \copyright\ 2009--2010 Liam Staskawicz
-    
+
 	\noindent Copyright \copyright\ 2011 Debao Zhang
-    
+
     \bigskip\noindent Web: http://code.google.com/p/qextserialport/
-    
+
     \bigskip\noindent Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the
     ``Software''), to deal in the Software without restriction, including
@@ -96,10 +96,10 @@
     distribute, sublicense, and/or sell copies of the Software, and to
     permit persons to whom the Software is furnished to do so, subject to
     the following conditions:
-    
+
     The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
-    
+
     THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -833,6 +833,7 @@ generated file empty.
 @<LinearSplineInterpolator Implementation@>@/
 @<LinearSplineInterpolationConfWidget implementation@>@/
 @<TranslationConfWidget implementation@>@/
+@<FreeAnnotationConfWidget implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -1141,7 +1142,7 @@ settings and restoring the window geometry from these settings.
 
 As of version 1.4 window geometry management is provided for all windows. The
 |restoreSizeAndPosition()| and |saveSizeAndPosition()| methods should be
-considered depreciated. 
+considered depreciated.
 
 @<Class declarations@>=
 class ScriptQMainWindow : public QMainWindow@/
@@ -1709,7 +1710,7 @@ QScriptValue constructQBoxLayout(QScriptContext *context,
 void setQBoxLayoutProperties(QScriptValue value, QScriptEngine *engine);
 QScriptValue QBoxLayout_addLayout(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QBoxLayout_addWidget(QScriptContext *context, QScriptEngine *engine);
-								  
+
 @ The script constructor must be passed to the scripting engine.
 
 @<Set up the scripting engine@>=
@@ -1815,7 +1816,7 @@ QScriptValue QBoxLayout_addWidget(QScriptContext *context, QScriptEngine *)
 \noindent The |QAction| class is used in \pn{} to create menu items and respond
 to the selection of these items. Three functions are required for our scripting
 needs with regard to this class.
-								  
+
 @<Function prototypes for scripting@>=
 QScriptValue constructQAction(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QAction_setShortcut(QScriptContext *context,
@@ -1945,7 +1946,7 @@ QScriptValue QFileDialog_getSaveFileName(QScriptContext *context,
 			retval = QScriptValue(engine,
 							      QFileDialog::getSaveFileName(widget, caption,
 								                               dir, "", 0, 0));
-		
+
 			setQFileDialogProperties(retval, engine);
 		}
 		else
@@ -3168,7 +3169,7 @@ are not created directly.
 @<Function prototypes for scripting@>=
 void setQAbstractScrollAreaProperties(QScriptValue value,
                                       QScriptEngine *engine);
-									  
+
 @ The implementation of this is simple.
 
 @<Functions for scripting@>=
@@ -3494,7 +3495,7 @@ QScriptValue setFont(QScriptContext *context, QScriptEngine *engine);
 QScriptValue annotationFromRecord(QScriptContext *context,
                                   QScriptEngine *engine);
 QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *engine);
-									
+
 @ These functions are passed to the scripting engine.
 
 @<Set up the scripting engine@>=
@@ -3771,7 +3772,7 @@ and reorganized.\endanger
 
 @<Function prototypes for scripting@>=
 QScriptValue createWindow(QScriptContext *context, QScriptEngine *engine);
-void addLayoutToWidget(QDomElement element, QStack<QWidget*> *widgetStack, 
+void addLayoutToWidget(QDomElement element, QStack<QWidget*> *widgetStack,
                        QStack<QLayout*> *layoutStack);
 void addLayoutToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                        QStack<QLayout *> *layoutStack);
@@ -4046,7 +4047,7 @@ are supported. The first two resolve to |QBoxLayout| layouts, {\tt grid}
 resolves to a |QGridLayout|, and {\tt stack} resolves to a |QStackedLayout|.
 
 @<Functions for scripting@>=
-void addLayoutToWidget(QDomElement element, QStack<QWidget*> *widgetStack, 
+void addLayoutToWidget(QDomElement element, QStack<QWidget*> *widgetStack,
                        QStack<QLayout*> *layoutStack)
 {
 	if(element.hasAttribute("type"))
@@ -7413,7 +7414,7 @@ QScriptValue constructMeasurementTimeOffset(QScriptContext *context,@|
                                             QScriptEngine *engine);
 void setMeasurementTimeOffsetProperties(QScriptValue value,
                                         QScriptEngine *engine);
-										   
+
 @ The scripting engine must be informed of the constructor.
 
 @<Set up the scripting engine@>=
@@ -8782,7 +8783,7 @@ QScriptValue ZoomLog_lastTime(QScriptContext *context, QScriptEngine *engine)
 	ZoomLog *self = getself<@[ZoomLog *@]>(context);
 	return QScriptValue(engine, self->lastTime(argument<int>(0, context)));
 }
-		
+
 @* A model for roasting data.
 
 \noindent Qt provides a tool called the model view architecture. This provides a
@@ -8914,7 +8915,7 @@ void MeasurementModel::newMeasurement(Measurement measure, int tempcolumn)
 	emit rowChanged(insertion);
 	delete temp;
 }
-	
+
 @ To find the insertion point for new measurements we use a binary search of the
 existing data. The code below is a direct adaptation of Program B\nfnote{%
 \underbar{The Art of Computer Programming} Volume 3 Sorting and Searching 2nd
@@ -9404,7 +9405,7 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 					default:
 						break;
 				}
-			} 
+			}
 			return QVariant(row->at(index.column()).toString());
 		}
 	}
@@ -9757,7 +9758,7 @@ because there were no shops in Racine that could sell a simple dual digital
 count up timer at a time when my first timer was malfunctioning. After
 attempting to purchase a replacement device at several stores that have sold
 such devices in the past, I decided to spend a couple hours writing my own
-timer. 
+timer.
 
 For historical reasons, the |TimerDisplay| class is considerably more functional
 than \pn{} requires. Those needing only a digital timer can extract the code for
@@ -10207,7 +10208,7 @@ class PackLayout : public QLayout@/
 };
 
 @ The interesting portion of this class is in |doLayout()|. This function goes
-over the items in the layout and sets the geometry appropriately. 
+over the items in the layout and sets the geometry appropriately.
 
 The seemingly odd choice of returning |y| at the end of this function (indeed of
 having a return value at all) is to allow this function to provide the return
@@ -10536,7 +10537,7 @@ WidgetDecorator::WidgetDecorator(QWidget *widget, const QString &labeltext,
 	@<Adjust the decoration width@>@;
 	@<Pack widgets into the layout@>@;
 }
-	
+
 @ The decoration is a |QGraphicsView|. To get this to look right, we need to
 make sure there aren't any scroll bars and there shouldn't be a frame
 surrounding it. While we're at it, we allow it to accept clicks, though this
@@ -12368,16 +12369,16 @@ int main(int argc, char **argv)@/
 	Application app(*c, argv);
 	@<Set up icons@>@;
 	@<Set up fonts@>@;
-	
+
 	QSettings settings;
-	
+
 	@<Register device configuration widgets@>@;
 	@<Prepare the database connection@>@;
 	@<Load the application configuration@>@;
 	@<Set up the scripting engine@>@;
 	app.engine = engine;
 	@<Find and evaluate starting script@>@;
-	
+
 	int retval = app.exec();
 	delete engine;
 	return retval;@/
@@ -13216,7 +13217,7 @@ QScriptValue QTextEdit_print(QScriptContext *context, QScriptEngine *)
 	QTextEdit *self = getself<QTextEdit *>(context);
 	QTextDocument *document = self->document();
 	QPrinter printer;
-	
+
 	QPrintDialog printwindow(&printer, self);
 	if(printwindow.exec() != QDialog::Accepted)
 	{
@@ -14580,7 +14581,7 @@ QScriptValue QAbstractItemModel_data(QScriptContext *context, QScriptEngine *eng
 QScriptValue QAbstractItemModel_index(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QAbstractItemModel_rowCount(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QAbstractItemModel_hasChildren(QScriptContext *context, QScriptEngine *engine);
-	
+
 @ The constructor is trivial.
 
 @<Functions for scripting@>=
@@ -15149,14 +15150,20 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
 	NodeInserter *basicButtonInserter = new NodeInserter(tr("Annotation Button"), tr("Annotation Button"), "annotationbutton");
 	NodeInserter *countingButtonInserter = new NodeInserter(tr("Counting Button"), tr("Counting Button"), "reconfigurablebutton");
 	NodeInserter *spinBoxInserter = new NodeInserter(tr("Numeric Entry"), tr("Numeric Entry"), "annotationspinbox");
+	NodeInserter *freeAnnotationInserter = new NodeInserter(tr("Free Text"),
+	                                                        tr("Free Text"),
+	                                                        "freeannotation");
 	annotationMenu->addAction(basicButtonInserter);
 	annotationMenu->addAction(countingButtonInserter);
 	annotationMenu->addAction(spinBoxInserter);
+	annotationMenu->addAction(freeAnnotationInserter);
 	connect(basicButtonInserter, SIGNAL(triggered(QString, QString)),
 	        this, SLOT(insertChildNode(QString, QString)));
 	connect(countingButtonInserter, SIGNAL(triggered(QString, QString)),
 	        this, SLOT(insertChildNode(QString, QString)));
 	connect(spinBoxInserter, SIGNAL(triggered(QString, QString)),
+	        this, SLOT(insertChildNode(QString, QString)));
+	connect(freeAnnotationInserter, SIGNAL(triggered(QString, QString)),
 	        this, SLOT(insertChildNode(QString, QString)));
 	addAnnotationControlButton->setMenu(annotationMenu);
 	layout->addWidget(addAnnotationControlButton);
@@ -15190,7 +15197,7 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
 	connect(id, SIGNAL(valueChanged(int)), this, SLOT(updateRoasterId(int)));
 	setLayout(layout);
 }
-	
+
 @ Iterating over the configuration data associated with the current node is
 required in nearly every configuration widget. The specifics of the loop
 vary, but there is likely a better way to generalize that. Until then,
@@ -15452,7 +15459,7 @@ app.registerDeviceConfigurationWidget("nidaqmxbase9211series",
 	NiDaqMxBase9211ConfWidget::staticMetaObject);
 app.registerDeviceConfigurationWidget("ni9211seriestc",
 	Ni9211TcConfWidget::staticMetaObject);
-	
+
 @ Furthermore, we should create the NodeInserter objects for adding top level
 nodes to the configuration. Preferably we would only allow top level nodes to
 be inserted when all prerequisite software is available.
@@ -16639,7 +16646,7 @@ inserter = new NodeInserter(tr("Modbus RTU Port"), tr("Modbus RTU Port"), "modbu
 topLevelNodeInserters.append(inserter);
 #endif
 
-@* Configuration of Annotation Controls.
+@** Configuration of Annotation Controls.
 
 \noindent Aside from the details of hardware devices, the logging view must
 also be able to set up log annotation controls. A few different control types
@@ -16907,6 +16914,8 @@ void NoteSpinConfWidget::updatePosttext(const QString &text)
 
 @<Register device configuration widgets@>=
 app.registerDeviceConfigurationWidget("annotationspinbox", NoteSpinConfWidget::staticMetaObject);
+
+@i freeannotation.w
 
 @** Communicating with a Device through Modbus RTU.
 
@@ -17362,7 +17371,7 @@ Messages with a function number of 0x03 or 0x04 will be at least 7 bytes in
 length with the total length determined by the sum of 5 and the value in the
 fifth byte. Messages with a function number of 0x05, 0x06, or 0x10 will be 8
 bytes in length. Messages with a function number greater than 0x80 will be five
-bytes in length. 
+bytes in length.
 
 @<Check Modbus RTU message size@>=
 if(responseBuffer.size() < 5)
@@ -17480,7 +17489,7 @@ void ModbusRTUDevice::outputSV(double value)
 	char *valBytes = (char*)&outval;
 	message.append(valBytes[1]);
 	message.append(valBytes[0]);
-	queueMessage(message, this, "ignore(QByteArray)");	
+	queueMessage(message, this, "ignore(QByteArray)");
 }
 
 @ We don't care about the response when sending a new SV.
@@ -18144,7 +18153,7 @@ LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceT
 			@<Convert numeric array literal to list@>@;
 			int column = 0;
 			@<Populate model column from list@>@;
-			
+
 		}
 		else if(node.attribute("name") == "destinationvalues")
 		{
@@ -18183,7 +18192,7 @@ for(int i = 0; i < itemList.size(); i++)
 {
 	knotmodel->setData(knotmodel->index(i, column),
 	                   QVariant(itemList.at(i).toDouble()),
-                       Qt::DisplayRole);   
+                       Qt::DisplayRole);
 }
 
 @ When data in the table is changed we simply overwrite any previously saved

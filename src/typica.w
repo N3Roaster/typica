@@ -1521,6 +1521,42 @@ void setQLabelProperties(QScriptValue value, QScriptEngine *engine)
 	setQFrameProperties(value, engine);
 }
 
+@* Scripting QLineEdit.
+
+\noindent Similarly, we may want to allow line edits in interfaces defined
+through the host environment. For example, this is used for the free text
+annotation control for roasters this has been configured on.
+
+@<Function prototypes for scripting@>=
+void setQLineEditProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue constructQLineEdit(QScriptContext *context, QScriptEngine *engine);
+
+@ The constructor must be passed to the host environment.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQLineEdit);
+value = engine->newQMetaObject(&QLineEdit::staticMetaObject, constructor);
+engine->globalObject().setProperty("QLineEdit", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQLineEdit(QScriptContext *context, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QLineExit(text));
+	setQLineEditProperties(object, engine);
+	return object;
+}
+
+@ At present all of the QLineEdit functionality exposed through this interface
+is provided automatically through the meta-object system.
+
+@<Functions for scripting@>=
+void setQLineEditProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQWidgetProperties(value, engine);
+}
+
 @* Scripting QSplitter.
 
 \noindent The |QSplitter| class is one of the main classes used for user
@@ -5422,6 +5458,10 @@ else if(className == "QTextEdit")
 else if(className == "QWebView")
 {
 	setQWebViewProperties(value, engine);
+}
+else if(className == "QLineEdit")
+{
+	setQLineEditProperties(value, engine);
 }
 
 @ In the list of classes, the SaltTable entry is for a class which does not

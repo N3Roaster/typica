@@ -1,0 +1,11 @@
+*.tex
+*.user
+*.directory
+moc_*.cpp
+qrc_*.cpp
+typica.c
+*.idx
+*.log
+*.pdf
+*.scn
+*.toc

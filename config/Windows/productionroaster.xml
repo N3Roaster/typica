@@ -109,7 +109,7 @@
 						for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
 							var deviceIndex = configModel.index(j, 0, driverIndex);
 							var deviceReference = configModel.referenceElement(configModel.data(deviceIndex, 32));
-							if(deviceReference.driver == "nidaqmxbase9211series" || deviceReference.driver == "nidaqmx9211series") {								
+							if(deviceReference.driver == "nidaqmxbase9211series" || deviceReference.driver == "nidaqmx9211series") {
 								var device = new DAQ(deviceReference.deviceID, driverReference.driver);
 								nidevices.push(device);
 								var DAQChannels = 0;
@@ -117,7 +117,7 @@
 									for(var k = 0; k < configModel.rowCount(deviceIndex); k++) {
 										var channelIndex = configModel.index(k, 0, deviceIndex);
 										var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
-										if(channelReference.driver == "ni9211seriestc")	{											
+										if(channelReference.driver == "ni9211seriestc")	{
 											var channel;
 											if(channelReference.type == "J") {
 												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeJ);
@@ -171,7 +171,7 @@
 								}
 							}
 							else if(deviceReference.driver == "nidaqmxtc01")
-							{						
+							{
 								var device = new DAQ(deviceReference.deviceID, "nidaqmx");
 								var channel;
 								if(deviceReference.type == "J")
@@ -305,6 +305,21 @@
 					annotationPanel.addLayout(layout);
 					annotationButtons.push(spinbox);
 					tabControls.push(spinbox);
+				}
+				else if(driverReference.driver == "freeannotation")
+				{
+					var layout = new QBoxLayout;
+					var label = new QLabel(driverReference.labeltext);
+					var control = new QLineEdit;
+					layout.addWidget(label, 0, 2);
+					layout.addWidget(control, 0, 1);
+					annotationPanel.addLayout(layout);
+					tabControls.push(control);
+					control.returnPressed.connect(function() {
+						for(var i = window.firstTempColumn; i < window.annotationColumn; i++) {
+							log.newAnnotation(control.text, i, window.annotationColumn);
+						}
+					});
 				}
 				else if(driverReference.driver == "linearspline")
 				{
@@ -660,6 +675,8 @@
 			for(var i = 0; i < channels.length; i++) {
 				log.addToCurrentColumnSet(c + i + 1);
 			}
+			window.firstTempColumn = c + 1;
+			window.annotationColumn = c + columnNames.length + 1;
 		};
 		var saveMenu = findChildObject(this, 'save');
         saveMenu.triggered.connect(function() {

@@ -9,3 +9,4 @@ typica.c
 *.pdf
 *.scn
 *.toc
+Typica-build*

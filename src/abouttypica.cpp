@@ -1,9 +1,9 @@
-/*224:*/
+/*228:*/
 #line 36 "./abouttypica.w"
 
 #include "abouttypica.h"
 
-/*225:*/
+/*229:*/
 #line 45 "./abouttypica.w"
 
 AboutTypica::AboutTypica():QMainWindow(NULL)
@@ -20,7 +20,7 @@ page->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 connect(page,SIGNAL(linkClicked(QUrl)),this,SLOT(linkClicked(QUrl)));
 }
 
-/*:225*//*226:*/
+/*:229*//*230:*/
 #line 63 "./abouttypica.w"
 
 void AboutTypica::linkClicked(const QUrl&url)
@@ -42,10 +42,10 @@ else
 QDesktopServices::openUrl(url);
 }
 }
-#line 5656 "./typica.w"
+#line 5697 "./typica.w"
 
-/*:226*/
+/*:230*/
 #line 39 "./abouttypica.w"
 
 
-/*:224*/
+/*:228*/

@@ -1,4 +1,4 @@
-/*223:*/
+/*227:*/
 #line 12 "./abouttypica.w"
 
 #include <QMainWindow> 
@@ -22,4 +22,4 @@ void linkClicked(const QUrl&url);
 
 #endif
 
-/*:223*/
+/*:227*/

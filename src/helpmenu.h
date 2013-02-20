@@ -1,4 +1,4 @@
-/*167:*/
+/*171:*/
 #line 16 "./helpmenu.w"
 
 #include <QMenu> 
@@ -17,4 +17,4 @@ void displayAboutTypica();
 
 #endif
 
-/*:167*/
+/*:171*/

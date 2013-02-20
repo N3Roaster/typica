@@ -12533,6 +12533,7 @@ void SqlConnectionSetup::testConnection()
 	QSqlDatabase database =
 		QSqlDatabase::addDatabase(driver->itemData(driver->currentIndex()).
 		                          toString());
+	database.setConnectOptions("application_name=Typica");
 	database.setHostName(hostname->text());
 	database.setDatabaseName(dbname->text());
 	database.setUserName(user->text());
@@ -12573,6 +12574,7 @@ help.
 @<Try connecting to the database@>=
 QSqlDatabase database =
 	QSqlDatabase::addDatabase(settings.value("database/driver").toString());
+database.setConnectOptions("application_name=Typica");
 database.setHostName(settings.value("database/hostname").toString());
 database.setDatabaseName(settings.value("database/dbname").toString());
 database.setUserName(settings.value("database/user").toString());

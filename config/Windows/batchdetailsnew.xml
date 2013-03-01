@@ -4,6 +4,7 @@
             <button type="push" id="target" name="Load profile as target" />
 			<button type="push" id="viewprofile" name="View profile" />
 			<button type="push" id="compare" name="Compare profile" />
+			<button type="push" id="edit" name="Edit" />
         </layout>
         <webview id="view" />
     </layout>
@@ -14,10 +15,22 @@
 			var fileID;
 			var target = findChildObject(this, 'target');
 			var compare = findChildObject(this, 'compare');
+			var edit = findChildObject(this, 'edit');
+			edit.enabled = false;
 			if(typeof(navigationwindow.loggingWindow) == "undefined") {
 				compare.enabled = false;
 				target.enabled = false;
 			}
+			var tableReference;
+			var rowReference;
+			var batchTime;
+			var machine;
+			var approval;
+			var annotation;
+			edit.clicked.connect(function() {
+				var editWindow = createWindow("editBatchDetails");
+				editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation);
+			});
 			compare.clicked.connect(function() {
 				var query = new QSqlQuery;
 				query.prepare("SELECT file, name FROM files WHERE id = :id");
@@ -135,6 +148,8 @@
 				query = query.invalidate();
 			});
 			window.loadData = function(table, row) {
+				tableReference = table;
+				rowReference = row;
 				var buffer = new QBuffer;
 				buffer.open(3);
 				var output = new XmlWriter(buffer);
@@ -157,7 +172,8 @@
 				output.writeAttribute("style", "float: left");
 				output.writeStartElement("p");
 				output.writeTextElement("strong", "Roasted On: ");
-				output.writeTextElement("span", table.data(row, 0));
+				batchTime = table.data(row, 0);
+				output.writeTextElement("span", batchTime);
 				output.writeEndElement();
 				output.writeStartElement("p");
 				output.writeTextElement("strong", "Batch Duration: ");
@@ -177,10 +193,13 @@
 				output.writeStartElement("tbody");
 				var query = new QSqlQuery();
 				query.prepare("SELECT unroasted_id, unroasted_quantity, approval, files, annotation FROM roasting_log WHERE time = :time AND machine = :machine");
-				query.bind(":time", table.data(row, 0));
-				query.bind(":machine", table.data(row, 1));
+				query.bind(":time", batchTime);
+				machine = table.data(row, 1);
+				query.bind(":machine", machine);
 				query.exec();
 				query.next();
+				approval = query.value(2);
+				annotation = query.value(4);
 				var items = sqlToArray(query.value(0));
 				var quantities = sqlToArray(query.value(1));
 				var nameQuery = new QSqlQuery();
@@ -235,11 +254,12 @@
 				output.writeEndElement();
 				output.writeStartElement("p");
 				output.writeTextElement("strong", "Approved: ");
-				output.writeCharacters(query.value(2));
+				output.writeCharacters(approval);
 				output.writeEndElement();
 				output.writeStartElement("p");
 				output.writeTextElement("strong", "Files: ");
-				output.writeCharacters(query.value(3));				output.writeEndElement();
+				output.writeCharacters(query.value(3));
+				output.writeEndElement();
 				output.writeStartElement("p");
 				output.writeTextElement("strong", "Annotations:");
 				var files = sqlToArray(query.value(3));
@@ -299,7 +319,7 @@
 				}
 				output.writeEndElement();
 				output.writeEndElement();
-				output.writeCharacters(query.value(4));
+				output.writeCharacters(annotation);
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeEndElement();
@@ -307,6 +327,7 @@
 				dataView.setContent(buffer);
 				buffer.close();
 				query = query.invalidate();
+				edit.enabled = true;
 			};
         ]]>
     </program>

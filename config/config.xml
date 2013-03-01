@@ -31,6 +31,7 @@
 	<include src="Windows/optime.xml" />
 	<include src="Windows/greensales.xml" />
 	<include src="Windows/profilehistory.xml" />
+	<include src="Windows/editbatchdetails.xml" />
 	<program>
 		var loggingWindow;
 		var currentBatchInfo;
@@ -42,4 +43,3 @@
 		navwindow.windowTitle = "Typica - Choose Your Path";
 	</program>
 </application>
-		

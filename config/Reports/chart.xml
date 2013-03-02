@@ -113,6 +113,8 @@
                 output.writeEndElement();
                 query.exec("ABORT");
                 output.writeEndElement();
+				output.writeStartElement("p");
+				output.writeAttribute("style", "page-break-inside: avoid");
                 output.writeStartElement("svg");
                 output.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
                 output.writeAttribute("width", "7.5in");
@@ -326,7 +328,7 @@
                         output.writeEndElement();
                     }
                     pos++;
-                }            
+                }
                 output.writeEndElement();
                 i = 0;
                 while(i <= maxy1)
@@ -422,7 +424,7 @@
                     {
                         i = days - 1;
                     }
-                }            
+                }
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(0,0,0)");
                 output.writeAttribute("x", "45");
@@ -493,6 +495,7 @@
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
+				output.writeEndElement();
                 output.writeEndDocument();
                 view.setContent(buffer);
                 buffer.close();

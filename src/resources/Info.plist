@@ -7,7 +7,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Typica 1.4.3</string>
+	<string>Typica 1.5.0</string>
 	<key>CFBundleSignature</key>
 	<string>@TYPEINFO@</string>
 	<key>CFBundleExecutable</key>
@@ -17,9 +17,9 @@
 	<key>CFBundleDisplayName</key>
 	<string>Typica</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4.3</string>
+	<string>1.5.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.4.3</string>
+	<string>1.5.0</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2007–2013 Neal Wilson</string>
 </dict>

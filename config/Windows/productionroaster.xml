@@ -677,7 +677,7 @@
 			}
 			window.firstTempColumn = c + 1;
 			window.annotationColumn = c + columnNames.length + 1;
-		}(0); //Immediate setup.
+		}
 		var saveMenu = findChildObject(this, 'save');
         saveMenu.triggered.connect(function() {
             var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
@@ -720,7 +720,7 @@
             var bwindow = createWindow("batchWindow");
             bwindow.windowTitle = "Typica - New Batch";
         });
-
+		window.postLoadColumnSetup(0);
 		]]>
     </program>
 </window>

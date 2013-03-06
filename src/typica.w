@@ -8217,7 +8217,10 @@ The first measurement is always added to each model.
 @<ZoomLog Implementation@>=
 void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 {
-	@<Synthesize measurements for slow hardware@>@;
+	if(measure.time() != QTime(0, 0, 0, 0))
+	{
+		@<Synthesize measurements for slow hardware@>@;
+	}
 	model_ms->newMeasurement(measure, tempcolumn);
 	if(lastMeasurement.contains(tempcolumn))
 	{

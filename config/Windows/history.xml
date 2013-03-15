@@ -4,7 +4,7 @@
     </layout>
     <program>
         <![CDATA[
-			var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration FROM roasting_log ORDER BY time DESC";
+			var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration, annotation FROM roasting_log ORDER BY time DESC";
 			var table = findChildObject(this, 'table');
 			table.setQuery(q);
 			table.hideColumn(1);

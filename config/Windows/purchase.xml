@@ -33,8 +33,6 @@
                     <column>
                         <line validator="numeric" id="quantity" />
                     </column>
-                    <column />
-                    <column><label>Unit:</label></column>
                     <column>
                         <sqldrop data="0" display="0" showdata="false" editable="false" id="units">
                             <query>SELECT * FROM (VALUES('Lb'),('Kg')) AS q (unit)</query>

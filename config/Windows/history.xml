@@ -5,7 +5,6 @@
     <program>
         <![CDATA[
 			var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration FROM roasting_log ORDER BY time DESC";
-			//var q = "SELECT time, name, unroasted_total_quantity AS green, roasted_quantity AS roasted, weight_loss AS loss, duration FROM short_log ORDER BY time DESC";
 			var table = findChildObject(this, 'table');
 			table.setQuery(q);
 			table.hideColumn(1);
@@ -13,33 +12,6 @@
 				var details = createWindow("batchDetails");
 				details.loadData(table, arg);
 			});
-			/*
-			table.openEntry.connect(function(arg) {
-				var details = createWindow("batchDetails");
-				details.windowTitle = 'Typica - Batch Details';
-				q = "SELECT time, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity, roasted_quantity, duration, approval, files FROM roasting_log WHERE time = :time";
-				query = new QSqlQuery();
-                query.prepare(q);
-				query.bind(":time", arg);
-				query.exec();
-				query.next();
-				var timefield = findChildObject(details, 'time');
-				timefield.text = query.value(0);
-				var namefield = findChildObject(details, 'name');
-				namefield.text = query.value(1);
-				var greenfield = findChildObject(details, 'green');
-				greenfield.text = query.value(2);
-				var roastedfield = findChildObject(details, 'roasted');
-				roastedfield.text = query.value(3);
-				var durationfield = findChildObject(details, 'duration');
-				durationfield.text = query.value(4);
-				var approvalfield = findChildObject(details, 'approval');
-				approvalfield.text = query.value(5);
-				var filesfield = findChildObject(details, 'files');
-				filesfield.text = query.value(6);
-                query = query.invalidate();
-			});
-			*/
         ]]>
     </program>
 </window>

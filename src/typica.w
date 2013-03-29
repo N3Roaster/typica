@@ -5703,7 +5703,9 @@ temperature and the time at which that measurement was taken.
 
 Measurement times are represented as instances of |QTime|.
 
-The declaration of |Measurement| is reasonably straightforward. Measurements
+@i units.w
+
+@ The declaration of |Measurement| is reasonably straightforward. Measurements
 will often be passed around to a number of different objects through the signals
 and slots mechanism of Qt. The simplest way to make this work is to provide a
 copy constructor and an assignment operator.

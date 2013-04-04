@@ -15,5 +15,9 @@
         <file>resources/html/about.html</file>
         <file>resources/html/style.css</file>
         <file>resources/fonts/entypo.ttf</file>
+        <file>resources/fonts/texgyrepagella-bold.otf</file>
+        <file>resources/fonts/texgyrepagella-bolditalic.otf</file>
+        <file>resources/fonts/texgyrepagella-italic.otf</file>
+        <file>resources/fonts/texgyrepagella-regular.otf</file>
     </qresource>
 </RCC>

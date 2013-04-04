@@ -12441,11 +12441,23 @@ app.setWindowIcon(QIcon(":/resources/icons/appicons/logo.svg"));
 @ Similarly some elements make use of a special font which is loaded from
 resource data.
 
+There has been a report of a bug which I have not been able to reproduce and
+which the original reporter has not yet gotten back to me with the results of
+a test, so I have opted for an alternate approach which does not preclude the
+use of the earlier plan but which may solve the matter. This brings in the
+TeX Gyre Pagella font and sets this as the default standard font for all web
+views.
+
 @<Set up fonts@>=
 QFile entypo(":/resources/fonts/entypo.ttf");
 entypo.open(QIODevice::ReadOnly);
 QFontDatabase::addApplicationFontFromData(entypo.readAll());
 entypo.close();
+QFontDatabase::addApplicationFont(":/resources/fonts/texgyrepagella-regular.otf");
+QFontDatabase::addApplicationFont(":/resources/fonts/texgyrepagella-bold.otf");
+QFontDatabase::addApplicationFont(":/resources/fonts/texgyrepagella-bolditalic.otf");
+QFontDatabase::addApplicationFont(":/resources/fonts/texgyrepagella-italic.otf");
+QWebSettings::globalSettings()->setFontFamily(QWebSettings::StandardFont, "Tex Gyre Pagella");
 
 @ Some widgets provided by \pn{} require access to a database in order to work.
 To simplify using these widgets, the application will request information

@@ -12284,14 +12284,21 @@ void SqlComboBox::addSqlOptions(QString query)
 	delete dbquery;
 }
 
-@ The constructor only needs to initialize some private member data. The
-destructor has even less to do.
+@ The constructor initializes some private member data. A size policy is also
+set on the pop up. This allows the pop up to appear wider than the combo box to
+allow more data to appear. On Linux this appears to also change the text elide
+mode to something that is conveniently more appropriate for the use cases in
+Typica. Note that this was not enough of a change to force the pop up to be
+wide enough to contain all of the text for especially long items, but if the
+combo box is wide enough the pop up will match that width.
+
+The destructor is trivial.
 
 @<SqlComboBox Implementation@>=
 SqlComboBox::SqlComboBox() :
 	dataColumn(0), displayColumn(0), dataColumnShown(false)
 {
-	/* Nothing needs to be done here. */
+	view()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
 SqlComboBox::~SqlComboBox()

@@ -1144,28 +1144,37 @@ As of version 1.4 window geometry management is provided for all windows. The
 |restoreSizeAndPosition()| and |saveSizeAndPosition()| methods should be
 considered depreciated.
 
+Version 1.6 adds a new property for handling the |windowModified| property
+such that an appropriate prompt is provided to confirm or cancel close events.
+
 @<Class declarations@>=
 class ScriptQMainWindow : public QMainWindow@/
 {@t\1@>@/
 	Q_OBJECT@;@/
+	Q_PROPERTY(QString closePrompt READ closePrompt WRITE setClosePrompt)@;@/
 	public:@/
-		ScriptQMainWindow();@/
+		ScriptQMainWindow();
+		QString closePrompt();@/
 	@t\4@>public slots@t\kern-3pt@>:@/
 		void show();
 		void saveSizeAndPosition(const QString &key);
 		void restoreSizeAndPosition(const QString &key);
-		void displayStatus(const QString &message = QString());@/
+		void displayStatus(const QString &message = QString());
+		void setClosePrompt(QString prompt);@/
 	protected:@/
 		void closeEvent(QCloseEvent *event);
 		void showEvent(QShowEvent *event);@/
 	signals:@/
 		void aboutToClose(void);@t\2@>@/
+	private:@/
+		QString cprompt;
 }@t\kern-3pt@>;
 
 @ The implementation of these functions is simple.
 
 @<Functions for scripting@>=
-ScriptQMainWindow::ScriptQMainWindow()@+: QMainWindow(NULL)@/
+ScriptQMainWindow::ScriptQMainWindow()@+: QMainWindow(NULL),
+	cprompt(tr("Closing this window may result in loss of data. Continue?"))@/
 {
 	/* Nothing needs to be done here. */
 }
@@ -1217,11 +1226,48 @@ void ScriptQMainWindow::show()
 	QMainWindow::show();
 }
 
+@ When a close event occurs, we check the |windowModified| property to
+determine if closing the window could result in loss of data. If this is
+true, we allow the event to be cancelled. Otherwise, a signal is emitted which
+allows scripts to perform any cleanup that may be required before closing the
+window and the window geometry data is saved before allowing the window to
+close.
+
+@<Functions for scripting@>=
 void ScriptQMainWindow::closeEvent(QCloseEvent *event)
 {
+	if(isWindowModified()) {
+		@<Allow close event to be cancelled@>@;
+	}
 	emit aboutToClose();
 	@<Save window geometry@>@;
 	event->accept();
+}
+
+@ The prompt text for our confirmation window is provided through the
+|closePrompt| property.
+
+@<Allow close event to be cancelled@>=
+QMessageBox::StandardButton result;
+result = QMessageBox::warning(this, "Typica", closePrompt(),
+                              QMessageBox::Ok | QMessageBox::Cancel);
+if(result == QMessageBox::Cancel)
+{
+	event->ignore();
+	return;
+}
+
+@ Implementation of the |closePrompt| property is trivial.
+
+@<Functions for scripting@>=
+QString ScriptQMainWindow::closePrompt()
+{
+	return cprompt;
+}
+
+void ScriptQMainWindow::setClosePrompt(QString prompt)
+{
+	cprompt = prompt;
 }
 
 @ Window geometry management from version 1.4 on makes use of the window ID to

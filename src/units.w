@@ -6,26 +6,33 @@ take advantage of the meta-object system. There are no data members, however
 there are some convenience methods for working with unit data.
 
 @(units.h@>=
+#include <QObject>
+
+#ifndef TypicaUnitsIncluded
+#define TypicaUnitsIncluded
+
 class Units: public QObject
 {
 	Q_OBJECT
-	Q_ENUMS(Units)
+	Q_ENUMS(Unit)
 	public:
-		enum Units
+		enum Unit
 		{
 			Fahrenheit = 10144,
 			Celsius = 10143,
 			Kelvin = 10325,
 			Rankine = 10145
 		};
-		double convertTemperature(double value, Unit fromUnit, Unit toUnit);
-		bool isTemperatureUnit(Unit unit);
-}
+		static double convertTemperature(double value, Unit fromUnit, Unit toUnit);
+		static bool isTemperatureUnit(Unit unit);
+};
+
+#endif
 
 @ Methods are implemented in a separate file.
 
 @(units.cpp@>=
-#inculde "units.h"
+#include "units.h"
 #include "moc_units.cpp"
 
 @ The |isTemperatureUnit()| method may seem counter-intuitive while the enum

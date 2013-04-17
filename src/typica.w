@@ -5705,6 +5705,11 @@ Measurement times are represented as instances of |QTime|.
 
 @i units.w
 
+@ We will require the |units.h| header.
+
+@<Header files to include@>=
+#include "units.h"
+
 @ The declaration of |Measurement| is reasonably straightforward. Measurements
 will often be passed around to a number of different objects through the signals
 and slots mechanism of Qt. The simplest way to make this work is to provide a
@@ -5718,21 +5723,9 @@ This can almost certainly be handled better.
 @<Class declarations@>=
 class Measurement@/
 {
-	public:@/
-		enum TemperatureUnits
-		{
-			Fahrenheit = 10144,
-			Celsius = 10143,
-			Kelvin = 10325,
-			Rankine = 10145
-		};
-	private:@/
-		double theTemperature;
-		QTime theTime;
-		TemperatureUnits unit;
 	public:@;
 		Measurement(double temperature = 0, QTime time = QTime(),@|
-		            TemperatureUnits sc = Fahrenheit);
+		            Units::Unit sc = Units::Fahrenheit);
 		Measurement(double temperature);
 		Measurement(const Measurement &x);
 		Measurement& operator=(Measurement &x);
@@ -5741,12 +5734,16 @@ class Measurement@/
 		QTime time() const;
 		void setTemperature(double temperature);
 		void setTime(QTime time);
-		void setUnit(TemperatureUnits scale);
-		TemperatureUnits scale();
+		void setUnit(Units::Unit scale);
+		Units::Unit scale();
 		Measurement toFahrenheit();
 		Measurement toCelsius();
 		Measurement toKelvin();
 		Measurement toRankine();
+	private:@/
+		double theTemperature;
+		QTime theTime;
+		Units::Unit unit;
 };
 
 @ There are two constructors that can create |Measurement| objects. The
@@ -5757,7 +5754,7 @@ current time.
 
 @<Measurement implementation@>=
 Measurement::Measurement(double temperature, QTime time,
-                         TemperatureUnits sc) :@;
+                         Units::Unit sc) :@;
 	@t\kern2em@>theTemperature(temperature), theTime(time), unit(sc)@;
 {
 	/* Nothing has to be done here. */
@@ -5765,7 +5762,7 @@ Measurement::Measurement(double temperature, QTime time,
 
 Measurement::Measurement(double temperature) :@;
 	@t\kern2em@>theTemperature(temperature), theTime(QTime::currentTime()),
-	unit(Fahrenheit)@;
+	unit(Units::Fahrenheit)@;
 {
 	/* Nothing has to be done here. */
 }@;
@@ -5840,122 +5837,47 @@ unit to another, use the appropriate |to[Fahrenheit||Celsius||Kelvin||Rankine]|
 method.
 
 @<Measurement implementation@>=
-void Measurement::setUnit(TemperatureUnits scale)
+void Measurement::setUnit(Units::Unit scale)
 {
 	unit = scale;
 }
 
-Measurement::TemperatureUnits Measurement::scale()
+Units::Unit Measurement::scale()
 {
 	return unit;
 }
 
 @ Four methods create a new |Measurement| from the object the method is called
-on representing the same measurement expressed in different units. The
-conversion formul\ae{} come from Wikipedia.\nfnote{%
-\pdfURL{Temperature Conversion}{%
-http://en.wikipedia.org/%
-w/index.php?title=Temperature_conversion&oldid=226047163}}
-
-The |toFahrenheit()| method converts a measurement to Fahrenheit.
+on representing the same measurement expressed in different units. The value
+conversions are handled in the |Units| class.
 
 @<Measurement implementation@>=
 Measurement Measurement::toFahrenheit()
 {
-	switch(unit)
-	{
-		case Celsius:
-			return Measurement(this->temperature() * 9 / 5 + 32, this->time(),
-			                   Fahrenheit);
-			break;
-		case Kelvin:
-			return Measurement(this->temperature() * 5 / 9 - 459.67,
-			                   this->time(), Fahrenheit);
-			break;
-		case Rankine:
-			return Measurement(this->temperature() - 459.67, this->time(),
-			                   Fahrenheit);
-			break;
-		default:
-			return Measurement(this->temperature(), this->time(), Fahrenheit);
-			break;
-	}
+	return Measurement(Units::convertTemperature(this->temperature(),
+	                                             this->unit, Units::Fahrenheit),
+	                   this->time(), Units::Fahrenheit);
 }
 
-@ Similarly, the following converts to Celsius.
-
-@<Measurement implementation@>=
 Measurement Measurement::toCelsius()
 {
-	switch(unit)
-	{
-		case Fahrenheit:
-			return Measurement((this->temperature() - 32) * 5 / 9, this->time(),
-			                   Celsius);
-			break;
-		case Kelvin:
-			return Measurement(this->temperature() - 273.15, this->time(),
-			                   Celsius);
-			break;
-		case Rankine:
-			return Measurement((this->temperature() - 491.67) * 5 / 9,
-			                   this->time(), Celsius);
-			break;
-		default:
-			return Measurement(this->temperature(), this->time(), Celsius);
-			break;
-	}
+	return Measurement(Units::convertTemperature(this->temperature(),
+	                                             this->unit, Units::Celsius),
+	                   this->time(), Units::Celsius);
 }
 
-@ For those who prefer absolute scales, a method is provided to convert to
-Kelvin.
-
-@<Measurement implementation@>=
 Measurement Measurement::toKelvin()
 {
-	switch(unit)
-	{
-		case Fahrenheit:
-			return Measurement((this->temperature() + 459.67) * 5 / 9,
-			                   this->time(), Kelvin);
-			break;
-		case Celsius:
-			return Measurement(this->temperature() + 273.15, this->time(),
-			                   Kelvin);
-			break;
-		case Rankine:
-			return Measurement(this->temperature() * 5 / 9, this->time(),
-			                   Kelvin);
-			break;
-		default:
-			return Measurement(this->temperature(), this->time(), Kelvin);
-			break;
-	}
+	return Measurement(Units::convertTemperature(this->temperature(),
+	                                             this->unit, Units::Kelvin),
+	                   this->time(), Units::Kelvin);
 }
 
-@ Finally, conversion to Rankine is also allowed.
-
-@<Measurement implementation@>=
 Measurement Measurement::toRankine()
 {
-	switch(unit)
-	{
-		case Fahrenheit:
-			return Measurement(this->temperature() + 459.67, this->time(),
-			                   Rankine);
-			break;
-		case Celsius:
-			return Measurement((this->temperature() + 273.15) * 9 / 5,
-			                   this->time(), Rankine);
-			break;
-		case Kelvin:
-			return Measurement(this->temperature() * 9 / 5, this->time(),
-			                   Rankine);
-			break;
-		default:
-			return Measurement(this->temperature(), this->time(), Rankine);
-			break;
-	}
+	return Measurement(Units::convertTemperature(this->temperature(),
+	                                             this->unit, Units::Rankine),
+	                   this->time(), Units::Rankine);
 }
 
 @** The Main Measurement Pipeline.
@@ -6024,7 +5946,6 @@ class DAQImplementation;@/
 class DAQ : public QObject@;@/
 {@t\1@>@/
 	Q_OBJECT@/
-	Q_ENUMS(TemperatureUnits)@/
 	Q_ENUMS(ThermocoupleType)@;@/
 	DAQImplementation *imp;@/
 	@t\4@>private slots@t\kern-3pt@>:@/
@@ -6036,13 +5957,6 @@ class DAQ : public QObject@;@/
 		@[Q_INVOKABLE@,@, void@]@, setClockRate(double Hz);@t\2\2@>@/
 		@[Q_INVOKABLE@,@, void@]@, start();@t\2\2@>@/
 		@[Q_INVOKABLE@]@, void stop();
-		enum TemperatureUnits@/
-		{
-			@!Fahrenheit = 10144,
-			@!Celsius = 10143,
-			@!Kelvin = 10325,
-			@!Rankine = 10145
-		};
 		enum ThermocoupleType@/
 		{
 			@!TypeJ = 10072,
@@ -6108,7 +6022,7 @@ int error;
 int channels;
 bool ready;
 QLibrary driver;
-QVector<Measurement::TemperatureUnits> unitMap;
+QVector<Units::Unit> unitMap;
 
 @ Most of the interesting work associated with the |DAQ| class is handled in
 the |measure()| method of |DAQImplementation|. This function will block until a
@@ -6331,7 +6245,7 @@ Channel* DAQ::newChannel(int units, int thermocouple)
 {
 	Channel *retval = new Channel();
 	imp->channelMap[imp->channels] = retval;
-	imp->unitMap[imp->channels] = (Measurement::TemperatureUnits)units;
+	imp->unitMap[imp->channels] = (Units::Unit)units;
 	imp->channels++;
 	if(imp->ready)
 	{
@@ -7179,23 +7093,14 @@ This is a specialization of |QLCDNumber|.
 class TemperatureDisplay : public QLCDNumber@/
 {@t\1@>@/
 	Q_OBJECT@;
-	Q_ENUMS(DisplayUnits)
 	int unit;
 	public:@/
-		enum DisplayUnits
-		{
-			Auto = -1,
-			Fahrenheit = 10144,
-			Celsius = 10143,
-			Kelvin = 10325,
-			Rankine = 10145
-		};
 		TemperatureDisplay(QWidget *parent = NULL);
 		~TemperatureDisplay();@/
 	@t\4@>public slots@t\kern-3pt@>:@/
 		void setValue(Measurement temperature);
 		void invalidate();
-		void setDisplayUnits(DisplayUnits scale);@t\2@>@/
+		void setDisplayUnits(Units::Unit scale);@t\2@>@/
 };
 
 @ Displaying a temperature is a simple matter of taking the temperature
@@ -7215,46 +7120,46 @@ void TemperatureDisplay::setValue(Measurement temperature)
 	QString number;
 	switch(unit)
 	{
-		case Auto:
-			switch(temperature.scale())
-			{
-				case Fahrenheit:
-					display(QString("%1'F").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-				case Celsius:
-					display(QString("%1'C").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-				case Kelvin:
-					display(QString("%1").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-				case Rankine:
-					display(QString("%1'r").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-			}
-			break;
-		case Fahrenheit:
+		case Units::Fahrenheit:
 			display(QString("%1'F").
 				arg(number.setNum(temperature.toFahrenheit().temperature(), 'f',
 				                  2)));
 			break;
-		case Celsius:
+		case Units::Celsius:
 			display(QString("%1'C").
 				arg(number.setNum(temperature.toCelsius().temperature(), 'f',
 				                  2)));
 			break;
-		case Kelvin:
+		case Units::Kelvin:
 			display(QString("%1").
 				arg(number.setNum(temperature.toKelvin().temperature(), 'f',
 				                  2)));
 			break;
-		case Rankine:
+		case Units::Rankine:
 			display(QString("%1'r").
 				arg(number.setNum(temperature.toRankine().temperature(), 'f',
 				                  2)));
+			break;
+		default:
+			switch(temperature.scale())
+			{
+				case Units::Fahrenheit:
+					display(QString("%1'F").
+						arg(number.setNum(temperature.temperature(), 'f', 2)));
+					break;
+				case Units::Celsius:
+					display(QString("%1'C").
+						arg(number.setNum(temperature.temperature(), 'f', 2)));
+					break;
+				case Units::Kelvin:
+					display(QString("%1").
+						arg(number.setNum(temperature.temperature(), 'f', 2)));
+					break;
+				case Units::Rankine:
+					display(QString("%1'r").
+						arg(number.setNum(temperature.temperature(), 'f', 2)));
+					break;
+			}
 			break;
 	}
 }
@@ -7271,7 +7176,7 @@ the usual |QLCDNumber| methods.
 
 @<TemperatureDisplay Implementation@>=
 TemperatureDisplay::TemperatureDisplay(QWidget *parent) :
-	QLCDNumber(8, parent), unit(Auto)@/
+	QLCDNumber(8, parent), unit(Units::Fahrenheit)@/
 {
 	setSegmentStyle(Filled);
 	display("---.--'F");
@@ -7298,7 +7203,7 @@ the scale to a different supported scale and convert measurements to that scale
 prior to display.
 
 @<TemperatureDisplay Implementation@>=
-void TemperatureDisplay::setDisplayUnits(DisplayUnits scale)
+void TemperatureDisplay::setDisplayUnits(Units::Unit scale)
 {
 	unit = scale;
 }
@@ -17306,8 +17211,8 @@ if(!unitIsF)
 	pvOut = pvOut * 9 / 5 + 32;
 	svOut = svOut * 9 / 5 + 32;
 }
-Measurement pvm(pvOut, time, Measurement::Fahrenheit);
-Measurement svm(svOut, time, Measurement::Fahrenheit);
+Measurement pvm(pvOut, time, Units::Fahrenheit);
+Measurement svm(svOut, time, Units::Fahrenheit);
 channels.at(0)->input(pvm);
 channels.at(1)->input(svm);
 
@@ -17331,15 +17236,15 @@ if(!unitIsF)
 }
 if(!svenabled)
 {
-	Measurement vm(valueOut, time, Measurement::Fahrenheit);
+	Measurement vm(valueOut, time, Units::Fahrenheit);
 	channels.at(0)->input(vm);
 }
 else
 {
 	if(readingsv)
 	{
-		Measurement pvm(savedpv, time, Measurement::Fahrenheit);
-		Measurement svm(valueOut, time, Measurement::Fahrenheit);
+		Measurement pvm(savedpv, time, Units::Fahrenheit);
+		Measurement svm(valueOut, time, Units::Fahrenheit);
 		channels.at(0)->input(pvm);
 		channels.at(1)->input(svm);
 		readingsv = false;

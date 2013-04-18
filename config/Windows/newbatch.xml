@@ -180,6 +180,7 @@
                 }
             });
 			profilebutton.clicked.connect(function() {
+				batch.windowModified = true;
 				currentBatchInfo = batch;
 				query = new QSqlQuery();
                 var q = "SELECT files FROM item_files WHERE item = :item AND time = (SELECT max(time) FROM item_files WHERE item = :again)";
@@ -240,6 +241,7 @@
 			});
 			var noprofilebutton = findChildObject(this, 'noprofile');
 			noprofilebutton.clicked.connect(function() {
+				batch.windowModified = true;
 				currentBatchInfo = batch;
 				navigationwindow.loggingWindow.raise();
 				navigationwindow.loggingWindow.activateWindow();
@@ -247,13 +249,6 @@
 			var submitbutton = findChildObject(this, 'submit');
 			var timefield = findChildObject(this, 'time');
 			var notes = findChildObject(this, 'annotation');
-			/*
-			var machine = findChildObject(this, 'machine');
-            machine.currentIndex = QSettings.value("batchmachine_last", 0);
-            machine['currentIndexChanged(int)'].connect(function() {
-                QSettings.setValue("batchmachine_last", machine.currentIndex);
-            });
-			*/
 			var duration = findChildObject(this, 'duration');
 			var approval = findChildObject(this, 'approval');
 			var target = findChildObject(this, 'target');
@@ -315,6 +310,7 @@
 					query.exec();
 				}
                 query = query.invalidate();
+				batch.windowModified = false;
 				batch.close();
 			});
         ]]>

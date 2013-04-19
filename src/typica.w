@@ -8063,7 +8063,7 @@ class ZoomLog : public QTableView@/
 		bool saveXML(QIODevice *device);
 		bool saveCSV(QIODevice *device);
 		QString lastTime(int series);
-		@[Q_INVOKABLE@,@, int displayUnits()@];@t\2\2@>@/
+		@[Q_INVOKABLE@,@, Units::Unit displayUnits()@];@t\2\2@>@/
 	@[public slots@]:@/
 		void setVisible(bool visibility);
 		void setHeaderData(int section, QString text);
@@ -8081,7 +8081,7 @@ class ZoomLog : public QTableView@/
 		void addOutputTemperatureColumn(int column);
 		void addOutputAnnotationColumn(int column);
 		void clearOutputColumns();
-		void setDisplayUnits(int scale);
+		void setDisplayUnits(Units::Unit scale);
 		void addToCurrentColumnSet(int column);
 		void clearCurrentColumnSet();@/
 	protected:@/
@@ -8380,10 +8380,10 @@ users will never notice this.
 @<ZoomLog Implementation@>=
 bool ZoomLog::saveXML(QIODevice *device)
 {
-	int prevUnits = model_ms->displayUnits();
-	if(prevUnits != 10144)
+	Units::Unit prevUnits = model_ms->displayUnits();
+	if(prevUnits != Units::Fahrenheit)
 	{
-		model_ms->setDisplayUnits(10144);
+		model_ms->setDisplayUnits(Units::Fahrenheit);
 	}
 	XMLOutput writer(model_ms, device, 0);
 	int c;
@@ -8398,7 +8398,7 @@ bool ZoomLog::saveXML(QIODevice *device)
 		                                     toString(), c);
 	}
 	bool retval = writer.output();
-	if(prevUnits != 10144)
+	if(prevUnits != Units::Fahrenheit)
 	{
 		model_ms->setDisplayUnits(prevUnits);
 	}
@@ -8481,7 +8481,7 @@ so, we simply tell all of the models which unit to provide data in. It is also
 possible to obtain the currently selected unit.
 
 @<ZoomLog Implementation@>=
-void ZoomLog::setDisplayUnits(int scale)
+void ZoomLog::setDisplayUnits(Units::Unit scale)
 {
 	model_ms->setDisplayUnits(scale);
 	model_1s->setDisplayUnits(scale);
@@ -8492,7 +8492,7 @@ void ZoomLog::setDisplayUnits(int scale)
 	model_1m->setDisplayUnits(scale);
 }
 
-int ZoomLog::displayUnits()
+Units::Unit ZoomLog::displayUnits()
 {
 	return model_ms->displayUnits();
 }
@@ -8747,22 +8747,13 @@ class MeasurementList;@/
 class MeasurementModel : public QAbstractItemModel@/
 {@t\1@>@/
 	Q_OBJECT@;
-	Q_ENUMS(DisplayUnits);
-	int unit;
+	Units::Unit unit;
 	QList<MeasurementList *> *entries;
 	QStringList *hData;
 	int colcount;
 	QHash<int, int> *lastTemperature;
 	QList<MeasurementList *>::iterator@, lastInsertion;
 	public:@/
-		enum DisplayUnits
-		{
-			Auto = -1,
-			Fahrenheit = 10144,
-			Celsius = 10143,
-			Kelvin = 10325,
-			Rankine = 10145
-		};
 		MeasurementModel(QObject *parent = NULL);
 		~MeasurementModel();
 		int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -8778,13 +8769,13 @@ class MeasurementModel : public QAbstractItemModel@/
 		QModelIndex index(int row, int column,
 							const QModelIndex &parent = QModelIndex()) const;
 		QModelIndex parent(const QModelIndex &index) const;
-		int displayUnits();@/
+		Units::Unit displayUnits();@/
 	@t\4@>public slots@t\kern-3pt@>:@/
 		void newMeasurement(Measurement measure, int tempcolumn);
 		void newAnnotation(QString annotation, int tempcolumn,
 							int annotationColumn);
 		void clear();
-		void setDisplayUnits(int scale);
+		void setDisplayUnits(Units::Unit scale);
 	signals:@/
 		void rowChanged(int);@t\2@>@/
 }@t\kern-3pt@>;
@@ -9193,7 +9184,7 @@ constructor.
 
 @<MeasurementModel Implementation@>=
 MeasurementModel::MeasurementModel(QObject *parent) : QAbstractItemModel(parent),
-	unit(Fahrenheit), hData(new QStringList),
+	unit(Units::Fahrenheit), hData(new QStringList),
 	lastTemperature(new QHash<int, int>)@/
 {
 	colcount = 1;
@@ -9284,14 +9275,14 @@ performed before sending that information to the view. Another method is
 available to request a number identifyin the currently displayed units.
 
 @<MeasurementModel Implementation@>=
-void MeasurementModel::setDisplayUnits(int scale)
+void MeasurementModel::setDisplayUnits(Units::Unit scale)
 {
 	beginResetModel();
 	unit = scale;
 	endResetModel();
 }
 
-int MeasurementModel::displayUnits()
+Units::Unit MeasurementModel::displayUnits()
 {
 	return unit;
 }
@@ -9336,23 +9327,23 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 				}
 				switch(unit)
 				{
-					case Auto:
-					case Fahrenheit:
+					case Units::Fahrenheit:
 						return QVariant(row->at(index.column()).toString());
 						break;
-					case Celsius:
+					case Units::Celsius:
 						return QVariant((row->at(index.column()).toDouble() -
 						                32) * 5 / 9);
 						break;
-					case Kelvin:
+					case Units::Kelvin:
 						return QVariant((row->at(index.column()).toDouble() +
 						                459.67) * 5 / 9);
 						break;
-					case Rankine:
+					case Units::Rankine:
 						return QVariant(row->at(index.column()).toDouble() +
 						                459.67);
 						break;
 					default:
+						return QVariant(row->at(index.column()).toString());
 						break;
 				}
 			}

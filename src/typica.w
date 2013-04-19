@@ -6437,11 +6437,18 @@ QScriptValue constructDAQ(QScriptContext *context, QScriptEngine *engine);
 QScriptValue DAQ_newChannel(QScriptContext *context, QScriptEngine *engine);
 void setDAQProperties(QScriptValue value, QScriptEngine *engine);
 
-@ First we make these functions known to the scripting engine.
+@ First we make these functions known to the scripting engine. We also add
+the values from |Units::Unit| as this was widely used in configurations
+before this enumeration was removed from the |DAQ| class. As these properties
+must be available without an instance, the properties must be added here.
 
 @<Set up the scripting engine@>=
 constructor = engine->newFunction(constructDAQ);
 value = engine->newQMetaObject(&DAQ::staticMetaObject, constructor);
+value.setProperty("Fahrenheit", Units::Fahrenheit);
+value.setProperty("Celsius", Units::Celsius);
+value.setProperty("Kelvin", Units::Kelvin);
+value.setProperty("Rankine", Units::Rankine);
 engine->globalObject().setProperty("DAQ", value);
 
 @ When creating a new |DAQ|, we make sure that it is owned by the script engine.
@@ -6477,19 +6484,13 @@ QScriptValue constructDAQ(QScriptContext *context, QScriptEngine *engine)
 }
 
 @ As |DAQ| inherits |QObject|, we add the |newChannel()| property after adding
-any |QObject| properties. We also add the values from |Units::Unit| as this was
-widely used in configurations before this enumeration was removed from the
-|DAQ| class.
+any |QObject| properties.
 
 @<Functions for scripting@>=
 void setDAQProperties(QScriptValue value, QScriptEngine *engine)
 {
 	setQObjectProperties(value, engine);
 	value.setProperty("newChannel", engine->newFunction(DAQ_newChannel));
-	value.setProperty("Fahrenheit", Units::Fahrenheit);
-	value.setProperty("Celsius", Units::Celsius);
-	value.setProperty("Kelvin", Units::Kelvin);
-	value.setProperty("Rankine", Units::Rankine);
 }
 
 @ The |newChannel()| method method also requires that two arguments are provided

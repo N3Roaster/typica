@@ -573,18 +573,18 @@
         showC.triggered.connect(function() {
 			for(var i = 0; i < temperatureDisplays.length; i++)
 			{
-				temperatureDisplays[i].setDisplayUnits(DAQ.Celsius);
+				temperatureDisplays[i].setDisplayUnits(Units.Celsius);
 			}
-            log.setDisplayUnits(DAQ.Celsius);
+            log.setDisplayUnits(Units.Celsius);
             graph.showC();
         });
         var showF = findChildObject(this, 'showF');
         showF.triggered.connect(function() {
 			for(var i = 0; i < temperatureDisplays.length; i++)
 			{
-				temperatureDisplays[i].setDisplayUnits(DAQ.Fahrenheit);
+				temperatureDisplays[i].setDisplayUnits(Units.Fahrenheit);
 			}
-            log.setDisplayUnits(DAQ.Fahrenheit);
+            log.setDisplayUnits(Units.Fahrenheit);
             graph.showF();
         });
 		var clear = findChildObject(this, 'clear');

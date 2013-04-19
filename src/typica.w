@@ -7230,6 +7230,8 @@ object to the scripting engine.
 QScriptValue constructTemperatureDisplay(QScriptContext *context,
                                          QScriptEngine *engine);
 void setTemperatureDisplayProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue TemperatureDisplay_setDisplayUnits(QScriptContext *context,
+                                                QScriptEngine *engine);
 
 @ The scripting engine must be informed of this function.
 
@@ -7253,6 +7255,24 @@ QScriptValue constructTemperatureDisplay(QScriptContext *,
 void setTemperatureDisplayProperties(QScriptValue value, QScriptEngine *engine)
 {
 	setQLCDNumberProperties(value, engine);
+	value.setProperty("setDisplayUnits",
+	                  engine->newFunction(TemperatureDisplay_setDisplayUnits));
+}
+
+@ There seems to be a bad interaction when enumerated value types as used as
+the argument to slot methods called through QtScript. Script code that attempts
+to make use of the enumeration appears to get the value without any type
+information. When attempting to use that value as an argument the meta-object
+system cannot find an appropriate match and the script just hangs silently.
+The solution is to wrap such methods in the script bindings and explicitly cast
+the argument value to the enumerated type. This looks stupid but it works.
+
+@<Functions for scripting@>=
+QScriptValue TemperatureDisplay_setDisplayUnits(QScriptContext *context, QScriptEngine *)
+{
+	TemperatureDisplay *self = getself<@[TemperatureDisplay *@]>(context);
+	self->setDisplayUnits((Units::Unit)argument<int>(0, context));
+	return QScriptValue();
 }
 
 @* The MeasurementTimeOffset class.
@@ -8611,6 +8631,8 @@ QScriptValue ZoomLog_restoreState(QScriptContext *context,
 QScriptValue ZoomLog_lastTime(QScriptContext *context, QScriptEngine *engine);
 QScriptValue ZoomLog_saveTemporary(QScriptContext *context,
                                    QScriptEngine *engnie);
+QScriptValue ZoomLog_setDisplayUnits(QScriptContext *context,
+                                     QScriptEngine *engine);
 
 @ Of these, the global object only needs to know about the constructor.
 
@@ -8641,6 +8663,7 @@ void setZoomLogProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("lastTime", engine->newFunction(ZoomLog_lastTime));
 	value.setProperty("saveTemporary",
 	                  engine->newFunction(ZoomLog_saveTemporary));
+	value.setProperty("setDisplayUnits", engine->newFunction(ZoomLog_setDisplayUnits));
 }
 
 @ The functions for saving data are simple wrappers around the corresponding
@@ -8739,6 +8762,22 @@ QScriptValue ZoomLog_lastTime(QScriptContext *context, QScriptEngine *engine)
 {
 	ZoomLog *self = getself<@[ZoomLog *@]>(context);
 	return QScriptValue(engine, self->lastTime(argument<int>(0, context)));
+}
+
+@ There seems to be a bad interaction when enumerated value types as used as
+the argument to slot methods called through QtScript. Script code that attempts
+to make use of the enumeration appears to get the value without any type
+information. When attempting to use that value as an argument the meta-object
+system cannot find an appropriate match and the script just hangs silently.
+The solution is to wrap such methods in the script bindings and explicitly cast
+the argument value to the enumerated type. This looks stupid but it works.
+
+@<Functions for scripting@>=
+QScriptValue ZoomLog_setDisplayUnits(QScriptContext *context, QScriptEngine *)
+{
+	ZoomLog *self = getself<@[ZoomLog *@]>(context);
+	self->setDisplayUnits((Units::Unit)argument<int>(0, context));
+	return QScriptValue();
 }
 
 @* A model for roasting data.

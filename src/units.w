@@ -147,3 +147,12 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 	}
 	return 0;
 }
+
+@ This class is exposed to the host environment. Note the lack of constructor.
+We do not wish to create any instances, just have access to the |Unit|
+enumeration.
+
+@<Set up the scripting engine@>=
+value = engine->newQMetaObject(&Units::staticMetaObject);
+engine->globalObject().setProperty("Units", value);
+

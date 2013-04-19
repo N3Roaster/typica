@@ -6477,13 +6477,19 @@ QScriptValue constructDAQ(QScriptContext *context, QScriptEngine *engine)
 }
 
 @ As |DAQ| inherits |QObject|, we add the |newChannel()| property after adding
-any |QObject| properties.
+any |QObject| properties. We also add the values from |Units::Unit| as this was
+widely used in configurations before this enumeration was removed from the
+|DAQ| class.
 
 @<Functions for scripting@>=
 void setDAQProperties(QScriptValue value, QScriptEngine *engine)
 {
 	setQObjectProperties(value, engine);
 	value.setProperty("newChannel", engine->newFunction(DAQ_newChannel));
+	value.setProperty("Fahrenheit", Units::Fahrenheit);
+	value.setProperty("Celsius", Units::Celsius);
+	value.setProperty("Kelvin", Units::Kelvin);
+	value.setProperty("Rankine", Units::Rankine);
 }
 
 @ The |newChannel()| method method also requires that two arguments are provided

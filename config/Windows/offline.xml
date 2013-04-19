@@ -62,7 +62,7 @@
 					QSettings.setValue("script/lastDir", dir(filename));
 				}
 			});
-			var printMenu = findChildObject(this, 'print');			
+			var printMenu = findChildObject(this, 'print');
 			printMenu.triggered.connect(function() {
 				var exportWindow = createWindow("print");
 				exportWindow.windowTitle = "Typica - Print";
@@ -91,12 +91,12 @@
 			});
 			var showC = findChildObject(this, 'showC');
 			showC.triggered.connect(function() {
-				log.setDisplayUnits(TemperatureDisplay.Celsius);
+				log.setDisplayUnits(DAQ.Celsius);
 				graph.showC();
 			});
 			var showF = findChildObject(this, 'showF');
 			showF.triggered.connect(function() {
-				log.setDisplayUnits(TemperatureDisplay.Fahrenheit);
+				log.setDisplayUnits(DAQ.Fahrenheit);
 				graph.showF();
 			});
 			var v1 = findChildObject(this, 'ms');

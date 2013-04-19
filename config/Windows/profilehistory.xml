@@ -120,12 +120,12 @@
         v7.triggered.connect(log.LOD_1m);
 		var showC = findChildObject(this, 'showC');
 		showC.triggered.connect(function() {
-			log.setDisplayUnits(TemperatureDisplay.Celsius);
+			log.setDisplayUnits(DAQ.Celsius);
 			graph.showC();
 		});
 		var showF = findChildObject(this, 'showF');
 		showF.triggered.connect(function() {
-			log.setDisplayUnits(TemperatureDisplay.Fahrenheit);
+			log.setDisplayUnits(DAQ.Fahrenheit);
 			graph.showF();
 		});
 	]]>

@@ -575,18 +575,18 @@
         showC.triggered.connect(function() {
 			for(var i = 0; i < temperatureDisplays.length; i++)
 			{
-				temperatureDisplays[i].setDisplayUnits(TemperatureDisplay.Celsius);
+				temperatureDisplays[i].setDisplayUnits(Units.Celsius);
 			}
-            log.setDisplayUnits(TemperatureDisplay.Celsius);
+            log.setDisplayUnits(Units.Celsius);
             graph.showC();
         });
         var showF = findChildObject(this, 'showF');
         showF.triggered.connect(function() {
 			for(var i = 0; i < temperatureDisplays.length; i++)
 			{
-				temperatureDisplays[i].setDisplayUnits(TemperatureDisplay.Fahrenheit);
+				temperatureDisplays[i].setDisplayUnits(Units.Fahrenheit);
 			}
-            log.setDisplayUnits(TemperatureDisplay.Fahrenheit);
+            log.setDisplayUnits(Units.Fahrenheit);
             graph.showF();
         });
 		var clear = findChildObject(this, 'clear');

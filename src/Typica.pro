@@ -18,10 +18,12 @@ DEPENDPATH += .
 # Input
 HEADERS += moc_typica.cpp \
     helpmenu.h \
-    abouttypica.h
+    abouttypica.h \
+    units.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
-    abouttypica.cpp
+    abouttypica.cpp \
+    units.cpp
 
 RESOURCES += \
     resources.qrc

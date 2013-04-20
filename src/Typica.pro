@@ -19,11 +19,13 @@ DEPENDPATH += .
 HEADERS += moc_typica.cpp \
     helpmenu.h \
     abouttypica.h \
-    units.h
+    units.h \
+    webview.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
     abouttypica.cpp \
-    units.cpp
+    units.cpp \
+    webview.cpp
 
 RESOURCES += \
     resources.qrc

@@ -29,7 +29,7 @@ class TypicaWebView : public QWebView
 		TypicaWebView();
 		Q_INVOKABLE void load(const QString &url);
 		Q_INVOKABLE void print();
-		Q_INVOKABLE void setHtml(const QString &html);
+		Q_INVOKABLE void setHtml(const QString &html, const QUrl &baseUrl = QUrl());
 		Q_INVOKABLE void setContent(QIODevice *device);
 		Q_INVOKABLE QString saveXml();
 	signals:
@@ -120,9 +120,9 @@ void TypicaWebView::print()
 	}
 }
 
-void TypicaWebView::setHtml(const QString &html)
+void TypicaWebView::setHtml(const QString &html, const QUrl &baseUrl)
 {
-	QWebView::setHtml(html);
+	QWebView::setHtml(html, baseUrl);
 }
 
 void TypicaWebView::setContent(QIODevice *device)

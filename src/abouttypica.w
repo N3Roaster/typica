@@ -5,16 +5,15 @@ of information: The application logo, name, and version number, copyright and
 license information, and other assorted information. In Typica this also
 includes a list of the people and companies that have provided financial
 assistance toward the ongoing development of the software and information that
-others can use to help in this way. Some of this information would benefit
-from existing as a link which can open an external application such as a web
-browser or email client.
+others can use to help in this way.
+
+This class previously provided some additional functionality which is no
+longer required because it is handled by the |TypicaWebView| class introduced
+in version 1.6.
 
 @(abouttypica.h@>=
 #include <QMainWindow>
 #include <QFile>
-#include <QtDebug>
-#include <QMessageBox>
-#include <QDesktopServices>
 #include "webview.h"
 
 #ifndef AboutTypicaHeader

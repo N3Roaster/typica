@@ -20,12 +20,14 @@ HEADERS += moc_typica.cpp \
     helpmenu.h \
     abouttypica.h \
     units.h \
-    webview.h
+    webview.h \
+    webelement.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
     abouttypica.cpp \
     units.cpp \
-    webview.cpp
+    webview.cpp \
+    webelement.cpp
 
 RESOURCES += \
     resources.qrc

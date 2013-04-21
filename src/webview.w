@@ -32,6 +32,8 @@ class TypicaWebView : public QWebView
 		Q_INVOKABLE void setHtml(const QString &html, const QUrl &baseUrl = QUrl());
 		Q_INVOKABLE void setContent(QIODevice *device);
 		Q_INVOKABLE QString saveXml();
+		Q_INVOKABLE QWebElement documentElement();
+		Q_INVOKABLE QWebElement findFirstElement(const QString &selector);
 	signals:
 		void scriptLinkClicked(const QString &link);
 	private slots:
@@ -189,4 +191,182 @@ void addWebViewToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
 
 @<Header files to include@>=
 #include "webview.h"
+
+@* Web View DOM Access.
+
+\noindent Two methods in |TypicaWebView| provide access to the DOM for the
+currently displayed page. These are simple wrappers. The |QWebElement| is also
+
+@<TypicaWebView implementation@>=
+QWebElement TypicaWebView::documentElement()
+{
+	return page()->mainFrame()->documentElement();
+}
+
+QWebElement TypicaWebView::findFirstElement(const QString &selector)
+{
+	return page()->mainFrame()->findFirstElement(selector);
+}
+
+@ In order to call these methods we need to be able to convert a |QWebElement|
+to and from a |QScriptValue|.
+
+@<Function prototypes for scripting@>=
+QScriptValue QWebElement_toScriptValue(QScriptEngine *engine, const QWebElement &element);
+void QWebElement_fromScriptValue(const QScriptValue &value, QWebElement &element);
+
+@ The implementation simply packs these in a variant.
+
+@<Functions for scripting@>=
+QScriptValue QWebElement_toScriptValue(QScriptEngine *engine, const QWebElement &element)
+{
+	QVariant var;
+	var.setValue(element);
+	QScriptValue object = engine->newVariant(var);
+	return object;
+}
+
+void QWebElement_fromScriptValue(const QScriptValue &value, QWebElement &element)
+{
+	element = value.toVariant().value<QWebElement>();
+}
+
+@ These methods must be registered with the engine.
+
+@<Set up the scripting engine@>=
+qScriptRegisterMetaType(engine, QWebElement_toScriptValue, QWebElement_fromScriptValue);
+
+@ As |QWebElement| by itself is not well suited for scripting, we must provide
+a way to attach useful properties to the returned object. We do this with a
+simple wrapper class.
+
+@(webelement.h@>=
+#include <QWebElement>
+#include <QObject>
+
+#ifndef TypicaWebElementHeader
+#define TypicaWebElementHeader
+
+class TypicaWebElement : public QObject
+{
+	Q_OBJECT
+	public:
+		TypicaWebElement(QWebElement element);
+		Q_INVOKABLE void appendInside(const QString &markup);
+		Q_INVOKABLE void appendOutside(const QString &markup);
+		Q_INVOKABLE void prependInside(const QString &markup);
+		Q_INVOKABLE void prependOutside(const QString &markup);
+		Q_INVOKABLE void removeFromDocument();
+		Q_INVOKABLE void replace(const QString &markup);
+		Q_INVOKABLE void setInnerXml(const QString &markup);
+		Q_INVOKABLE void setOuterXml(const QString &markup);
+		Q_INVOKABLE void setPlainText(const QString &text);
+	private:
+		QWebElement e;
+};
+
+#endif
+
+@ A constructor is required for creating this wrapper for the host environment.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructWebElement(QScriptContext *context,
+                                 QScriptEngine *engine);
+
+@ The script engine is informed of this function.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructWebElement);
+engine->globalObject().setProperty("WebElement", constructor);
+
+@ A specialization of the |argument()| template method is required to
+pass the |QWebElement| through to the wrapper constructor.
+
+@<Functions for scripting@>=
+template<> QWebElement argument(int arg, QScriptContext *context)
+{
+	return qscriptvalue_cast<QWebElement>(context->argument(arg));
+}
+
+@ Our wrapper constructor takes a single argument which is the |QWebElement| to
+wrap.
+
+@<Functions for scripting@>=
+QScriptValue constructWebElement(QScriptContext *context,
+                                 QScriptEngine *engine)
+{
+	QWebElement element = argument<QWebElement>(0, context);
+	QScriptValue object = engine->newQObject(new TypicaWebElement(element));
+	return object;
+}
+
+@ The |TypicaWebElement| constructor just keeps a copy of the element passed as
+an argument.
+
+@<TypicaWebElement implementation@>=
+TypicaWebElement::TypicaWebElement(QWebElement element) : e(element)
+{
+	/* Nothing needs to be done here. */
+}
+
+@ Everything else is a simple wrapper around the equivalent |QWebElement|
+method.
+
+@<TypicaWebElement implementation@>=
+void TypicaWebElement::appendInside(const QString &markup)
+{
+	e.appendInside(markup);
+}
+
+void TypicaWebElement::appendOutside(const QString &markup)
+{
+	e.appendOutside(markup);
+}
+
+void TypicaWebElement::prependInside(const QString &markup)
+{
+	e.prependInside(markup);
+}
+
+void TypicaWebElement::prependOutside(const QString &markup)
+{
+	e.prependOutside(markup);
+}
+
+void TypicaWebElement::removeFromDocument()
+{
+	e.removeFromDocument();
+}
+
+void TypicaWebElement::replace(const QString &markup)
+{
+	e.replace(markup);
+}
+
+void TypicaWebElement::setInnerXml(const QString &markup)
+{
+	e.setInnerXml(markup);
+}
+
+void TypicaWebElement::setOuterXml(const QString &markup)
+{
+	e.setOuterXml(markup);
+}
+
+void TypicaWebElement::setPlainText(const QString &text)
+{
+	e.setPlainText(text);
+}
+
+@ Implementation is in a separate file.
+
+@(webelement.cpp@>=
+#include "webelement.h"
+
+@<TypicaWebElement implementation@>@;
+
+@ Another header is required.
+
+@<Header files to include@>=
+#include "webelement.h"
 

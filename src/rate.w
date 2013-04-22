@@ -1,0 +1,154 @@
+@** A Rate of Change Indicator.
+
+\noindent A common metric used for understanding roast profiles is the rate of
+temperature change over a given amount of time. When roasters discuss roast
+profiles it is not uncommon to hear references to the change in temperature per
+30 seconds or per minute, often with the sloppy shorthand $\Delta$ or with the
+term Rate of Rise (RoR). This is most commonly calculated from the secant line
+defined by two measurement points at the desired separation, however this may
+not be the most useful way to calculate this value.
+
+The rate of change can be considered as its own data series which happens to be
+derived from a primary measurement series. The interface for producing this
+series can sensibly match other classes which store, forward, or manipulate
+measurement data.
+
+@<Class declarations@>=
+class RateOfChange : public QObject
+{
+	Q_OBJECT
+	public:
+		RateOfChange(int cachetime = 1, int scaletime = 1);
+	public slots:
+		void newMeasurement(Measurement measure);
+		void setCacheTime(int seconds);
+		void setScaleTime(int seconds);
+	signals:
+		void measurement(Measurement measure);
+	private:
+		int ct;
+		int st;
+		QList<Measurement> cache;
+};
+
+@ The interesting part of this class is in the |newMeasurement()| method. This
+is a slot method that will be called for every new measurement in the primary
+series. We require at least two measurements before calculating a rate of
+temperature change.
+
+@<RateOfChange implementation@>=
+void RateOfChange::newMeasurement(Measurement measure)
+{
+	cache.append(measure);
+	@<Remove stale measurements from rate cache@>@;
+	if(cache.size() >= 2)
+	{
+		@<Calculate rate of change@>@;
+	}
+}
+
+@ To calculate the rate of temperature change we require at least two cached
+measurements. Using only the most recent two measurements will result in a
+highly volatile rate of change while using two data points that are more
+separated will smooth out random fluctuations but provide a less immediate
+response to a change in the rate of change. For this reason we provide two
+parameters that can be adjusted independently: the amount of time we allow a
+measurement to stay in the cache determines how far apart the measurements
+used to calculate the rate of change are while a separate scale time is used
+to determine how the calculated value is presented. We never allow fewer than
+two cached values, but we can force the most volatile calculation by setting
+the cache time to 0 seconds.
+
+@<Remove stale measurements from rate cache@>=
+if(cache.size() > 2)
+{
+	bool done = false;
+	while(!done)
+	{
+		if(cache.front().time().secsTo(cache.back().time()) > ct)
+		{
+			cache.removeFirst();
+		}
+		else
+		{
+			done = true;
+		}
+		if(cache.size() < 3)
+		{
+			done = true;
+		}
+	}
+}
+
+@ To calculate the rate of change, we compare both the time and the
+temperature of the first and last measurements in the cache and reduce this to
+a change per second value. This is then multiplied by the scale time and sent
+to whatever objects require the derived series data. Note that |tdiff| will
+generally be very close to the cache time except where this is set to zero, but
+it will almost never be exact. Basing the calculation on the data we have
+instead of on the data we wish we had should result in better stability in the
+derived series.
+
+@<Calculate rate of change@>=
+double mdiff = cache.back().temperature() - cache.front().temperature();
+double tdiff = cache.front().time().msecsTo(cache.back().time()) / 1000.0;
+double dps = mdiff / tdiff;
+double scale = dps * st;
+emit measurement(Measurement(scale, cache.back().time(), cache.back().scale()));
+
+@ The rest of the class implementation is trivial.
+
+@<RateOfChange implementation@>=
+RateOfChange::RateOfChange(int cachetime, int scaletime) : ct(cachetime), st(1)
+{
+	setScaleTime(scaletime);
+}
+
+void RateOfChange::setCacheTime(int seconds)
+{
+	ct = seconds;
+}
+
+void RateOfChange::setScaleTime(int seconds)
+{
+	st = (seconds > 0 ? seconds : 1);
+}
+
+@ This is exposed to the host environment in the usual way.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructRateOfChange(QScriptContext *context, QScriptEngine *engine);
+void setRateOfChangeProperties(QScriptValue value, QScriptEngine *engine);
+
+@ The constructor is registered with the scripting engine.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructRateOfChange);
+value = engine->newQMetaObject(&RateOfChange::staticMetaObject, constructor);
+engine->globalObject().setProperty("RateOfChange", value);
+
+@ The constructor takes two arguments if they are provided.
+
+@<Functions for scripting@>=
+QScriptValue constructRateOfChange(QScriptContext *context, QScriptEngine *engine)
+{
+	int cachetime = 1;
+	int scaletime = 1;
+	if(context->argumentCount() > 0)
+	{
+		cachetime = argument<int>(0, context);
+		if(context->argumentCount() > 1)
+		{
+			scaletime = argument<int>(1, context);
+		}
+	}
+	QScriptValue object = engine->newQObject(new RateOfChange(cachetime, scaletime));
+	setRateOfChangeProperties(object, engine);
+	return object;
+}
+
+void setRateOfChangeProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQObjectProperties(value, engine);
+}
+

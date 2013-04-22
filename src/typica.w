@@ -834,6 +834,7 @@ generated file empty.
 @<LinearSplineInterpolationConfWidget implementation@>@/
 @<TranslationConfWidget implementation@>@/
 @<FreeAnnotationConfWidget implementation@>@/
+@<RateOfChange implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -6743,7 +6744,7 @@ QScriptValue FakeDAQ_newChannel(QScriptContext *context, QScriptEngine *engine)
 @* The Channel class.
 
 \noindent |Channel| is a simple class. It is a subclass of |QObject| so it can
-use Qt's signals and slots mechanism. Any object that is interested in
+use Qt'@q'@>s signals and slots mechanism. Any object that is interested in
 measurements from a channel can connect to the |newData| signal the channel
 emits. Any number of objects can make this connection and each will receive a
 copy of the measurement.
@@ -7553,7 +7554,7 @@ constructor = engine->newFunction(constructThresholdDetector);
 value = engine->newQMetaObject(&ThresholdDetector::staticMetaObject, constructor);
 engine->globalObject().setProperty("ThresholdDetector", value);
 
-@ Implementation. At present I'm not bothering to implement constructor
+@ Implementation. At present I'@q'@>m not bothering to implement constructor
 arguments here and am aligning on a fixed point. Another slot method was added
 to restore adjustability.
 
@@ -18231,6 +18232,8 @@ void TranslationConfWidget::updateMatchingColumn(const QString &column)
 
 @<Register device configuration widgets@>=
 app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::staticMetaObject);
+
+@i rate.w
 
 @** Local changes.
 

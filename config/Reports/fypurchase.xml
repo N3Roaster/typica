@@ -13,23 +13,27 @@
 		<webview id="report" />
 	</layout>
 	<menu name="File">
-		<item id="print" shortcut="Ctrl+P">Print</item>
+		<item id="print" shortcut="Ctrl+P">Print...</item>
 	</menu>
 	<program>
 		<![CDATA[
 			this.windowTitle = "Typica - Coffee Purchase Previous Years Comparison";
+			/* Set starting year to the first year on record. */
 			var startDateField = findChildObject(this, 'startdate');
 			var query = new QSqlQuery();
 			query.exec("SELECT EXTRACT(YEAR FROM time) FROM purchase WHERE time = (SELECT min(time) FROM purchase)");
 			query.next();
 			startDateField.setDate(query.value(0), 1, 1);
+			/* Set ending year to the current year. */
 			var endDateField = findChildObject(this, 'enddate');
 			endDateField.setDate(endDateField.year(), 12, 31);
+			/* Enable printing */
 			var view = findChildObject(this, 'report');
 			var printMenu = findChildObject(this, 'print');
 			printMenu.triggered.connect(function() {
 				view.print();
 			});
+			/* Add units to unit selector and enable functionality */
 			var unitBox = findChildObject(this, 'unit');
 			unitBox.addItem("Kg");
 			unitBox.addItem("Lb");
@@ -38,6 +42,7 @@
 				QSettings.setValue("script/report_unit", unitBox.currentIndex);
 				refresh();
 			});
+			/* Generate report */
 			function refresh() {
 				var buffer = new QBuffer;
 				buffer.open(3);
@@ -52,34 +57,13 @@
 				output.writeStartElement("body");
 				output.writeTextElement("h1", "Coffee Purchase Previous Years Comparison");
 				output.writeStartElement("table");
-				output.writeAttribute("style", "page-break-after:auto;");
-                output.writeAttribute("rules", "groups");
-                output.writeAttribute("cellpadding", "3px");
-                output.writeStartElement("thead");
-                output.writeStartElement("tr");
+				output.writeAttribute("style", "page-break-after: auto; text-align: left");
+				output.writeAttribute("rules", "groups");
+				output.writeAttribute("cellpadding", "3px");
+				output.writeStartElement("thead");
+				output.writeStartElement("tr");
 				output.writeEmptyElement("th");
-				for(var i = startDateField.year(); i <= endDateField.year(); i++)
-				{
-					output.writeTextElement("th", i);
-				}
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("tbody");
-				output.writeStartElement("tr");
 				output.writeTextElement("th", "Sacks Purchased");
-				var j = 0;
-				var sacks = new Array;
-				for(var i = startDateField.year(); i <= endDateField.year(); i++)
-				{
-					var q = "SELECT sum(quantity/(SELECT conversion FROM lb_bag_conversion WHERE item = purchase.item)) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
-					query.exec(q);
-					query.next();
-					output.writeTextElement("td", query.value(0));
-					sacks[j] = query.value(0);
-					j++;
-				}
-				output.writeEndElement();
-				output.writeStartElement("tr");
 				switch(unitBox.currentIndex) {
 					case 0:
 						output.writeTextElement("th", "Kilos Purchased");
@@ -88,45 +72,49 @@
 						output.writeTextElement("th", "Pounds Purchased");
 						break;
 				}
-				j = 0;
-				var pounds = new Array;
+				output.writeTextElement("th", "Cost");
+				output.writeEndElement(); //tr
+				output.writeEndElement(); //thead
+				output.writeStartElement("tbody");
+				var sacktotal = 0;
+				var unittotal = 0;
+				var costtotal = 0;
 				for(var i = startDateField.year(); i <= endDateField.year(); i++)
 				{
-					var q = "SELECT (sum(quantity) / :conversion)::numeric(12,2) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
+					output.writeStartElement("tr");
+					output.writeAttribute("id", "y"+i);
+					var q = "SELECT sum(quantity/(SELECT conversion FROM lb_bag_conversion WHERE item = purchase.item)), (sum(quantity) / :conversion)::numeric(12,2), sum(cost*quantity)::numeric(12,2) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
 					query.prepare(q);
 					query.bind(":conversion", unitBox.currentIndex == 0 ? 2.2 : 1);
 					query.exec();
 					query.next();
+					output.writeStartElement("th");
+					output.writeCharacters(i);
+					output.writeEndElement(); //th
 					output.writeTextElement("td", query.value(0));
-					pounds[j] = query.value(0);
-					j++;
+					output.writeTextElement("td", query.value(1));
+					output.writeTextElement("td", Number(query.value(2)).toFixed(2));
+					sacktotal += Number(query.value(0));
+					unittotal += Number(query.value(1));
+					costtotal += Number(query.value(2));
+					output.writeEndElement(); //tr
 				}
-				output.writeEndElement();
-				output.writeStartElement("tr");
-				output.writeTextElement("th", "Cost");
-				j = 0;
-				var cost = new Array;
-				for(var i = startDateField.year(); i <= endDateField.year(); i++)
-				{
-					var q = "SELECT sum(cost*quantity)::numeric(12,2) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
-					query.exec(q);
-					query.next();
-					output.writeTextElement("td", query.value(0));
-					cost[j] = query.value(0);
-					j++;
-				}
-				output.writeEndElement();
-				output.writeEndElement();
+				output.writeEndElement(); //tbody
 				output.writeStartElement("tfoot");
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
+				output.writeTextElement("th", "Totals:");
+				output.writeTextElement("td", sacktotal);
+				output.writeTextElement("td", unittotal.toFixed(2));
+				output.writeTextElement("td", costtotal.toFixed(2));
+				output.writeEndElement(); //tfoot
+				output.writeEndElement(); //table
+				output.writeEndElement(); //body
+				output.writeEndElement(); //html
 				output.writeEndDocument();
 				view.setContent(buffer);
 				buffer.close();
 			}
 			refresh();
+			/* Update report as needed. */
 			startDateField.dateChanged.connect(function() {
 				refresh();
 			});
@@ -136,4 +124,3 @@
 		]]>
 	</program>
 </window>
-

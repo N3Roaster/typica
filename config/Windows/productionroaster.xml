@@ -403,6 +403,23 @@
 					targetDetector.setThreshold(driverReference.FValue);
 					currentDetector.setThreshold(driverReference.FValue);
 				}
+				else if(driverReference.driver == "rate")
+				{
+					var primaryColumn = driverReference.column;
+					for(var j = 0; j < columnNames.length; j++)
+					{
+						if(columnNames[j] == primaryColumn)
+						{
+							var rate = new RateOfChange(driverReference.cache, driverReference.scale);
+							channels[j].newData.connect(rate.newMeasurement);
+							var indicator = new TemperatureDisplay;
+							indicator.display(0);
+							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
+							indicatorPanel.addWidget(decorator);
+							rate.measurement.connect(indicator.setValue);
+						}
+					}
+				}
 			}
 		}
 		for(var i = 1; i < tabControls.length; i++)

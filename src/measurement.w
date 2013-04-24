@@ -69,7 +69,7 @@ void Measurement::setUnit(Units::Unit scale)
 
 double Measurement::temperature() const
 {
-	return value("temperature").toDouble();
+	return value("measurement").toDouble();
 }
 
 QTime Measurement::time() const

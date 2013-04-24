@@ -362,6 +362,7 @@
 						{
 							translationChannel = j;
 							var indicator = new TemperatureDisplay;
+							indicator.digitCount = 4;
 							externtrans = indicator;
 							indicator.display(0);
 							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
@@ -373,7 +374,7 @@
 									if(targetOffset != 0)
 									{
 										var translation = currentOffset - targetOffset;
-										indicator.display(translation);
+										externtrans.display(translation);
 										gtrans = translation;
 										if(translation > 0)
 										{
@@ -414,9 +415,11 @@
 							channels[j].newData.connect(rate.newMeasurement);
 							var indicator = new TemperatureDisplay;
 							indicator.display(0);
+							indicator.digitCount = 9;
 							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
 							indicatorPanel.addWidget(decorator);
 							rate.measurement.connect(indicator.setValue);
+							temperatureDisplays.push(indicator);
 						}
 					}
 				}

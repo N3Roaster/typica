@@ -7030,8 +7030,8 @@ void TemperatureDisplay::setValue(Measurement temperature)
 					arg(number.setNum(temperature.toCelsius().temperature(), 'f',
 									2)));
 			} else {
-				display(QString("%1'C").
-					arg(number.setNum(temperature.temperature() * (5/9), 'f', 2)));
+				number.setNum(temperature.temperature() * (5.0/9.0), 'f', 2);
+				display(QString("%1'C").arg(number));
 			}
 			break;
 		case Units::Kelvin:
@@ -7040,8 +7040,8 @@ void TemperatureDisplay::setValue(Measurement temperature)
 					arg(number.setNum(temperature.toKelvin().temperature(), 'f',
 									2)));
 			} else {
-				display(QString("%1").
-					arg(number.setNum(temperature.temperature() * (5/9), 'f', 2)));
+				number.setNum(temperature.temperature() * (5.0/9.0), 'f', 2);
+				display(QString("%1").arg(number));
 			}
 			break;
 		case Units::Rankine:

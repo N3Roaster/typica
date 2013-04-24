@@ -118,7 +118,7 @@ Measurement Measurement::toRankine()
 just pass around |QVariantMap| but until then we need to be able to pass these
 objects through the signals and slots mechanism. This requires that we have a
 public default constructor (already defined above), a public copy constructor,
-and a public destructor.
+and a public destructor. These latter two are default generated.
 
 @<Register meta-types@>=
 qRegisterMetaType<Measurement>("Measurement");

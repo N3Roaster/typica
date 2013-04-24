@@ -414,6 +414,7 @@
 							var rate = new RateOfChange(driverReference.cache, driverReference.scale);
 							channels[j].newData.connect(rate.newMeasurement);
 							var indicator = new TemperatureDisplay;
+							indicator.setRelativeMode(true);
 							indicator.display(0);
 							indicator.digitCount = 9;
 							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);

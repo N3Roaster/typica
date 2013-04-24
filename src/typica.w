@@ -6980,14 +6980,27 @@ class TemperatureDisplay : public QLCDNumber@/
 {@t\1@>@/
 	Q_OBJECT@;
 	int unit;
+	bool r;
 	public:@/
 		TemperatureDisplay(QWidget *parent = NULL);
 		~TemperatureDisplay();@/
 	@t\4@>public slots@t\kern-3pt@>:@/
 		void setValue(Measurement temperature);
 		void invalidate();
-		void setDisplayUnits(Units::Unit scale);@t\2@>@/
+		void setDisplayUnits(Units::Unit scale);
+		void setRelativeMode(bool relative);@t\2@>@/
 };
+
+@ Starting in version 1.6 this widget is also used for displaying a relative
+temperature value in the form of the rate of change indicator. To calculate
+this correctly in Celsius or Kelvin we must have a way to bypass the
+conversions for absolute measures.
+
+@<TemperatureDisplay Implementation@>=
+void TemperatureDisplay::setRelativeMode(bool relative)
+{
+	r = relative;
+}
 
 @ Displaying a temperature is a simple matter of taking the temperature
 component from the measurement and converting it to a string. Presently, this
@@ -7012,14 +7025,24 @@ void TemperatureDisplay::setValue(Measurement temperature)
 				                  2)));
 			break;
 		case Units::Celsius:
-			display(QString("%1'C").
-				arg(number.setNum(temperature.toCelsius().temperature(), 'f',
-				                  2)));
+			if(!r) {
+				display(QString("%1'C").
+					arg(number.setNum(temperature.toCelsius().temperature(), 'f',
+									2)));
+			} else {
+				display(QString("%1'C").arg(
+					number.setNum(temperature.toFahrenheit().temperature() * (5/9), 'f', 2)));
+			}
 			break;
 		case Units::Kelvin:
-			display(QString("%1").
-				arg(number.setNum(temperature.toKelvin().temperature(), 'f',
-				                  2)));
+			if(!r) {
+				display(QString("%1").
+					arg(number.setNum(temperature.toKelvin().temperature(), 'f',
+									2)));
+			} else {
+				display(QString("%1'C").arg(
+					number.setNum(temperature.toFahrenheit().temperature() * (5/9), 'f', 2)));
+			}
 			break;
 		case Units::Rankine:
 			display(QString("%1'r").
@@ -7062,7 +7085,7 @@ the usual |QLCDNumber| methods.
 
 @<TemperatureDisplay Implementation@>=
 TemperatureDisplay::TemperatureDisplay(QWidget *parent) :
-	QLCDNumber(8, parent), unit(Units::Fahrenheit)@/
+	QLCDNumber(8, parent), unit(Units::Fahrenheit), r(false)@/
 {
 	setSegmentStyle(Filled);
 	display("---.--'F");

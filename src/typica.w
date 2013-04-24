@@ -14931,6 +14931,7 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
 	advancedMenu->addAction(translationinserter);
 	connect(linearsplineinserter, SIGNAL(triggered(QString, QString)), this, SLOT(insertChildNode(QString, QString)));
 	connect(translationinserter, SIGNAL(triggered(QString, QString)), this, SLOT(insertChildNode(QString, QString)));
+	@<Add node inserters to advanced features menu@>@;
 	advancedButton->setMenu(advancedMenu);
 	layout->addWidget(advancedButton);
 	QHBoxLayout *idLayout = new QHBoxLayout;

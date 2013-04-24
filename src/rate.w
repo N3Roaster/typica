@@ -152,3 +152,96 @@ void setRateOfChangeProperties(QScriptValue value, QScriptEngine *engine)
 	setQObjectProperties(value, engine);
 }
 
+@ To make use of this feature conveniently, we must integrate this with the
+in-program configuration system by providing a configuration widget.
+
+@<Class declarations@>=
+class RateOfChangeConfWidget : public BasicDeviceConfigurationWidget
+{
+	Q_OBJECT
+	public:
+		Q_INVOKABLE RateOfChangeConfWidget(DeviceTreeModel *model, const QModelIndex &index);
+	private slots:
+		void updateColumn(const QString &column);
+		void updateCacheTime(const QString &seconds);
+		void updateScaleTime(const QString &seconds);
+};
+
+@ The constructor sets up the user interface.
+
+@<RateOfChangeConfWidget implementation@>=
+RateOfChangeConfWidget::RateOfChangeConfWidget(DeviceTreeModel *model, const QModelIndex &index)
+: BasicDeviceConfigurationWidget(model, index)
+{
+	QFormLayout *layout = new QFormLayout;
+	QLineEdit *column = new QLineEdit;
+	layout->addRow(tr("Primary series column name:"), column);
+	QSpinBox *cacheTime = new QSpinBox;
+	cacheTime->setMinimum(0);
+	cacheTime->setMaximum(300);
+	layout->addRow(tr("Cache time:"), cacheTime);
+	QSpinBox *scaleTime = new QSpinBox;
+	scaleTime->setMinimum(1);
+	scaleTime->setMaximum(300);
+	layout->addRow(tr("Scale time:"), scaleTime);
+	@<Get device configuration data for current node@>@;
+	for(int i = 0; i < configData.size(); i++)
+	{
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "column")
+		{
+			column->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "cache")
+		{
+			cacheTime->setValue(node.attribute("value").toInt());
+		}
+		else if(node.attribute("name") == "scale")
+		{
+			scaleTime->setValue(node.attribute("value").toInt());
+		}
+	}
+	updateColumn(column->text());
+	updateCacheTime(cacheTime->text());
+	updateScaleTime(scaleTime->text());
+	connect(column, SIGNAL(textEdited(QString)), this, SLOT(updateColumn(QString)));
+	connect(cacheTime, SIGNAL(valueChanged(QString)), this, SLOT(updateCacheTime(QString)));
+	connect(scaleTime, SIGNAL(valueChanged(QString)), this, SLOT(updateScaleTime(QString)));
+	setLayout(layout);
+}
+
+@ A set of update methods modify the device configuration to reflect changes in
+the configuration widget.
+
+@<RateOfChangeConfWidget implementation@>=
+void RateOfChangeConfWidget::updateColumn(const QString &column)
+{
+	updateAttribute("column", column);
+}
+
+void RateOfChangeConfWidget::updateCacheTime(const QString &seconds)
+{
+	updateAttribute("cache", seconds);
+}
+
+void RateOfChangeConfWidget::updateScaleTime(const QString &seconds)
+{
+	updateAttribute("scale", seconds);
+}
+
+@ This is registered with the configuration system.
+
+@<Register device configuration widgets@>=
+app.registerDeviceConfigurationWidget("rate", RateOfChangeConfWidget::staticMetaObject);
+
+@ This is accessed through the advanced features menu.
+
+@<Add node inserters to advanced features menu@>=
+NodeInserter *rateOfChangeInserter = new NodeInserter(tr("Rate of Change"), tr("Rate of Change"), "rate");
+connect(rateOfChangeInserter, SIGNAL(triggered(QString, QString)), this, SLOT(insertChildNode(QString, QString)));
+advancedMenu->addAction(rateOfChangeInserter);
+
+@ Our class implementation is currently expanded into |"typica.cpp"|.
+
+@<Class implementations@>=
+@<RateOfChangeConfWidget implementation@>

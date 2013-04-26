@@ -7018,9 +7018,9 @@ becomes smarter about measurement units it might be a good idea to change this.
 
 |QLCDNumber| is capable of displaying more than just numbers, so the call to
 display takes a string which in this case consists of the temperature to the
-$1\over100$th of a degree and might be followed by ' which will be converted to
-$^\circ$ and the letter F, C, or r to indicate the unit. This class should be
-mofified to allow a user specified precision.
+$1\over100$th of a degree and might be followed by '@q'@> which will be
+converted to $^\circ$ and the letter F, C, or r to indicate the unit. This
+class should be mofified to allow a user specified precision.
 
 @<TemperatureDisplay Implementation@>=
 void TemperatureDisplay::setValue(Measurement temperature)
@@ -7058,6 +7058,9 @@ void TemperatureDisplay::setValue(Measurement temperature)
 				arg(number.setNum(temperature.toRankine().temperature(), 'f',
 				                  2)));
 			break;
+		case Units::Unitless:
+			display(QString("%1").arg(number.setNum(temperature.temperature(), 'f', 0)));
+			break;
 		default:
 			switch(temperature.scale())
 			{
@@ -7076,6 +7079,9 @@ void TemperatureDisplay::setValue(Measurement temperature)
 				case Units::Rankine:
 					display(QString("%1'r").
 						arg(number.setNum(temperature.temperature(), 'f', 2)));
+					break;
+				case Units::Unitless:
+					display(QString("%1").arg(number.setNum(temperature.temperature(), 'f', 0)));
 					break;
 			}
 			break;
@@ -7244,7 +7250,7 @@ void MeasurementTimeOffset::newMeasurement(Measurement measure)@t\2\2@>@/
 		}
 		else@/
 		{
-			Measurement rel(measure.temperature(), QTime(0, 0, 0, 0));
+			Measurement rel(measure.temperature(), QTime(0, 0, 0, 0), measure.scale());
 			emit measurement(rel);
 		}
 	}
@@ -7268,7 +7274,7 @@ if(newTime.hour() > 0)
 {
 	newTime.setHMS(0, newTime.minute(), newTime.second(), newTime.msec());
 }
-Measurement rel(measure.temperature(), newTime);
+Measurement rel(measure.temperature(), newTime, measure.scale());
 emit measurement(rel);
 
 @ The rest of the code handles updating and reporting the reference time.

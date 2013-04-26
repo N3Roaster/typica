@@ -4181,6 +4181,15 @@ if(element.hasAttribute("id"))
 {
 	layout->setObjectName(element.attribute("id"));
 }
+if(element.hasAttribute("spacing"))
+{
+	layout->setSpacing(element.attribute("spacing").toInt());
+}
+if(element.hasAttribute("margin"))
+{
+	int m = element.attribute("margin").toInt();
+	layout->setContentsMargins(m, m, m, m);
+}
 
 @ Stacked layouts are a bit different from the other types. A stacked layout has
 an arbitrary number of {\tt <page>} children which are just a |QWidget| which

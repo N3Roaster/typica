@@ -7460,10 +7460,12 @@ of data.
 class ZeroEmitter : public QObject@/
 {@t\1@>@/
 	Q_OBJECT@;
+	Q_PROPERTY(int column READ column WRITE setColumn)
 	int col;
 	double temp;
+	Units::Unit scale;
 	public:@/
-		ZeroEmitter(int tempcolumn);
+		ZeroEmitter(int tempcolumn = 1);
 		int column();
 		double lastTemperature();@/
 	@t\4@>public slots@t\kern-3pt@>:@;
@@ -7496,6 +7498,7 @@ double ZeroEmitter::lastTemperature()
 void ZeroEmitter::newMeasurement(Measurement measure)
 {
 	temp = measure.temperature();
+	scale = measure.scale();
 }
 
 void ZeroEmitter::setColumn(int column)
@@ -7505,7 +7508,7 @@ void ZeroEmitter::setColumn(int column)
 
 void ZeroEmitter::emitZero()
 {
-	emit measurement(Measurement(temp, QTime(0, 0, 0, 0)), col);
+	emit measurement(Measurement(temp, QTime(0, 0, 0, 0), scale), col);
 }
 
 @ Making this class available to scripts requires only two functions.

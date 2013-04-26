@@ -18,6 +18,7 @@ class Units: public QObject
 	public:
 		enum Unit
 		{
+			Unitless = 0,
 			Fahrenheit = 10144,
 			Celsius = 10143,
 			Kelvin = 10325,

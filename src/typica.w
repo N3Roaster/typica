@@ -8026,6 +8026,7 @@ class ZoomLog : public QTableView@/
 							int annotationcolumn);
 		void clear();
 		void addOutputTemperatureColumn(int column);
+		void addOutputControlColumn(int column);
 		void addOutputAnnotationColumn(int column);
 		void clearOutputColumns();
 		void setDisplayUnits(Units::Unit scale);
@@ -8052,6 +8053,7 @@ QList<MeasurementModel *> modelSet;
 QHash<int, Measurement> lastMeasurement;
 MeasurementModel *currentModel;
 QList<int> saveTempCols;
+QList<int> saveControlCols;
 QList<int> saveNoteCols;
 QList<int> currentColumnSet;
 
@@ -8083,7 +8085,8 @@ void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 		{
 			Measurement adjusted(measure.temperature(),
 									QTime(0, measure.time().minute(),
-											measure.time().second(), 0));
+											measure.time().second(), 0),
+									measure.scale());
 			model_1s->newMeasurement(adjusted, tempcolumn);
 			if(adjusted.time().second() % 5 == 0)
 			{
@@ -8294,6 +8297,7 @@ void ZoomLog::clear()
 	}
 	lastMeasurement.clear();
 	saveTempCols.clear();
+	saveControlCols.clear();
 	saveNoteCols.clear();
 }
 
@@ -8339,6 +8343,11 @@ bool ZoomLog::saveXML(QIODevice *device)
 		writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
 		                                      toString(), c);
 	}
+	foreach(c, saveControlCols)
+	{
+		writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
+		                                  toString(), c);
+	}
 	foreach(c, saveNoteCols)
 	{
 		writer.addAnnotationColumn(model_ms->headerData(c, Qt::Horizontal).
@@ -8364,6 +8373,11 @@ bool ZoomLog::saveCSV(QIODevice *device)
 	{
 		writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
 		                                                 toString(), c);
+	}
+	foreach(c, saveControlCols)
+	{
+		writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
+		                                             toString(), c);
 	}
 	foreach(c, saveNoteCols)
 	{
@@ -8494,10 +8508,19 @@ void ZoomLog::setHeaderData(int section, QString text)
 1.0.8. The main difference is that it is now possible to save multiple data
 series to the same output document.
 
+Starting in version 1.6 it is possible to save control columns. These should
+contain unitless data which should remain unaffected by the current displayed
+unit.
+
 @<ZoomLog Implementation@>=
 void ZoomLog::addOutputTemperatureColumn(int column)
 {
 	saveTempCols.append(column);
+}
+
+void ZoomLog::addOutputControlColumn(int column)
+{
+	saveControlCols.append(column);
 }
 
 void ZoomLog::addOutputAnnotationColumn(int column)
@@ -8508,6 +8531,7 @@ void ZoomLog::addOutputAnnotationColumn(int column)
 void ZoomLog::clearOutputColumns()
 {
 	saveTempCols.clear();
+	saveControlCols.clear();
 	saveNoteCols.clear();
 }
 
@@ -8719,6 +8743,7 @@ class MeasurementModel : public QAbstractItemModel@/
 	int colcount;
 	QHash<int, int> *lastTemperature;
 	QList<MeasurementList *>::iterator@, lastInsertion;
+	QHash<int, bool> *controlColumns;
 	public:@/
 		MeasurementModel(QObject *parent = NULL);
 		~MeasurementModel();
@@ -8793,6 +8818,14 @@ while keeping the model sorted by time.
 @<MeasurementModel Implementation@>=
 void MeasurementModel::newMeasurement(Measurement measure, int tempcolumn)
 {
+	if(measure.scale() == Units::Unitless)
+	{
+		controlColumns->insert(tempcolumn, true);
+	}
+	else
+	{
+		controlColumns->insert(tempcolumn, false);
+	}
 	MeasurementList *temp;
 	temp = new MeasurementList;
 	temp->append(QVariant(measure.time()));
@@ -8924,8 +8957,8 @@ if(entries->size() > 5)@/
 	}@t\2@>@/
 }
 
-@ If the chosen insertion point is at an existing time, we don't need to worry
-about inserting rows. There may be a need to increase the size of the
+@ If the chosen insertion point is at an existing time, we don'@q'@>t need to
+worry about inserting rows. There may be a need to increase the size of the
 measurement list to accept an entry in a new data series.
 
 @<Insert a new measurement at an existing time@>=
@@ -8968,12 +9001,13 @@ inserting at a new time anywhere else.
 insertion = entries->size();@/
 @<Insert a new measurement somewhere else@>
 
-@ The other bit of code that's a little bit more complicated than other parts of
-the class handles adding annotations to the data. Two signals are emitted in
-this method. The |dataChanged| signal is expected by view classes that can use
-this model. The |rowChanged| signal is used by |ZoomLog| to scroll the view to
-the row the annotation has been added to. This is mainly useful when loading a
-target profile and entering the first annotation prior to starting the batch.
+@ The other bit of code that'@q'@>s a little bit more complicated than other
+parts of the class handles adding annotations to the data. Two signals are
+emitted in this method. The |dataChanged| signal is expected by view classes
+that can use this model. The |rowChanged| signal is used by |ZoomLog| to scroll
+the view to the row the annotation has been added to. This is mainly useful
+when loading a target profile and entering the first annotation prior to
+starting the batch.
 
 @<MeasurementModel Implementation@>=
 void MeasurementModel::newAnnotation(QString annotation, int tempcolumn,@|
@@ -9041,7 +9075,7 @@ void MeasurementModel::clear()
 
 @ While these methods for adding measurements and annotations are fine when
 recording a stream of measurements, either from the |DAQ| or when loading saved
-data, there are also cases where we'd like to edit the data in the model
+data, there are also cases where we'@q'@>d like to edit the data in the model
 directly from the table view. For this, we need to reimplement |setData()|.
 
 Very little input checking is done here. Editable views may want to place
@@ -9079,7 +9113,7 @@ bool MeasurementModel::setData(const QModelIndex &index,
 	return true;@t\2@>@/
 }
 
-@ There is no sense in attempting to edit the data if there isn't any data
+@ There is no sense in attempting to edit the data if there isn'@q'@>t any data
 available to edit. This check is also used when retrieving data from the model.
 
 @<Check that the index is valid@>=
@@ -9151,7 +9185,8 @@ constructor.
 @<MeasurementModel Implementation@>=
 MeasurementModel::MeasurementModel(QObject *parent) : QAbstractItemModel(parent),
 	unit(Units::Fahrenheit), hData(new QStringList),
-	lastTemperature(new QHash<int, int>)@/
+	lastTemperature(new QHash<int, int>),
+	controlColumns(new QHash<int, bool>)@/
 {
 	colcount = 1;
 	entries = new QList<MeasurementList *>;
@@ -9171,7 +9206,7 @@ MeasurementModel::~MeasurementModel()
 
 @ A pair of functions are used to determine the number of rows and columns the
 model provides. No entries in the model have children, so the parent should
-always be the invisible root object. If it isn't, we should return 0.
+always be the invisible root object. If it isn'@q'@>t, we should return 0.
 
 @<MeasurementModel Implementation@>=
 int MeasurementModel::rowCount(const QModelIndex &parent) const
@@ -9193,7 +9228,7 @@ int MeasurementModel::columnCount(const QModelIndex &parent) const
 }
 
 @ The model maintains a set of header data. At present, it only supports header
-data at the top of the model due to the author's preference to not have row
+data at the top of the model due to the author'@q'@>s preference to not have row
 numbers littering the left of the table (the time column is sufficient to
 identify the row for the user).
 
@@ -9290,6 +9325,13 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 				if(row->at(index.column()).toString().isEmpty())
 				{
 					return QVariant();
+				}
+				if(controlColumns->contains(index.column()))
+				{
+					if(controlColumns->value(index.column()) == true)
+					{
+						return QVariant(QString("%1").arg(QVariant(row->at(index.column()).toInt()).toString()));
+					}
 				}
 				switch(unit)
 				{
@@ -10902,10 +10944,12 @@ class XMLOutput : public QObject@/
 	QIODevice *out;
 	int time;
 	QMap<int, QString> temperatureColumns;
+	QMap<int, QString> controlColumns;
 	QMap<int, QString> annotationColumns;
 	public:@/
 		XMLOutput(MeasurementModel *model, QIODevice *device, int timec = 0);
 		void addTemperatureColumn(const QString &series, int column);
+		void addControlColumn(const QString &series, int column);
 		void addAnnotationColumn(const QString &series, int column);
 		void setModel(MeasurementModel *model);
 		void setTimeColumn(int column);
@@ -10926,7 +10970,7 @@ bool XMLOutput::output()@t\2\2@>@/
 	}@/
 	QXmlStreamWriter xmlout(out);
 	xmlout.writeStartDocument("1.0");
-	xmlout.writeDTD("<!DOCTYPE roastlog2.0>");
+	xmlout.writeDTD("<!DOCTYPE roastlog3.0>");
 	xmlout.writeStartElement("roastlog");
 	@<Output the column declarations@>@;
 	xmlout.writeStartElement("roast");
@@ -10957,6 +11001,12 @@ foreach(int c, temperatureColumns.keys())
 	xmlout.writeAttribute("name", temperatureColumns.value(c));
 	xmlout.writeEndElement();
 }
+foreach(int c, controlColumns.keys())
+{
+	xmlout.writeStartElement("controlseries");
+	xmlout.writeAttribute("name", controlColumns.value(c));
+	xmlout.writeEndElement();
+}
 foreach(int c, annotationColumns.keys())
 {
 	xmlout.writeStartElement("noteseries");
@@ -10980,6 +11030,15 @@ foreach(int c, temperatureColumns.keys())@/
 		break;@t\2@>@/
 	}@t\2@>@/
 }@/
+foreach(int c, controlColumns.keys())
+{
+	if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+	         !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))
+	{
+		oresult = true;
+		break;
+	}
+}
 if(oresult == false)@/
 {@t\1@>@/
 	foreach(int c, annotationColumns.keys())@/
@@ -11012,6 +11071,17 @@ foreach(int c, temperatureColumns.keys())@/
 		xmlout.writeAttribute("series", temperatureColumns.value(c));
 		xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).
 		                                  toString());
+		xmlout.writeEndElement();
+	}
+}
+foreach(int c, controlColumns.keys())
+{
+	if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+	         !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))
+	{
+		xmlout.writeStartElement("control");
+		xmlout.writeAttribute("series", controlColumns.value(c));
+		xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).toString());
 		xmlout.writeEndElement();
 	}
 }
@@ -11064,6 +11134,11 @@ export.
 void XMLOutput::addTemperatureColumn(const QString &series, int column)
 {
 	temperatureColumns.insert(column, series);
+}
+
+void XMLOutput::addControlColumn(const QString &series, int column)
+{
+	controlColumns.insert(column, series);
 }
 
 void XMLOutput::addAnnotationColumn(const QString &series, int column)
@@ -11179,7 +11254,7 @@ while(xmlin.name() != "roast")
 {
 	if(xmlin.isStartElement())
 	{
-		if(xmlin.name() == "tempseries")
+		if((xmlin.name() == "tempseries") || (xmlin.name() == "controlseries"))
 		{
 			temperatureColumns.insert(xmlin.attributes().value("name").
 									                     toString(),
@@ -11253,6 +11328,15 @@ else if(xmlin.name() == "temperature")
 			                                   value("series").toString());
 	tempval = xmlin.readElementText().toDouble();
 	Measurement measurement(tempval, timeval);
+	emit measure(measurement, column);
+}
+else if(xmlin.name() == "control")
+{
+	column = xmlin.attributes().value("series").toString().isEmpty() ?
+	         firstc : temperatureColumns.value(xmlin.attributes().
+	                                                   value("series").toString());
+	tempval = xmlin.readElementText().toDouble();
+	Measurement measurement(tempval, timeval, Units::Unitless);
 	emit measure(measurement, column);
 }
 else if(xmlin.name() == "annotation")
@@ -11338,10 +11422,12 @@ class CSVOutput@/
 	QIODevice *out;
 	int time;
 	QMap<int, QString> temperatureColumns;
+	QMap<int, QString> controlColumns;
 	QMap<int, QString> annotationColumns;@/
 	public:@/
 		CSVOutput(MeasurementModel *model, QIODevice *device, int timec = 0);
 		void addTemperatureColumn(const QString &series, int column);
+		void addControlColumn(const QString &series, int column);
 		void addAnnotationColumn(const QString &series, int column);
 		void setModel(MeasurementModel *model);
 		void setTimeColumn(int column);
@@ -11388,6 +11474,10 @@ foreach(int c, temperatureColumns.keys())
 {
 	output << ',' << temperatureColumns.value(c);
 }
+foreach(int c, controlColumns.keys())
+{
+	output << ',' << controlColumns.value(c);
+}
 foreach(int c, annotationColumns.keys())
 {
 	output << ',' << annotationColumns.value(c);
@@ -11406,6 +11496,10 @@ serious issue at this time.
 @<Output CSV row@>=
 output << data->data(data->index(i, time), Qt::DisplayRole).toString();
 foreach(int c, temperatureColumns.keys())
+{
+	output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
+}
+foreach(int c, controlColumns.keys())
 {
 	output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
 }
@@ -11438,6 +11532,11 @@ void CSVOutput::setTimeColumn(int column)
 void CSVOutput::addTemperatureColumn(const QString &series, int column)
 {
 	temperatureColumns.insert(column, series);
+}
+
+void CSVOutput::addControlColumn(const QString &series, int column)
+{
+	controlColumns.insert(column, series);
 }
 
 void CSVOutput::addAnnotationColumn(const QString &series, int column)

@@ -435,7 +435,7 @@ such. Code that will be interpreted by the ECMA-262 host environment has no
 pretty printing.
 
 \danger With apologies to prof.~Knuth\nfnote{This symbol was introduced in
-{\underbar{Computers~\char'046~Typesetting}} (Knuth, 1984) to point out material
+{\underbar{Computers~\char'046~Typesetting}}@q'@> (Knuth, 1984) to point out material
 that is for ``wizards only.'' It seems to be as appropriate a symbol as any to
 point out the darker corners of this program.}, code that is known to be
 potentially buggy is flagged with a dangerous bend sign. Some of this code is
@@ -771,6 +771,9 @@ generated file empty.
 @<NodeInserter implementation@>@/
 @<Measurement implementation@>@/
 @<DAQ Implementation@>@/
+#ifdef Q_OS_WIN32
+@<DataqSdkDevice implementation@>@/
+#endif
 @<FakeDAQ Implementation@>@/
 @<Channel Implementation@>@/
 @<TemperatureDisplay Implementation@>@/
@@ -1364,7 +1367,7 @@ QScriptValue QMainWindow_setCentralWidget(QScriptContext *context,
 }
 
 @ The |"menuBar"| property requires that we expose |QMenuBar| to the scripting
-environment in a limited fashion. We don't need to allow scripts to create a
+environment in a limited fashion. We don'@q'@>t need to allow scripts to create a
 new menu bar as it can be obtained from the window, however to add the menus to
 the menu bar, we need to add a property to the |QMenuBar| object before passing
 it back.
@@ -2111,7 +2114,7 @@ QScriptValue QFile_remove(QScriptContext *context, QScriptEngine *engine)
 	return QScriptValue(engine, retval);
 }
 
-@ Although we aren't going to create any instances of |QIODevice| directly,
+@ Although we aren'@q'@>t going to create any instances of |QIODevice| directly,
 subclasses such as |QFile| and |QBuffer| get two additional properties for
 opening and closing the device.
 
@@ -2738,7 +2741,7 @@ QScriptValue QSettings_setValue(QScriptContext *context, QScriptEngine *)
 
 @* Scripting QLCDNumber.
 
-\noindent |QLCDNumber| is used as a base class for \pn{}'s |TemperatureDisplay|
+\noindent |QLCDNumber| is used as a base class for \pn{}'@q'@>s |TemperatureDisplay|
 and |TimerDisplay| classes, but it can also be used on its own for the display
 of mainly numeric information.
 
@@ -3849,7 +3852,7 @@ any {\tt <program>} elements that are immediate children of the
 {\tt <window>} element into a window displayed on screen, the script in the
 {\tt <program>} elements must call a function to display a specified window.
 
-\danger This design works, but it's not particularly good design. It was written
+\danger This design works, but it'@q'@>s not particularly good design. It was written
 under severe time constraints and should be redesigned or at least cleaned up
 and reorganized.\endanger
 
@@ -3942,7 +3945,7 @@ QScriptValue createWindow(QScriptContext *context, QScriptEngine *engine)@/
 @ First we must locate the {\tt <window>} element. The most sensible way to do
 this would require that each {\tt <window>} element has an ID attribute and
 search the DOM tree for that ID. Unfortunately, as of this writing,
-|QDomDocument::elementByID()| always returns a null element, so that won't work.
+|QDomDocument::elementByID()| always returns a null element, so that won'@q'@>t work.
 Instead, we search the tree for all {\tt <window>} elements and then examine
 the resulting list to find the element with the appropriate ID.
 
@@ -4868,7 +4871,7 @@ void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *,@|
 script code would need to alter the column set. While this works fine on a Mac,
 this did not work very well under Windows. For the current version, I would like
 to remove the need to deal with table columns from the host environment. The
-first step for this is allowing column descriptions in XML. After this, I'd like
+first step for this is allowing column descriptions in XML. After this, I'@q'@>d like
 to remove the default column set from the widget code and provide some better
 functionality for dealing with additional data sets.
 
@@ -5772,12 +5775,12 @@ Measurement times are represented as instances of |QTime|.
 
 \noindent Measurements are sent through \pn{} in a way similar to liquid moving
 through a series of connected pipes. \pn{} is not something that you just dump
-measurements on. It's not a big truck\nfnote{Senator Ted Stevens (R-Alaska) on
+measurements on. It'@q'@>s not a big truck\nfnote{Senator Ted Stevens (R-Alaska) on
 network neutrality, June 28, 2006\par
 \hbox{\indent\pdfURL{http://media.publicknowledge.org/stevens-on-nn.mp3}%
 {http://media.publicknowledge.org/stevens-on-nn.mp3}}}. In most cases the
 connections between classes (represented by arrows in Figure \secno) are made
-with Qt's signals and slots mechanism\nfnote{Qt 4.4.3: Signals and Slots\par
+with Qt'@q'@>s signals and slots mechanism\nfnote{Qt 4.4.3: Signals and Slots\par
 \hbox{\indent\pdfURL{http://doc.trolltech.com/4.4/signalsandslots.html}%
 {http://doc.trolltech.com/4.4/signalsandslots.html}}}, but
 these
@@ -6023,7 +6026,7 @@ this program.
 There are two calls to |DAQmxBaseGetExtendedErrorInfo()| to obtain the error
 messages. The first is used just to obtain the length of the error string. That
 length is then used to allocate space for the error message. The second call
-fills that string. This isn't allowed by ISO \CPLUSPLUS/\nfnote{%
+fills that string. This isn'@q'@>t allowed by ISO \CPLUSPLUS/\nfnote{%
 \CPLUSPLUS/Dynamic Arrays (Crowl and Austern, May 16, 2008)\par
 \hbox{\indent\pdfURL{%
 http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2648.html}{%
@@ -6398,6 +6401,8 @@ QScriptValue DAQ_newChannel(QScriptContext *context, QScriptEngine *engine)
 	}
 	return object;
 }
+
+@i dataqsdk.w
 
 @ Sometimes it can be useful to test other parts of the program (for example,
 when developing new scripts) when the DAQ hardware is not available. In these

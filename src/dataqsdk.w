@@ -11,7 +11,6 @@ hardware usable without the DATAQ SDK both on Microsoft Windows and on other
 platforms for which there is a suitable serial driver.
 
 @<Class declarations@>=
-#ifdef Q_OS_WIN32
 class DataqSdkDeviceImplementation;
 class DataqSdkDevice : public QObject
 {
@@ -26,7 +25,6 @@ class DataqSdkDevice : public QObject
 		Q_INVOKABLE void setClockRate(double Hz);
 		Q_INVOKABLE void start();
 };
-#endif
 
 @ The |DataqSdkDevice| class has as a private member an instance of a class
 called |DataqSdkDeviceImplementation|. The two classes together create and run
@@ -41,7 +39,6 @@ was considered the right thing to do, but it would be good to rewrite this to
 not subclass |QThread| now that this is no longer required.
 
 @<Class declarations@>=
-#ifdef Q_OS_WIN32
 class DataqSdkDeviceImplementation : public QThread
 {
 	Q_OBJECT
@@ -56,7 +53,6 @@ class DataqSdkDeviceImplementation : public QThread
 	private:
 		qint16 *buffer;
 };
-#endif
 
 @ While the |DAQ| class for communicating with National Instruments devices
 uses a single function pointer type, increased variety of function signatures
@@ -141,7 +137,7 @@ QLibrary *driver;
 QVector<Units::Unit> unitMap;
 int *input_buffer;
 QTimer *eventClock;
-QMultiMap<int, double> > smoother;
+QMultiMap<int, double> smoother;
 
 @ Most of the interesting work associated with the |DataqSdkDevice| class is
 handled in the |measure()| method of |DataqSdkDeviceImplementation|. This
@@ -204,7 +200,7 @@ void DataqSdkDeviceImplementation::measure()
 		QList<double> channelBuffer;
 		for(unsigned int j = 0; j < 40; j++)
 		{
-			channelbuffer << ((double)buffer[i+(channels*j)] * 10.0) / 32768.0;
+			channelBuffer << ((double)buffer[i+(channels*j)] * 10.0) / 32768.0;
 			if(i == 0)
 			{
 				countList << buffer[i+(channels*j)];
@@ -213,7 +209,7 @@ void DataqSdkDeviceImplementation::measure()
 		double value = 0.0;
 		for(unsigned int j = 0; j < 40; j++)
 		{
-			value += channelbuffer[j];
+			value += channelBuffer[j];
 		}
 		value /= 40.0;
 		if(i == 0)
@@ -340,7 +336,7 @@ void DataqSdkDeviceImplementation::run()
 		inlist[i].ave = 1;
 		inlist[i].counter = (oversample - 1);
 	}
-	error = di_list_length(channels, 0)
+	error = di_list_length(channels, 0);
 	if(error)
 	{
 		error = 4; // List length error
@@ -598,8 +594,7 @@ QScriptValue DataqSdkDevice_newChannel(QScriptContext *context, QScriptEngine *e
 	QScriptValue object;
 	if(self)
 	{
-		object = engine->newQObject(self->newChannel(argument<int>(0, context),
-		                                             argument<int>(1, context)));
+		object = engine->newQObject(self->newChannel((Units::Unit)argument<int>(0, context)));
 		setChannelProperties(object, engine);
 	}
 	return object;

@@ -10,6 +10,12 @@ DI-145 additionally has a documented serial protocol which should make the
 hardware usable without the DATAQ SDK both on Microsoft Windows and on other
 platforms for which there is a suitable serial driver.
 
+Originally the classes were surrounded with conditional compilation directives
+but moc failed to generate the appropriate meta-objects on Windows when this
+was done. The |DataqSdkDevice| and |DataqSdkDeviceImplementation| classes will
+truly only work on Microsoft Windows at this time. Attempts to use it elsewhere
+will not end well.
+
 @<Class declarations@>=
 class DataqSdkDeviceImplementation;
 class DataqSdkDevice : public QObject

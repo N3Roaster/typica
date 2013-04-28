@@ -771,9 +771,7 @@ generated file empty.
 @<NodeInserter implementation@>@/
 @<Measurement implementation@>@/
 @<DAQ Implementation@>@/
-#ifdef Q_OS_WIN32
 @<DataqSdkDevice implementation@>@/
-#endif
 @<FakeDAQ Implementation@>@/
 @<Channel Implementation@>@/
 @<TemperatureDisplay Implementation@>@/

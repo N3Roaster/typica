@@ -116,6 +116,8 @@ unimportant details so long as the resulting program works.
 @<Header files to include@>=
 #ifdef Q_OS_WIN32
 #include <windef.h>
+#else
+#define PASCAL
 #endif
 
 @ |DataqSdkDeviceImplementation| maintains information about the device and the

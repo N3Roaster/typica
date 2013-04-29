@@ -7706,7 +7706,8 @@ GraphView::GraphView(QWidget *parent) : QGraphicsView(parent),
 	gridLinesF(new QList<QGraphicsItem *>),
 	gridLinesC(new QList<QGraphicsItem *>),
 	relativeGridLines(new QList<QGraphicsItem *>),
-	relativeEnabled(false)@/
+	relativeEnabled(false),
+	relativeAdjuster(new LinearSplineInterpolator)@/
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -7802,11 +7803,11 @@ if(settings.contains("settings/graph/relative/enable"))
 				relativeGridLines->append(label);
 				if(unit == "F")
 				{
-					relativeAdjuster->add_pair(key, y);
+					relativeAdjuster->add_pair(key, -y);
 				}
 				else
 				{
-					relativeAdjuster->add_pair(key * (9.0/5.0), y);
+					relativeAdjuster->add_pair(key * (9.0/5.0), -y);
 				}
 				y -= skip;
 			}
@@ -7889,7 +7890,14 @@ void GraphView::newMeasurement(Measurement measure, int tempcolumn)@/
 	{
 		if(measure.value("relative").toBool())
 		{
-			measure.setTemperature(relativeAdjuster->newMeasurement(measure).temperature());
+			if(relativeEnabled)
+			{
+				measure.setTemperature(relativeAdjuster->newMeasurement(measure).temperature());
+			}
+			else
+			{
+				return;
+			}
 		}
 	}
 	if(translations->contains(tempcolumn))

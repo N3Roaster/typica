@@ -492,7 +492,7 @@
 			emitter.measurement.connect(graph.newMeasurement);
 		}
 		for(var i = channels.length; i < channels.length + rateCalculators.length; i++) {
-			var offset - new MeasurementTimeOffset(epoch);
+			var offset = new MeasurementTimeOffset(epoch);
 			rateoffsets.push(offset);
 			rateCalculators[i - channels.length].measurement.connect(offset.newMeasurement);
 			var adapter = new MeasurementAdapter(i + 1);

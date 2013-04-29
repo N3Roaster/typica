@@ -836,6 +836,7 @@ generated file empty.
 @<TranslationConfWidget implementation@>@/
 @<FreeAnnotationConfWidget implementation@>@/
 @<RateOfChange implementation@>@/
+@<SettingsWindow implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -7653,7 +7654,8 @@ class GraphView : public QGraphicsView@/
 	QMap<int, QPointF> *prevPoints;
 	QMap<int, double> *translations;
 	QList<QGraphicsItem *> *gridLinesF;
-	QList<QGraphicsItem *> *gridLinesC;@/
+	QList<QGraphicsItem *> *gridLinesC;
+	QList<QGraphicsItem *> *relativeGridLines;@/
 	public:@/
 		GraphView(QWidget *parent = NULL);
 		void removeSeries(int column);@/
@@ -7695,7 +7697,8 @@ GraphView::GraphView(QWidget *parent) : QGraphicsView(parent),
 	prevPoints(new QMap<int, QPointF>),
 	translations(new QMap<int, double>),
 	gridLinesF(new QList<QGraphicsItem *>),
-	gridLinesC(new QList<QGraphicsItem *>)@/
+	gridLinesC(new QList<QGraphicsItem *>),
+	relativeGridLines(new QList<QGraphicsItem *>)@/
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -14763,8 +14766,12 @@ QList<NodeInserter *> topLevelNodeInserters;
 @ With this done, we can now produce a window which allows someone to easily
 edit the device configuration.
 
+As of version 1.6 this class is no longer a window but just a |QWidget| which
+is inserted into another more general settings window. The name of the class
+should be changed in a future version to reflect this change.
+
 @<Class declarations@>=
-class DeviceConfigurationWindow : public QMainWindow
+class DeviceConfigurationWindow : public QWidget
 {
 	@[Q_OBJECT@]@;
 	public:@/
@@ -14797,7 +14804,7 @@ this) is expanded to show the new child node if it has not already been
 expanded.
 
 @<DeviceConfigurationWindow implementation@>=
-DeviceConfigurationWindow::DeviceConfigurationWindow() : QMainWindow(NULL),
+DeviceConfigurationWindow::DeviceConfigurationWindow() : QWidget(NULL),
 	view(new QTreeView), configArea(new QScrollArea)
 {
 	QSplitter *splitter = new QSplitter;
@@ -14832,7 +14839,9 @@ DeviceConfigurationWindow::DeviceConfigurationWindow() : QMainWindow(NULL),
 	configArea->setMinimumWidth(580);
 	configArea->setMinimumHeight(460);
 	splitter->addWidget(configArea);
-	setCentralWidget(splitter);
+	QVBoxLayout *centralLayout = new QVBoxLayout;
+	centralLayout->addWidget(splitter);
+	setLayout(centralLayout);
 	connect(view, SIGNAL(activated(QModelIndex)),
 	        this, SLOT(newSelection(QModelIndex)));
 	connect(view, SIGNAL(clicked(QModelIndex)),
@@ -14898,6 +14907,9 @@ void DeviceConfigurationWindow::resizeColumn()
 @ At least for the initial testing of this feature it will be useful if we can
 instantiate this from the host environment. For this we at least require a
 constructor.
+
+Now that this widget is available through a more general settings window it may
+be better to remove direct access to this class from the host environment.
 
 @<Function prototypes for scripting@>=
 QScriptValue constructDeviceConfigurationWindow(QScriptContext *context,
@@ -16816,6 +16828,8 @@ void NoteSpinConfWidget::updatePosttext(const QString &text)
 app.registerDeviceConfigurationWidget("annotationspinbox", NoteSpinConfWidget::staticMetaObject);
 
 @i freeannotation.w
+
+@i settings.w
 
 @** Communicating with a Device through Modbus RTU.
 

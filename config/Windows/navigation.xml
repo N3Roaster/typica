@@ -172,7 +172,7 @@ type="push" />
         });
 		var configurebutton = findChildObject(this, 'configure');
 		configurebutton.clicked.connect(function() {
-			var confwindow = new DeviceConfigurationWindow;
+			var confwindow = new SettingsWindow;
 			confwindow.show();
 		});
         <![CDATA[

@@ -837,6 +837,7 @@ generated file empty.
 @<FreeAnnotationConfWidget implementation@>@/
 @<RateOfChange implementation@>@/
 @<SettingsWindow implementation@>@/
+@<GraphSettingsWidget implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -6686,7 +6687,7 @@ class LinearCalibrator : public QObject@/
 		void setMappedUpper(double upper);
 		void setClosedRange(bool closed);
 		void setSensitivity(double sensitivity);
-		void newMeasurement(Measurement measure);
+		Measurement newMeasurement(Measurement measure);
 	@t\4@>@[signals:@]@;
 		void measurement(Measurement measure);
 	private:@/
@@ -6717,7 +6718,7 @@ This method also handles any rounding needed if there has been a call to
 |setSensitivity()|.
 
 @<LinearCalibrator Implementation@>=
-void LinearCalibrator::newMeasurement(Measurement measure)
+Measurement LinearCalibrator::newMeasurement(Measurement measure)
 {
 	double outval = Lo1 + (measure.temperature() - Lo2) * (Up1 - Lo1)/(Up2 - Lo2);
 	if(clamp)
@@ -6738,6 +6739,7 @@ void LinearCalibrator::newMeasurement(Measurement measure)
 	}
 	Measurement adjusted(outval, measure.time(), measure.scale());
 	emit measurement(adjusted);
+	return adjusted;
 }
 
 @ The rest of the class consists of trivial accessor methods.
@@ -6861,7 +6863,7 @@ class LinearSplineInterpolator : public QObject
 		LinearSplineInterpolator(QObject *parent = NULL);
 		@[Q_INVOKABLE@]@, void add_pair(double source, double destination);
 	@[public slots@]:@/
-		void newMeasurement(Measurement measure);
+		Measurement newMeasurement(Measurement measure);
 	@[signals@]:@/
 		void newData(Measurement measure);
 	private:@/
@@ -6916,7 +6918,7 @@ LinearSplineInterpolator::LinearSplineInterpolator(QObject *parent) :
 	/* Nothing needs to be done here. */
 }
 
-void LinearSplineInterpolator::newMeasurement(Measurement measure)
+Measurement LinearSplineInterpolator::newMeasurement(Measurement measure)
 {
 	QMap<double, double>::const_iterator i = pairs->constBegin();
 	int index = -1;
@@ -6939,8 +6941,9 @@ void LinearSplineInterpolator::newMeasurement(Measurement measure)
 	}
 	if(interpolators->at(index) != NULL)
 	{
-		interpolators->at(index)->newMeasurement(measure);
+		return interpolators->at(index)->newMeasurement(measure);
 	}
+	return Measurement();
 }
 
 @ This is exposed to the scripting environment as usual.
@@ -7254,7 +7257,8 @@ void MeasurementTimeOffset::newMeasurement(Measurement measure)@t\2\2@>@/
 		}
 		else@/
 		{
-			Measurement rel(measure.temperature(), QTime(0, 0, 0, 0), measure.scale());
+			Measurement rel = measure;
+			rel.setTime(QTime(0, 0, 0, 0));
 			emit measurement(rel);
 		}
 	}
@@ -7278,7 +7282,8 @@ if(newTime.hour() > 0)
 {
 	newTime.setHMS(0, newTime.minute(), newTime.second(), newTime.msec());
 }
-Measurement rel(measure.temperature(), newTime, measure.scale());
+Measurement rel = measure;
+rel.setTime(newTime);
 emit measurement(rel);
 
 @ The rest of the code handles updating and reporting the reference time.
@@ -7655,7 +7660,9 @@ class GraphView : public QGraphicsView@/
 	QMap<int, double> *translations;
 	QList<QGraphicsItem *> *gridLinesF;
 	QList<QGraphicsItem *> *gridLinesC;
-	QList<QGraphicsItem *> *relativeGridLines;@/
+	QList<QGraphicsItem *> *relativeGridLines;
+	bool relativeEnabled;
+	LinearSplineInterpolator *relativeAdjuster;@/
 	public:@/
 		GraphView(QWidget *parent = NULL);
 		void removeSeries(int column);@/
@@ -7698,13 +7705,15 @@ GraphView::GraphView(QWidget *parent) : QGraphicsView(parent),
 	translations(new QMap<int, double>),
 	gridLinesF(new QList<QGraphicsItem *>),
 	gridLinesC(new QList<QGraphicsItem *>),
-	relativeGridLines(new QList<QGraphicsItem *>)@/
+	relativeGridLines(new QList<QGraphicsItem *>),
+	relativeEnabled(false)@/
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setScene(theScene);
 	setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 	@<Draw temperature axis and grid lines@>;
+	@<Draw secondary axes@>@;
 	@<Draw time axis and ticks@>;
 	fitInView(theScene->sceneRect().adjusted(-50,-50,50,50));
 }
@@ -7751,6 +7760,58 @@ for(int degC = 50; degC <= 250; degC += 50)
 	label->hide();
 	theScene->addItem(label);
 	gridLinesC->append(label);
+}
+
+@ If we are going to plot relative temperature measurements, we must obtain
+information on how we wish to do that from settings. We take advantage of the
+fact that iterating over the keys in a |QMap| produces results in sorted order.
+
+While drawing the grid lines we also set up the |relativeAdjuster| that will be
+used to transform incoming measurements to our coordinate system.
+
+@<Draw secondary axes@>=
+QSettings settings;
+if(settings.contains("settings/graph/relative/enable"))
+{
+	if(settings.value("settings/graph/relative/enable").toBool())
+	{
+		relativeEnabled = true;
+		QColor relativeColor = QColor(settings.value("settings/graph/relative/color").toString());
+		QString unit = QString(settings.value("settings/graph/relative/unit").toInt() == 0 ? "F" : "C");
+		QMap<double, QString> relativeAxisPairs;
+		QStringList relativeAxisLabels = settings.value("settings/graph/relative/grid").toString().split(QRegExp("[\\s,]+"), QString::SkipEmptyParts);
+		foreach(QString item, relativeAxisLabels)
+		{
+			relativeAxisPairs.insert(item.toDouble(), item);
+		}
+		if(relativeAxisPairs.size() > 1)
+		{
+			double skip = 500.0 / (relativeAxisPairs.size() - 1);
+			double y = 0;
+			foreach(double key, relativeAxisPairs.keys())
+			{
+				gridLine = new QGraphicsLineItem;
+				gridLine->setLine(0, y, 1205, y);
+				gridLine->setPen(QPen(relativeColor));
+				theScene->addItem(gridLine);
+				relativeGridLines->append(gridLine);
+				label = new QGraphicsTextItem;
+				label->setHtml(QString("%1&deg;%2").arg(relativeAxisPairs.value(key)).arg(unit));
+				label->setPos(1210, y - (label->boundingRect().height() / 2));
+				theScene->addItem(label);
+				relativeGridLines->append(label);
+				if(unit == "F")
+				{
+					relativeAdjuster->add_pair(key, y);
+				}
+				else
+				{
+					relativeAdjuster->add_pair(key * (9.0/5.0), y);
+				}
+				y -= skip;
+			}
+		}
+	}
 }
 
 @ Two slots are used to switch between the different sets of grid lines.
@@ -7815,12 +7876,22 @@ considered. In the case of the first measurement, no drawing occurs. A |QList|
 of line items is initialized when the second measurement is taken. Subsequent
 measurements are able to simply append new line segments to the list.
 
+Relative measurements are first converted to the coordinate system of the
+appropriate secondary axis.
+
 @<GraphView Implementation@>=
 #define FULLTIMETOINT(t) (t.msec() + (t.second() * 1000) +  (t.minute() * 60 * 1000))
 
 void GraphView::newMeasurement(Measurement measure, int tempcolumn)@/
 {@/
 	double offset = 0;
+	if(measure.contains("relative"))
+	{
+		if(measure.value("relative").toBool())
+		{
+			measure.setTemperature(relativeAdjuster->newMeasurement(measure).temperature());
+		}
+	}
 	if(translations->contains(tempcolumn))
 	{
 		offset = translations->value(tempcolumn);

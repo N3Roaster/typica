@@ -297,6 +297,7 @@ void DataqSdkDeviceImplementation::run()
 	if(!driver->load())
 	{
 		error = 1; // Failed to load driver.
+		qDebug() << "Failed to load driver: " << device;
 		return;
 	}
 	di_open = (FPDIOPEN)driver->resolve("di_open");
@@ -454,11 +455,11 @@ DataqSdkDevice::DataqSdkDevice(QString device) : imp(new DataqSdkDeviceImplement
 		portString.chop(1);
 		if(portString.toInt() < 10)
 		{
-			imp->device = QString("DI10%1INT.DLL").arg(portString);
+			imp->device = QString("DI10%1NT.DLL").arg(portString);
 		}
 		else
 		{
-			imp->device = QString("DI1%1INT.DLL").arg(portString);
+			imp->device = QString("DI1%1NT.DLL").arg(portString);
 		}
 		imp->deviceNumber = 0x12C02D00;
 		imp->deviceNumber += portString.toInt();

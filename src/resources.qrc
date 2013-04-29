@@ -19,5 +19,9 @@
         <file>resources/fonts/texgyrepagella-bolditalic.otf</file>
         <file>resources/fonts/texgyrepagella-italic.otf</file>
         <file>resources/fonts/texgyrepagella-regular.otf</file>
+        <file>resources/icons/tango/16x16/categories/applications-graphics.png</file>
+        <file>resources/icons/tango/22x22/categories/applications-graphics.png</file>
+        <file>resources/icons/tango/32x32/categories/applications-graphics.png</file>
+        <file>resources/icons/tango/scalable/categories/applications-graphics.svg</file>
     </qresource>
 </RCC>

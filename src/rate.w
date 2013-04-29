@@ -89,12 +89,16 @@ it will almost never be exact. Basing the calculation on the data we have
 instead of on the data we wish we had should result in better stability in the
 derived series.
 
+The measurement will carry the fact that it is a relative measurement.
+
 @<Calculate rate of change@>=
 double mdiff = cache.back().temperature() - cache.front().temperature();
 double tdiff = cache.front().time().msecsTo(cache.back().time()) / 1000.0;
 double dps = mdiff / tdiff;
 double scale = dps * st;
-emit measurement(Measurement(scale, cache.back().time(), cache.back().scale()));
+Measurement value(scale, cache.back().time(), cache.back().scale());
+value.insert("relative", true);
+emit measurement(value);
 
 @ The rest of the class implementation is trivial.
 

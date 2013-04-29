@@ -26,6 +26,8 @@ SettingsWindow::SettingsWindow() : QMainWindow(NULL)
 	QTabWidget *settingsTab = new QTabWidget;
 	DeviceConfigurationWindow *deviceSettings = new DeviceConfigurationWindow;
 	settingsTab->addTab(deviceSettings, tr("Roasters"));
+	GraphSettingsWidget *graphSettings = new GraphSettingsWidget;
+	settingsTab->addTab(graphSettings, tr("Graph"));
 	setCentralWidget(settingsTab);
 }
 
@@ -50,3 +52,5 @@ QScriptValue constructSettingsWindow(QScriptContext *, QScriptEngine *engine)
 constructor = engine->newFunction(constructSettingsWindow);
 value = engine->newQMetaObject(&DeviceConfigurationWindow::staticMetaObject, constructor);
 engine->globalObject().setProperty("SettingsWindow", value);
+
+@i graphsettings.w

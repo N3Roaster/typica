@@ -69,6 +69,10 @@
 		var temperatureDisplays = new Array();
 		var columnNames = new Array();
 		var modbusdevices = new Array();
+		var rateCalculators = new Array();
+		var rateadapters = new Array();
+		var rateoffsets = new Array();
+		var ratezeros = new Array();
 		var indicatorPanel = findChildObject(this, 'indicators');
 		var annotationPanel = findChildObject(this, 'controlpanel');
 		var log = findChildObject(this, 'log');
@@ -421,6 +425,7 @@
 							indicatorPanel.addWidget(decorator);
 							rate.measurement.connect(indicator.setValue);
 							temperatureDisplays.push(indicator);
+							rateCalculators.push(rate);
 						}
 					}
 				}
@@ -486,6 +491,18 @@
 			emitter.measurement.connect(log.newMeasurement);
 			emitter.measurement.connect(graph.newMeasurement);
 		}
+		for(var i = channels.length; i < channels.length + rateCalculators.length; i++) {
+			var offset - new MeasurementTimeOffset(epoch);
+			rateoffsets.push(offset);
+			rateCalculators[i - channels.length].measurement.connect(offset.newMeasurement);
+			var adapter = new MeasurementAdapter(i + 1);
+			rateadapters.push(adapter);
+			offset.measurement.connect(adapter.newMeasurement);
+			var emitter = new ZeroEmitter(i + 1);
+			ratezeros.push(emitter);
+			rateCalculators[i - channels.length].measurement.connect(emitter.newMeasurement);
+			emitter.measurement.connect(graph.newMeasurement);
+		}
         start.clicked.connect(function() {
 			start.enabled = false;
 			hasTranslated = false;
@@ -497,6 +514,12 @@
 				zeroemitters[i].emitZero();
 				adapters[i].measurement.connect(log.newMeasurement);
 				adapters[i].measurement.connect(graph.newMeasurement);
+			}
+			for(var i = 0; i < rateadapters.length; i++)
+			{
+				rateoffsets[i].setZeroTime(epoch);
+				ratezeros[i].emitZero();
+				rateadapters[i].measurement.connect(graph.newMeasurement);
 			}
 			timer.startTimer();
             if(typeof(currentBatchInfo) == 'undefined') { } else {
@@ -544,6 +567,10 @@
 			{
 				adapters[i].measurement.disconnect(log.newMeasurement);
 				adapters[i].measurement.disconnect(graph.newMeasurement);
+			}
+			for(var i = 0; i < rateadapters.length; i++)
+			{
+				rateadapters[i].measurement.disconnect(graph.newMeasurement);
 			}
             if(typeof(currentBatchInfo) == 'undefined') { } else {
                 lc = Number(QSettings.value("liveColumn"));
@@ -685,6 +712,11 @@
 				adapters[i].setColumn(c + i + 1);
 				zeroemitters[i].setColumn(c + i + 1);
 				log.setHeaderData(c + i + 1, columnNames[i]);
+			}
+			for(var i = 0; i < rateadapters.length; i++)
+			{
+				rateadapters[i].setColumn(c + i + 1 + adapters.length);
+				ratezeros[i].setColumn(c + i + 1 + adapters.length);
 			}
 			log.setHeaderData(c + columnNames.length + 1, "Note");
             stop.setTemperatureColumn(c + 1);

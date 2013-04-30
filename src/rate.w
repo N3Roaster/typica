@@ -29,6 +29,7 @@ class RateOfChange : public QObject
 		int ct;
 		int st;
 		QList<Measurement> cache;
+		QMap<double,double> smoothCache;
 };
 
 @ The interesting part of this class is in the |newMeasurement()| method. This
@@ -80,23 +81,29 @@ if(cache.size() > 2)
 	}
 }
 
-@ To calculate the rate of change, we compare both the time and the
-temperature of the first and last measurements in the cache and reduce this to
-a change per second value. This is then multiplied by the scale time and sent
-to whatever objects require the derived series data. Note that |tdiff| will
-generally be very close to the cache time except where this is set to zero, but
-it will almost never be exact. Basing the calculation on the data we have
-instead of on the data we wish we had should result in better stability in the
-derived series.
+@ When calculating the rate of change we are doing something that will
+fundamentally increase the noise expressed through the derived series.
+Delivering a derived series that both lacks excessive volatility and remains
+acceptably accurate requires careful tuning.
 
 The measurement will carry the fact that it is a relative measurement.
 
 @<Calculate rate of change@>=
-double mdiff = cache.back().temperature() - cache.front().temperature();
-double tdiff = cache.front().time().msecsTo(cache.back().time()) / 1000.0;
-double dps = mdiff / tdiff;
-double scale = dps * st;
-Measurement value(scale, cache.back().time(), cache.back().scale());
+QList<double> rates;
+for(int i = 1; i < cache.size(); i++)
+{
+	double mdiff = cache.at(i).temperature() - cache.at(i-1).temperature();
+	double tdiff = (double)(cache.at(i-1).time().msecsTo(cache.at(i).time())) / 1000.0;
+	rates.append(mdiff/tdiff);
+}
+double acc = 0.0;
+for(int i = 0; i < rates.size(); i++)
+{
+	acc += rates.at(i);
+}
+double pavg = acc /= rates.size();
+double v2 = pavg * st;
+Measurement value(v2, cache.back().time(), cache.back().scale());
 value.insert("relative", true);
 emit measurement(value);
 

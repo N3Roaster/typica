@@ -423,7 +423,7 @@
 							indicator.digitCount = 9;
 							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
 							indicatorPanel.addWidget(decorator);
-							rate.measurement.connect(indicator.setValue);
+							rate.newData.connect(indicator.setValue);
 							temperatureDisplays.push(indicator);
 							rateCalculators.push(rate);
 						}
@@ -494,13 +494,13 @@
 		for(var i = channels.length; i < channels.length + rateCalculators.length; i++) {
 			var offset = new MeasurementTimeOffset(epoch);
 			rateoffsets.push(offset);
-			rateCalculators[i - channels.length].measurement.connect(offset.newMeasurement);
+			rateCalculators[i - channels.length].newData.connect(offset.newMeasurement);
 			var adapter = new MeasurementAdapter(i + 1);
 			rateadapters.push(adapter);
 			offset.measurement.connect(adapter.newMeasurement);
 			var emitter = new ZeroEmitter(i + 1);
 			ratezeros.push(emitter);
-			rateCalculators[i - channels.length].measurement.connect(emitter.newMeasurement);
+			rateCalculators[i - channels.length].newData.connect(emitter.newMeasurement);
 			emitter.measurement.connect(graph.newMeasurement);
 		}
         start.clicked.connect(function() {

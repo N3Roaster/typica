@@ -24,7 +24,7 @@ class RateOfChange : public QObject
 		void setCacheTime(int seconds);
 		void setScaleTime(int seconds);
 	signals:
-		void measurement(Measurement measure);
+		void newData(Measurement measure);
 	private:
 		int ct;
 		int st;
@@ -81,10 +81,12 @@ if(cache.size() > 2)
 	}
 }
 
-@ When calculating the rate of change we are doing something that will
-fundamentally increase the noise expressed through the derived series.
-Delivering a derived series that both lacks excessive volatility and remains
-acceptably accurate requires careful tuning.
+@ The calculation method here is subject to change as this is still noisier
+than I would like. What we are doing here is calculating the rate of change
+between each pair of adjacent measurements in the cache and averaging them to
+produce something that is a little less noisy than just using the first and
+last measurements in the cache. Other techniques may be useful for reducing the
+noise further.
 
 The measurement will carry the fact that it is a relative measurement.
 
@@ -105,7 +107,7 @@ double pavg = acc /= rates.size();
 double v2 = pavg * st;
 Measurement value(v2, cache.back().time(), cache.back().scale());
 value.insert("relative", true);
-emit measurement(value);
+emit newData(value);
 
 @ The rest of the class implementation is trivial.
 

@@ -25,6 +25,7 @@ class Units: public QObject
 			Rankine = 10145
 		};
 		static double convertTemperature(double value, Unit fromUnit, Unit toUnit);
+		static double convertRelativeTemperature(double value, Unit fromUnit, Unit toUnit);
 		static bool isTemperatureUnit(Unit unit);
 };
 
@@ -83,10 +84,10 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 					return value;
 					break;
 				case Celsius:
-					return (value - 32) * 5 / 9;
+					return (value - 32.0) * 5.0 / 9.0;
 					break;
 				case Kelvin:
-					return (value + 459.67) * 5 / 9;
+					return (value + 459.67) * 5.0 / 9.0;
 					break;
 				case Rankine:
 					return value + 459.67;
@@ -97,7 +98,7 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 			switch(toUnit)
 			{
 				case Fahrenheit:
-					return value * 9 / 5 + 32;
+					return value * 9.0 / 5.0 + 32.0;
 					break;
 				case Celsius:
 					return value;
@@ -106,7 +107,7 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 					return value + 273.15;
 					break;
 				case Rankine:
-					return (value + 273.15) * 9 / 5;
+					return (value + 273.15) * 9.0 / 5.0;
 					break;
 			}
 			break;
@@ -114,7 +115,7 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 			switch(toUnit)
 			{
 				case Fahrenheit:
-					return value * 5 / 9 - 459.67;
+					return value * 5.0 / 9.0 - 459.67;
 					break;
 				case Celsius:
 					return value - 273.15;
@@ -123,7 +124,7 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 					return value;
 					break;
 				case Rankine:
-					return value * 9 / 5;
+					return value * 9.0 / 5.0;
 					break;
 			}
 			break;
@@ -134,10 +135,96 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 					return value - 457.67;
 					break;
 				case Celsius:
-					return (value - 491.67) * 5 / 9;
+					return (value - 491.67) * 5.0 / 9.0;
 					break;
 				case Kelvin:
-					return value * 5 / 9;
+					return value * 5.0 / 9.0;
+					break;
+				case Rankine:
+					return value;
+					break;
+			}
+			break;
+		default:
+			return 0;
+			break;
+	}
+	return 0;
+}
+
+@ Conversions are also provided for relative temperature measurements.
+
+@(units.cpp@>=
+double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUnit)
+{
+	if(isTemperatureUnit(fromUnit) && isTemperatureUnit(toUnit) == false)
+	{
+		return 0;
+	}
+	switch(fromUnit)
+	{
+		case Fahrenheit:
+			switch(toUnit)
+			{
+				case Fahrenheit:
+					return value;
+					break;
+				case Celsius:
+					return value * (5.0 / 9.0);
+					break;
+				case Kelvin:
+					return value * (5.0 / 9.0);
+					break;
+				case Rankine:
+					return value;
+					break;
+			}
+			break;
+		case Celsius:
+			switch(toUnit)
+			{
+				case Fahrenheit:
+					return value * (9.0 / 5.0);
+					break;
+				case Celsius:
+					return value;
+					break;
+				case Kelvin:
+					return value;
+					break;
+				case Rankine:
+					return value * (9.0 / 5.0);
+					break;
+			}
+			break;
+		case Kelvin:
+			switch(toUnit)
+			{
+				case Fahrenheit:
+					return value * (5.0 / 9.0);
+					break;
+				case Celsius:
+					return value;
+					break;
+				case Kelvin:
+					return value;
+					break;
+				case Rankine:
+					return value * (9.0 / 5.0);
+					break;
+			}
+			break;
+		case Rankine:
+			switch(toUnit)
+			{
+				case Fahrenheit:
+					return value;
+					break;
+				case Celsius:
+					return value * (5.0 / 9.0);
+					break;
+				case Kelvin:
+					return value * (5.0 / 9.0);
 					break;
 				case Rankine:
 					return value;

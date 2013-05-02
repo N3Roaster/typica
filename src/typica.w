@@ -8166,10 +8166,8 @@ void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 		if(measure.time().second() !=
 			lastMeasurement.value(tempcolumn).time().second())
 		{
-			Measurement adjusted(measure.temperature(),
-									QTime(0, measure.time().minute(),
-											measure.time().second(), 0),
-									measure.scale());
+			Measurement adjusted = measure;
+			adjusted.setTime(QTime(0, measure.time().minute(), measure.time().second(), 0));
 			model_1s->newMeasurement(adjusted, tempcolumn);
 			if(adjusted.time().second() % 5 == 0)
 			{
@@ -8238,7 +8236,9 @@ if(lastMeasurement[tempcolumn].time() < measure.time())
 	}
 	for(int i = 0; i < timelist.size(); i++)
 	{
-		newMeasurement(Measurement(measure.temperature(), timelist[i], measure.scale()), tempcolumn);
+		Measurement synthesized = measure;
+		synthesized.setTime(timelist[i]);
+		newMeasurement(synthesized, tempcolumn);
 	}
 }
 
@@ -8279,12 +8279,13 @@ if(currentColumnSet.contains(tempcolumn))
 			{
 				if(measure.time() > lastMeasurement.value(replicationcolumn).time())
 				{
-					Measurement synthetic(lastMeasurement.value(replicationcolumn).temperature(),
-                                          measure.time());
+					Measurement synthetic = lastMeasurement.value(replicationcolumn);
+					synthetic.setTime(measure.time());
 					model_ms->newMeasurement(synthetic, replicationcolumn);
 					if(synthetic.time().second() != lastMeasurement.value(replicationcolumn).time().second())
 					{
-						Measurement adjusted(synthetic.temperature(), QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));
+						Measurement adjusted = synthetic;
+						synthetic.setTime(QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));
 						model_1s->newMeasurement(adjusted, replicationcolumn);
 						if(adjusted.time().second() % 5 == 0)
 						{
@@ -9052,7 +9053,7 @@ if((*i)->size() < tempcolumn + 1)
 		(*i)->append(QVariant());
 	}
 }
-(*i)->replace(tempcolumn, measure.temperature());
+(*i)->replace(tempcolumn, measure);
 lastInsertion = i;
 emit dataChanged(createIndex(insertion, tempcolumn),
 					createIndex(insertion, tempcolumn));
@@ -9070,7 +9071,7 @@ for(int j = 0; j < tempcolumn + 1; j++)
 {
 	newEntry->append(QVariant());
 }
-newEntry->replace(tempcolumn, measure.temperature());
+newEntry->replace(tempcolumn, measure);
 lastInsertion = entries->insert(i, newEntry);
 endInsertRows();
 lastTemperature->insert(tempcolumn, insertion);
@@ -9160,6 +9161,13 @@ void MeasurementModel::clear()
 recording a stream of measurements, either from the |DAQ| or when loading saved
 data, there are also cases where we'@q'@>d like to edit the data in the model
 directly from the table view. For this, we need to reimplement |setData()|.
+
+Note that editing from the |ZoomLog| has never been supported. While stream
+inserted data currently preserves all properties of inserted measurements,
+using |setData| it is possible to insert a numeric value as if it were a
+measurement. Such an entry will not have any additional information associated
+and cannot be expected to exhibit behavior implemented through the use of that
+extra information.
 
 Very little input checking is done here. Editable views may want to place
 delegates\nfnote{Qt 4.4: Delegate Classes\par\indent\hbox{%
@@ -9409,33 +9417,21 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 				{
 					return QVariant();
 				}
-				if(controlColumns->contains(index.column()))
+				Measurement v = row->at(index.column());
+				if(v.scale() == Units::Unitless)
 				{
-					if(controlColumns->value(index.column()) == true)
-					{
-						return QVariant(QString("%1").arg(QVariant(row->at(index.column()).toInt()).toString()));
-					}
+					return QVariant(QString("%1").arg(v.temperature()));
 				}
-				switch(unit)
+				else
 				{
-					case Units::Fahrenheit:
-						return QVariant(row->at(index.column()).toString());
-						break;
-					case Units::Celsius:
-						return QVariant((row->at(index.column()).toDouble() -
-						                32) * 5 / 9);
-						break;
-					case Units::Kelvin:
-						return QVariant((row->at(index.column()).toDouble() +
-						                459.67) * 5 / 9);
-						break;
-					case Units::Rankine:
-						return QVariant(row->at(index.column()).toDouble() +
-						                459.67);
-						break;
-					default:
-						return QVariant(row->at(index.column()).toString());
-						break;
+					if(v.contains("relative"))
+					{
+						if(v.value("relative") == true)
+						{
+							return QVariant(QString("%1").arg(Units::convertRelativeTemperature(v.temperature(), v.scale, unit)));
+						}
+					}
+					return QVariant(QString("%1").arg(Units::convertTemperature(v.temperature(), v.scale(), unit)));
 				}
 			}
 			return QVariant(row->at(index.column()).toString());
@@ -9468,7 +9464,7 @@ an index. In the case of this model, each index is treated in the same way.
 
 It may be a good idea to extend the model class to allow models that can be
 edited through the view such as the table view presented in the |LogEditWindow|
-and models that probably shouldn't be edited in the view, such as the models
+and models that probably shouldn'@q'@>t be edited in the view, such as the models
 managed by |ZoomLog|. This could be done by subclassing and only reimplementing
 this method. Otherwise, a new method to specify that the user should not edit
 the model could be provided and a flag would be checked here.
@@ -9484,7 +9480,7 @@ Qt::ItemFlags MeasurementModel::flags(const QModelIndex &index) const@/
 	return 0;
 }
 
-@ Much of the way models are interacted with in Qt's model view architecture is
+@ Much of the way models are interacted with in Qt'@q'@>s model view architecture is
 through model indices. The model is responsible for creating these indices from
 row column pairs.
 

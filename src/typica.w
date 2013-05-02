@@ -11154,6 +11154,13 @@ foreach(int c, temperatureColumns.keys())@/
 	{
 		xmlout.writeStartElement("temperature");
 		xmlout.writeAttribute("series", temperatureColumns.value(c));
+		if(data->data(data->index(i, c), Qt::UserRole).toMap().contains("relative"))
+		{
+			if(data->data(data->index(i, c), Qt::UserRole).toMap().value("relative").toBool() == true)
+			{
+				xmlout.writeAttribute("relative", "true");
+			}
+		}
 		xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).
 		                                  toString());
 		xmlout.writeEndElement();
@@ -11413,6 +11420,10 @@ else if(xmlin.name() == "temperature")
 			                                   value("series").toString());
 	tempval = xmlin.readElementText().toDouble();
 	Measurement measurement(tempval, timeval);
+	if(xmlin.attributes().value("relative").toString() == "true")
+	{
+		measurement.insert("relative", true);
+	}
 	emit measure(measurement, column);
 }
 else if(xmlin.name() == "control")

@@ -9390,6 +9390,8 @@ same thing. Views will request the display role for presenting the information
 to the user, but they will request the edit role if the user attempts to modify
 the data through a view.
 
+As of version 1.6, |Qt::UserRole| allows retrieval of raw measurement data.
+
 @<MeasurementModel Implementation@>=
 QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 {@/
@@ -9397,6 +9399,10 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 	if(!valid)
 	{
 		return QVariant();
+	}
+	if(role == Qt::UserRole)
+	{
+		return QVariant(row->at(column));
 	}
 	if(role == Qt::DisplayRole || role == Qt::EditRole)
 	{

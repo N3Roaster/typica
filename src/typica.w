@@ -8167,7 +8167,8 @@ void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 			lastMeasurement.value(tempcolumn).time().second())
 		{
 			Measurement adjusted = measure;
-			adjusted.setTime(QTime(0, measure.time().minute(), measure.time().second(), 0));
+			QTime adjtime(0, measure.time().minute(), measure.time().second(), 0);
+			adjusted.setTime(adjtime);
 			model_1s->newMeasurement(adjusted, tempcolumn);
 			if(adjusted.time().second() % 5 == 0)
 			{
@@ -8196,7 +8197,7 @@ void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 	{
 		@<Add the first measurement to every model@>@;
 	}
-	lastMeasurement[tempcolumn] = measure;
+	lastMeasurement.insert(tempcolumn, measure);
 }
 
 @ The first measurement in a series should be the epoch measurement. This
@@ -8227,18 +8228,21 @@ this would match the graphic representation rather than altering it when later
 reviewing the batch.
 
 @<Synthesize measurements for slow hardware@>=
-if(lastMeasurement[tempcolumn].time() < measure.time())
+if(lastMeasurement.contains(tempcolumn))
 {
-	QList<QTime> timelist;
-	for(QTime i = lastMeasurement[tempcolumn].time().addSecs(1); i < measure.time(); i = i.addSecs(1))
+	if(lastMeasurement[tempcolumn].time() < measure.time())
 	{
-		timelist.append(i);
-	}
-	for(int i = 0; i < timelist.size(); i++)
-	{
-		Measurement synthesized = measure;
-		synthesized.setTime(timelist[i]);
-		newMeasurement(synthesized, tempcolumn);
+		QList<QTime> timelist;
+		for(QTime i = lastMeasurement.value(tempcolumn).time().addSecs(1); i < measure.time(); i = i.addSecs(1))
+		{
+			timelist.append(i);
+		}
+		for(int i = 0; i < timelist.size(); i++)
+		{
+			Measurement synthesized = measure;
+			synthesized.setTime(timelist[i]);
+			newMeasurement(synthesized, tempcolumn);
+		}
 	}
 }
 
@@ -8285,7 +8289,7 @@ if(currentColumnSet.contains(tempcolumn))
 					if(synthetic.time().second() != lastMeasurement.value(replicationcolumn).time().second())
 					{
 						Measurement adjusted = synthetic;
-						synthetic.setTime(QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));
+						adjusted.setTime(QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));
 						model_1s->newMeasurement(adjusted, replicationcolumn);
 						if(adjusted.time().second() % 5 == 0)
 						{
@@ -9400,13 +9404,13 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 	{
 		return QVariant();
 	}
+	MeasurementList *row = entries->at(index.row());
 	if(role == Qt::UserRole)
 	{
-		return QVariant(row->at(column));
+		return QVariant(row->at(index.column()));
 	}
 	if(role == Qt::DisplayRole || role == Qt::EditRole)
 	{
-		MeasurementList *row = entries->at(index.row());
 		if(index.column() > row->size())
 		{
 			return QVariant();
@@ -9419,14 +9423,14 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 			}
 			else if(lastTemperature->contains(index.column()))
 			{
-				if(row->at(index.column()).toString().isEmpty())
+				QVariantMap v = row->at(index.column()).toMap();
+				if(!v.contains("measurement"))
 				{
 					return QVariant();
 				}
-				Measurement v = row->at(index.column());
-				if(v.scale() == Units::Unitless)
+				if((Units::Unit)(v.value("unit").toInt()) == Units::Unitless)
 				{
-					return QVariant(QString("%1").arg(v.temperature()));
+					return v.value("measurement");
 				}
 				else
 				{
@@ -9434,10 +9438,10 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 					{
 						if(v.value("relative") == true)
 						{
-							return QVariant(QString("%1").arg(Units::convertRelativeTemperature(v.temperature(), v.scale, unit)));
+							return QVariant(QString("%1").arg(Units::convertRelativeTemperature(v.value("measurement").toDouble(), (Units::Unit)(v.value("unit").toInt()), unit)));
 						}
 					}
-					return QVariant(QString("%1").arg(Units::convertTemperature(v.temperature(), v.scale(), unit)));
+					return QVariant(QString("%1").arg(Units::convertTemperature(v.value("measurement").toDouble(), (Units::Unit)(v.value("unit").toInt()), unit)));
 				}
 			}
 			return QVariant(row->at(index.column()).toString());
@@ -11418,9 +11422,14 @@ else if(xmlin.name() == "temperature")
 	column = xmlin.attributes().value("series").toString().isEmpty() ?
 	         firstc : temperatureColumns.value(xmlin.attributes().
 			                                   value("series").toString());
+	bool relative = false;
+	if(xmlin.attributes().value("relative") == "true")
+	{
+		relative = true;
+	}
 	tempval = xmlin.readElementText().toDouble();
 	Measurement measurement(tempval, timeval);
-	if(xmlin.attributes().value("relative").toString() == "true")
+	if(relative)
 	{
 		measurement.insert("relative", true);
 	}

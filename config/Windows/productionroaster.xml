@@ -426,6 +426,7 @@
 							rate.newData.connect(indicator.setValue);
 							temperatureDisplays.push(indicator);
 							channels.push(rate);
+							columnNames.push(configModel.data(driverIndex, 0));
 						}
 					}
 				}

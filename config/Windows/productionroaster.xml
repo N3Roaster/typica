@@ -425,7 +425,7 @@
 							indicatorPanel.addWidget(decorator);
 							rate.newData.connect(indicator.setValue);
 							temperatureDisplays.push(indicator);
-							rateCalculators.push(rate);
+							channels.push(rate);
 						}
 					}
 				}
@@ -489,18 +489,6 @@
 			zeroemitters.push(emitter);
 			channels[i].newData.connect(emitter.newMeasurement);
 			emitter.measurement.connect(log.newMeasurement);
-			emitter.measurement.connect(graph.newMeasurement);
-		}
-		for(var i = channels.length; i < channels.length + rateCalculators.length; i++) {
-			var offset = new MeasurementTimeOffset(epoch);
-			rateoffsets.push(offset);
-			rateCalculators[i - channels.length].newData.connect(offset.newMeasurement);
-			var adapter = new MeasurementAdapter(i + 1);
-			rateadapters.push(adapter);
-			offset.measurement.connect(adapter.newMeasurement);
-			var emitter = new ZeroEmitter(i + 1);
-			ratezeros.push(emitter);
-			rateCalculators[i - channels.length].newData.connect(emitter.newMeasurement);
 			emitter.measurement.connect(graph.newMeasurement);
 		}
         start.clicked.connect(function() {
@@ -712,11 +700,6 @@
 				adapters[i].setColumn(c + i + 1);
 				zeroemitters[i].setColumn(c + i + 1);
 				log.setHeaderData(c + i + 1, columnNames[i]);
-			}
-			for(var i = 0; i < rateadapters.length; i++)
-			{
-				rateadapters[i].setColumn(c + i + 1 + adapters.length);
-				ratezeros[i].setColumn(c + i + 1 + adapters.length);
 			}
 			log.setHeaderData(c + columnNames.length + 1, "Note");
             stop.setTemperatureColumn(c + 1);

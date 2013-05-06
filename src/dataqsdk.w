@@ -30,6 +30,7 @@ class DataqSdkDevice : public QObject
 		Channel* newChannel(Units::Unit scale);
 		Q_INVOKABLE void setClockRate(double Hz);
 		Q_INVOKABLE void start();
+		QStringList detectPorts();
 };
 
 @ The |DataqSdkDevice| class has as a private member an instance of a class
@@ -419,15 +420,12 @@ void DataqSdkDevice::start()
 	imp->start();
 }
 
-@ Setting up the device begins by constructing a new |DataqSdkDevice| object.
-The constructor takes as its argument a string which identifies the device. For
-legacy reasons this currently accepts device names such as |"Dev1"| and looks
-up currently connected devices to determine which serial port should be used.
-Now that it is preferred to configure devices graphically this is not a good
-way to do this. This should be changed before release.
+@ When configuring Typica to use a device supported through the DATAQ SDK it is
+useful to have a way to report the ports where supported hardware has been
+detected. This is also used for automatic detection.
 
 @<DataqSdkDevice implementation@>=
-DataqSdkDevice::DataqSdkDevice(QString device) : imp(new DataqSdkDeviceImplementation)
+QStringList DataqSdkDevice::detectPorts()
 {
 	QSettings deviceLookup("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\usbser\\Enum",
 	             QSettings::NativeFormat);
@@ -441,34 +439,62 @@ DataqSdkDevice::DataqSdkDevice(QString device) : imp(new DataqSdkDeviceImplement
 			devices.append(value.split("\\").at(2));
 		}
 	}
-	device = device.remove(0, 3);
-	int index = device.toInt() - 1;
-	if(index >= 0 && index < devices.size())
+	QStringList portList;
+	foreach(QString device, devices)
 	{
-		QString deviceKey = QString(
-		"HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Enum\\USB\\VID_0683&PID_1450\\%1").
-			arg(devices.at(index));
+		QString deviceKey = QString("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Enum\\USB\\VID_0683&PID_1450\\%1").arg(device);
 		QSettings deviceEntry(deviceKey, QSettings::NativeFormat);
-		QString portString = deviceEntry.value("FriendlyName").toString();
-		int rstart = portString.indexOf("COM");
-		portString.remove(0, rstart + 3);
-		portString.chop(1);
-		if(portString.toInt() < 10)
+		QString friendlyName = deviceEntry.value("FriendlyName").toString();
+		friendlyName.remove(0, friendlyName.indexOf("COM"));
+		friendlyName.chop(1);
+		portList.append(friendlyName);
+	}
+	return portList;
+}
+
+@ Setting up the device begins by constructing a new |DataqSdkDevice| object.
+The constructor takes as its argument a string which identifies the device. For
+legacy reasons this currently accepts device names such as |"Dev1"| and looks
+up currently connected devices to determine which serial port should be used.
+Now that it is preferred to configure devices graphically this is not a good
+way to do this. This should be changed before release.
+
+@<DataqSdkDevice implementation@>=
+DataqSdkDevice::DataqSdkDevice(QString device) : imp(new DataqSdkDeviceImplementation)
+{
+	bool usesAuto = false;
+	int autoIndex = device.toInt(&usesAuto);
+	QString finalizedPort;
+	if(usesAuto)
+	{
+		QStringList portList = detectPorts();
+		if(autoIndex > 0 && autoIndex <= portList.size())
 		{
-			imp->device = QString("DI10%1NT.DLL").arg(portString);
+			finalizedPort = portList.at(autoIndex - 1);
 		}
 		else
 		{
-			imp->device = QString("DI1%1NT.DLL").arg(portString);
+			imp->error = 8; // Failed to find device.
+			qDebug() << "Failed to detect port.";
 		}
-		imp->deviceNumber = 0x12C02D00;
-		imp->deviceNumber += portString.toInt();
-		imp->ready = true;
 	}
 	else
 	{
-		imp->error = 8; // Failed to find device.
+		finalizedPort = device;
 	}
+	int rstart = finalizedPort.indexOf("COM");
+	finalizedPort.remove(0, rstart + 3);
+	if(finalizedPort.toInt() < 10)
+	{
+		imp->device = QString("DI10%1NT.DLL").arg(finalizedPort);
+	}
+	else
+	{
+		imp->device = QString("DI1%1NT.DLL").arg(finalizedPort);
+	}
+	imp->deviceNumber = 0x12C02D00;
+	imp->deviceNumber += finalizedPort.toInt();
+	imp->ready = true;
 }
 
 @ Once the |DataqSdkDevice| is created, one or more channels can be added.

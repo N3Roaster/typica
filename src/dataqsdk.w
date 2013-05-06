@@ -31,6 +31,7 @@ class DataqSdkDevice : public QObject
 		Q_INVOKABLE void setClockRate(double Hz);
 		Q_INVOKABLE void start();
 		QStringList detectPorts();
+		QStringList detectHardware(); // Friendly names
 };
 
 @ The |DataqSdkDevice| class has as a private member an instance of a class
@@ -425,7 +426,7 @@ useful to have a way to report the ports where supported hardware has been
 detected. This is also used for automatic detection.
 
 @<DataqSdkDevice implementation@>=
-QStringList DataqSdkDevice::detectPorts()
+QStringList DataqSdkDevice::detectHardware()
 {
 	QSettings deviceLookup("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\usbser\\Enum",
 	             QSettings::NativeFormat);
@@ -444,10 +445,20 @@ QStringList DataqSdkDevice::detectPorts()
 	{
 		QString deviceKey = QString("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Enum\\USB\\VID_0683&PID_1450\\%1").arg(device);
 		QSettings deviceEntry(deviceKey, QSettings::NativeFormat);
-		QString friendlyName = deviceEntry.value("FriendlyName").toString();
-		friendlyName.remove(0, friendlyName.indexOf("COM"));
-		friendlyName.chop(1);
-		portList.append(friendlyName);
+		portList.append(deviceEntry.value("FriendlyName").toString());
+	}
+	return portList;
+}
+
+QStringList DataqSdkDevice::detectPorts()
+{
+	QStringList friendlyNames = detectHardware();
+	QStringList portList;
+	foreach(QString name, friendlyNames)
+	{
+		name.remove(0, name.indexOf("COM"));
+		name.chop(1);
+		portList.append(name);
 	}
 	return portList;
 }

@@ -30,8 +30,8 @@ class DataqSdkDevice : public QObject
 		Channel* newChannel(Units::Unit scale);
 		Q_INVOKABLE void setClockRate(double Hz);
 		Q_INVOKABLE void start();
-		QStringList detectPorts();
-		QStringList detectHardware(); // Friendly names
+		static QStringList detectPorts();
+		static QStringList detectHardware(); // Friendly names
 };
 
 @ The |DataqSdkDevice| class has as a private member an instance of a class

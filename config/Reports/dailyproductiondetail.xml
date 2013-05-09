@@ -138,7 +138,7 @@
 					for(var i = 0;  i < unroastedList.length; i++)
 					{
 						var greensQuery = new QSqlQuery();
-						greensQuery.prepare("SELECT name FROM items WHERE id = :id");
+						greensQuery.prepare("SELECT name, reference FROM coffees WHERE id = :id");
 						greensQuery.bind(":id", Number(unroastedList[i]));
 						greensQuery.exec();
 						if(i != 0)
@@ -146,7 +146,7 @@
 							output.writeEmptyElement("br");
 						}
 						greensQuery.next();
-						output.writeCDATA(greensQuery.value(0) + " (" + unroastedList[i] + ")");
+						output.writeCDATA(greensQuery.value(0) + " (" + unroastedList[i] + ")" + (greensQuery.value(1) == "" ? "" : " ref: " + greensQuery.value(1)));
 					}
 					output.writeEndElement();
 					switch(unitBox.currentIndex)

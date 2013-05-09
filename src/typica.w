@@ -874,7 +874,7 @@ http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf}%
 which requires
 significantly less expertise to modify than \pn{} itself. Such a scripting
 environment will be familiar to anybody with experience using JavaScript on web
-pages or ActionScript in Flash. \pn{}'s configuration system was later updated
+pages or ActionScript in Flash. \pn{}'@q'@>s configuration system was later updated
 to support running several script fragments found in an XML configuration
 document.
 
@@ -1000,7 +1000,7 @@ properties from |QObject|.
 
 Neither all methods nor all Qt classes are available from the host environment.
 When adding functionality to the host environment, there is a priority on
-classes and methods that are useful for \pn{}'s intended purpose.
+classes and methods that are useful for \pn{}'@q'@>s intended purpose.
 
 @* Base Classes.
 
@@ -10144,7 +10144,7 @@ void TimerDisplay::copyTimer()
 	QApplication::clipboard()->setText(value());
 }
 
-@ Resetting the timer is simple. We don't reset the timer if it is still running
+@ Resetting the timer is simple. We don'@q'@>t reset the timer if it is still running
 mainly to prevent accidents.
 
 @<TimerDisplay Implementation@>=
@@ -10382,7 +10382,7 @@ PackLayout::~PackLayout()
 }
 
 @ Deleting the items uses the |takeAt()| method to remove each widget from the
-layout prior to deleting it. The item requested should exist, but if it doesn't,
+layout prior to deleting it. The item requested should exist, but if it doesn'@q'@>t,
 |NULL| is returned.
 
 @<PackLayout Implementation@>=
@@ -10487,7 +10487,7 @@ void PackLayout::setOrientation(Qt::Orientations direction)
 \noindent Ordinarily, mouse down events that are passed from a |QGraphicsView|
 to an interactive |QGraphicsScene| will continue to pass that click down to an
 item in the scene. This class is used when we are interested in a click anywhere
-in the view and it doesn't really matter where in the scene that click occurred
+in the view and it doesn'@q'@>t really matter where in the scene that click occurred
 or even if there is a graphics item at that point. Any click passed to the
 |SceneButton| will cause the scene to emit a signal containing the screen
 coordinates of the click.
@@ -10576,8 +10576,8 @@ WidgetDecorator::WidgetDecorator(QWidget *widget, const QString &labeltext,
 }
 
 @ The decoration is a |QGraphicsView|. To get this to look right, we need to
-make sure there aren't any scroll bars and there shouldn't be a frame
-surrounding it. While we're at it, we allow it to accept clicks, though this
+make sure there aren'@q'@>t any scroll bars and there shouldn'@q'@>t be a frame
+surrounding it. While we'@q'@>re at it, we allow it to accept clicks, though this
 functionality is not yet used.
 
 @<Prepare the graphics view@>=
@@ -10855,7 +10855,7 @@ log->setColumnWidth(0, 100);
 log->setColumnWidth(1, 100);
 log->setColumnWidth(2, 100);
 
-@ Most users will want to save a profile after they've edited it. We also
+@ Most users will want to save a profile after they'@q'@>ve edited it. We also
 provide CSV export here. Note that this class only supports logs with a single
 temperature and a single annotation column. As the class is considered
 depreciated, it will not be extended to support arbitrarily many columns.
@@ -10984,7 +10984,7 @@ appropriate technique.
 @* XML Output.
 
 \noindent An XML format has been chosen as the native format for \pn{} because
-of Qt's excellent support for reading and writing such documents. Using this
+of Qt'@q'@>s excellent support for reading and writing such documents. Using this
 capability is less error prone than developing a new, more compact format.
 Another reason to choose XML is that it becomes quite easy to modify saved data
 in a text editor and still end up with something \pn{} will understand.
@@ -18293,7 +18293,7 @@ TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QMode
 }
 
 @ To update the temperature at which to match we save both the values of the
-two widgets which control this and the value in Fahrenheit so we don'@q@'@>t need to
+two widgets which control this and the value in Fahrenheit so we don'@q'@>t need to
 run unit conversions during view initialization.
 
 @<TranslationConfWidget implementation@>=

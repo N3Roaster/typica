@@ -35,9 +35,6 @@ class Units: public QObject
 
 @(units.cpp@>=
 #include "units.h"
-#ifndef Q_OS_WIN32
-#include "moc_units.cpp"
-#endif
 
 @ The |isTemperatureUnit()| method may seem counter-intuitive while the enum
 only contains represenations of temperature measurements, but there are plans

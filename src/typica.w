@@ -838,6 +838,7 @@ generated file empty.
 @<RateOfChange implementation@>@/
 @<SettingsWindow implementation@>@/
 @<GraphSettingsWidget implementation@>@/
+@<DataqSdkDeviceConfWidget implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -6401,8 +6402,6 @@ QScriptValue DAQ_newChannel(QScriptContext *context, QScriptEngine *engine)
 	}
 	return object;
 }
-
-@i dataqsdk.w
 
 @ Sometimes it can be useful to test other parts of the program (for example,
 when developing new scripts) when the DAQ hardware is not available. In these
@@ -15119,7 +15118,7 @@ required child nodes for hardware and configurable elements of the logging
 window that may vary from one machine to the next.
 
 All of the configuration widgets follow a similar pattern. One important detail
-to note is that these configuration widgets are instantiated through Qt's
+to note is that these configuration widgets are instantiated through Qt'@q'@>s
 meta-object system. All of these constructors take a |DeviceTreeModel *| and a
 |QModelIndex &| as arguments and they are marked as |Q_INVOKABLE|.
 
@@ -15243,7 +15242,7 @@ app.registerDeviceConfigurationWidget("roaster", RoasterConfWidget::staticMetaOb
 \noindent The primary concern in supporting hardware that communicates through
 NI-DAQmx Base is in configurations using a single NI USB 9211 (for NI-DAQmx
 Base 2.x) or NI USB 9211A (for NI-DAQmx Base 3.x), but if it is reasonable to
-do so I'd like to later add support for multiple device configurations and
+do so I'@q'@>d like to later add support for multiple device configurations and
 limited support for other devices including the ability to use devices with
 voltage inputs for non-temperature measurement data. The top priority, however,
 is in continuing to support hardware that people are already using with Typica.
@@ -15266,7 +15265,7 @@ class NiDaqMxBaseDriverConfWidget : public BasicDeviceConfigurationWidget
 		                                        const QModelIndex &index);
 };
 
-@ There is very little to configure here so there isn't much for the
+@ There is very little to configure here so there isn'@q'@>t much for the
 constructor to do. We do need to keep a reference to the node we are
 configuring so that child nodes can later be added. At present, no real
 configuration data other than the existence of the node is required so
@@ -15380,7 +15379,7 @@ specific, all of the options can be easily enumerated to match markings on the
 device. Next is the thermocouple type. Many options are supported, but I would
 like to ensure that the most commonly used choices are listed first. The other
 piece of information that DAQmx or DAQmx Base require is the measurement unit.
-As all of Typica's internal operations are in Fahrenheit there is no need to
+As all of Typica'@q'@>s internal operations are in Fahrenheit there is no need to
 make this configurable so long as everything else that can display temperature
 measurements can perform the appropriate conversions.
 
@@ -16473,7 +16472,7 @@ void ModbusRtuDeviceTPvConfWidget::updateAddress(int newAddress)
 
 @ Set values are slightly more complicated as we may want either a fixed range
 or the ability to query the device for its current allowed range, but nothing
-is here that hasn't been seen elsewhere.
+is here that hasn'@q'@>t been seen elsewhere.
 
 @<Class declarations@>=
 class ModbusRtuDeviceTSvConfWidget : public BasicDeviceConfigurationWidget
@@ -18294,7 +18293,7 @@ TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QMode
 }
 
 @ To update the temperature at which to match we save both the values of the
-two widgets which control this and the value in Fahrenheit so we don't need to
+two widgets which control this and the value in Fahrenheit so we don'@q@'@>t need to
 run unit conversions during view initialization.
 
 @<TranslationConfWidget implementation@>=
@@ -18323,6 +18322,8 @@ void TranslationConfWidget::updateMatchingColumn(const QString &column)
 app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::staticMetaObject);
 
 @i rate.w
+
+@i dataqsdk.w
 
 @** Local changes.
 

@@ -631,7 +631,8 @@ void setDataqSdkDeviceProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("newChannel", engine->newFunction(DataqSdkDevice_newChannel));
 }
 
-@ The |newChannel()| wrapper requires two arguments.
+@ The |newChannel()| wrapper requires one argument to specify the measurement
+unit that will eventually be produced from that channel.
 
 @<Functions for scripting@>=
 QScriptValue DataqSdkDevice_newChannel(QScriptContext *context, QScriptEngine *engine)
@@ -645,3 +646,153 @@ QScriptValue DataqSdkDevice_newChannel(QScriptContext *context, QScriptEngine *e
 	}
 	return object;
 }
+
+@ In order to configure supported devices within Typica, a set of configuration
+controls is required. First there is the base device configuration widget.
+
+@<Class declarations@>=
+class DataqSdkDeviceConfWidget : public BasicDeviceConfigurationWidget
+{
+	Q_OBJECT
+	public:
+		Q_INVOKABLE DataqSdkDeviceConfWidget(DeviceTreeModel *model,
+		                                     const QModelIndex &index);
+	private slots:
+		void updateAutoSelect(bool automatic);
+		void updateDeviceNumber(int deviceNumber);
+		void updatePort(QString portId);
+		void addChannel();
+	private:
+		QStackedWidget *deviceIdStack;
+};
+
+@ The constructor sets up the interface for updating device configuration
+settings.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+DataqSdkDeviceConfWidget::DataqSdkDeviceConfWidget(DeviceTreeModel *model,
+                                                   const QModelIndex &index)
+	: BasicDeviceConfigurationWidget(model, index),
+	deviceIdStack(new QStackedWidget)
+{
+	QVBoxLayout *layout = new QVBoxLayout;
+	QCheckBox *autoDetect = new QCheckBox("Automatically select device");
+	layout->addWidget(autoDetect);
+	QWidget *autoLayerWidget = new QWidget;
+	QHBoxLayout *autoLayerLayout = new QHBoxLayout;
+	QLabel *autoLabel = new QLabel(tr("Device number"));
+	QSpinBox *autoNumber = new QSpinBox;
+	autoNumber->setMinimum(1);
+	autoNumber->setMaximum(99);
+	autoLayerLayout->addWidget(autoLabel);
+	autoLayerLayout->addWidget(autoNumber);
+	autoLayerWidget->setLayout(autoLayerLayout);
+	QWidget *fixedLayerWidget = new QWidget;
+	QHBoxLayout *fixedLayerLayout = new QHBoxLayout;
+	QLabel *fixedLabel = new QLabel(tr("Device port"));
+	QComboBox *portSelection = new QComboBox;
+	portSelection->setEditable(true);
+	portSelection->addItems(DataqSdkDevice::detectHardware());
+	fixedLayerLayout->addWidget(fixedLabel);
+	fixedLayerLayout->addWidget(portSelection);
+	fixedLayerWidget->setLayout(fixedLayerLayout);
+	deviceIdStack->addWidget(autoLayerWidget);
+	deviceIdStack->addWidget(fixedLayerWidget);
+	layout->addWidget(deviceIdStack);
+	QPushButton *addChannelButton = new QPushButton(tr("Add Channel"));
+	layout->addWidget(addChannelButton);
+	@<Get device configuration data for current node@>@;
+	for(int i = 0; i < configData.size(); i++)
+	{
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "autoSelect")
+		{
+			autoDetect->setChecked(node.attribute("value") == "true" ? true : false);
+		}
+		else if(node.attribute("name") == "deviceNumber")
+		{
+			autoNumber->setValue(node.attribute("value").toInt());
+		}
+		else if(node.attribute("name") == "port")
+		{
+			int index = portSelection->findText(node.attribute("value"));
+			if(index > -1)
+			{
+				portSelection->setCurrentIndex(index);
+			}
+			else
+			{
+				portSelection->setEditText(node.attribute("value"));
+			}
+		}
+	}
+	updateAutoSelect(autoDetect->isChecked());
+	updateDeviceNumber(autoNumber->value());
+	updatePort(portSelection->currentText());
+	connect(autoDetect, SIGNAL(toggled(bool)), this, SLOT(updateAutoSelect(bool)));
+	connect(autoNumber, SIGNAL(valueChanged(int)), this, SLOT(updateDeviceNumber(int)));
+	connect(portSelection, SIGNAL(currentIndexChanged(QString)), this, SLOT(updatePort(QString)));
+	connect(addChannelButton, SIGNAL(clicked()), this, SLOT(addChannel()));
+	setLayout(layout);
+}
+
+@ In addition to setting a value in the device configuration, the choice to
+automatically select devices also requires changing which controls in the
+configuration widget are presently available. It is recommended that automatic
+device selection is only used in cases where there is a single device supported
+by the DATAQ SDK present and it will always be the first detected device
+regardless of the current virtual COM port number. In cases where multiple
+devices must be connected, it is recommended to always plug devices into the
+same port and specify the port for each device explicitly.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkDeviceConfWidget::updateAutoSelect(bool automatic)
+{
+	if(automatic)
+	{
+		updateAttribute("autoSelect", "true");
+		deviceIdStack->setCurrentIndex(0);
+	}
+	else
+	{
+		updateAttribute("autoSelect", "false");
+		deviceIdStack->setCurrentIndex(1);
+	}
+}
+
+@ Other update methods only need to set a new current value.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkDeviceConfWidget::updateDeviceNumber(int deviceNumber)
+{
+	updateAttribute("deviceNumber", QString("%1").arg(deviceNumber));
+}
+
+void DataqSdkDeviceConfWidget::updatePort(QString portId)
+{
+	updateAttribute("port", portId);
+}
+
+@ The Add Channel button creates a new configuration node.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkDeviceConfWidget::addChannel()
+{
+	insertChildNode(tr("Channel"), "dataqsdkchannel");
+}
+
+@ These configuration widgets are registered with the configuration system.
+
+@<Register device configuration widgets@>=
+app.registerDeviceConfigurationWidget("dataqsdk", DataqSdkDeviceConfWidget::staticMetaObject);
+
+@ A |NodeInserter| is also added to provide access to
+|DataqSdkDeviceConfWidget|, but only on Windows.
+
+@<Register top level device configuration nodes@>=
+#ifdef Q_OS_WIN32
+inserter = new NodeInserter(tr("DATAQ SDK Device"), tr("DATAQ Device"),
+                            "dataqsdk", NULL);
+topLevelNodeInserters.append(inserter);
+#endif
+

@@ -495,7 +495,17 @@ DataqSdkDevice::DataqSdkDevice(QString device) : imp(new DataqSdkDeviceImplement
 	}
 	int rstart = finalizedPort.indexOf("COM");
 	finalizedPort.remove(0, rstart + 3);
-	if(finalizedPort.toInt() < 10)
+	bool chopFinished = false;
+	int finalizedPortNumber;
+	while(finalizedPort.size() > 0 && !chopFinished)
+	{
+		finalizedPortNumber = finalizedPort.toInt(&chopFinished);
+		if(!chopFinished)
+		{
+			finalizedPort.chop(1);
+		}
+	}
+	if(finalizedPortNumber < 10)
 	{
 		imp->device = QString("DI10%1NT.DLL").arg(finalizedPort);
 	}
@@ -504,7 +514,7 @@ DataqSdkDevice::DataqSdkDevice(QString device) : imp(new DataqSdkDeviceImplement
 		imp->device = QString("DI1%1NT.DLL").arg(finalizedPort);
 	}
 	imp->deviceNumber = 0x12C02D00;
-	imp->deviceNumber += finalizedPort.toInt();
+	imp->deviceNumber += finalizedPortNumber;
 	imp->ready = true;
 }
 

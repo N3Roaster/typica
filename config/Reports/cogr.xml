@@ -49,7 +49,7 @@
 						print("Error 1");
 					}
 				}
-				query.prepare("SELECT 1 / (-1 * (min((unroasted_total_quantity - roasted_quantity)  / unroasted_total_quantity) - 1)), 1 / (-1 * (max((unroasted_total_quantity - roasted_quantity)/unroasted_total_quantity) - 1)), 1 / (-1 * (avg((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity) - 1)) FROM roasting_log WHERE roasted_id = :ri AND unroasted_id = :gi AND unroasted_total_quantity > 0 AND roasted_quantity > 0 AND approval = true");
+				query.prepare("SELECT min(unroasted_total_quantity / roasted_quantity), max(unroasted_total_quantity / roasted_quantity), avg(unroasted_total_quantity / roasted_quantity) FROM roasting_log WHERE roasted_id = :ri AND unroasted_id = :gi AND unroasted_total_quantity > 0 AND roasted_quantity > 0 AND approval = true");
 				var mins = new Array();
 				var maxes = new Array();
 				var means = new Array();

@@ -791,10 +791,251 @@ void DataqSdkDeviceConfWidget::addChannel()
 	insertChildNode(tr("Channel"), "dataqsdkchannel");
 }
 
+@ Channel configuration requires a slightly more complex configuration than
+it does on other devices. As these devices can be used for both temperature and
+non-temperature measurements the channel requires both the column name for the
+measurement series and the unit that the measurements will eventually be
+transformed into. The output of each channel will likely need to be run through
+a |LinearCalibrator| so the lower and upper values for both the measured and
+the mapped ranges are set here. It is also necessary to know if that interval
+is open or closed, if adaptive smoothing should be enabled on that channel, and
+how much precision the measurements should be presented with. In addition to
+the controls for setting these values, there should be a panel that assists in
+determining appropriate values by connecting to the device, collecting
+measurements on the channel, and showing how those measurements are presented
+with the current settings.
+
+@<Class declarations@>=
+class DataqSdkChannelConfWidget : public BasicDeviceConfigurationWidget
+{
+	Q_OBJECT
+	public:
+		Q_INVOKABLE DataqSdkChannelConfWidget(DeviceTreeModel *model,
+		                                      const QModelIndex &index);
+	private slots:
+		void updateUnits(const QString &unit);
+		void updateColumnName(const QString &value);
+		void updateMeasuredLower(const QString &value);
+		void updateMeasuredUpper(const QString &value);
+		void updateMappedLower(const QString &value);
+		void updateMappedUpper(const QString &value);
+		void updateClosedInterval(bool closed);
+		void updateSmoothingEnabled(bool enabled);
+		void updateSensitivity(const QString &value);
+		void startCalibration();
+		void stopCalibration();
+		void resetCalibration();
+};
+
+@ The constructor sets up the interface. Calibration settings line edits need
+to have numeric validators added.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
+                                                     const QModelIndex &index)
+	: BasicDeviceConfigurationWidget(model, index)
+{
+	QVBoxLayout *layout = new QVBoxLayout;
+	QFormLayout *topLayout = new QFormLayout;
+	QLineEdit *columnEdit = new QLineEdit;
+	topLayout->addRow(tr("Column name"), columnEdit);
+	QComboBox *unitSelector = new QComboBox;
+	unitSelector->addItem(tr("Temperature"));
+	unitSelector->addItem(tr("Control"));
+	topLayout->addRow(tr("Measurement type"), unitSelector);
+	QCheckBox *smoothingBox = new QCheckBox(tr("Enable smoothing"));
+	topLayout->addRow(smoothingBox);
+	layout->addLayout(topLayout);
+	QLabel *calibrationLabel = new QLabel(tr("Calibration settings"));
+	layout->addWidget(calibrationLabel);
+	QFormLayout *calibrationControlsLayout = new QFormLayout;
+	QLineEdit *measuredLowerEdit = new QLineEdit;
+	measuredLowerEdit->setText("0");
+	QLineEdit *measuredUpperEdit = new QLineEdit;
+	measuredUpperEdit->setText("10");
+	QLineEdit *mappedLowerEdit = new QLineEdit;
+	mappedLowerEdit->setText("0");
+	QLineEdit *mappedUpperEdit = new QLineEdit;
+	mappedUpperEdit->setText("10");
+	calibrationControlsLayout->addRow(tr("Measured lower value"), measuredLowerEdit);
+	calibrationControlsLayout->addRow(tr("Mapped lower value"), mappedLowerEdit);
+	calibrationControlsLayout->addRow(tr("Measured upper value"), measuredUpperEdit);
+	calibrationControlsLayout->addRow(tr("Mapped upper value"), mappedUpperEdit);
+	QCheckBox *closedBox = new QCheckBox(tr("Closed range"));
+	calibrationControlsLayout->addRow(closedBox);
+	QLineEdit *sensitivityEdit = new QLineEdit;
+	sensitivityEdit->setText("0");
+	calibrationControlsLayout->addRow(tr("Discrete interval skip"), sensitivityEdit);
+	layout->addLayout(calibrationControlsLayout);
+	
+	// Insert another panel to assist in determining proper calibration values.
+	
+	@<Get device configuration data for current node@>@;
+	for(int i = 0; i < configData.size(); i++)
+	{
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "column")
+		{
+			columnEdit->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "type")
+		{
+			unitSelector->setCurrentIndex(unitSelector->findText(node.attribute("value")));
+		}
+		else if(node.attribute("name") == "smoothing")
+		{
+			smoothingBox->setChecked(node.attribute("value") == "true");
+		}
+		else if(node.attribute("name") == "calibrationMeasuredLower")
+		{
+			measuredLowerEdit->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "calibrationMeasuredUpper")
+		{
+			measuredUpperEdit->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "calibrationMappedLower")
+		{
+			mappedLowerEdit->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "calibrationMappedUpper")
+		{
+			mappedUpperEdit->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "calibrationClosedInterval")
+		{
+			closedBox->setChecked(node.attribute("value") == "true");
+		}
+		else if(node.attribute("name") == "calibrationSensitivity")
+		{
+			sensitivityEdit->setText(node.attribute("value"));
+		}
+	}
+	updateColumnName(columnEdit->text());
+	updateUnits(unitSelector->currentText());
+	updateSmoothingEnabled(smoothingBox->isChecked());
+	updateMeasuredLower(measuredLowerEdit->text());
+	updateMeasuredUpper(measuredUpperEdit->text());
+	updateMappedLower(mappedLowerEdit->text());
+	updateMappedUpper(mappedUpperEdit->text());
+	updateClosedInterval(closedBox->isChecked());
+	updateSensitivity(sensitivityEdit->text());
+	connect(columnEdit, SIGNAL(textChanged(QString)),
+	        this, SLOT(updateColumnName(QString)));
+	connect(unitSelector, SIGNAL(currentIndexChanged(QString)),
+	        this, SLOT(updateUnits(QString)));
+	connect(smoothingBox, SIGNAL(toggled(bool)),
+	        this, SLOT(updateSmoothingEnabled(bool)));
+	connect(measuredLowerEdit, SIGNAL(textChanged(QString)),
+	        this, SLOT(updateMeasuredLower(QString)));
+	connect(mappedLowerEdit, SIGNAL(tectChanged(QString)),
+	        this, SLOT(updateMappedLower(QString)));
+	connect(measuredUpperEdit, SIGNAL(textChanged(QString)),
+	        this, SLOT(updateMeasuredUpper(QString)));
+	connect(mappedUpperEdit, SIGNAL(textChanged(QString)),
+	        this, SLOT(updateMappedUpper(QString)));
+	connect(closedBox, SIGNAL(toggled(bool)),
+	        this, SLOT(updateClosedInterval(bool)));
+	connect(sensitivityEdit, SIGNAL(textChanged(QString)),
+	        this, SLOT(updateSensitivity(QString)));
+	setLayout(layout);
+}
+
+@ We generate measurements with whatever unit will eventually be required to
+avoid the need for something that only exists to change one value of every
+measurement. At present we generate measurements either in Fahrenheit or as
+Unitless. It might not be a bad idea to have the calibration adjustment allow
+display of temperature measurements in Celsius.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkChannelConfWidget::updateUnits(const QString &unit)
+{
+	updateAttribute("type", unit);
+}
+
+@ Changing calibration settings requires both saving the settings and updating
+the |LinearCalibrator| used for calibration assistance.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkChannelConfWidget::updateMeasuredLower(const QString &value)
+{
+	updateAttribute("calibrationMeasuredLower", value);
+}
+
+void DataqSdkChannelConfWidget::updateMeasuredUpper(const QString &value)
+{
+	updateAttribute("calibrationMeasuredUpper", value);
+}
+
+void DataqSdkChannelConfWidget::updateMappedLower(const QString &value)
+{
+	updateAttribute("calibrationMappedLower", value);
+}
+
+void DataqSdkChannelConfWidget::updateMappedUpper(const QString &value)
+{
+	updateAttribute("calibrationMappedUpper", value);
+}
+
+void DataqSdkChannelConfWidget::updateClosedInterval(bool closed)
+{
+	updateAttribute("calibrationClosedInterval", closed ? "true" : "false");
+}
+
+void DataqSdkChannelConfWidget::updateSmoothingEnabled(bool enabled)
+{
+	updateAttribute("smoothing", enabled ? "true" : "false");
+}
+
+void DataqSdkChannelConfWidget::updateSensitivity(const QString &value)
+{
+	updateAttribute("calibrationSensitivity", value);
+}
+
+@ It must be possible to perform calibration operations with the hardware not
+connected. As such, the device should only be opened on request. Methods for
+opening and closing these connections to the hardware are provided.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkChannelConfWidget::startCalibration()
+{
+
+}
+
+void DataqSdkChannelConfWidget::stopCalibration()
+{
+
+}
+
+@ When collecting calibration data it is useful to have a few types of
+information. The most recent reported measurement is fine, but the hardware
+supported here does not produce a constant value in response to a stable input,
+making this less useful than it would be if that were not the case. Aggregate
+data such as the minimum, maximum, and mean of measured values for a stable
+input are useful to have, but it must be possible to reset these statistics for
+convenient testing in multiple parts of the range.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkChannelConfWidget::resetCalibration()
+{
+
+}
+
+@ Column name is handled as usual.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkChannelConfWidget::updateColumnName(const QString &value)
+{
+	updateAttribute("column", value);
+}
+
+
 @ These configuration widgets are registered with the configuration system.
 
 @<Register device configuration widgets@>=
 app.registerDeviceConfigurationWidget("dataqsdk", DataqSdkDeviceConfWidget::staticMetaObject);
+app.registerDeviceConfigurationWidget("dataqsdkchannel",
+                                      DataqSdkChannelConfWidget::staticMetaObject);
 
 @ A |NodeInserter| is also added to provide access to
 |DataqSdkDeviceConfWidget|, but only on Windows.

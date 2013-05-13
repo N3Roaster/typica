@@ -928,7 +928,7 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	        this, SLOT(updateSmoothingEnabled(bool)));
 	connect(measuredLowerEdit, SIGNAL(textChanged(QString)),
 	        this, SLOT(updateMeasuredLower(QString)));
-	connect(mappedLowerEdit, SIGNAL(tectChanged(QString)),
+	connect(mappedLowerEdit, SIGNAL(textChanged(QString)),
 	        this, SLOT(updateMappedLower(QString)));
 	connect(measuredUpperEdit, SIGNAL(textChanged(QString)),
 	        this, SLOT(updateMeasuredUpper(QString)));

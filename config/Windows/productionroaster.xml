@@ -66,6 +66,7 @@
 		var channels = new Array();
 		var annotationButtons = new Array();
 		var nidevices = new Array();
+		var dataqsdkdevices = new Array();
 		var temperatureDisplays = new Array();
 		var columnNames = new Array();
 		var modbusdevices = new Array();
@@ -222,6 +223,47 @@
 							}
 						}
 					}
+				}
+				else if(driverReference.driver == "dataqsdk")
+				{
+					var device = new DataqSdkDevice(driverReference.autoSelect ? driverReference.deviceNumber : driverReference.port);
+					var sampleRate = 6;
+					if(configModel.hasChildren(driverIndex)
+					{
+						for(var j = 0; j < configModel.rowCount(driverIndex); j++)
+						{
+							var channelIndex = configModel.index(j, 0, driverIndex);
+							var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
+							var unit;
+							if(channelReference.type == "Temperature") {
+								unit = Units.Fahrenheit;
+							}
+							else {
+								unit = Units.Unitless;
+							}
+							var channel = device.newChannel(unit);
+							var calibrator = new LinearCalibrator;
+							calibrator.measuredLower = channelReference.calibrationMeasuredLower;
+							calibrator.measuredUpper = channelReference.calibrationMeasuredUpper;
+							calibrator.mappedLower = channelReference.calibrationMappedLower;
+							calibrator.mappedUpper = channelReference.calibrationMappedUpper;
+							calibrator.sensitivity = channelReference.calibrationSensitivity;
+							calibrator.closedRange = channelReference.calibrationClosedInterval;
+							// device.setSmoothingEnabled(j) = channelReference.smoothing;
+							channel.newData.connect(calibrator.newMeasurement)
+							channels.push(calibrator);
+							columnNames.push(channelReference.column);
+							var indicator = new TemperatureDisplay;
+							temperatureDisplays.push(indicator);
+							var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
+							calibrator.newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
+						sampleRate /= configModel.rowCount(driverIndex);
+					}
+					device.setSampleRate(sampleRate);
+					device.start();
+					dataqsdkdevices.push(device);
 				}
 				else if(driverReference.driver == "modbusrtu")
 				{
@@ -462,8 +504,13 @@
 			{
 				modbusdevices[i].deleteLater();
 			}
+			for(var i = 0; i < dataqsdkdevices.length; i++)
+			{
+				dataqsdkdevices[i].deleteLater();
+			}
 			delete nidevices;
 			delete modbusdevices;
+			delete dataqsdkdevices;
             window.saveSizeAndPosition("window");
             vsplit.saveState("script/mainSplitter");
             isplit.saveState("script/instrumentSplitter");

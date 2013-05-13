@@ -6659,6 +6659,10 @@ the range $\lbrack L_1, U_1 \rbrack$.
 Some use cases require a closed range but others require that this constraint
 is loosened to allow extrapolation. Both are provided by this class.
 
+Starting in \pn{} 1.6 this class has both the |measurement| and the
+|newData| signals. This allows a |LinearCalibrator| to be treated like a
+|Channel| when used with a |DataqSdkDevice|.
+
 @<Class declarations@>=
 class LinearCalibrator : public QObject@/
 {@/
@@ -6689,6 +6693,7 @@ class LinearCalibrator : public QObject@/
 		Measurement newMeasurement(Measurement measure);
 	@t\4@>@[signals:@]@;
 		void measurement(Measurement measure);
+		void newData(Measurement measure);
 	private:@/
 		double Lo1;
 		double Lo2;
@@ -6706,7 +6711,7 @@ constructed |LinearCalibrator| which should quickly be changed.
 LinearCalibrator::LinearCalibrator(QObject *parent) :
 	QObject(parent), Lo1(0), Lo2(0), Up1(1), Up2(1), sensitivitySetting(0.0), clamp(false)@/
 {
-	/* Nothing needs to be done here. */
+	connect(this, SIGNAL(measurement(Measurement)), this, SIGNAL(newData(Measurement)));
 }
 
 @ The functional portion of the class is in the |newMeasurement()| slot. This
@@ -11707,7 +11712,7 @@ setOrganizationDomain("wilsonscoffee.com");
 setApplicationName(PROGRAM_NAME);
 
 @ Much of the user visible text in \pn{} is wrapped in a call to |tr()|. Such
-text can be replaced with translated text based on the user's locale. For more
+text can be replaced with translated text based on the user'@q'@>s locale. For more
 details, see the Qt Linguist manual.
 
 @<Load translation objects@>=
@@ -11723,7 +11728,7 @@ if(app.load(QString("%1_%2").arg("Typica").arg(QLocale::system().name())))
 }
 
 @ We also want to be able to access the application instance from within the
-scripting engine. We don't need to be able to create new instances, just access
+scripting engine. We don'@q'@>t need to be able to create new instances, just access
 the one that already exists.
 
 @<Set up the scripting engine@>=

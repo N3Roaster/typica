@@ -74,6 +74,7 @@
 		var rateadapters = new Array();
 		var rateoffsets = new Array();
 		var ratezeros = new Array();
+		var channelType = new Array();
 		var indicatorPanel = findChildObject(this, 'indicators');
 		var annotationPanel = findChildObject(this, 'controlpanel');
 		var log = findChildObject(this, 'log');
@@ -149,6 +150,7 @@
 												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeS);
 											}
 											channels.push(channel);
+											channelType.push("T");
 											columnNames.push(channelReference.columnname);
 											DAQChannels++;
 											var indicator = new TemperatureDisplay;
@@ -212,6 +214,7 @@
 									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeS);
 								}
 								channels.push(channel);
+								channelType.push("T");
 								columnNames.push(deviceReference.columnname);
 								var indicator = new TemperatureDisplay;
 								temperatureDisplays.push(indicator);
@@ -237,12 +240,17 @@
 						for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
 							var channelIndex = configModel.index(j, 0, driverIndex);
 							var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
+							var indicator = new TemperatureDisplay;
 							var unit;
 							if(channelReference.type == "Temperature") {
 								unit = Units.Fahrenheit;
+								channelType.push("T");
+								temperatureDisplays.push(indicator);
 							}
 							else {
 								unit = Units.Unitless;
+								indicator.setDisplayUnits(Units.Unitless);
+								channelType.push("C");
 							}
 							var channel = device.newChannel(unit);
 							var calibrator = new LinearCalibrator;
@@ -251,13 +259,13 @@
 							calibrator.mappedLower = channelReference.calibrationMappedLower;
 							calibrator.mappedUpper = channelReference.calibrationMappedUpper;
 							calibrator.sensitivity = channelReference.calibrationSensitivity;
-							calibrator.closedRange = channelReference.calibrationClosedInterval;
+							if(channelReference.calibrationClosedInterval == 'true') {
+								calibrator.closedRange = true;
+							}
 							// device.setSmoothingEnabled(j) = channelReference.smoothing;
 							channel.newData.connect(calibrator.newMeasurement)
 							channels.push(calibrator);
 							columnNames.push(channelReference.column);
-							var indicator = new TemperatureDisplay;
-							temperatureDisplays.push(indicator);
 							var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
 							calibrator.newData.connect(indicator.setValue);
 							indicatorPanel.addWidget(decorator);
@@ -274,6 +282,7 @@
 					modbusdevices.push(device);
 					var pvchannel = device.pVChannel();
 					channels.push(pvchannel);
+					channelType.push("T");
 					columnNames.push(driverReference.pvcolname);
 					var indicator = new TemperatureDisplay;
 					temperatureDisplays.push(indicator);
@@ -284,6 +293,7 @@
 					{
 						var svchannel = device.sVChannel();
 						channels.push(svchannel);
+						channelType.push("C");
 						columnNames.push(driverReference.svcolname);
 						var indicator = new TemperatureDisplay;
 						temperatureDisplays.push(indicator);
@@ -394,6 +404,7 @@
 								channels[j].newData.connect(calibrator.newMeasurement);
 								calibrator.newData.connect(indicator.setValue);
 								channels.push(calibrator);
+								channelType.push(channelType[j]);
 								columnNames.push(driverReference.destination);
 								indicatorPanel.addWidget(decorator);
 							}
@@ -471,6 +482,7 @@
 							rate.newData.connect(indicator.setValue);
 							temperatureDisplays.push(indicator);
 							channels.push(rate);
+							channelType.push("T");
 							columnNames.push(configModel.data(driverIndex, 0));
 						}
 					}
@@ -617,9 +629,13 @@
                 var durfield = findChildObject(currentBatchInfo, 'duration');
                 durfield.text = duration;
                 log.clearOutputColumns();
-				for(var i = 0; i < channels.length; i++)
-				{
-					log.addOutputTemperatureColumn(lc + i);
+				for(var i = 0; i < channels.length; i++) {
+					if(channelType[i] == "T") {
+						log.addOutputTemperatureColumn(lc + i);
+					}
+					else {
+						log.addOutputControlColumn(lc + i);
+					}
 				}
 				log.addOutputAnnotationColumn(lc + channels.length);
                 var filename = log.saveTemporary();
@@ -776,7 +792,12 @@
                 log.clearOutputColumns();
 				for(var i = 0; i < columnNames.length; i++)
 				{
-					log.addOutputTemperatureColumn(lc + i);
+					if(channelType[i] == "T") {
+						log.addOutputTemperatureColumn(lc + i);
+					}
+					else {
+						log.addOutputControlColumn(lc + i);
+					}
 				}
 				log.addOutputAnnotationColumn(lc + columnNames.length);
                 log.saveXML(file);

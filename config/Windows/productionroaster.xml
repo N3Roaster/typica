@@ -110,7 +110,7 @@
 				var driverIndex = configModel.index(i, 0, rootIndex);
 				var driverReference = configModel.referenceElement(configModel.data(driverIndex, 32));
 				if(driverReference.driver == "nidaqmxbase" || driverReference.driver == "nidaqmx") {
-				if(configModel.hasChildren(driverIndex)) {
+					if(configModel.hasChildren(driverIndex)) {
 						for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
 							var deviceIndex = configModel.index(j, 0, driverIndex);
 							var deviceReference = configModel.referenceElement(configModel.data(deviceIndex, 32));
@@ -224,14 +224,17 @@
 						}
 					}
 				}
-				else if(driverReference.driver == "dataqsdk")
-				{
-					var device = new DataqSdkDevice(driverReference.autoSelect ? driverReference.deviceNumber : driverReference.port);
+				else if(driverReference.driver == "dataqsdk") {
+					var device;
+					if(driverReference.autoSelect == "true") {
+						device = new DataqSdkDevice(driverReference.deviceNumber);
+					}
+					else {
+						device = new DataqSdkDevice(driverReference.port);
+					}
 					var sampleRate = 6;
-					if(configModel.hasChildren(driverIndex)
-					{
-						for(var j = 0; j < configModel.rowCount(driverIndex); j++)
-						{
+					if(configModel.hasChildren(driverIndex)) {
+						for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
 							var channelIndex = configModel.index(j, 0, driverIndex);
 							var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
 							var unit;
@@ -261,7 +264,7 @@
 						}
 						sampleRate /= configModel.rowCount(driverIndex);
 					}
-					device.setSampleRate(sampleRate);
+					device.setClockRate(sampleRate);
 					device.start();
 					dataqsdkdevices.push(device);
 				}

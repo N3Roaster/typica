@@ -251,6 +251,7 @@
 								unit = Units.Unitless;
 								indicator.setDisplayUnits(Units.Unitless);
 								channelType.push("C");
+								indicator.digitCount = 6;
 							}
 							var channel = device.newChannel(unit);
 							var calibrator = new LinearCalibrator;

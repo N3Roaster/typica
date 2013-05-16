@@ -60,6 +60,8 @@ to determine how the calculated value is presented. We never allow fewer than
 two cached values, but we can force the most volatile calculation by setting
 the cache time to 0 seconds.
 
+Measurement handling is a little bit different on a date transition.
+
 @<Remove stale measurements from rate cache@>=
 if(cache.size() > 2)
 {
@@ -69,6 +71,11 @@ if(cache.size() > 2)
 		if(cache.front().time().secsTo(cache.back().time()) > ct)
 		{
 			cache.removeFirst();
+		}
+		else if(cache.back().time() < cache.front().time())
+		{
+			cache.removeFirst();
+			done = true;
 		}
 		else
 		{
@@ -105,9 +112,27 @@ for(int i = 0; i < rates.size(); i++)
 }
 double pavg = acc /= rates.size();
 double v2 = pavg * st;
+double refm = cache.back().temperature() - cache.front().temperature();
+double reft = (double)(cache.front().time().msecsTo(cache.back().time())) / 1000.0;
+double ref = refm/reft;
 Measurement value(v2, cache.back().time(), cache.back().scale());
 value.insert("relative", true);
 emit newData(value);
+double calcdiff = ref - pavg;
+if(calcdiff < 0)
+{
+	calcdiff = -calcdiff;
+}
+if(pavg < 0)
+{
+	pavg = -pavg;
+}
+if(calcdiff > (pavg * 0.2))
+{
+	Measurement save = cache.back();
+	cache.clear();
+	cache.append(save);
+}
 
 @ The rest of the class implementation is trivial.
 

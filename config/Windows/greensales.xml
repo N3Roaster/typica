@@ -42,6 +42,10 @@
 			var dateField = findChildObject(this, 'date');
 			var customerField = findChildObject(this, 'customer');
 			var items = findChildObject(this, 'coffees');
+			var model = items.model();
+			model.dataChanged.connect(function() {
+				items.resizeColumnToContents(0);
+			});
 			var submit = findChildObject(this, 'submit');
 			submit.clicked.connect(function() {
 				var query = new QSqlQuery();

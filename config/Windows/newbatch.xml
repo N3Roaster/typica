@@ -66,7 +66,7 @@
 			var newMenu = findChildObject(this, 'new');
 			newMenu.triggered.connect(function() {
 				var bwindow = createWindow("batchWindow");
-				bwindow.windowTitle = "Typica - New Batch";
+				bwindow.windowTitle = "Typica - [*]New Batch";
 			});
 			var batch = this;
 			var table = findChildObject(this, 'greens');
@@ -139,7 +139,7 @@
                 {
                     profilebutton.setEnabled(false);
                 }
-                var title = "Typica - New Batch (";
+                var title = "Typica - [*]New Batch (";
                 title = title + roasted.currentText;
                 title = title + ")";
                 batch.windowTitle = title;
@@ -233,7 +233,7 @@
 					}
 				}
                 query = query.invalidate();
-				navigationwindow.loggingWindow.windowTitle = "Typica - " + pname;
+				navigationwindow.loggingWindow.windowTitle = "Typica - [*]" + pname;
 				navigationwindow.loggingWindow.raise();
 				navigationwindow.loggingWindow.activateWindow();
 				input.input();

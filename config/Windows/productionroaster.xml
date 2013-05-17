@@ -699,7 +699,7 @@
         clear.triggered.connect(log.clear);
         clear.triggered.connect(graph.clear);
         clear.triggered.connect(function() {
-            window.windowTitle = "Typica";
+            window.windowTitle = "Typica [*]";
 			log.setHeaderData(0, "Time");
             QSettings.setValue("liveColumn", 1);
 			window.postLoadColumnSetup(0);
@@ -759,7 +759,7 @@
 					window.postLoadColumnSetup(c);
 				});
                 input.input();
-                window.windowTitle = 'Typica - ' + baseName(filename);
+                window.windowTitle = 'Typica - [*]' + baseName(filename);
                 QSettings.setValue("script/lastDir", dir(filename));
 				log.newAnnotation("End", 1, lc);
             }
@@ -831,7 +831,7 @@
         var newMenu = findChildObject(this, 'new');
         newMenu.triggered.connect(function() {
             var bwindow = createWindow("batchWindow");
-            bwindow.windowTitle = "Typica - New Batch";
+            bwindow.windowTitle = "Typica - [*]New Batch";
         });
 		window.postLoadColumnSetup(0);
 		]]>

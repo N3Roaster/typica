@@ -592,6 +592,7 @@
 			}
 			stop.enabled = true;
 			window.windowModified = true;
+			graph.setTimeIndicatorEnabled(true);
         });
 		for(var i = 0; i < annotationButtons.length; i++) {
 			if(channels.length > 0)
@@ -650,6 +651,7 @@
 			}
 			start.enabled = true;
 			window.windowModified = false;
+			graph.setTimeIndicatorEnabled(false);
         });
 		stop.annotation.connect(function(note, tcol, ncol) {
 			for(var i = tcol; i < ncol; i++) {

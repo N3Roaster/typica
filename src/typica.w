@@ -7664,6 +7664,8 @@ class GraphView : public QGraphicsView@/
 	QList<QGraphicsItem *> *gridLinesC;
 	QList<QGraphicsItem *> *relativeGridLines;
 	bool relativeEnabled;
+	bool timeIndicatorEnabled;
+	QGraphicsLineItem *timeLine;
 	LinearSplineInterpolator *relativeAdjuster;@/
 	public:@/
 		GraphView(QWidget *parent = NULL);
@@ -7673,6 +7675,7 @@ class GraphView : public QGraphicsView@/
 	@t\4@>public slots@t\kern-3pt@>:@/
 		void newMeasurement(Measurement measure, int tempcolumn);
 		void setSeriesTranslation(int column, double offset);
+		void setTimeIndicatorEnabled(bool enabled);
 		void clear();
 		void showF();
 		void showC();@t\2@>@/
@@ -7709,12 +7712,20 @@ GraphView::GraphView(QWidget *parent) : QGraphicsView(parent),
 	gridLinesC(new QList<QGraphicsItem *>),
 	relativeGridLines(new QList<QGraphicsItem *>),
 	relativeEnabled(false),
+	timeIndicatorEnabled(false),
+	timeLine(new QGraphicsLineItem),
 	relativeAdjuster(new LinearSplineInterpolator)@/
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setScene(theScene);
 	setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+	QPen timePen;
+	timePen.setColor(QColor(160, 160, 164, 127)); //gray, half opacity
+	timeLine->setPen(timePen);
+	timeLine->setLine(0, 0, 0, -500);
+	timeLine->hide();
+	theScene->addItem(timeLine);
 	@<Draw temperature axis and grid lines@>;
 	@<Draw secondary axes@>@;
 	@<Draw time axis and ticks@>;
@@ -7947,6 +7958,10 @@ In the case of the first measurement,
 @<Handle the first measurement@>=
 int x = FULLTIMETOINT(measure.time())/1000;
 prevPoints->insert(tempcolumn, QPointF(x, measure.temperature()));
+if(timeIndicatorEnabled)
+{
+	timeLine->setLine(x, 0, x, -500);
+}
 
 @ When at least one measurement already exists, we need to handle drawing the
 line between the new measurement and the previous measurement.
@@ -7968,6 +7983,10 @@ static QColor p[12] = {Qt::yellow, Qt::blue, Qt::cyan, Qt::red, Qt::magenta,
 segment->setPen(p[tempcolumn % 12]);
 theScene->addItem(segment);
 prevPoints->insert(tempcolumn, nextPoint);
+if(timeIndicatorEnabled)
+{
+	timeLine->setLine(nextPoint.x() + offset, 0, nextPoint.x() + offset, -500);
+}
 
 @ In addition to adding data to the view, we also sometimes want to clear the
 view of data.
@@ -8024,6 +8043,25 @@ void GraphView::setSeriesTranslation(int column, double offset)
 	else
 	{
 		translations->insert(column, offset);
+	}
+}
+
+@ Starting in \pn{} 1.6 it is possible to add a vertical line indicating the
+time position of the most recent measurement. This should be hidden for loading
+target roast profiles and shown depending on preference. A new method controls
+this.
+
+@<GraphView Implementation@>=
+void GraphView::setTimeIndicatorEnabled(bool enabled)
+{
+	timeIndicatorEnabled = enabled;
+	if(enabled)
+	{
+		timeLine->show();
+	}
+	else
+	{
+		timeLine->hide();
 	}
 }
 

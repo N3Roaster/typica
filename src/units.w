@@ -22,11 +22,17 @@ class Units: public QObject
 			Fahrenheit = 10144,
 			Celsius = 10143,
 			Kelvin = 10325,
-			Rankine = 10145
+			Rankine = 10145,
+			Pound = 15876,
+			Kilogram = 15877,
+			Ounce = 1,
+			Gram = 2
 		};
 		static double convertTemperature(double value, Unit fromUnit, Unit toUnit);
 		static double convertRelativeTemperature(double value, Unit fromUnit, Unit toUnit);
 		static bool isTemperatureUnit(Unit unit);
+		static double convertWeight(double value, Unit fromUnit, Unit toUnit);
+		static bool isWeightUnit(Unit unit);
 };
 
 #endif
@@ -175,6 +181,9 @@ double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUni
 				case Rankine:
 					return value;
 					break;
+				default:
+					return 0;
+					break;
 			}
 			break;
 		case Celsius:
@@ -191,6 +200,9 @@ double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUni
 					break;
 				case Rankine:
 					return value * (9.0 / 5.0);
+					break;
+				default:
+					return 0;
 					break;
 			}
 			break;
@@ -209,6 +221,9 @@ double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUni
 				case Rankine:
 					return value * (9.0 / 5.0);
 					break;
+				default:
+					return 0;
+					break;
 			}
 			break;
 		case Rankine:
@@ -226,6 +241,9 @@ double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUni
 				case Rankine:
 					return value;
 					break;
+				default:
+					return 0;
+					break;
 			}
 			break;
 		default:
@@ -233,6 +251,115 @@ double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUni
 			break;
 	}
 	return 0;
+}
+
+@ Units of force are handled similarly to units of temperature.
+
+@(units.cpp@>=
+double Units::convertWeight(double value, Unit fromUnit, Unit toUnit)
+{
+	if(isWeightUnit(fromUnit) && isWeightUnit(toUnit))
+	{
+		switch(fromUnit)
+		{
+			case Pound:
+				switch(toUnit)
+				{
+					case Pound:
+						return value;
+						break;
+					case Kilogram:
+						return value / 2.2;
+						break;
+					case Ounce:
+						return value * 16.0;
+						break;
+					case Gram:
+						return value / 0.0022;
+						break;
+					default:
+						return 0;
+						break;
+				}
+				break;
+			case Kilogram:
+				switch(toUnit)
+				{
+					case Pound:
+						return value * 2.2;
+						break;
+					case Kilogram:
+						return value;
+						break;
+					case Ounce:
+						return value * 35.2;
+						break;
+					case Gram:
+						return value * 1000.0;
+						break;
+					default:
+						return 0;
+						break;
+				}
+				break;
+			case Ounce:
+				switch(toUnit)
+				{
+					case Pound:
+						return value / 16.0;
+						break;
+					case Kilogram:
+						return value / 35.2;
+						break;
+					case Ounce:
+						return value;
+						break;
+					case Gram:
+						return value / 0.0352;
+						break;
+					default:
+						return 0;
+						break;
+				}
+				break;
+			case Gram:
+				switch(toUnit)
+				{
+					case Pound:
+						return value * 0.0022;
+						break;
+					case Kilogram:
+						return value / 1000.0;
+						break;
+					case Ounce:
+						return value * 0.0352;
+						break;
+					case Gram:
+						return value;
+						break;
+					default:
+						return 0;
+						break;
+				}
+				break;
+			default:
+				return 0;
+				break;
+		}
+	}
+	return 0;
+}
+
+bool Units::isWeightUnit(Unit unit)
+{
+	if(unit == Pound ||
+	   unit == Kilogram ||
+	   unit == Ounce ||
+	   unit == Gram)
+	{
+		return true;
+	}
+	return false;
 }
 
 @ This class is exposed to the host environment. Note the lack of constructor.

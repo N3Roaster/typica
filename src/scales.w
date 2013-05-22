@@ -56,3 +56,37 @@ void DragLabel::mousePressEvent(QMouseEvent *event)
 	}
 }
 
+@ An object is also required to communicate with a scale. This is responsible
+for setting up a connection over a serial port, sending commands out to the
+scale, buffering and interpreting the response, and signaling new measurements.
+
+@(scale.h@>=
+#ifndef TypicaScaleInclude
+#define TypicaScaleInclude
+
+#include "3rdparty/qextserialport/src/qextserialport.h"
+
+class SerialScale : public QObject
+{
+	Q_OBJECT
+	public:
+		SerialScale();
+		~SerialScale();
+	public slots:
+		void setPort(const QString &port);
+		void setBaudRate(BaudRateType baud);
+		void setDataBits(DataBitsType data);
+		void setParity(ParityType parity);
+		void setStopBits(StopBitsType stop);
+		void setFlowControl(FlowType flow);
+		void open();
+		void tare();
+		void weigh();
+	private slots:
+		void dataAvailable();
+	private:
+		QextSerialPort *port;
+		QByteArray responseBuffer;
+};
+
+#endif

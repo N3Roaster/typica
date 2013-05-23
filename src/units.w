@@ -370,3 +370,32 @@ enumeration.
 value = engine->newQMetaObject(&Units::staticMetaObject);
 engine->globalObject().setProperty("Units", value);
 
+@ While the above is sufficient for some uses, others require some additional
+work.
+
+@<Class declarations@>=
+Q_DECLARE_METATYPE(Units::Unit)
+
+@ A pair of conversion methods is required.
+
+@<Function prototypes for scripting@>=
+QScriptValue Unit_toScriptValue(QScriptEngine *engine, const Units::Unit &value);
+void Unit_fromScriptValue(const QScriptValue &sv, Units::Unit &value);
+
+@ These are implemented thusly.
+
+@<Functions for scripting@>=
+QScriptValue Unit_toScriptValue(QScriptEngine *engine, const Units::Unit &value)
+{
+	return engine->newVariant(QVariant(value));
+}
+
+void Unit_fromScriptValue(const QScriptValue &sv, Units::Unit &value)
+{
+	value = sv.toVariant().value<Units::Unit>();
+}
+
+@ These conversion functions are registered.
+
+@<Set up the scripting engine@>=
+qScriptRegisterMetaType(engine, Unit_toScriptValue, Unit_fromScriptValue);

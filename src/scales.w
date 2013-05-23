@@ -336,10 +336,16 @@ class SerialScaleConfWidget : public BasicDeviceConfigurationWidget
 		                                  const QModelIndex &index);
 	private slots:
 		void updatePort(const QString &newPort);
-		void updateBaudRate(const QString &newRate);
-		void updateParity(const QString &newParity);
-		void updateFlowControl(const QString &newFlow);
-		void updateStopBits(const QString &newStopBits);
+		void updateBaudRate(const QString &rate);
+		void updateParity(int index);
+		void updateFlowControl(int index);
+		void updateStopBits(int index);
+	private:
+		PortSelector *port;
+		BaudSelector *baud;
+		ParitySelector *parity;
+		FlowSelector *flow;
+		StopSelector *stop;
 };
 
 @ This is very similar to other configuration widgets.
@@ -347,31 +353,28 @@ class SerialScaleConfWidget : public BasicDeviceConfigurationWidget
 @<SerialScaleConfWidget implementation@>=
 SerialScaleConfWidget::SerialScaleConfWidget(DeviceTreeModel *model,
                                              const QModelIndex &index)
-: BasicDeviceConfigurationWidget(model, index)
+: BasicDeviceConfigurationWidget(model, index),
+  port(new PortSelector), baud(new BaudSelector), parity(new ParitySelector),
+  flow(new FlowSelector), stop(new StopSelector)
 {
 	QFormLayout *layout = new QFormLayout;
-	PortSelector *port = new PortSelector;
 	layout->addRow(tr("Port:"), port);
 	connect(port, SIGNAL(currentIndexChanged(QString)),
 	        this, SLOT(updatePort(QString)));
 	connect(port, SIGNAL(editTextChanged(QString)),
 	        this, SLOT(updatePort(QString)));
-	BaudSelector *rate = new BaudSelector;
-	layout->addRow(tr("Baud:"), rate);
-	connect(rate, SIGNAL(currentIndexChanged(QString)),
+	layout->addRow(tr("Baud:"), baud);
+	connect(baud, SIGNAL(currentIndexChanged(QString)),
 	        this, SLOT(updateBaudRate(QString)));
-	ParitySelector *parity = new ParitySelector;
 	layout->addRow(tr("Parity:"), parity);
-	connect(parity, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateParity(QString)));
-	FlowSelector *flow = new FlowSelector;
+	connect(parity, SIGNAL(currentIndexChanged(int)),
+	        this, SLOT(updateParity(int)));
 	layout->addRow(tr("Flow Control:"), flow);
-	connect(flow, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateFlowControl(QString)));
-	StopSelector *stop = new StopSelector;
+	connect(flow, SIGNAL(currentIndexChanged(int)),
+	        this, SLOT(updateFlowControl(int)));
 	layout->addRow(tr("Stop Bits:"), stop);
-	connect(stop, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateStopBits(QString)));
+	connect(stop, SIGNAL(currentIndexChanged(int)),
+	        this, SLOT(updateStopBits(int)));
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
 	{
@@ -391,26 +394,26 @@ SerialScaleConfWidget::SerialScaleConfWidget(DeviceTreeModel *model,
 		}
 		else if(node.attribute("name") == "baudrate")
 		{
-			rate->setCurrentIndex(rate->findText(node.attribute("value")));
+			baud->setCurrentIndex(baud->findText(node.attribute("value")));
 		}
 		else if(node.attribute("name") == "parity")
 		{
-			parity->setCurrentIndex(parity->findText(node.attribute("value")));
+			parity->setCurrentIndex(parity->findData(node.attribute("value")));
 		}
 		else if(node.attribute("name") == "flowcontrol")
 		{
-			flow->setCurrentIndex(flow->findText(node.attribute("value")));
+			flow->setCurrentIndex(flow->findData(node.attribute("value")));
 		}
 		else if(node.attribute("name") == "stopbits")
 		{
-			stop->setCurrentIndex(stop->findText(node.attribute("value")));
+			stop->setCurrentIndex(stop->findData(node.attribute("value")));
 		}
 	}
 	updatePort(port->currentText());
-	updateBaudRate(rate->currentText());
-	updateParity(parity->currentText());
-	updateFlowControl(flow->currentText());
-	updateStopBits(stop->currentText());
+	updateBaudRate(baud->currentText());
+	updateParity(parity->currentIndex());
+	updateFlowControl(flow->currentIndex());
+	updateStopBits(stop->currentIndex());
 	setLayout(layout);
 }
 
@@ -422,24 +425,24 @@ void SerialScaleConfWidget::updatePort(const QString &newPort)
 	updateAttribute("port", newPort);
 }
 
-void SerialScaleConfWidget::updateBaudRate(const QString &newRate)
+void SerialScaleConfWidget::updateBaudRate(const QString &rate)
 {
-	updateAttribute("baudrate", newRate);
+	updateAttribute("baudrate", rate);
 }
 
-void SerialScaleConfWidget::updateParity(const QString &newParity)
+void SerialScaleConfWidget::updateParity(int index)
 {
-	updateAttribute("parity", newParity);
+	updateAttribute("parity", parity->itemData(index).toString());
 }
 
-void SerialScaleConfWidget::updateFlowControl(const QString &newFlow)
+void SerialScaleConfWidget::updateFlowControl(int index)
 {
-	updateAttribute("flowcontrol", newFlow);
+	updateAttribute("flowcontrol", flow->itemData(index).toString());
 }
 
-void SerialScaleConfWidget::updateStopBits(const QString &newStopBits)
+void SerialScaleConfWidget::updateStopBits(int index)
 {
-	updateAttribute("stopbits", newStopBits);
+	updateAttribute("stopbits", stop->itemData(index).toString());
 }
 
 @ The configuration widget is registered with the configuration system.

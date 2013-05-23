@@ -15793,7 +15793,11 @@ PortSelector::PortSelector(QWidget *parent) : QComboBox(parent),
 	QextPortInfo port;
 	foreach(port, ports)
 	{
+#ifdef Q_OS_WIN32
 		addItem(port.portName);
+#else
+		addItem(port.physName);
+#endif
 	}
 	lister->setUpNotifications();
 	connect(lister, SIGNAL(deviceDiscovered(QextPortInfo)),

@@ -976,6 +976,16 @@ template<> QModelIndex argument(int arg, QScriptContext *context)
 	return qscriptvalue_cast<QModelIndex>(context->argument(arg));
 }
 
+template<> double argument(int arg, QScriptContext *context)
+{
+	return (double)(context->argument(arg).toNumber());
+}
+
+template<> Units::Unit argument(int arg, QScriptContext *context)
+{
+	return (Units::Unit)(context->argument(arg).toInt32());
+}
+
 @ The scripting engine is informed of a number of classes defined elsewhere in
 the program. Code related to scripting these classes is grouped with the code
 implementing the classes. Additionally, there are several classes from Qt which

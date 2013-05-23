@@ -364,14 +364,71 @@ bool Units::isWeightUnit(Unit unit)
 
 @ This class is exposed to the host environment. Note the lack of constructor.
 We do not wish to create any instances, just have access to the |Unit|
-enumeration.
+enumeration and conversion methods.
+
+Unfortunately, marking a static method |Q_INVOKABLE| will not work as per Qt
+bug #18840. There seems to be no intention to correct this deficiency so
+instead of having something that just works, we must resort to the following
+hackery.
+
+@<Function prototypes for scripting@>=
+QScriptValue Units_convertTemperature(QScriptContext *context, QScriptEngine *engine);
+QScriptValue Units_convertRelativeTemperature(QScriptContext *context,
+                                              QScriptEngine *engine);
+QScriptValue Units_isTemperatureUnit(QScriptContext *context, QScriptEngine *engine);
+QScriptValue Units_convertWeight(QScriptContext *context, QScriptEngine *engine);
+QScriptValue Units_isWeightUnit(QScriptContext *context, QScriptEngine *engine);
+
+@ These functions are added as properties for the host environment.
 
 @<Set up the scripting engine@>=
 value = engine->newQMetaObject(&Units::staticMetaObject);
+value.setProperty("convertTemperature", engine->newFunction(Units_convertTemperature));
+value.setProperty("convertRelativeTemperature",
+                  engine->newFunction(Units_convertRelativeTemperature));
+value.setProperty("isTemperatureUnit", engine->newFunction(Units_isTemperatureUnit));
+value.setProperty("convertWeight", engine->newFunction(Units_convertWeight));
+value.setProperty("isWeightUnit", engine->newFunction(Units_isWeightUnit));
 engine->globalObject().setProperty("Units", value);
 
-@ While the above is sufficient for some uses, others require some additional
-work.
+@ The implementation of these functions is trivial.
+
+@<Functions for scripting@>=
+QScriptValue Units_convertTemperature(QScriptContext *context, QScriptEngine *engine)
+{
+	return QScriptValue(Units::convertTemperature(argument<double>(0, context),
+	                                              argument<Units::Unit>(1, context),
+	                                              argument<Units::Unit>(2, context)));
+}
+
+QScriptValue Units_convertRelativeTemperature(QScriptContext *context,
+                                              QScriptEngine *engine)
+{
+	return QScriptValue(Units::convertRelativeTemperature(
+	                         argument<double>(0, context),
+	                         argument<Units::Unit>(1, context),
+	                         argument<Units::Unit>(2, context)));
+}
+
+QScriptValue Units_isTemperatureUnit(QScriptContext *context, QScriptEngine *engine)
+{
+	return QScriptValue(Units::isTemperatureUnit(argument<Units::Unit>(0, context)));
+}
+
+QScriptValue Units_convertWeight(QScriptContext *context, QScriptEngine *engine)
+{
+	return QScriptValue(Units::convertWeight(argument<double>(0, context),
+	                                         argument<Units::Unit>(1, context),
+	                                         argument<Units::Unit>(2, context)));
+}
+
+QScriptValue Units_isWeightUnit(QScriptContext *context, QScriptEngine *engine)
+{
+	return QScriptValue(Units::isWeightUnit(argument<Units::Unit>(0, context)));
+}
+
+@ To pass unit data in some circumstances, the inner enumeration must be
+registered as a meta-type with script conversions.
 
 @<Class declarations@>=
 Q_DECLARE_METATYPE(Units::Unit)
@@ -399,3 +456,4 @@ void Unit_fromScriptValue(const QScriptValue &sv, Units::Unit &value)
 
 @<Set up the scripting engine@>=
 qScriptRegisterMetaType(engine, Unit_toScriptValue, Unit_fromScriptValue);
+

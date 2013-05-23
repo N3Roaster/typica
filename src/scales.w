@@ -66,27 +66,117 @@ scale, buffering and interpreting the response, and signaling new measurements.
 
 #include "3rdparty/qextserialport/src/qextserialport.h"
 
-class SerialScale : public QObject
+class SerialScale : public QextSerialPort
 {
 	Q_OBJECT
 	public:
-		SerialScale();
-		~SerialScale();
+		SerialScale(const QString &port);
 	public slots:
-		void setPort(const QString &port);
-		void setBaudRate(BaudRateType baud);
-		void setDataBits(DataBitsType data);
-		void setParity(ParityType parity);
-		void setStopBits(StopBitsType stop);
-		void setFlowControl(FlowType flow);
-		void open();
 		void tare();
 		void weigh();
+	signals:
+		void newMeasurement(double weight, Units::Unit unit);
 	private slots:
 		void dataAvailable();
 	private:
-		QextSerialPort *port;
 		QByteArray responseBuffer;
 };
 
 #endif
+
+@ The constructor tells the port that this should be event driven and connects
+a signal to buffer data..
+
+@(scale.cpp@>=
+#include "scale.h"
+
+SerialScale::SerialScale(const QString &port) :
+	QextSerialPort(port, QextSerialPort::EventDriven)
+{
+	connect(this, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
+}
+
+@ The |dataAvailable| method handles buffering incoming data and processing
+responses when they have come in. Serial port communications are likely to be
+very slow in comparison to everything else so it is likely that only one
+character will come in at a time.
+
+Note that this currently only understands single line output and a limited
+selection of units.
+
+@(scale.cpp@>=
+void SerialScale::dataAvailable()
+{
+	responseBuffer.append(readAll());
+	if(responseBuffer.contains("\x0D"))
+	{
+		if(responseBuffer.startsWith("!"))
+		{
+			responseBuffer.clear();
+			weigh();
+		}
+		else
+		{
+			@<Process weight measurement@>@;
+			responseBuffer.clear();
+		}
+	}
+}
+
+@ Each line of data consists of characters representing a number followed by a
+space followed by characters indicating a unit. This may be preceeded and
+followed by a variable amount of white space. To process a new measurement, we
+must remove the excess white space, split the number from the unit, convert the
+string representing the number to a numeric type, and determine which unit the
+measurement is in.
+
+\medskip
+
+\settabs 8 \columns
+\+&&&{\tt |"lb"|}&|Units::Pound|\cr
+\+&&&{\tt |"kg"|}&|Units::Kilogram|\cr
+\+&&&{\tt |"g"|}&|Units::Gram|\cr
+\+&&&{\tt |"oz"|}&|Units::Ounce|\cr
+
+\smallskip
+
+\centerline{Table \secno: Unit Strings and Representative Unit Enumeration}
+
+\medskip
+
+@<Process weight measurement@>=
+QStringList responseParts = QString(responseBuffer.simplified()).split(' ');
+double weight = responseParts[0].toDouble();
+Units::Unit unit = Units::Unitless;
+if(responseParts[1] == "lb")
+{
+	unit = Units::Pound;
+}
+else if(responseParts[1] == "kg")
+{
+	unit = Units::Kilogram;
+}
+else if(responseParts[1] == "g")
+{
+	unit = Units::gram;
+}
+else if(responseParts[1] == "oz")
+{
+	unit = Units::ounce;
+}
+emit newMeasurement(weight, unit);
+
+@ Two methods are used to send commands to the scale. I am unsure of how well
+standardized remote key operation of scales are. The class may need to be
+extended to support more devices.
+
+@(scale.cpp@>=
+void SerialScale::tare()
+{
+	write("!KT\x0D");
+}
+
+void SerialScale::weight()
+{
+	write("!KP\x0D");
+}

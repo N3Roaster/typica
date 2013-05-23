@@ -92,7 +92,6 @@ a signal to buffer data..
 #include "scale.h"
 #include <QStringList>
 
-
 SerialScale::SerialScale(const QString &port) :
 	QextSerialPort(port, QextSerialPort::EventDriven)
 {
@@ -113,10 +112,9 @@ void SerialScale::dataAvailable()
 	responseBuffer.append(readAll());
 	if(responseBuffer.contains("\x0D"))
 	{
-		if(responseBuffer.startsWith("!"))
+		if(responseBuffer.contains("!"))
 		{
 			responseBuffer.clear();
-			weigh();
 		}
 		else
 		{
@@ -126,12 +124,13 @@ void SerialScale::dataAvailable()
 	}
 }
 
-@ Each line of data consists of characters representing a number followed by a
+@ Each line of data consists of an optional sign character possibly followed
+by a space followed by characters representing a number followed by a
 space followed by characters indicating a unit. This may be preceeded and
 followed by a variable amount of white space. To process a new measurement, we
-must remove the excess white space, split the number from the unit, convert the
-string representing the number to a numeric type, and determine which unit the
-measurement is in.
+must remove the excess white space, split the number from the unit, prepend the
+sign to the number if it is present, convert the string representing the number
+to a numeric type, and determine which unit the measurement is in.
 
 \medskip
 
@@ -149,6 +148,11 @@ measurement is in.
 
 @<Process weight measurement@>=
 QStringList responseParts = QString(responseBuffer.simplified()).split(' ');
+if(responseParts.size() > 2)
+{
+	responseParts.removeFirst();
+	responseParts.replace(0, QString("-%1").arg(responseParts[0]));
+}
 double weight = responseParts[0].toDouble();
 Units::Unit unit = Units::Unitless;
 if(responseParts[1] == "lb")

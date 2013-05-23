@@ -197,6 +197,94 @@ constructor = engine->newFunction(constructSerialScale);
 value = engine->newQMetaObject(&SerialScale::staticMetaObject, constructor);
 engine->globalObject().setProperty("SerialScale", value);
 
+@ If we are to set up the serial ports from the host environment, a few
+enumerated types must be made known to the meta-object system.
+
+@<Class declarations@>=
+Q_DECLARE_METATYPE(BaudRateType)
+Q_DECLARE_METATYPE(DataBitsType)
+Q_DECLARE_METATYPE(ParityType)
+Q_DECLARE_METATYPE(StopBitsType)
+Q_DECLARE_METATYPE(FlowType)
+
+@ For each of these, a pair of functions converts values to script values and
+back. This is a very annoying aspect of the version of QextSerialPort currently
+used by \pn{}.
+
+@<Function prototypes for scripting@>=
+QScriptValue BaudRateType_toScriptValue(QScriptEngine *engine, const BaudRateType &value);
+void BaudRateType_fromScriptValue(const QScriptValue &sv, BaudRateType &value);
+QScriptValue DataBitsType_toScriptValue(QScriptEngine *engine, const DataBitsType &value);
+void DataBitsType_fromScriptValue(const QScriptValue &sv, DataBitsType &value);
+QScriptValue ParityType_toScriptValue(QScriptEngine *engine, const ParityType &value);
+void ParityType_fromScriptValue(const QScriptValue &sv, ParityType &value);
+QScriptValue StopBitsType_toScriptValue(QScriptEngine *engine, const StopBitsType &value);
+void StopBitsType_fromScriptValue(const QScriptValue &sv, StopBitsType &value);
+QScriptValue FlowType_toScriptValue(QScriptEngine *engine, const FlowType &value);
+void FlowType_fromScriptValue(const QScriptValue &sv, FlowType &value);
+
+@ These are implemented thusly.
+
+@<Functions for scripting@>=
+QScriptValue BaudRateType_toScriptValue(QScriptEngine *engine, const BaudRateType &value)
+{
+	return engine->newVariant(QVariant((int)(value)));
+}
+
+void BaudRateType_fromScriptValue(const QScriptValue &sv, BaudRateType &value)
+{
+	value = (BaudRateType)(sv.toVariant().toInt());
+}
+
+QScriptValue DataBitsType_toScriptValue(QScriptEngine *engine, const DataBitsType &value)
+{
+	return engine->newVariant(QVariant((int)(value)));
+}
+
+void DataBitsType_fromScriptValue(const QScriptValue &sv, DataBitsType &value)
+{
+	value = (DataBitsType)(sv.toVariant().toInt());
+}
+
+QScriptValue ParityType_toScriptValue(QScriptEngine *engine, const ParityType &value)
+{
+	return engine->newVariant(QVariant((int)(value)));
+}
+
+void ParityType_fromScriptValue(const QScriptValue &sv, ParityType &value)
+{
+	value = (ParityType)(sv.toVariant().toInt());
+}
+
+QScriptValue StopBitsType_toScriptValue(QScriptEngine *engine, const StopBitsType &value)
+{
+	return engine->newVariant(QVariant((int)(value)));
+}
+
+void StopBitsType_fromScriptValue(const QScriptValue &sv, StopBitsType &value)
+{
+	value = (StopBitsType)(sv.toVariant().toInt());
+}
+
+QScriptValue FlowType_toScriptValue(QScriptEngine *engine, const FlowType &value)
+{
+	return engine->newVariant(QVariant((int)(value)));
+}
+
+void FlowType_fromScriptValue(const QScriptValue &sv, FlowType &value)
+{
+	value = (FlowType)(sv.toVariant().toInt());
+}
+
+@ These conversion functions are then registered.
+
+@<Set up the scripting engine@>=
+qScriptRegisterMetaType(engine, BaudRateType_toScriptValue, BaudRateType_fromScriptValue);
+qScriptRegisterMetaType(engine, DataBitsType_toScriptValue, DataBitsType_fromScriptValue);
+qScriptRegisterMetaType(engine, ParityType_toScriptValue, ParityType_fromScriptValue);
+qScriptRegisterMetaType(engine, StopBitsType_toScriptValue, StopBitsType_fromScriptValue);
+qScriptRegisterMetaType(engine, FlowType_toScriptValue, FlowType_fromScriptValue);
+
 @ In order to make this class available to the host environment, we must also
 include the appropriate header file.
 

@@ -839,6 +839,7 @@ generated file empty.
 @<SettingsWindow implementation@>@/
 @<GraphSettingsWidget implementation@>@/
 @<DataqSdkDeviceConfWidget implementation@>@/
+@<SerialScaleConfWidget implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.

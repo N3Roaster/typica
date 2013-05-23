@@ -324,4 +324,132 @@ QScriptValue constructSerialScale(QScriptContext *context, QScriptEngine *engine
 	return object;
 }
 
-@ While the |SerialScale| class will always 
+@ In order to allow configuration of scales from within \pn{}, a configuration
+widget must be provided.
+
+@<Class declarations@>=
+class SerialScaleConfWidget : public BasicDeviceConfigurationWidget
+{
+	Q_OBJECT
+	public:
+		Q_INVOKABLE SerialScaleConfWidget(DeviceTreeModel *model,
+		                                  const QModelIndex &index);
+	private slots:
+		void updatePort(const QString &newPort);
+		void updateBaudRate(const QString &newRate);
+		void updateParity(const QString &newParity);
+		void updateFlowControl(const QString &newFlow);
+		void updateStopBits(const QString &newStopBits);
+};
+
+@ This is very similar to other configuration widgets.
+
+@<SerialScaleConfWidget implementation@>=
+SerialScaleConfWidget::SerialScaleConfWidget(DeviceTreeModel *model,
+                                             const QModelIndex &index)
+: BasicDeviceConfigurationWidget(model, index)
+{
+	QFormLayout *layout = new QFormLayout;
+	PortSelector *port = new PortSelector;
+	layout->addRow(tr("Port:"), port);
+	connect(port, SIGNAL(currentIndexChanged(QString)),
+	        this, SLOT(updatePort(QString)));
+	connect(port, SIGNAL(editTextChanged(QString)),
+	        this, SLOT(updatePort(QString)));
+	BaudSelector *rate = new BaudSelector;
+	layout->addRow(tr("Baud:"), rate);
+	connect(rate, SIGNAL(currentIndexChanged(QString)),
+	        this, SLOT(updateBaudRate(QString)));
+	ParitySelector *parity = new ParitySelector;
+	layout->addRow(tr("Parity:"), parity);
+	connect(parity, SIGNAL(currentIndexChanged(QString)),
+	        this, SLOT(updateParity(QString)));
+	FlowSelector *flow = new FlowSelector;
+	layout->addRow(tr("Flow Control:"), flow);
+	connect(flow, SIGNAL(currentIndexChanged(QString)),
+	        this, SLOT(updateFlowControl(QString)));
+	StopSelector *stop = new StopSelector;
+	layout->addRow(tr("Stop Bits:"), stop);
+	connect(stop, SIGNAL(currentIndexChanged(QString)),
+	        this, SLOT(updateStopBits(QString)));
+	@<Get device configuration data for current node@>@;
+	for(int i = 0; i < configData.size(); i++)
+	{
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "port")
+		{
+			int j = port->findText(node.attribute("value"));
+			if(j >= 0)
+			{
+				port->setCurrentIndex(j);
+			}
+			else
+			{
+				port->insertItem(0, node.attribute("value"));
+				port->setCurrentIndex(0);
+			}
+		}
+		else if(node.attribute("name") == "baudrate")
+		{
+			rate->setCurrentIndex(rate->findText(node.attribute("value")));
+		}
+		else if(node.attribute("name") == "parity")
+		{
+			parity->setCurrentIndex(parity->findText(node.attribute("value")));
+		}
+		else if(node.attribute("name") == "flowcontrol")
+		{
+			flow->setCurrentIndex(flow->findText(node.attribute("value")));
+		}
+		else if(node.attribute("name") == "stopbits")
+		{
+			stop->setCurrentIndex(stop->findText(node.attribute("value")));
+		}
+	}
+	updatePort(port->currentText());
+	updateBaudRate(rate->currentText());
+	updateParity(parity->currentText());
+	updateFlowControl(flow->currentText());
+	updateStopBits(stop->currentText());
+	setLayout(layout);
+}
+
+@ Update methods are the same as were used in |ModbusRtuPortConfWidget|.
+
+@<SerialScaleConfWidget implementation@>=
+void SerialScaleConfWidget::updatePort(const QString &newPort)
+{
+	updateAttribute("port", newPort);
+}
+
+void SerialScaleConfWidget::updateBaudRate(const QString &newRate)
+{
+	updateAttribute("baudrate", newRate);
+}
+
+void SerialScaleConfWidget::updateParity(const QString &newParity)
+{
+	updateAttribute("parity", newParity);
+}
+
+void SerialScaleConfWidget::updateFlowControl(const QString &newFlow)
+{
+	updateAttribute("flowcontrol", newFlow);
+}
+
+void SerialScaleConfWidget::updateStopBits(const QString &newStopBits)
+{
+	updateAttribute("stopbits", newStopBits);
+}
+
+@ The configuration widget is registered with the configuration system.
+
+@<Register device configuration widgets@>=
+app.registerDeviceConfigurationWidget("scale", SerialScaleConfWidget::staticMetaObject);
+
+@ A |NodeInserter| is also added.
+
+@<Register top level device configuration nodes@>=
+inserter = new NodeInserter(tr("Serial Scale"), tr("Scale"), "scale", NULL);
+topLevelNodeInserters.append(inserter);
+

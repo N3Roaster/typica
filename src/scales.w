@@ -65,6 +65,7 @@ scale, buffering and interpreting the response, and signaling new measurements.
 #define TypicaScaleInclude
 
 #include "3rdparty/qextserialport/src/qextserialport.h"
+#include "units.h"
 
 class SerialScale : public QextSerialPort
 {
@@ -89,6 +90,8 @@ a signal to buffer data..
 
 @(scale.cpp@>=
 #include "scale.h"
+#include <QStringList>
+
 
 SerialScale::SerialScale(const QString &port) :
 	QextSerialPort(port, QextSerialPort::EventDriven)
@@ -158,11 +161,11 @@ else if(responseParts[1] == "kg")
 }
 else if(responseParts[1] == "g")
 {
-	unit = Units::gram;
+	unit = Units::Gram;
 }
 else if(responseParts[1] == "oz")
 {
-	unit = Units::ounce;
+	unit = Units::Ounce;
 }
 emit newMeasurement(weight, unit);
 
@@ -176,7 +179,57 @@ void SerialScale::tare()
 	write("!KT\x0D");
 }
 
-void SerialScale::weight()
+void SerialScale::weigh()
 {
 	write("!KP\x0D");
 }
+
+@ This must be available to the host environment.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructSerialScale(QScriptContext *context, QScriptEngine *engine);
+void setSerialScaleProperties(QScriptValue value, QScriptEngine *engine);
+
+@ These functions are made known to the scripting engine in the usual way.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructSerialScale);
+value = engine->newQMetaObject(&SerialScale::staticMetaObject, constructor);
+engine->globalObject().setProperty("SerialScale", value);
+
+@ In order to make this class available to the host environment, we must also
+include the appropriate header file.
+
+@<Header files to include@>=
+#include "scale.h"
+
+@ Most of the properties of interest should be added automatically, however
+there are non-slot methods in |QIODevice| that we require.
+
+@<Functions for scripting@>=
+void setSerialScaleProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQIODeviceProperties(value, engine);
+}
+
+@ The script constructor should seem familiar.
+
+@<Functions for scripting@>=
+QScriptValue constructSerialScale(QScriptContext *context, QScriptEngine *engine)
+{
+	QScriptValue object;
+	if(context->argumentCount() == 1)
+	{
+		object = engine->newQObject(new SerialScale(argument<QString>(0, context)));
+		setSerialScaleProperties(object, engine);
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "
+		                    "SerialScale. The constructor takes one string "
+		                    "as an argument specifying a port name.");
+	}
+	return object;
+}
+
+@ While the |SerialScale| class will always 

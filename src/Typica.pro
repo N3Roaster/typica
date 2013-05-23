@@ -21,13 +21,15 @@ HEADERS += moc_typica.cpp \
     abouttypica.h \
     units.h \
     webview.h \
-    webelement.h
+    webelement.h \
+    scale.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
     abouttypica.cpp \
     units.cpp \
     webview.cpp \
-    webelement.cpp
+    webelement.cpp \
+    scale.cpp
 
 RESOURCES += \
     resources.qrc

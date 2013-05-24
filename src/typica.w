@@ -839,6 +839,7 @@ generated file empty.
 @<SettingsWindow implementation@>@/
 @<GraphSettingsWidget implementation@>@/
 @<DataqSdkDeviceConfWidget implementation@>@/
+@<SerialScaleConfWidget implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -974,6 +975,16 @@ template<> SqlQueryConnection* argument(int arg, QScriptContext *context)
 template<> QModelIndex argument(int arg, QScriptContext *context)
 {
 	return qscriptvalue_cast<QModelIndex>(context->argument(arg));
+}
+
+template<> double argument(int arg, QScriptContext *context)
+{
+	return (double)(context->argument(arg).toNumber());
+}
+
+template<> Units::Unit argument(int arg, QScriptContext *context)
+{
+	return (Units::Unit)(context->argument(arg).toInt32());
 }
 
 @ The scripting engine is informed of a number of classes defined elsewhere in
@@ -12119,7 +12130,7 @@ Qt::ItemFlags SaltModel::flags(const QModelIndex &index) const
 	@<Check that the SaltModel index is valid@>@;
 	if(valid)
 	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 	}
 	return 0;
 }
@@ -15782,7 +15793,11 @@ PortSelector::PortSelector(QWidget *parent) : QComboBox(parent),
 	QextPortInfo port;
 	foreach(port, ports)
 	{
+#ifdef Q_OS_WIN32
 		addItem(port.portName);
+#else
+		addItem(port.physName);
+#endif
 	}
 	lister->setUpNotifications();
 	connect(lister, SIGNAL(deviceDiscovered(QextPortInfo)),
@@ -18367,6 +18382,8 @@ app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::stat
 @i rate.w
 
 @i dataqsdk.w
+
+@i scales.w
 
 @** Local changes.
 

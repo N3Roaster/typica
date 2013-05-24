@@ -75,6 +75,7 @@
 		var rateoffsets = new Array();
 		var ratezeros = new Array();
 		var channelType = new Array();
+		window.scales = new Array();
 		var indicatorPanel = findChildObject(this, 'indicators');
 		var annotationPanel = findChildObject(this, 'controlpanel');
 		var log = findChildObject(this, 'log');
@@ -487,6 +488,17 @@
 							columnNames.push(configModel.data(driverIndex, 0));
 						}
 					}
+				}
+				else if(driverReference.driver == "scale")
+				{
+					var scale = new SerialScale(driverReference.port);
+					scale.setDataBits(8);
+					scale.setBaudRate(driverReference.baudrate);
+					scale.setParity(driverReference.parity);
+					scale.setStopBits(driverReference.stopbits);
+					scale.setFlowControl(driverReference.flowcontrol);
+					scale.open(3);
+					window.scales.push(scale);
 				}
 			}
 		}

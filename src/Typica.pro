@@ -22,14 +22,16 @@ HEADERS += moc_typica.cpp \
     units.h \
     webview.h \
     webelement.h \
-    scale.h
+    scale.h \
+    draglabel.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
     abouttypica.cpp \
     units.cpp \
     webview.cpp \
     webelement.cpp \
-    scale.cpp
+    scale.cpp \
+    draglabel.cpp
 
 RESOURCES += \
     resources.qrc

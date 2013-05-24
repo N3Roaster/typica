@@ -56,6 +56,46 @@ void DragLabel::mousePressEvent(QMouseEvent *event)
 	}
 }
 
+@ We require the ability to create these labels from the host environment.
+First we include the appropriate header.
+
+@<Header files to include@>=
+#include "draglabel.h"
+
+@ Next, a pair of function prototypes.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructDragLabel(QScriptContext *context, QScriptEngine *engine);
+void setDragLabelProperties(QScriptValue value, QScriptEngine *engine);
+
+@ These are made known to the host environment as usual.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructDragLabel);
+value = engine->newQMetaObject(&DragLabel::staticMetaObject, constructor);
+engine->globalObject().setProperty("DragLabel", value);
+
+@ The implementation is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructDragLabel(QScriptContext *context, QScriptEngine *engine)
+{
+	QScriptValue object;
+	QString labelText = "";
+	if(context->argumentCount() == 1)
+	{
+		labelText = argument<QString>(0, context);
+	}
+	object = engine->newQObject(new DragLabel(labelText));
+	setDragLabelProperties(object, engine);
+	return object;
+}
+
+void setDragLabelProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQLabelProperties(value, engine);
+}
+
 @ An object is also required to communicate with a scale. This is responsible
 for setting up a connection over a serial port, sending commands out to the
 scale, buffering and interpreting the response, and signaling new measurements.

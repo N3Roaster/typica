@@ -12130,7 +12130,7 @@ Qt::ItemFlags SaltModel::flags(const QModelIndex &index) const
 	@<Check that the SaltModel index is valid@>@;
 	if(valid)
 	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 	}
 	return 0;
 }

@@ -55,6 +55,7 @@
         </layout>
     </layout>
 	<layout type="vertical">
+		<label>Connected Scales</label>
 		<layout type="vertical" id="scales" />
 		<stretch />
 	</layout>
@@ -88,12 +89,25 @@
 			if(navigationwindow.loggingWindow.scales.length > 0) {
 				for(var i = 0; i < navigationwindow.loggingWindow.scales.length; i++) {
 					var scale = navigationwindow.loggingWindow.scales[i];
-					var label = new QLabel(" ");
+					var label = new DragLabel();
 					var weighButton = new QPushButton();
 					weighButton.text = "Weigh";
 					weighButton.clicked.connect(scale.weigh);
 					label.updateMeasurement = function(m, u) {
-						this.text = Units.convertWeight(m, u, Units.Pound) + " lb";
+						switch(unitBox.currentIndex) {
+							case 0:
+								this.text = Units.convertWeight(m, u, Units.Gram).toFixed(1);
+								break;
+							case 1:
+								this.text = Units.convertWeight(m, u, Units.Kilogram).toFixed(4);
+								break;
+							case 2:
+								this.text = Units.convertWeight(m, u, Units.Ounce).toFixed(3);
+								break;
+							case 3:
+								this.text = Units.convertWeight(m, u, Units.Pound).toFixed(4);
+								break;
+						}
 					};
 					scalesLayout.addWidget(label);
 					scalesLayout.addWidget(weighButton);
@@ -101,6 +115,7 @@
 						label.updateMeasurement(m, u);
 					});
 					scale.weigh();
+					unitBox['currentIndexChanged(int)'].connect(scale.weigh);
 				}
 			}
 			model.dataChanged.connect(function() {

@@ -18183,7 +18183,7 @@ class LinearSplineInterpolationConfWidget : public BasicDeviceConfigurationWidge
 		void updateDestinationColumn(const QString &dest);
 		void updateKnots();
 	private:@/
-		SaltModel *knotmodel;
+		SaltModel *model;
 };
 
 @ This is configured by specifying a source column name, a destination column
@@ -18192,17 +18192,17 @@ the mapping data, we store each column of the table in its own attribute.
 
 @<LinearSplineInterpolationConfWidget implementation@>=
 LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceTreeModel *model, const QModelIndex &index)
-: BasicDeviceConfigurationWidget(model, index), knotmodel(new SaltModel(2))
+: BasicDeviceConfigurationWidget(model, index), model(new SaltModel(2))
 {
 	QFormLayout *layout = new QFormLayout;
 	QLineEdit *source = new QLineEdit;
 	layout->addRow(tr("Source column name:"), source);
 	QLineEdit *destination = new QLineEdit;
 	layout->addRow(tr("Destination column name:"), destination);
-	knotmodel->setHeaderData(0, Qt::Horizontal, "Input");
-	knotmodel->setHeaderData(1, Qt::Horizontal, "Output");
+	model->setHeaderData(0, Qt::Horizontal, "Input");
+	model->setHeaderData(1, Qt::Horizontal, "Output");
 	QTableView *mappingTable = new QTableView;
-	mappingTable->setModel(knotmodel);
+	mappingTable->setModel(model);
 	NumericDelegate *delegate = new NumericDelegate;
 	mappingTable->setItemDelegate(delegate);
 	layout->addRow(tr("Mapping data:"), mappingTable);
@@ -18237,7 +18237,7 @@ LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceT
 	updateKnots();
 	connect(source, SIGNAL(textEdited(QString)), this, SLOT(updateSourceColumn(QString)));
 	connect(destination, SIGNAL(textEdited(QString)), this, SLOT(updateDestinationColumn(QString)));
-	connect(knotmodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
+	connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
 	setLayout(layout);
 }
 
@@ -18260,9 +18260,9 @@ model.
 @<Populate model column from list@>=
 for(int i = 0; i < itemList.size(); i++)
 {
-	knotmodel->setData(knotmodel->index(i, column),
-	                   QVariant(itemList.at(i).toDouble()),
-                       Qt::DisplayRole);
+	model->setData(model->index(i, column),
+	               QVariant(itemList.at(i).toDouble()),
+                   Qt::DisplayRole);
 }
 
 @ When data in the table is changed we simply overwrite any previously saved
@@ -18271,8 +18271,8 @@ data with the current data.
 @<LinearSplineInterpolationConfWidget implementation@>=
 void LinearSplineInterpolationConfWidget::updateKnots()
 {
-	updateAttribute("sourcevalues", knotmodel->arrayLiteral(0, Qt::DisplayRole));
-	updateAttribute("destinationvalues", knotmodel->arrayLiteral(1, Qt::DisplayRole));
+	updateAttribute("sourcevalues", model->arrayLiteral(0, Qt::DisplayRole));
+	updateAttribute("destinationvalues", model->arrayLiteral(1, Qt::DisplayRole));
 }
 
 void LinearSplineInterpolationConfWidget::updateSourceColumn(const QString &source)
@@ -18384,6 +18384,8 @@ app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::stat
 @i dataqsdk.w
 
 @i scales.w
+
+@i valueannotation.w
 
 @** Local changes.
 

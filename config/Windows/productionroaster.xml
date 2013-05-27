@@ -346,7 +346,7 @@
 					var notesList = notesSetting.slice(2, notesSetting.length-2).split(",");
 					if(valuesList.length > 1 && notesList.length == valuesList.length) {
 						for(var j = 0; j < valuesList.length; j++) {
-							checker.setAnnotation(Number(valueList[j]), notesList[j]);
+							checker.setAnnotation(Number(valuesList[j]), notesList[j]);
 						}
 					}
 					if(driverReference.emitOnStart == "true") {

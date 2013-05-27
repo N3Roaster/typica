@@ -840,6 +840,8 @@ generated file empty.
 @<GraphSettingsWidget implementation@>@/
 @<DataqSdkDeviceConfWidget implementation@>@/
 @<SerialScaleConfWidget implementation@>@/
+@<ValueAnnotation implementation@>@/
+@<ValueAnnotationConfWidget implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -10017,7 +10019,7 @@ oseconds = TIMETOINT(relative);
 r = cseconds - oseconds;
 
 @ The logic for a count down timer is very similar to the logic for a count up
-timer. A key difference is that we don't want to continue counting down if the
+timer. A key difference is that we don'@q'@>t want to continue counting down if the
 timer has already reached 0.
 
 @<Check for Timer Decrement@>=
@@ -10077,7 +10079,7 @@ void TimerDisplay::startTimer()@t\2\2@>@/
 }
 
 @ Stopping the timer is a little simpler. Remember to stop the clock so we
-aren't updating senselessly.
+aren'@q'@>t updating senselessly.
 
 @<TimerDisplay Implementation@>=
 void TimerDisplay::stopTimer()@t\2\2@>@/
@@ -11982,7 +11984,7 @@ the last row to increase the size of the table.
 
 The end of this function may seem a little strange. Why not simply look up the
 map and insert information directly into the model data? Well, as of this
-writing, that doesn't work. There are two ways around that problem. One is to
+writing, that doesn'@q'@>t work. There are two ways around that problem. One is to
 have the lists store references and dereference the real data. The other option
 is to obtain a copy of the row, then a copy of the cell, update the cell, then
 replace the old value of the cell in the copy of the row, then replace the old
@@ -12057,7 +12059,7 @@ SaltModel::SaltModel(int columns) : QAbstractItemModel(), colcount(columns)
 	@<Expand the SaltModel@>@;
 }
 
-@ The destructor doesn't need to do anything.
+@ The destructor doesn'@q'@>t need to do anything.
 
 @<SaltModel Implementation@>=
 SaltModel::~SaltModel()
@@ -12476,7 +12478,7 @@ if(settings.value("database/exists", "false").toString() == "false")
 @ In order to connect to the database, we need five pieces of information: the
 name of a database driver (PostgreSQL is recommended for now), the host name of
 the computer running the database, the name of the database, the name of the
-user connecting to the database, and that user's password. This information will
+user connecting to the database, and that user'@q'@>s password. This information will
 be stored in the user settings for the application so that the database
 connection can be established without prompting the user next time. A class is
 provided to gather this information.
@@ -12669,7 +12671,7 @@ settings.setValue(QString("columnWidths/%1/%2/%3").
 				  QVariant(newsize));
 
 @ To determine which window a given table is in, we just follow
-|parentWidget()| until there isn't one. It is possible that the table view
+|parentWidget()| until there isn'@q'@>t one. It is possible that the table view
 will also be the window, however this is not advised as it is easier for the
 settings key to be non-unique in such a case.
 
@@ -12971,7 +12973,7 @@ for(int j = 0; j < hierarchy.size() - 1; j++)
 in Qt. This brings several benefits, including making it easy to print reports
 or save reports as plain text or HTML.
 
-Reports are specified in the \pn{}'s configuration document and can include both
+Reports are specified in the \pn{}'@q'@>s configuration document and can include both
 static elements and elements that are populated by external data such as the
 result of a SQL query.
 
@@ -13223,7 +13225,7 @@ do
 @ It is sometimes desirable to add fixed data such as column headers to a table.
 This is done with the {\tt <row>} element.
 
-Technically, this isn't needed. The same results can be produced by using a
+Technically, this isn'@q'@>t needed. The same results can be produced by using a
 {\tt <query>} element to select constant data, but this approach saves a trip to
 the database.
 
@@ -14210,7 +14212,7 @@ else
 	saveDeviceConfiguration();
 }
 
-@ There isn't really anything that can be done if the device configuration data
+@ There isn'@q'@>t really anything that can be done if the device configuration data
 is corrupt, but an error message can be produced if the program happens to have
 access to a debugging console.
 
@@ -14600,7 +14602,7 @@ QDomElement DeviceTreeModel::referenceElement(const QString &id)
 	return QDomElement();
 }
 
-@ We don't want any headers, so |headerData()| is very simple.
+@ We don'@q'@>t want any headers, so |headerData()| is very simple.
 
 @<DeviceTreeModel implementation@>=
 QVariant DeviceTreeModel::headerData(int, Qt::Orientation, int) const
@@ -15228,6 +15230,7 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
 	        this, SLOT(insertChildNode(QString, QString)));
 	connect(freeAnnotationInserter, SIGNAL(triggered(QString, QString)),
 	        this, SLOT(insertChildNode(QString, QString)));
+	@<Add annotation control node inserters@>@;
 	addAnnotationControlButton->setMenu(annotationMenu);
 	layout->addWidget(addAnnotationControlButton);
 	QPushButton *advancedButton = new QPushButton(tr("Advanced Features"));
@@ -15816,7 +15819,7 @@ by the current operating system are available to select.
 A later version of QextSerialPort than is used by \pn{} provides a helper
 class which can be used more conveniently to create this sort of control. As
 this is not yet available to \pn{}, we instead copy the |enum| specifying
-the appropriate values into the class and use Qt's meta-object system to
+the appropriate values into the class and use Qt'@q'@>s meta-object system to
 populate the combo box based on the values in that |enum|.
 
 @<Class declarations@>=
@@ -17304,7 +17307,7 @@ void ModbusRTUDevice::mResponse(QByteArray response)
 }
 
 @ There are two ways that we might request measurement data. All of the
-devices I've seen documented provide function 0x4 addresses for PV and SV
+devices I'@q'@>ve seen documented provide function 0x4 addresses for PV and SV
 such that SV can be obtained from the address immediately after the address
 from which we obtain PV. In this case we request both values at the same time.
 
@@ -17389,7 +17392,7 @@ more than one response in the buffer at a time. It is, however, likely that
 this buffer will have incomplete data. This means that we must determine when
 the full response is available before passing the complete response along to
 the appropriate method. If the response has not been received in full, nothing
-is done. We'll be notified of more data shortly.
+is done. We'@q'@>ll be notified of more data shortly.
 
 When the message we see the response for was queued, a callback was also
 registered to handle the response. Once we have the complete message, we pass
@@ -17562,7 +17565,7 @@ void ModbusRTUDevice::outputSV(double value)
 	queueMessage(message, this, "ignore(QByteArray)");
 }
 
-@ We don't care about the response when sending a new SV.
+@ We don'@q'@>t care about the response when sending a new SV.
 
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::ignore(QByteArray)
@@ -18183,7 +18186,7 @@ class LinearSplineInterpolationConfWidget : public BasicDeviceConfigurationWidge
 		void updateDestinationColumn(const QString &dest);
 		void updateKnots();
 	private:@/
-		SaltModel *model;
+		SaltModel *tablemodel;
 };
 
 @ This is configured by specifying a source column name, a destination column
@@ -18192,17 +18195,17 @@ the mapping data, we store each column of the table in its own attribute.
 
 @<LinearSplineInterpolationConfWidget implementation@>=
 LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceTreeModel *model, const QModelIndex &index)
-: BasicDeviceConfigurationWidget(model, index), model(new SaltModel(2))
+: BasicDeviceConfigurationWidget(model, index), tablemodel(new SaltModel(2))
 {
 	QFormLayout *layout = new QFormLayout;
 	QLineEdit *source = new QLineEdit;
 	layout->addRow(tr("Source column name:"), source);
 	QLineEdit *destination = new QLineEdit;
 	layout->addRow(tr("Destination column name:"), destination);
-	model->setHeaderData(0, Qt::Horizontal, "Input");
-	model->setHeaderData(1, Qt::Horizontal, "Output");
+	tablemodel->setHeaderData(0, Qt::Horizontal, "Input");
+	tablemodel->setHeaderData(1, Qt::Horizontal, "Output");
 	QTableView *mappingTable = new QTableView;
-	mappingTable->setModel(model);
+	mappingTable->setModel(tablemodel);
 	NumericDelegate *delegate = new NumericDelegate;
 	mappingTable->setItemDelegate(delegate);
 	layout->addRow(tr("Mapping data:"), mappingTable);
@@ -18237,7 +18240,7 @@ LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceT
 	updateKnots();
 	connect(source, SIGNAL(textEdited(QString)), this, SLOT(updateSourceColumn(QString)));
 	connect(destination, SIGNAL(textEdited(QString)), this, SLOT(updateDestinationColumn(QString)));
-	connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
+	connect(tablemodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
 	setLayout(layout);
 }
 
@@ -18260,7 +18263,7 @@ model.
 @<Populate model column from list@>=
 for(int i = 0; i < itemList.size(); i++)
 {
-	model->setData(model->index(i, column),
+	tablemodel->setData(tablemodel->index(i, column),
 	               QVariant(itemList.at(i).toDouble()),
                    Qt::DisplayRole);
 }
@@ -18271,8 +18274,8 @@ data with the current data.
 @<LinearSplineInterpolationConfWidget implementation@>=
 void LinearSplineInterpolationConfWidget::updateKnots()
 {
-	updateAttribute("sourcevalues", model->arrayLiteral(0, Qt::DisplayRole));
-	updateAttribute("destinationvalues", model->arrayLiteral(1, Qt::DisplayRole));
+	updateAttribute("sourcevalues", tablemodel->arrayLiteral(0, Qt::DisplayRole));
+	updateAttribute("destinationvalues", tablemodel->arrayLiteral(1, Qt::DisplayRole));
 }
 
 void LinearSplineInterpolationConfWidget::updateSourceColumn(const QString &source)

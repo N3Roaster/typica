@@ -337,6 +337,30 @@
 					annotationPanel.addWidget(button);
 					tabControls.push(button);
 				}
+				else if(driverReference.driver == "valueannotation")
+				{
+					var checker = new ValueAnnotation;
+					var valuesSetting = driverReference.measuredValues;
+					var notesSetting = driverReference.annotations;
+					var valuesList = valuesSetting.slice(2, valuesSetting.length-2).split(",");
+					var notesList = notesSetting.slice(2, notesSetting.length-2).split(",");
+					if(valuesList.length > 1 && notesList.length == valuesList.length) {
+						for(var j = 0; j < valuesList.length; j++) {
+							checker.setAnnotation(Number(valueList[j]), notesList[j]);
+						}
+					}
+					if(driverReference.emitOnStart == "true") {
+						start.clicked.connect(checker.annotate);
+					}
+					var colname = driverReference.source;
+					for(var j = 0; j < columnNames.length; j++) {
+						if(columnNames[j] == colname) {
+							channels[j].newData.connect(checker.newMeasurement);
+							break;
+						}
+					}
+					annotationButtons.push(checker);
+				}
 				else if(driverReference.driver == "reconfigurablebutton")
 				{
 					var button = new AnnotationButton(driverReference.buttontext);

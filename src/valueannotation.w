@@ -11,7 +11,7 @@ To support this feature, there must be a configuration widget which can be used
 to identify which data series should be monitored and what annotations should
 be produced for what values.
 
-@<Class declrations@>=
+@<Class declarations@>=
 class ValueAnnotationConfWidget : public BasicDeviceConfigurationWidget
 {
 	Q_OBJECT
@@ -23,7 +23,7 @@ class ValueAnnotationConfWidget : public BasicDeviceConfigurationWidget
 		void updateAnnotations();
 		void updateStart(bool noteOnStart);
 	private:
-		SaltModel *model;
+		SaltModel *tablemodel;
 };
 
 @ The constructor sets up the configuration interface requesting a source
@@ -34,7 +34,7 @@ what annotations should be produced for what values.
 ValueAnnotationConfWidget::ValueAnnotationConfWidget(DeviceTreeModel *model,
                                                      const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
-  model(new SaltModel(2))
+  tablemodel(new SaltModel(2))
 {
 	QFormLayout *layout = new QFormLayout;
 	QLineEdit *source = new QLineEdit;
@@ -42,14 +42,14 @@ ValueAnnotationConfWidget::ValueAnnotationConfWidget(DeviceTreeModel *model,
 	QCheckBox *noteOnStart = new QCheckBox(tr("Produce Start State Annotation"));
 	noteOnStart->setChecked(true);
 	layout->addRow(noteOnStart);
-	model->setHeaderData(0, Qt::Horizontal, "Value");
-	model->setHeaderData(1, Qt::Horizontal, "Annotation");
+	tablemodel->setHeaderData(0, Qt::Horizontal, "Value");
+	tablemodel->setHeaderData(1, Qt::Horizontal, "Annotation");
 	QTableView *annotationTable = new QTableView;
-	annotationTable->setModel(model);
+	annotationTable->setModel(tablemodel);
 	NumericDelegate *delegate = new NumericDelegate;
 	annotationTable->setItemDelegateForColumn(0, delegate);
 	layout->addRow(tr("Annotations for values:"), annotationTable);
-	@<Get device configuration data for current node@>=
+	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
 	{
 		node = configData.at(i).toElement();
@@ -69,9 +69,9 @@ ValueAnnotationConfWidget::ValueAnnotationConfWidget(DeviceTreeModel *model,
 		}
 		else if(node.attribute("name") == "annotations")
 		{
-			@<Convert numeric array literal to list@>@;
+			@<Convert string array literal to list@>@;
 			int column = 1;
-			@<Populate model column from list@>@;
+			@<Populate model column from string list@>@;
 		}
 	}
 	updateSourceColumn(source->text());
@@ -79,8 +79,34 @@ ValueAnnotationConfWidget::ValueAnnotationConfWidget(DeviceTreeModel *model,
 	updateAnnotations();
 	connect(source, SIGNAL(textEdited(QString)), this, SLOT(updateSourceColumn(QString)));
 	connect(noteOnStart, SIGNAL(toggled(bool)), this, SLOT(updateStart(bool)));
-	connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateAnnotations()));
+	connect(tablemodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateAnnotations()));
 	setLayout(layout);
+}
+
+@ While we can re-use code for handling numeric array literals, string array
+literals need to be handled a little differently.
+
+@<Convert string array literal to list@>=
+QString data = node.attribute("value");
+if(data.length() > 3)
+{
+	data.chop(2);
+	data = data.remove(0, 2);
+}
+QStringList itemList = data.split(",");
+for(int i = 0; i < itemList.size(); i++)
+{
+	itemList[i] = itemList[i].simplified();
+}
+
+@ Populating the model must also be done a little differently.
+
+@<Populate model column from string list@>=
+for(int i = 0; i < itemList.size(); i++)
+{
+	tablemodel->setData(tablemodel->index(i, column),
+	                    QVariant(itemList.at(i)),
+	                    Qt::DisplayRole);
 }
 
 @ To update the table data, the measued values and annotations are saved in
@@ -89,8 +115,8 @@ separate lists.
 @<ValueAnnotationConfWidget implementation@>=
 void ValueAnnotationConfWidget::updateAnnotations()
 {
-	updateAttribute("measuredValues", model->arrayLiteral(0, Qt::DisplayRole));
-	updateAttribute("annotations", model->arrayLiteral(1, Qt::DisplayRole));
+	updateAttribute("measuredValues", tablemodel->arrayLiteral(0, Qt::DisplayRole));
+	updateAttribute("annotations", tablemodel->arrayLiteral(1, Qt::DisplayRole));
 }
 
 @ The other settings are updated based on values passed through the parameter
@@ -104,14 +130,24 @@ void ValueAnnotationConfWidget::updateSourceColumn(const QString &source)
 
 void ValueAnnotationConfWidget::updateStart(bool noteOnStart)
 {
-	updateAttribute("emitOnStart", noteOnStart);
+	updateAttribute("emitOnStart", noteOnStart ? "true" : "false");
 }
 
 @ The widget is registered with the configuration system.
 
 @<Register device configuration widgets@>=
 app.registerDeviceConfigurationWidget("valueannotation",
-	ValueAnnotationConfWidget::staticMetaObjet);
+	ValueAnnotationConfWidget::staticMetaObject);
+
+@ A NodeInserter is needed to make this widget available.
+
+@<Add annotation control node inserters@>=
+NodeInserter *valueAnnotationInserter = new NodeInserter(tr("Value Annotation"),
+                                                         tr("Value Annotation"),
+                                                         "valueannotation");
+annotationMenu->addAction(valueAnnotationInserter);
+connect(valueAnnotationInserter, SIGNAL(triggered(QString, QString)),
+        this, SLOT(insertChildNode(QString, QString)));
 
 @ While it is possible to implement this feature with |ThresholdDetector|
 objects, the code to handle these would be difficult to understand and there
@@ -148,7 +184,7 @@ class ValueAnnotation : public QObject
 		QList<double> values;
 		QStringList annotations;
 		double tolerance;
-}
+};
 
 @ Most of the work of this class happens in the |newMeasurement| method. This
 compares the latest measurement with every value that has an associated
@@ -223,3 +259,31 @@ ValueAnnotation::ValueAnnotation() : QObject(),
 	/* Nothing needs to be done here. */
 }
 
+@ This class is exposed to the host environment in the usual way. First with
+function prototypes.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructValueAnnotation(QScriptContext *context, QScriptEngine *engine);
+void setValueAnnotationProperties(QScriptValue value, QScriptEngine *engine);
+
+@ Then setting up a new property of the global object.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructValueAnnotation);
+value = engine->newQMetaObject(&ValueAnnotation::staticMetaObject, constructor);
+engine->globalObject().setProperty("ValueAnnotation", value);
+
+@ The implementation of the functions also proceeds as usual.
+
+@<Functions for scripting@>=
+QScriptValue constructValueAnnotation(QScriptContext *context, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new ValueAnnotation);
+	setValueAnnotationProperties(object, engine);
+	return object;
+}
+
+void setValueAnnotationProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQObjectProperties(value, engine);
+}

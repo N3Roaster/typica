@@ -15455,6 +15455,7 @@ class Ni9211TcConfWidget : public BasicDeviceConfigurationWidget
 	@[private slots@]:@/
 		void updateThermocoupleType(const QString &type);
 		void updateColumnName(const QString &name);
+		void updateHidden(bool hidden);
 };
 
 @ This follows the same pattern of previous device configuration widgets. The
@@ -15480,6 +15481,8 @@ Ni9211TcConfWidget::Ni9211TcConfWidget(DeviceTreeModel *model,
 	typeSelector->addItem("R");
 	typeSelector->addItem("S");
 	layout->addRow(tr("Thermocouple Type:"), typeSelector);
+	QCheckBox *hideSeries = new QCheckBox("Hide this channel");
+	layout->addRow(hideSeries);
 	setLayout(layout);
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
@@ -15494,12 +15497,18 @@ Ni9211TcConfWidget::Ni9211TcConfWidget(DeviceTreeModel *model,
 		{
 			columnName->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "hidden")
+		{
+			hideSeries->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updateThermocoupleType(typeSelector->currentText());
 	updateColumnName(columnName->text());
+	updateHidden(hideSeries->isChecked());
 	connect(typeSelector, SIGNAL(currentIndexChanged(QString)),
 	        this, SLOT(updateThermocoupleType(QString)));
 	connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
+	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 }
 
 @ Two slots are used to pass configuration changes back to the underlying XML
@@ -15514,6 +15523,11 @@ void Ni9211TcConfWidget::updateThermocoupleType(const QString &type)
 void Ni9211TcConfWidget::updateColumnName(const QString &name)
 {
 	updateAttribute("columnname", name);
+}
+
+void Ni9211TcConfWidget::updateHidden(bool hidden)
+{
+	updateAttribute("hidden", hidden ? "true" : "false");
 }
 
 @ These three widgets need to be registered so the configuration widget can
@@ -15668,6 +15682,7 @@ class NiDaqMxTc01ConfWidget : public BasicDeviceConfigurationWidget
 		void updateDeviceId(const QString &newId);
 		void updateThermocoupleType(const QString &type);
 		void updateColumnName(const QString &name);
+		void updateHidden(bool hidden);
 };
 
 @ The implementation is similar to the other configuration widgets.
@@ -15692,6 +15707,8 @@ NiDaqMxTc01ConfWidget::NiDaqMxTc01ConfWidget(DeviceTreeModel *model,
 	typeSelector->addItem("R");
 	typeSelector->addItem("S");
 	layout->addRow(tr("Thermocouple Type:"), typeSelector);
+	QCheckBox *hideSeries = new QCheckBox(tr("Hide this channel"));
+	layout->addRow(hideSeries);
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
 	{
@@ -15708,14 +15725,20 @@ NiDaqMxTc01ConfWidget::NiDaqMxTc01ConfWidget(DeviceTreeModel *model,
 		{
 			columnName->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "hidden")
+		{
+			hideSeries->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updateDeviceId(deviceId->text());
 	updateThermocoupleType(typeSelector->currentText());
 	updateColumnName(columnName->text());
+	updateHidden(hideSeries->isChecked());
 	connect(deviceId, SIGNAL(textEdited(QString)), this, SLOT(updateDeviceId(QString)));
 	connect(typeSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateThermocoupleType(QString)));
 	connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
 	setLayout(layout);
+	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 }
 
 void NiDaqMxTc01ConfWidget::updateDeviceId(const QString &newId)
@@ -15731,6 +15754,11 @@ void NiDaqMxTc01ConfWidget::updateThermocoupleType(const QString &type)
 void NiDaqMxTc01ConfWidget::updateColumnName(const QString &name)
 {
 	updateAttribute("columnname", name);
+}
+
+void NiDaqMxTc01ConfWidget::updateHidden(bool hidden)
+{
+	updateAttribute("hidden", hidden ? "true" : "false");
 }
 
 @ These configuration widgets need to be registered so they can be instantiated
@@ -17701,6 +17729,8 @@ class ModbusConfigurator : public BasicDeviceConfigurationWidget
 		void updateSVWriteAddress(int address);
 		void updatePVColumnName(const QString &name);
 		void updateSVColumnName(const QString &name);
+		void updatePVHidden(bool hidden);
+		void updateSVHidden(bool hidden);
 	private:@/
 		PortSelector *port;
 		BaudSelector *baud;
@@ -17792,6 +17822,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	QFormLayout *pVSection = new QFormLayout;
 	pVSection->addRow(tr("Value relative address:"), pVAddress);
 	pVSection->addRow(tr("PV column name:"), pVColumnName);
+	QCheckBox *pVHideBox = new QCheckBox(tr("Hide this channel"));
+	pVSection->addRow(pVHideBox);
 	QGroupBox *processValueBox = new QGroupBox(tr("Process Value"));
 	processValueBox->setLayout(pVSection);
 	seriesLayout->addWidget(processValueBox);
@@ -17812,6 +17844,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	sVSection->addRow(tr("Upper limit:"), sVUpper);
 	sVSection->addRow(tr("Output set value:"), sVWritable);
 	sVSection->addRow(tr("Output relative address:"), sVOutputAddr);
+	QCheckBox *sVHideBox = new QCheckBox(tr("Hide this channel"));
+	sVSection->addRow(sVHideBox);
 	QGroupBox *setValueBox = new QGroupBox(tr("Set Value"));
 	setValueBox->setLayout(sVSection);
 	seriesLayout->addWidget(setValueBox);
@@ -17970,6 +18004,14 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 		{
 			sVColumnName->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "pvhidden")
+		{
+			pVHideBox->setChecked(node.attribute("value") == "true");
+		}
+		else if(node.attribute("name") == "svhidden")
+		{
+			sVHideBox->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updatePort(port->currentText());
 	updateBaudRate(baud->currentText());
@@ -17997,6 +18039,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	updateSVWriteAddress(sVOutputAddr->value());
 	updatePVColumnName(pVColumnName->text());
 	updateSVColumnName(sVColumnName->text());
+	updatePVHidden(pVHideBox->isChecked());
+	updateSVHidden(sVHideBox->isChecked());
 	connect(port, SIGNAL(currentIndexChanged(QString)), this, SLOT(updatePort(QString)));
 	connect(port, SIGNAL(editTextChanged(QString)), this, SLOT(updatePort(QString)));
 	connect(baud, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateBaudRate(QString)));
@@ -18024,6 +18068,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	connect(sVOutputAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVWriteAddress(int)));
 	connect(pVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updatePVColumnName(QString)));
 	connect(sVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updateSVColumnName(QString)));
+	connect(pVHideBox, SIGNAL(toggled(bool)), this, SLOT(updatePVHidden(bool)));
+	connect(sVHideBox, SIGNAL(toggled(bool)), this, SLOT(updateSVHidden(bool)));
 	layout->addWidget(form);
 	setLayout(layout);
 }
@@ -18156,6 +18202,16 @@ void ModbusConfigurator::updatePVColumnName(const QString &name)
 void ModbusConfigurator::updateSVColumnName(const QString &name)
 {
 	updateAttribute("svcolname", name);
+}
+
+void ModbusConfigurator::updatePVHidden(bool hidden)
+{
+	updateAttribute("pvhidden", hidden ? "true" : "false");
+}
+
+void ModbusConfigurator::updateSVHidden(bool hidden)
+{
+	updateAttribute("svhidden", hidden ? "true" : "false");
 }
 
 @ This is registered with the configuration system.

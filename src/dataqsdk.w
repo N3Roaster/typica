@@ -827,6 +827,7 @@ class DataqSdkChannelConfWidget : public BasicDeviceConfigurationWidget
 		void resetCalibration();
 		void updateInput(Measurement measure);
 		void updateOutput(Measurement measure);
+		void updateHidden(bool hidden);
 	private:
 		QPushButton *startButton;
 		QPushButton *resetButton;
@@ -899,6 +900,8 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	QCheckBox *smoothingBox = new QCheckBox(tr("Enable smoothing"));
 	topLayout->addRow(smoothingBox);
 	layout->addLayout(topLayout);
+	QCheckBox *hideSeries = new QCheckBox(tr("Hide this channel"));
+	topLayout->addRow(hideSeries);
 	QLabel *calibrationLabel = new QLabel(tr("Calibration settings"));
 	layout->addWidget(calibrationLabel);
 	QHBoxLayout *calibrationLayout = new QHBoxLayout;
@@ -989,6 +992,10 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 		{
 			sensitivityEdit->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "hidden")
+		{
+			hideSeries->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updateColumnName(columnEdit->text());
 	updateUnits(unitSelector->currentText());
@@ -999,6 +1006,7 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	updateMappedUpper(mappedUpperEdit->text());
 	updateClosedInterval(closedBox->isChecked());
 	updateSensitivity(sensitivityEdit->text());
+	updateHidden(hideSeries->isChecked());
 	connect(columnEdit, SIGNAL(textChanged(QString)),
 	        this, SLOT(updateColumnName(QString)));
 	connect(unitSelector, SIGNAL(currentIndexChanged(QString)),
@@ -1017,6 +1025,7 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	        this, SLOT(updateClosedInterval(bool)));
 	connect(sensitivityEdit, SIGNAL(textChanged(QString)),
 	        this, SLOT(updateSensitivity(QString)));
+	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 	setLayout(layout);
 }
 
@@ -1075,6 +1084,11 @@ void DataqSdkChannelConfWidget::updateSensitivity(const QString &value)
 {
 	updateAttribute("calibrationSensitivity", value);
 	calibrator->setSensitivity(value.toDouble());
+}
+
+void DataqSdkChannelConfWidget::updateHidden(bool hidden)
+{
+	updateAttribute("hidden", hidden ? "true" : "false");
 }
 
 @ When calibrating a device, we must know certain information to open a

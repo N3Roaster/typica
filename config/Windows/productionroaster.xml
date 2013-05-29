@@ -76,6 +76,7 @@
 		var ratezeros = new Array();
 		var channelType = new Array();
 		window.scales = new Array();
+		var channelVisibility = new Array();
 		var indicatorPanel = findChildObject(this, 'indicators');
 		var annotationPanel = findChildObject(this, 'controlpanel');
 		var log = findChildObject(this, 'log');
@@ -154,11 +155,16 @@
 											channelType.push("T");
 											columnNames.push(channelReference.columnname);
 											DAQChannels++;
-											var indicator = new TemperatureDisplay;
-											temperatureDisplays.push(indicator);
-											var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
-											channel.newData.connect(indicator.setValue);
-											indicatorPanel.addWidget(decorator);
+											if(channelReference.hidden == "true") {
+												channelVisibility.push(false);
+											} else {
+												channelVisibility.push(true);
+												var indicator = new TemperatureDisplay;
+												temperatureDisplays.push(indicator);
+												var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
+												channel.newData.connect(indicator.setValue);
+												indicatorPanel.addWidget(decorator);
+											}
 										}
 									}
 									switch(DAQChannels) {
@@ -217,11 +223,16 @@
 								channels.push(channel);
 								channelType.push("T");
 								columnNames.push(deviceReference.columnname);
-								var indicator = new TemperatureDisplay;
-								temperatureDisplays.push(indicator);
-								var decorator = new WidgetDecorator(indicator, configModel.data(deviceIndex, 0), 2);
-								channel.newData.connect(indicator.setValue);
-								indicatorPanel.addWidget(decorator);
+								if(deviceReference.hidden == "true") {
+									channelVisibility.push(false);
+								} else {
+									channelVisibility.push(true);
+									var indicator = new TemperatureDisplay;
+									temperatureDisplays.push(indicator);
+									var decorator = new WidgetDecorator(indicator, configModel.data(deviceIndex, 0), 2);
+									channel.newData.connect(indicator.setValue);
+									indicatorPanel.addWidget(decorator);
+								}
 								device.start();
 								nidevices.push(device);
 							}
@@ -268,9 +279,14 @@
 							channel.newData.connect(calibrator.newMeasurement)
 							channels.push(calibrator);
 							columnNames.push(channelReference.column);
-							var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
-							calibrator.newData.connect(indicator.setValue);
-							indicatorPanel.addWidget(decorator);
+							if(channelReference.hidden == "true") {
+								channelVisibility.push(false);
+							} else {
+								channelVisibility.push(true);
+								var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
+								calibrator.newData.connect(indicator.setValue);
+								indicatorPanel.addWidget(decorator);
+							}
 						}
 						sampleRate /= configModel.rowCount(driverIndex);
 					}
@@ -286,22 +302,32 @@
 					channels.push(pvchannel);
 					channelType.push("T");
 					columnNames.push(driverReference.pvcolname);
-					var indicator = new TemperatureDisplay;
-					temperatureDisplays.push(indicator);
-					var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " PV", 2);
-					pvchannel.newData.connect(indicator.setValue);
-					indicatorPanel.addWidget(decorator);
+					if(driverReference.pvhidden == "true") {
+						channelVisibility.push(false);
+					} else {
+						channelVisibility.push(true);
+						var indicator = new TemperatureDisplay;
+						temperatureDisplays.push(indicator);
+						var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " PV", 2);
+						pvchannel.newData.connect(indicator.setValue);
+						indicatorPanel.addWidget(decorator);
+					}
 					if(driverReference.sVEnabled == "true")
 					{
 						var svchannel = device.sVChannel();
 						channels.push(svchannel);
 						channelType.push("C");
 						columnNames.push(driverReference.svcolname);
-						var indicator = new TemperatureDisplay;
-						temperatureDisplays.push(indicator);
-						var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " SV", 2);
-						svchannel.newData.connect(indicator.setValue);
-						indicatorPanel.addWidget(decorator);
+						if(driverReference.svhidden == "true") {
+							channelVisibility.push(false);
+						} else {
+							channelVisibility.push(true);
+							var indicator = new TemperatureDisplay;
+							temperatureDisplays.push(indicator);
+							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " SV", 2);
+							svchannel.newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
 					}
 					if(driverReference.sVWritable == "true")
 					{
@@ -430,6 +456,10 @@
 								channels[j].newData.connect(calibrator.newMeasurement);
 								calibrator.newData.connect(indicator.setValue);
 								channels.push(calibrator);
+								// Channel hiding is not yet configurable for this.
+								// I'm not sure if there's any need to allow this
+								// to be hidden at present.
+								channelVisibility.push(true);
 								channelType.push(channelType[j]);
 								columnNames.push(driverReference.destination);
 								indicatorPanel.addWidget(decorator);
@@ -508,6 +538,9 @@
 							rate.newData.connect(indicator.setValue);
 							temperatureDisplays.push(indicator);
 							channels.push(rate);
+							// This cannot at present be configured to be
+							// hidden.
+							channelVisibility.push(true);
 							channelType.push("T");
 							columnNames.push(configModel.data(driverIndex, 0));
 						}
@@ -531,13 +564,17 @@
 			setTabOrder(tabControls[i-1], tabControls[i]);
 		}
 		log.setHeaderData(0, "Time");
+		var channelSkip = 0;
 		for(var i = 0; i < columnNames.length; i++) {
-			log.setHeaderData(i + 1, columnNames[i]);
+			if(channelVisibility[i]) {
+				log.setHeaderData(i + 1 - channelSkip, columnNames[i]);
+				log.addToCurrentColumnSet(i + 1 - channelSkip);
+			}
+			else {
+				channelSkip++;
+			}
 		}
-		log.setHeaderData(columnNames.length + 1, "Note");
-		for(var i = 0; i < channels.length; i++) {
-			log.addToCurrentColumnSet(i + 1);
-		}
+		log.setHeaderData(columnNames.length + 1 - channelSkip, "Note");
 		var timer = new TimerDisplay;
 		timer.displayFormat = "mm:ss";
 		timer.autoReset = true;
@@ -578,18 +615,23 @@
 		var offsets = new Array();
 		var zeroemitters = new Array();
 		var adapters = new Array();
+		channelSkip = 0;
 		for(var i = 0; i < channels.length; i++) {
-			var offset = new MeasurementTimeOffset(epoch);
-			offsets.push(offset);
-			channels[i].newData.connect(offset.newMeasurement);
-			var adapter = new MeasurementAdapter(i + 1);
-			adapters.push(adapter);
-			offset.measurement.connect(adapter.newMeasurement);
-			var emitter = new ZeroEmitter(i + 1);
-			zeroemitters.push(emitter);
-			channels[i].newData.connect(emitter.newMeasurement);
-			emitter.measurement.connect(log.newMeasurement);
-			emitter.measurement.connect(graph.newMeasurement);
+			if(channelVisibility[i]) {
+				var offset = new MeasurementTimeOffset(epoch);
+				offsets.push(offset);
+				channels[i].newData.connect(offset.newMeasurement);
+				var adapter = new MeasurementAdapter(i + 1 - channelSkip);
+				adapters.push(adapter);
+				offset.measurement.connect(adapter.newMeasurement);
+				var emitter = new ZeroEmitter(i + 1);
+				zeroemitters.push(emitter);
+				channels[i].newData.connect(emitter.newMeasurement);
+				emitter.measurement.connect(log.newMeasurement);
+				emitter.measurement.connect(graph.newMeasurement);
+			} else {
+				channelSkip++;
+			}
 		}
         start.clicked.connect(function() {
 			start.enabled = false;
@@ -635,7 +677,7 @@
 			{
 				annotationButtons[i].annotation.connect(log.newAnnotation);
 				annotationButtons[i].setTemperatureColumn(1);
-				annotationButtons[i].setAnnotationColumn(channels.length + 1);
+				annotationButtons[i].setAnnotationColumn(channels.length - channelSkip + 1);
 				annotationButtons[i].annotation.connect(function(note, tcol, ncol) {
 					for(var i = tcol; i < ncol; i++) {
 						log.newAnnotation(note, i, ncol);
@@ -647,7 +689,7 @@
         stop.annotation.connect(log.newAnnotation);
         stop.clicked.connect(timer.stopTimer);
 		stop.setTemperatureColumn(1);
-		stop.setAnnotationColumn(channels.length + 1);
+		stop.setAnnotationColumn(channels.length - channelSkip + 1);
 		QSettings.setValue("liveColumn", 1);
         var lc = 1;
         stop.clicked.connect(function() {
@@ -807,20 +849,20 @@
 				zeroemitters[i].setColumn(c + i + 1);
 				log.setHeaderData(c + i + 1, columnNames[i]);
 			}
-			log.setHeaderData(c + columnNames.length + 1, "Note");
+			log.setHeaderData(c + columnNames.length + 1 - channelSkip, "Note");
             stop.setTemperatureColumn(c + 1);
-			stop.setAnnotationColumn(c + columnNames.length + 1);
+			stop.setAnnotationColumn(c + columnNames.length + 1 - channelSkip);
 			for(var i = 0; i < annotationButtons.length; i++)
 			{
 				annotationButtons[i].setTemperatureColumn(c + 1);
-				annotationButtons[i].setAnnotationColumn(c + columnNames.length + 1);
+				annotationButtons[i].setAnnotationColumn(c + columnNames.length + 1 - channelSkip);
 			}
 			log.clearCurrentColumnSet();
-			for(var i = 0; i < channels.length; i++) {
+			for(var i = 0; i < channels.length - channelSkip; i++) {
 				log.addToCurrentColumnSet(c + i + 1);
 			}
 			window.firstTempColumn = c + 1;
-			window.annotationColumn = c + columnNames.length + 1;
+			window.annotationColumn = c + columnNames.length - channelSkip + 1;
 		}
 		var saveMenu = findChildObject(this, 'save');
         saveMenu.triggered.connect(function() {
@@ -829,7 +871,7 @@
                 var lc = Number(QSettings.value("liveColumn"));
                 var file = new QFile(filename);
                 log.clearOutputColumns();
-				for(var i = 0; i < columnNames.length; i++)
+				for(var i = 0; i < columnNames.length - channelSkip; i++)
 				{
 					if(channelType[i] == "T") {
 						log.addOutputTemperatureColumn(lc + i);
@@ -838,7 +880,7 @@
 						log.addOutputControlColumn(lc + i);
 					}
 				}
-				log.addOutputAnnotationColumn(lc + columnNames.length);
+				log.addOutputAnnotationColumn(lc + columnNames.length - channelSkip);
                 log.saveXML(file);
                 QSettings.setValue("script/lastDir", dir(filename));
             }
@@ -850,11 +892,11 @@
                 var lc = Number(QSettings.value("liveColumn"));
                 var file = new QFile(filename);
                 log.clearOutputColumns();
-				for(var i = 0; i < columnNames.length; i++)
+				for(var i = 0; i < columnNames.length - channelSkip; i++)
 				{
 					log.addOutputTemperatureColumn(lc + i);
 				}
-				log.addOutputAnnotationColumn(lc + columnNames.length);
+				log.addOutputAnnotationColumn(lc + columnNames.length - channelSkip);
                 log.saveCSV(file);
                 QSettings.setValue("script/lastDir", dir(filename));
             }

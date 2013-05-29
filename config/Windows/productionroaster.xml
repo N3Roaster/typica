@@ -633,6 +633,15 @@
 				channelSkip++;
 			}
 		}
+		var offsetForChannel = function(c) {
+			var retval = -1;
+			for(var i = 0; i <= c; i++) {
+				if(channelVisibility[i]) {
+					retval++;
+				}
+			}
+			return retval;
+		};
         start.clicked.connect(function() {
 			start.enabled = false;
 			hasTranslated = false;
@@ -663,7 +672,7 @@
             }
 			if(translationChannel >= 0)
 			{
-				offsets[translationChannel].measurement.connect(currentDetector.newMeasurement);
+				offsets[offsetForChannel(translationChannel)].measurement.connect(currentDetector.newMeasurement);
 			}
 			if(typeof(externtrans) != 'undefined') {
 				externtrans.display(0);
@@ -725,7 +734,7 @@
             }
 			if(translationChannel >= 0)
 			{
-				offsets[translationChannel].measurement.disconnect(currentDetector.newMeasurement);
+				offsets[offsetForChannel(translationChannel)].measurement.disconnect(currentDetector.newMeasurement);
 			}
 			start.enabled = true;
 			window.windowModified = false;

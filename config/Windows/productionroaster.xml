@@ -842,12 +842,24 @@
 				log.newAnnotation("End", 1, lc);
             }
         });
+		var columnName = function(c) {
+			var visibleColumns = 0;
+			for(var i = 0; i < channels.length; i++) {
+				if(channelVisibility[i]) {
+					visibleColumns++;
+				}
+				if(c == visibleColumns - 1) {
+					return columnNames[i];
+				}
+			}
+			return "";
+		};
 		window.postLoadColumnSetup = function(c) {
 			for(var i = 0; i < adapters.length; i++)
 			{
 				adapters[i].setColumn(c + i + 1);
 				zeroemitters[i].setColumn(c + i + 1);
-				log.setHeaderData(c + i + 1, columnNames[i]);
+				log.setHeaderData(c + i + 1, columnName(i));
 			}
 			log.setHeaderData(c + columnNames.length + 1 - channelSkip, "Note");
             stop.setTemperatureColumn(c + 1);

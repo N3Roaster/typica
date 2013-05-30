@@ -275,13 +275,13 @@
 						attname = attname.substr(1);
 					}
 					if(attname[attname.length -1] == '}') {
-						attname = attname.substr(0, attname.length - 2);
+						attname = attname.substr(0, attname.length - 1);
 					}
 					if(attname.length == 0) {
 						break;
 					}
 					query.prepare("SELECT id FROM item_attributes WHERE name = :name");
-					query.bind(":name", attnames[i]);
+					query.bind(":name", attname);
 					query.exec();
 					if(query.next())
 					{
@@ -290,7 +290,7 @@
 					else
 					{
 						query.prepare("INSERT INTO item_attributes VALUES(DEFAULT, :name) RETURNING id");
-						query.bind(":name", attnames[i]);
+						query.bind(":name", attname);
 						query.exec();
 						query.next();
 						attributes.setData(i, 0, query.value(0), 32);
@@ -317,7 +317,7 @@
 				query.bind(":roastedid", Number(roastedId));
 				query.bind(":roasted", convertToPounds(parseFloat(roasted.text), GunitBox.currentText));
 				query.bind(":note", notes.plainText);
-				query.bind(":machine", Number(selectedRoastedID));
+				query.bind(":machine", Number(selectedRoasterID));
 				query.bind(":duration", duration.text);
 				query.bind(":files", "{" + fileno + "}");
 				query.exec();

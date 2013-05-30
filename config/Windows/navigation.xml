@@ -248,7 +248,7 @@ type="push" />
 			var query = new QSqlQuery;
 			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE TABLE IF NOT EXISTS item_attributes (id bigint PRIMARY KEY NOT NULL, name text NOT NULL)");
-			query.exec("CREATE TABLE IF NOT EXISTS coffee_sample_items(arrival timestamp without time zone, vendor text, attribute_ids bigint[], attribute_values text[]. item_id bigint) INHERITS (items)");
+			query.exec("CREATE TABLE IF NOT EXISTS coffee_sample_items(arrival timestamp without time zone, vendor text, attribute_ids bigint[], attribute_values text[], item_id bigint) INHERITS (items)");
 			query.exec("INSERT INTO TypicaFeatures VALUES('sample-roasting', TRUE, 1)");
 			query = query.invalidate();
 		};

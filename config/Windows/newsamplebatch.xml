@@ -60,6 +60,10 @@
 					<column><label>Time:</label></column>
 					<column><line id="time" writable="false" /></column>
 				</row>
+				<row>
+					<column><label>Duration:</label></column>
+					<column><line id="duration" writable="false" /></column>
+				</row>
 			</layout>
 			<label>Notes:</label>
 			<textarea id="annotation" />
@@ -171,11 +175,11 @@
 			var roastButton = findChildObject(this, 'load');
 			var profileName = findChildObject(this, 'profile');
 			var greenName = findChildObject(this, 'name');
+			var stop = findChildObject(navigationwindow.loggingWindow, 'stopbutton');
+			stop.clicked.connect(function() {
+				submit.setEnabled(true);
+			});
 			roastButton.clicked.connect(function() {
-				var stop = findChildObject(navigationwindow.loggingWindow, 'stopbutton');
-				stop.clicked.connect(function() {
-					submit.setEnabled(true);
-				});
 				var lc = 1;
 				currentBatchInfo = batch;
 				query = new QSqlQuery();
@@ -244,7 +248,7 @@
 			var target = findChildObject(this, 'target');
 			submit.clicked.connect(function() {
 				query = new QSqlQuery();
-				query.prepare("INSERT INTO files VALUES(default, :name, 'profile', NULL, :data) RETURNING id");
+				query.prepare("INSERT INTO files VALUES(DEFAULT, :name, 'profile', NULL, :data) RETURNING id");
 				query.bind(":name", timefield.text + " " + name.text + " " + profileName.currentText);
 				query.bindFileData(":data", batch.tempData);
 				query.exec();

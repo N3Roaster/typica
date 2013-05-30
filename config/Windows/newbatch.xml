@@ -2,6 +2,7 @@
     <menu name="Batch">
         <item id="new" shortcut="Ctrl+N">New Batch…</item>
     </menu>
+	<layout type="horizontal">
     <layout type="vertical">
         <layout type="horizontal">
 			<label>Machine:</label>
@@ -53,6 +54,12 @@
             <button name="Save log as target profile" type="check" id="target" />
         </layout>
     </layout>
+	<layout type="vertical">
+		<label>Connected Scales</label>
+		<layout type="vertical" id="scales" />
+		<stretch />
+	</layout>
+	</layout>
     <program>
         <![CDATA[
 			var unitBox = findChildObject(this, 'unit');
@@ -77,6 +84,40 @@
             var roasted = findChildObject(this, 'roasted');
             var roastwt = findChildObject(this, 'roast');
             roastwt.maximumWidth = 80;
+			var scalesLayout = findChildObject(this, 'scales');
+			scalesLayout.spacing = 10;
+			if(navigationwindow.loggingWindow.scales.length > 0) {
+				for(var i = 0; i < navigationwindow.loggingWindow.scales.length; i++) {
+					var scale = navigationwindow.loggingWindow.scales[i];
+					var label = new DragLabel();
+					var weighButton = new QPushButton();
+					weighButton.text = "Weigh";
+					weighButton.clicked.connect(scale.weigh);
+					label.updateMeasurement = function(m, u) {
+						switch(unitBox.currentIndex) {
+							case 0:
+								this.text = Units.convertWeight(m, u, Units.Gram).toFixed(1);
+								break;
+							case 1:
+								this.text = Units.convertWeight(m, u, Units.Kilogram).toFixed(4);
+								break;
+							case 2:
+								this.text = Units.convertWeight(m, u, Units.Ounce).toFixed(3);
+								break;
+							case 3:
+								this.text = Units.convertWeight(m, u, Units.Pound).toFixed(4);
+								break;
+						}
+					};
+					scalesLayout.addWidget(label);
+					scalesLayout.addWidget(weighButton);
+					scale.newMeasurement.connect(function(m, u) {
+						label.updateMeasurement(m, u);
+					});
+					scale.weigh();
+					unitBox['currentIndexChanged(int)'].connect(scale.weigh);
+				}
+			}
 			model.dataChanged.connect(function() {
 				green.text = table.columnSum(1, 0);
 				table.resizeColumnToContents(0);

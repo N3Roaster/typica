@@ -839,6 +839,9 @@ generated file empty.
 @<SettingsWindow implementation@>@/
 @<GraphSettingsWidget implementation@>@/
 @<DataqSdkDeviceConfWidget implementation@>@/
+@<SerialScaleConfWidget implementation@>@/
+@<ValueAnnotation implementation@>@/
+@<ValueAnnotationConfWidget implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -974,6 +977,16 @@ template<> SqlQueryConnection* argument(int arg, QScriptContext *context)
 template<> QModelIndex argument(int arg, QScriptContext *context)
 {
 	return qscriptvalue_cast<QModelIndex>(context->argument(arg));
+}
+
+template<> double argument(int arg, QScriptContext *context)
+{
+	return (double)(context->argument(arg).toNumber());
+}
+
+template<> Units::Unit argument(int arg, QScriptContext *context)
+{
+	return (Units::Unit)(context->argument(arg).toInt32());
 }
 
 @ The scripting engine is informed of a number of classes defined elsewhere in
@@ -10006,7 +10019,7 @@ oseconds = TIMETOINT(relative);
 r = cseconds - oseconds;
 
 @ The logic for a count down timer is very similar to the logic for a count up
-timer. A key difference is that we don't want to continue counting down if the
+timer. A key difference is that we don'@q'@>t want to continue counting down if the
 timer has already reached 0.
 
 @<Check for Timer Decrement@>=
@@ -10066,7 +10079,7 @@ void TimerDisplay::startTimer()@t\2\2@>@/
 }
 
 @ Stopping the timer is a little simpler. Remember to stop the clock so we
-aren't updating senselessly.
+aren'@q'@>t updating senselessly.
 
 @<TimerDisplay Implementation@>=
 void TimerDisplay::stopTimer()@t\2\2@>@/
@@ -11971,7 +11984,7 @@ the last row to increase the size of the table.
 
 The end of this function may seem a little strange. Why not simply look up the
 map and insert information directly into the model data? Well, as of this
-writing, that doesn't work. There are two ways around that problem. One is to
+writing, that doesn'@q'@>t work. There are two ways around that problem. One is to
 have the lists store references and dereference the real data. The other option
 is to obtain a copy of the row, then a copy of the cell, update the cell, then
 replace the old value of the cell in the copy of the row, then replace the old
@@ -12046,7 +12059,7 @@ SaltModel::SaltModel(int columns) : QAbstractItemModel(), colcount(columns)
 	@<Expand the SaltModel@>@;
 }
 
-@ The destructor doesn't need to do anything.
+@ The destructor doesn'@q'@>t need to do anything.
 
 @<SaltModel Implementation@>=
 SaltModel::~SaltModel()
@@ -12119,7 +12132,7 @@ Qt::ItemFlags SaltModel::flags(const QModelIndex &index) const
 	@<Check that the SaltModel index is valid@>@;
 	if(valid)
 	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 	}
 	return 0;
 }
@@ -12465,7 +12478,7 @@ if(settings.value("database/exists", "false").toString() == "false")
 @ In order to connect to the database, we need five pieces of information: the
 name of a database driver (PostgreSQL is recommended for now), the host name of
 the computer running the database, the name of the database, the name of the
-user connecting to the database, and that user's password. This information will
+user connecting to the database, and that user'@q'@>s password. This information will
 be stored in the user settings for the application so that the database
 connection can be established without prompting the user next time. A class is
 provided to gather this information.
@@ -12658,7 +12671,7 @@ settings.setValue(QString("columnWidths/%1/%2/%3").
 				  QVariant(newsize));
 
 @ To determine which window a given table is in, we just follow
-|parentWidget()| until there isn't one. It is possible that the table view
+|parentWidget()| until there isn'@q'@>t one. It is possible that the table view
 will also be the window, however this is not advised as it is easier for the
 settings key to be non-unique in such a case.
 
@@ -12960,7 +12973,7 @@ for(int j = 0; j < hierarchy.size() - 1; j++)
 in Qt. This brings several benefits, including making it easy to print reports
 or save reports as plain text or HTML.
 
-Reports are specified in the \pn{}'s configuration document and can include both
+Reports are specified in the \pn{}'@q'@>s configuration document and can include both
 static elements and elements that are populated by external data such as the
 result of a SQL query.
 
@@ -13212,7 +13225,7 @@ do
 @ It is sometimes desirable to add fixed data such as column headers to a table.
 This is done with the {\tt <row>} element.
 
-Technically, this isn't needed. The same results can be produced by using a
+Technically, this isn'@q'@>t needed. The same results can be produced by using a
 {\tt <query>} element to select constant data, but this approach saves a trip to
 the database.
 
@@ -14199,7 +14212,7 @@ else
 	saveDeviceConfiguration();
 }
 
-@ There isn't really anything that can be done if the device configuration data
+@ There isn'@q'@>t really anything that can be done if the device configuration data
 is corrupt, but an error message can be produced if the program happens to have
 access to a debugging console.
 
@@ -14589,7 +14602,7 @@ QDomElement DeviceTreeModel::referenceElement(const QString &id)
 	return QDomElement();
 }
 
-@ We don't want any headers, so |headerData()| is very simple.
+@ We don'@q'@>t want any headers, so |headerData()| is very simple.
 
 @<DeviceTreeModel implementation@>=
 QVariant DeviceTreeModel::headerData(int, Qt::Orientation, int) const
@@ -15217,6 +15230,7 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
 	        this, SLOT(insertChildNode(QString, QString)));
 	connect(freeAnnotationInserter, SIGNAL(triggered(QString, QString)),
 	        this, SLOT(insertChildNode(QString, QString)));
+	@<Add annotation control node inserters@>@;
 	addAnnotationControlButton->setMenu(annotationMenu);
 	layout->addWidget(addAnnotationControlButton);
 	QPushButton *advancedButton = new QPushButton(tr("Advanced Features"));
@@ -15441,6 +15455,7 @@ class Ni9211TcConfWidget : public BasicDeviceConfigurationWidget
 	@[private slots@]:@/
 		void updateThermocoupleType(const QString &type);
 		void updateColumnName(const QString &name);
+		void updateHidden(bool hidden);
 };
 
 @ This follows the same pattern of previous device configuration widgets. The
@@ -15466,6 +15481,8 @@ Ni9211TcConfWidget::Ni9211TcConfWidget(DeviceTreeModel *model,
 	typeSelector->addItem("R");
 	typeSelector->addItem("S");
 	layout->addRow(tr("Thermocouple Type:"), typeSelector);
+	QCheckBox *hideSeries = new QCheckBox("Hide this channel");
+	layout->addRow(hideSeries);
 	setLayout(layout);
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
@@ -15480,12 +15497,18 @@ Ni9211TcConfWidget::Ni9211TcConfWidget(DeviceTreeModel *model,
 		{
 			columnName->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "hidden")
+		{
+			hideSeries->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updateThermocoupleType(typeSelector->currentText());
 	updateColumnName(columnName->text());
+	updateHidden(hideSeries->isChecked());
 	connect(typeSelector, SIGNAL(currentIndexChanged(QString)),
 	        this, SLOT(updateThermocoupleType(QString)));
 	connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
+	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 }
 
 @ Two slots are used to pass configuration changes back to the underlying XML
@@ -15500,6 +15523,11 @@ void Ni9211TcConfWidget::updateThermocoupleType(const QString &type)
 void Ni9211TcConfWidget::updateColumnName(const QString &name)
 {
 	updateAttribute("columnname", name);
+}
+
+void Ni9211TcConfWidget::updateHidden(bool hidden)
+{
+	updateAttribute("hidden", hidden ? "true" : "false");
 }
 
 @ These three widgets need to be registered so the configuration widget can
@@ -15654,6 +15682,7 @@ class NiDaqMxTc01ConfWidget : public BasicDeviceConfigurationWidget
 		void updateDeviceId(const QString &newId);
 		void updateThermocoupleType(const QString &type);
 		void updateColumnName(const QString &name);
+		void updateHidden(bool hidden);
 };
 
 @ The implementation is similar to the other configuration widgets.
@@ -15678,6 +15707,8 @@ NiDaqMxTc01ConfWidget::NiDaqMxTc01ConfWidget(DeviceTreeModel *model,
 	typeSelector->addItem("R");
 	typeSelector->addItem("S");
 	layout->addRow(tr("Thermocouple Type:"), typeSelector);
+	QCheckBox *hideSeries = new QCheckBox(tr("Hide this channel"));
+	layout->addRow(hideSeries);
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
 	{
@@ -15694,14 +15725,20 @@ NiDaqMxTc01ConfWidget::NiDaqMxTc01ConfWidget(DeviceTreeModel *model,
 		{
 			columnName->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "hidden")
+		{
+			hideSeries->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updateDeviceId(deviceId->text());
 	updateThermocoupleType(typeSelector->currentText());
 	updateColumnName(columnName->text());
+	updateHidden(hideSeries->isChecked());
 	connect(deviceId, SIGNAL(textEdited(QString)), this, SLOT(updateDeviceId(QString)));
 	connect(typeSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateThermocoupleType(QString)));
 	connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
 	setLayout(layout);
+	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 }
 
 void NiDaqMxTc01ConfWidget::updateDeviceId(const QString &newId)
@@ -15717,6 +15754,11 @@ void NiDaqMxTc01ConfWidget::updateThermocoupleType(const QString &type)
 void NiDaqMxTc01ConfWidget::updateColumnName(const QString &name)
 {
 	updateAttribute("columnname", name);
+}
+
+void NiDaqMxTc01ConfWidget::updateHidden(bool hidden)
+{
+	updateAttribute("hidden", hidden ? "true" : "false");
 }
 
 @ These configuration widgets need to be registered so they can be instantiated
@@ -15782,7 +15824,11 @@ PortSelector::PortSelector(QWidget *parent) : QComboBox(parent),
 	QextPortInfo port;
 	foreach(port, ports)
 	{
+#ifdef Q_OS_WIN32
 		addItem(port.portName);
+#else
+		addItem(port.physName);
+#endif
 	}
 	lister->setUpNotifications();
 	connect(lister, SIGNAL(deviceDiscovered(QextPortInfo)),
@@ -15801,7 +15847,7 @@ by the current operating system are available to select.
 A later version of QextSerialPort than is used by \pn{} provides a helper
 class which can be used more conveniently to create this sort of control. As
 this is not yet available to \pn{}, we instead copy the |enum| specifying
-the appropriate values into the class and use Qt's meta-object system to
+the appropriate values into the class and use Qt'@q'@>s meta-object system to
 populate the combo box based on the values in that |enum|.
 
 @<Class declarations@>=
@@ -17289,7 +17335,7 @@ void ModbusRTUDevice::mResponse(QByteArray response)
 }
 
 @ There are two ways that we might request measurement data. All of the
-devices I've seen documented provide function 0x4 addresses for PV and SV
+devices I'@q'@>ve seen documented provide function 0x4 addresses for PV and SV
 such that SV can be obtained from the address immediately after the address
 from which we obtain PV. In this case we request both values at the same time.
 
@@ -17374,7 +17420,7 @@ more than one response in the buffer at a time. It is, however, likely that
 this buffer will have incomplete data. This means that we must determine when
 the full response is available before passing the complete response along to
 the appropriate method. If the response has not been received in full, nothing
-is done. We'll be notified of more data shortly.
+is done. We'@q'@>ll be notified of more data shortly.
 
 When the message we see the response for was queued, a callback was also
 registered to handle the response. Once we have the complete message, we pass
@@ -17547,7 +17593,7 @@ void ModbusRTUDevice::outputSV(double value)
 	queueMessage(message, this, "ignore(QByteArray)");
 }
 
-@ We don't care about the response when sending a new SV.
+@ We don'@q'@>t care about the response when sending a new SV.
 
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::ignore(QByteArray)
@@ -17683,6 +17729,8 @@ class ModbusConfigurator : public BasicDeviceConfigurationWidget
 		void updateSVWriteAddress(int address);
 		void updatePVColumnName(const QString &name);
 		void updateSVColumnName(const QString &name);
+		void updatePVHidden(bool hidden);
+		void updateSVHidden(bool hidden);
 	private:@/
 		PortSelector *port;
 		BaudSelector *baud;
@@ -17774,6 +17822,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	QFormLayout *pVSection = new QFormLayout;
 	pVSection->addRow(tr("Value relative address:"), pVAddress);
 	pVSection->addRow(tr("PV column name:"), pVColumnName);
+	QCheckBox *pVHideBox = new QCheckBox(tr("Hide this channel"));
+	pVSection->addRow(pVHideBox);
 	QGroupBox *processValueBox = new QGroupBox(tr("Process Value"));
 	processValueBox->setLayout(pVSection);
 	seriesLayout->addWidget(processValueBox);
@@ -17794,6 +17844,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	sVSection->addRow(tr("Upper limit:"), sVUpper);
 	sVSection->addRow(tr("Output set value:"), sVWritable);
 	sVSection->addRow(tr("Output relative address:"), sVOutputAddr);
+	QCheckBox *sVHideBox = new QCheckBox(tr("Hide this channel"));
+	sVSection->addRow(sVHideBox);
 	QGroupBox *setValueBox = new QGroupBox(tr("Set Value"));
 	setValueBox->setLayout(sVSection);
 	seriesLayout->addWidget(setValueBox);
@@ -17952,6 +18004,14 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 		{
 			sVColumnName->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "pvhidden")
+		{
+			pVHideBox->setChecked(node.attribute("value") == "true");
+		}
+		else if(node.attribute("name") == "svhidden")
+		{
+			sVHideBox->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updatePort(port->currentText());
 	updateBaudRate(baud->currentText());
@@ -17979,6 +18039,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	updateSVWriteAddress(sVOutputAddr->value());
 	updatePVColumnName(pVColumnName->text());
 	updateSVColumnName(sVColumnName->text());
+	updatePVHidden(pVHideBox->isChecked());
+	updateSVHidden(sVHideBox->isChecked());
 	connect(port, SIGNAL(currentIndexChanged(QString)), this, SLOT(updatePort(QString)));
 	connect(port, SIGNAL(editTextChanged(QString)), this, SLOT(updatePort(QString)));
 	connect(baud, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateBaudRate(QString)));
@@ -18006,6 +18068,8 @@ ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex
 	connect(sVOutputAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVWriteAddress(int)));
 	connect(pVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updatePVColumnName(QString)));
 	connect(sVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updateSVColumnName(QString)));
+	connect(pVHideBox, SIGNAL(toggled(bool)), this, SLOT(updatePVHidden(bool)));
+	connect(sVHideBox, SIGNAL(toggled(bool)), this, SLOT(updateSVHidden(bool)));
 	layout->addWidget(form);
 	setLayout(layout);
 }
@@ -18140,6 +18204,16 @@ void ModbusConfigurator::updateSVColumnName(const QString &name)
 	updateAttribute("svcolname", name);
 }
 
+void ModbusConfigurator::updatePVHidden(bool hidden)
+{
+	updateAttribute("pvhidden", hidden ? "true" : "false");
+}
+
+void ModbusConfigurator::updateSVHidden(bool hidden)
+{
+	updateAttribute("svhidden", hidden ? "true" : "false");
+}
+
 @ This is registered with the configuration system.
 
 @<Register device configuration widgets@>=
@@ -18168,7 +18242,7 @@ class LinearSplineInterpolationConfWidget : public BasicDeviceConfigurationWidge
 		void updateDestinationColumn(const QString &dest);
 		void updateKnots();
 	private:@/
-		SaltModel *knotmodel;
+		SaltModel *tablemodel;
 };
 
 @ This is configured by specifying a source column name, a destination column
@@ -18177,17 +18251,17 @@ the mapping data, we store each column of the table in its own attribute.
 
 @<LinearSplineInterpolationConfWidget implementation@>=
 LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceTreeModel *model, const QModelIndex &index)
-: BasicDeviceConfigurationWidget(model, index), knotmodel(new SaltModel(2))
+: BasicDeviceConfigurationWidget(model, index), tablemodel(new SaltModel(2))
 {
 	QFormLayout *layout = new QFormLayout;
 	QLineEdit *source = new QLineEdit;
 	layout->addRow(tr("Source column name:"), source);
 	QLineEdit *destination = new QLineEdit;
 	layout->addRow(tr("Destination column name:"), destination);
-	knotmodel->setHeaderData(0, Qt::Horizontal, "Input");
-	knotmodel->setHeaderData(1, Qt::Horizontal, "Output");
+	tablemodel->setHeaderData(0, Qt::Horizontal, "Input");
+	tablemodel->setHeaderData(1, Qt::Horizontal, "Output");
 	QTableView *mappingTable = new QTableView;
-	mappingTable->setModel(knotmodel);
+	mappingTable->setModel(tablemodel);
 	NumericDelegate *delegate = new NumericDelegate;
 	mappingTable->setItemDelegate(delegate);
 	layout->addRow(tr("Mapping data:"), mappingTable);
@@ -18222,7 +18296,7 @@ LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceT
 	updateKnots();
 	connect(source, SIGNAL(textEdited(QString)), this, SLOT(updateSourceColumn(QString)));
 	connect(destination, SIGNAL(textEdited(QString)), this, SLOT(updateDestinationColumn(QString)));
-	connect(knotmodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
+	connect(tablemodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
 	setLayout(layout);
 }
 
@@ -18245,9 +18319,9 @@ model.
 @<Populate model column from list@>=
 for(int i = 0; i < itemList.size(); i++)
 {
-	knotmodel->setData(knotmodel->index(i, column),
-	                   QVariant(itemList.at(i).toDouble()),
-                       Qt::DisplayRole);
+	tablemodel->setData(tablemodel->index(i, column),
+	               QVariant(itemList.at(i).toDouble()),
+                   Qt::DisplayRole);
 }
 
 @ When data in the table is changed we simply overwrite any previously saved
@@ -18256,8 +18330,8 @@ data with the current data.
 @<LinearSplineInterpolationConfWidget implementation@>=
 void LinearSplineInterpolationConfWidget::updateKnots()
 {
-	updateAttribute("sourcevalues", knotmodel->arrayLiteral(0, Qt::DisplayRole));
-	updateAttribute("destinationvalues", knotmodel->arrayLiteral(1, Qt::DisplayRole));
+	updateAttribute("sourcevalues", tablemodel->arrayLiteral(0, Qt::DisplayRole));
+	updateAttribute("destinationvalues", tablemodel->arrayLiteral(1, Qt::DisplayRole));
 }
 
 void LinearSplineInterpolationConfWidget::updateSourceColumn(const QString &source)
@@ -18367,6 +18441,10 @@ app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::stat
 @i rate.w
 
 @i dataqsdk.w
+
+@i scales.w
+
+@i valueannotation.w
 
 @** Local changes.
 

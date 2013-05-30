@@ -825,7 +825,42 @@ class DataqSdkChannelConfWidget : public BasicDeviceConfigurationWidget
 		void startCalibration();
 		void stopCalibration();
 		void resetCalibration();
+		void updateInput(Measurement measure);
+		void updateOutput(Measurement measure);
+		void updateHidden(bool hidden);
+	private:
+		QPushButton *startButton;
+		QPushButton *resetButton;
+		QPushButton *stopButton;
+		@<DATAQ SDK device settings@>@;
+		DataqSdkDevice *calibrationDevice;
+		LinearCalibrator *calibrator;
+		QLineEdit *currentMeasurement;
+		QLineEdit *minimumMeasurement;
+		QLineEdit *maximumMeasurement;
+		QLineEdit *averageMeasurement;
+		QLineEdit *currentMapped;
+		QLineEdit *minimumMapped;
+		QLineEdit *maximumMapped;
+		QLineEdit *averageMapped;
+		int rmCount;
+		int cmCount;
+		double rmin;
+		double rmax;
+		double rmean;
+		double cmin;
+		double cmax;
+		double cmean;
 };
+
+@ Private members that hold minimum and maximum aggregate data for channel
+calibration will be initialized to the maximum and minimum values available for
+the |double| type respectively. This guarantees that the first measurement will
+overwrite these values. This is done with |std::numeric_limits| so we require a
+header to be included to gain access to this.
+
+@<Header files to include@>=
+#include <limits>
 
 @ The constructor sets up the interface. Calibration settings line edits need
 to have numeric validators added.
@@ -833,8 +868,27 @@ to have numeric validators added.
 @<DataqSdkDeviceConfWidget implementation@>=
 DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
                                                      const QModelIndex &index)
-	: BasicDeviceConfigurationWidget(model, index)
+	: BasicDeviceConfigurationWidget(model, index),
+	startButton(new QPushButton(tr("Start"))),
+	resetButton(new QPushButton(tr("Reset"))),
+	stopButton(new QPushButton(tr("Stop"))),
+	calibrator(new LinearCalibrator),
+	currentMeasurement(new QLineEdit), minimumMeasurement(new QLineEdit),
+	maximumMeasurement(new QLineEdit), averageMeasurement(new QLineEdit),
+	currentMapped(new QLineEdit), minimumMapped(new QLineEdit),
+	maximumMapped(new QLineEdit), averageMapped(new QLineEdit),
+	rmCount(0), cmCount(0),
+	rmin(std::numeric_limits<double>::max()),
+	rmax(std::numeric_limits<double>::min()), rmean(0),
+	cmin(std::numeric_limits<double>::max()),
+	cmax(std::numeric_limits<double>::min()), cmean(0)
 {
+	@<Find DATAQ SDK device settings from parent node@>@;
+	resetButton->setEnabled(false);
+	stopButton->setEnabled(false);
+	connect(startButton, SIGNAL(clicked()), this, SLOT(startCalibration()));
+	connect(resetButton, SIGNAL(clicked()), this, SLOT(resetCalibration()));
+	connect(stopButton, SIGNAL(clicked()), this, SLOT(stopCalibration()));
 	QVBoxLayout *layout = new QVBoxLayout;
 	QFormLayout *topLayout = new QFormLayout;
 	QLineEdit *columnEdit = new QLineEdit;
@@ -846,8 +900,11 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	QCheckBox *smoothingBox = new QCheckBox(tr("Enable smoothing"));
 	topLayout->addRow(smoothingBox);
 	layout->addLayout(topLayout);
+	QCheckBox *hideSeries = new QCheckBox(tr("Hide this channel"));
+	topLayout->addRow(hideSeries);
 	QLabel *calibrationLabel = new QLabel(tr("Calibration settings"));
 	layout->addWidget(calibrationLabel);
+	QHBoxLayout *calibrationLayout = new QHBoxLayout;
 	QFormLayout *calibrationControlsLayout = new QFormLayout;
 	QLineEdit *measuredLowerEdit = new QLineEdit;
 	measuredLowerEdit->setText("0");
@@ -866,10 +923,35 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	QLineEdit *sensitivityEdit = new QLineEdit;
 	sensitivityEdit->setText("0");
 	calibrationControlsLayout->addRow(tr("Discrete interval skip"), sensitivityEdit);
-	layout->addLayout(calibrationControlsLayout);
-	
-	// Insert another panel to assist in determining proper calibration values.
-	
+	QVBoxLayout *calibrationTestLayout = new QVBoxLayout;
+	QHBoxLayout *deviceControlLayout = new QHBoxLayout;
+	deviceControlLayout->addWidget(startButton);
+	deviceControlLayout->addWidget(resetButton);
+	deviceControlLayout->addWidget(stopButton);
+	QFormLayout *indicatorLayout = new QFormLayout;	
+	currentMeasurement->setReadOnly(true);
+	minimumMeasurement->setReadOnly(true);
+	maximumMeasurement->setReadOnly(true);
+	averageMeasurement->setReadOnly(true);
+	currentMapped->setReadOnly(true);
+	minimumMapped->setReadOnly(true);
+	maximumMapped->setReadOnly(true);
+	averageMapped->setReadOnly(true);
+	indicatorLayout->addRow(tr("Measured Values"), new QWidget);
+	indicatorLayout->addRow(tr("Current"), currentMeasurement);
+	indicatorLayout->addRow(tr("Minimum"), minimumMeasurement);
+	indicatorLayout->addRow(tr("Maximum"), maximumMeasurement);
+	indicatorLayout->addRow(tr("Mean"), averageMeasurement);
+	indicatorLayout->addRow(tr("Mapped Values"), new QWidget);
+	indicatorLayout->addRow(tr("Current Mapped"), currentMapped);
+	indicatorLayout->addRow(tr("Minimum Mapped"), minimumMapped);
+	indicatorLayout->addRow(tr("Maximum Mapped"), maximumMapped);
+	indicatorLayout->addRow(tr("Mean Mapped"), averageMapped);
+	calibrationTestLayout->addLayout(deviceControlLayout);
+	calibrationTestLayout->addLayout(indicatorLayout);
+	calibrationLayout->addLayout(calibrationControlsLayout);
+	calibrationLayout->addLayout(calibrationTestLayout);
+	layout->addLayout(calibrationLayout);
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
 	{
@@ -910,6 +992,10 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 		{
 			sensitivityEdit->setText(node.attribute("value"));
 		}
+		else if(node.attribute("name") == "hidden")
+		{
+			hideSeries->setChecked(node.attribute("value") == "true");
+		}
 	}
 	updateColumnName(columnEdit->text());
 	updateUnits(unitSelector->currentText());
@@ -920,6 +1006,7 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	updateMappedUpper(mappedUpperEdit->text());
 	updateClosedInterval(closedBox->isChecked());
 	updateSensitivity(sensitivityEdit->text());
+	updateHidden(hideSeries->isChecked());
 	connect(columnEdit, SIGNAL(textChanged(QString)),
 	        this, SLOT(updateColumnName(QString)));
 	connect(unitSelector, SIGNAL(currentIndexChanged(QString)),
@@ -938,6 +1025,7 @@ DataqSdkChannelConfWidget::DataqSdkChannelConfWidget(DeviceTreeModel *model,
 	        this, SLOT(updateClosedInterval(bool)));
 	connect(sensitivityEdit, SIGNAL(textChanged(QString)),
 	        this, SLOT(updateSensitivity(QString)));
+	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 	setLayout(layout);
 }
 
@@ -960,26 +1048,31 @@ the |LinearCalibrator| used for calibration assistance.
 void DataqSdkChannelConfWidget::updateMeasuredLower(const QString &value)
 {
 	updateAttribute("calibrationMeasuredLower", value);
+	calibrator->setMeasuredLower(value.toDouble());
 }
 
 void DataqSdkChannelConfWidget::updateMeasuredUpper(const QString &value)
 {
 	updateAttribute("calibrationMeasuredUpper", value);
+	calibrator->setMeasuredUpper(value.toDouble());
 }
 
 void DataqSdkChannelConfWidget::updateMappedLower(const QString &value)
 {
 	updateAttribute("calibrationMappedLower", value);
+	calibrator->setMappedLower(value.toDouble());
 }
 
 void DataqSdkChannelConfWidget::updateMappedUpper(const QString &value)
 {
 	updateAttribute("calibrationMappedUpper", value);
+	calibrator->setMappedUpper(value.toDouble());
 }
 
 void DataqSdkChannelConfWidget::updateClosedInterval(bool closed)
 {
 	updateAttribute("calibrationClosedInterval", closed ? "true" : "false");
+	calibrator->setClosedRange(closed);
 }
 
 void DataqSdkChannelConfWidget::updateSmoothingEnabled(bool enabled)
@@ -990,7 +1083,51 @@ void DataqSdkChannelConfWidget::updateSmoothingEnabled(bool enabled)
 void DataqSdkChannelConfWidget::updateSensitivity(const QString &value)
 {
 	updateAttribute("calibrationSensitivity", value);
+	calibrator->setSensitivity(value.toDouble());
 }
+
+void DataqSdkChannelConfWidget::updateHidden(bool hidden)
+{
+	updateAttribute("hidden", hidden ? "true" : "false");
+}
+
+@ When calibrating a device, we must know certain information to open a
+connection to the appropriate hardware and know which channel we are interested
+in.
+
+@<DATAQ SDK device settings@>=
+bool autoSelect;
+QString deviceID;
+int channelOfInterest;
+
+@ This information is accessed through the reference element associated with
+the parent node of the current configuration and from the row number of the
+current node.
+
+@<Find DATAQ SDK device settings from parent node@>=
+QDomElement parentReference = model->referenceElement(model->data(index.parent(), Qt::UserRole).toString());
+QDomNodeList deviceConfigData = parentReference.elementsByTagName("attribute");
+QDomElement deviceNode;
+QString configPort;
+QString configAuto;
+for(int i = 0; i < deviceConfigData.size(); i++)
+{
+	deviceNode = deviceConfigData.at(i).toElement();
+	if(deviceNode.attribute("name") == "autoSelect")
+	{
+		autoSelect = (deviceNode.attribute("value") == "true");
+	}
+	else if(deviceNode.attribute("name") == "deviceNumber")
+	{
+		configAuto = deviceNode.attribute("value");
+	}
+	else if(deviceNode.attribute("name") == "port")
+	{
+		configPort = deviceNode.attribute("value");
+	}
+}
+deviceID = autoSelect ? configAuto : configPort;
+channelOfInterest = index.row();
 
 @ It must be possible to perform calibration operations with the hardware not
 connected. As such, the device should only be opened on request. Methods for
@@ -999,12 +1136,29 @@ opening and closing these connections to the hardware are provided.
 @<DataqSdkDeviceConfWidget implementation@>=
 void DataqSdkChannelConfWidget::startCalibration()
 {
-
+	startButton->setEnabled(false);
+	stopButton->setEnabled(true);
+	resetButton->setEnabled(true);
+	calibrationDevice = new DataqSdkDevice(deviceID);
+	Channel *channel;
+	for(int i = 0; i <= channelOfInterest; i++)
+	{
+		channel = calibrationDevice->newChannel(Units::Unitless);
+	}
+	connect(channel, SIGNAL(newData(Measurement)), this, SLOT(updateInput(Measurement)));
+	connect(channel, SIGNAL(newData(Measurement)), calibrator, SLOT(newMeasurement(Measurement)));
+	connect(calibrator, SIGNAL(newData(Measurement)), this, SLOT(updateOutput(Measurement)));
+	calibrationDevice->setClockRate(6.0 / (1.0 + channelOfInterest));
+	calibrationDevice->start();
 }
 
 void DataqSdkChannelConfWidget::stopCalibration()
 {
-
+	startButton->setEnabled(true);
+	stopButton->setEnabled(false);
+	resetButton->setEnabled(false);
+	calibrationDevice->deleteLater();
+	@<Reset DATAQ SDK channel calibration aggregates@>@;
 }
 
 @ When collecting calibration data it is useful to have a few types of
@@ -1018,7 +1172,51 @@ convenient testing in multiple parts of the range.
 @<DataqSdkDeviceConfWidget implementation@>=
 void DataqSdkChannelConfWidget::resetCalibration()
 {
+	@<Reset DATAQ SDK channel calibration aggregates@>@;
+}
 
+@ When calibration is stopped or reset, aggregate statistics are set to
+their initial values;
+
+@<Reset DATAQ SDK channel calibration aggregates@>=
+rmCount = 0;
+cmCount = 0;
+rmin = std::numeric_limits<double>::max();
+rmax = std::numeric_limits<double>::min();
+rmean = 0;
+cmin = std::numeric_limits<double>::max();
+cmax = std::numeric_limits<double>::min();
+cmean = 0;
+
+@ Two methods are responsible for updating line edits with current and
+aggregate data when calibrating a channel. One handles raw measurements from
+the channel and the other handles output from the |LinearCalibrator|.
+
+@<DataqSdkDeviceConfWidget implementation@>=
+void DataqSdkChannelConfWidget::updateInput(Measurement measure)
+{
+	double nv = measure.temperature();
+	currentMeasurement->setText(QString("%1").arg(nv));
+	rmin = qMin(nv, rmin);
+	minimumMeasurement->setText(QString("%1").arg(rmin));
+	rmax = qMax(nv, rmax);
+	maximumMeasurement->setText(QString("%1").arg(rmax));
+	rmean = ((rmean * rmCount) + nv) / (rmCount + 1);
+	rmCount++;
+	averageMeasurement->setText(QString("%1").arg(rmean));
+}
+
+void DataqSdkChannelConfWidget::updateOutput(Measurement measure)
+{
+	double nv = measure.temperature();
+	currentMapped->setText(QString("%1").arg(nv));
+	cmin = qMin(nv, cmin);
+	minimumMapped->setText(QString("%1").arg(cmin));
+	cmax = qMax(nv, cmax);
+	maximumMapped->setText(QString("%1").arg(cmax));
+	cmean = ((cmean * cmCount) + nv) / (cmCount + 1);
+	cmCount++;
+	averageMapped->setText(QString("%1").arg(cmean));
 }
 
 @ Column name is handled as usual.

@@ -160,7 +160,7 @@ type="push" />
             if(typeof(window.loggingWindow) == "undefined")
             {
                 window.loggingWindow = createWindow("basicWindow");
-                window.loggingWindow.windowTitle = "Typica";
+                window.loggingWindow.windowTitle = "Typica [*]";
 				window.loggingWindow.navigationWindow = window;
             }
             else

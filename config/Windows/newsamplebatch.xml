@@ -267,6 +267,19 @@
 				var attnames = sqlToArray(attributes.columnArray(0, 0));
 				for(var i = 0; i < attnames.length; i++)
 				{
+					var attname = attnames[i];
+					if(attname[0] == '{') {
+						attname = attname.substr(1);
+					}
+					if(attname[0] == ' ') {
+						attname = attname.substr(1);
+					}
+					if(attname[attname.length -1] == '}') {
+						attname = attname.substr(0, attname.length - 2);
+					}
+					if(attname.length == 0) {
+						break;
+					}
 					query.prepare("SELECT id FROM item_attributes WHERE name = :name");
 					query.bind(":name", attnames[i]);
 					query.exec();
@@ -283,7 +296,7 @@
 						attributes.setData(i, 0, query.value(0), 32);
 					}
 				}
-				query.prepare("INSERT INTO coffee_sample_items(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Green Sample', :arrival, :vendor, :attrids, :attrvals, NULL) RETURNING id");
+				query.prepare("INSERT INTO coffee_sample_items VALUES(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Green Sample', :arrival, :vendor, :attrids, :attrvals, NULL) RETURNING id");
 				query.bind(":name", name.text);
 				query.bind(":arrival", arrival.date);
 				query.bind(":vendor", vendor.text);
@@ -292,7 +305,7 @@
 				query.exec();
 				query.next();
 				var greenId = query.value(0);
-				query.prepare("INSERT INTO items(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Roasted Sample') RETURNING id");
+				query.prepare("INSERT INTO items VALUES(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Roasted Sample') RETURNING id");
 				query.bind(":name", name.text + " " + profileName.currentText);
 				query.exec();
 				query.next();

@@ -1,0 +1,312 @@
+<window id="sampleRoastingBatch">
+	<menu name="Batch">
+		<item id="new" shortcut="Ctrl+N">New Batch...</item>
+	</menu>
+	<layout type="horizontal">
+		<layout type="vertical">
+			<label>Sample Details:</label>
+			<layout type="grid">
+				<row>
+					<column><label>Name:</label></column>
+					<column><line id="name" /></column>
+				</row>
+				<row>
+					<column><label>Vendor:</label></column>
+					<column><line id="vendor" /></column>
+				</row>
+				<row>
+					<column><label>Date:</label></column>
+					<column><calendar id="date" /></column>
+				</row>
+			</layout>
+			<label>Optional Details:</label>
+			<sqltablearray columns="2" id="attributes">
+				<column name="Attribute" />
+				<column name="Value" />
+			</sqltablearray>
+			<stretch />
+		</layout>
+		<layout type="vertical">
+			<label>Roasting Details:</label>
+			<layout type="grid">
+				<row>
+					<column><label>Machine:</label></column>
+					<column><line id="machine" writable="false" /></column>
+				</row>
+				<row>
+					<column><label>Target Profile:</label></column>
+					<column>
+						<sqldrop data="0" display="0" showdata="false" editable="true" id="profile">
+							<query>SELECT DISTINCT profile_name FROM sample_roast_profiles UNION SELECT '' ORDER BY profile_name ASC</query>
+						</sqldrop>
+					</column>
+				</row>
+				<row>
+					<column><label>Green Weight:</label></column>
+					<column><line id="greenWt" /></column>
+					<column>
+						<sqldrop data="0" display="0" showdata="false" editable="false" id="Gunits" />
+					</column>
+				</row>
+				<row>
+					<column><label>Roasted Weight:</label></column>
+					<column><line id="roastedWt" /></column>
+				</row>
+				<row>
+					<column><label>Weight Loss:</label></column>
+					<column><line writable="false" id="loss" /></column>
+				</row>
+				<row>
+					<column><label>Time:</label></column>
+					<column><line id="time" writable="false" /></column>
+				</row>
+			</layout>
+			<label>Notes:</label>
+			<textarea id="annotation" />
+			<layout type="horizontal">
+				<button name="Roast" type="push" id="load" />
+				<button name="Submit" type="push" id="submit" />
+			</layout>
+			<button name="Save log as target profile" type="check" id="target" />
+			<stretch />
+		</layout>
+		<layout type="vertical">
+			<label>Connected Scales</label>
+			<layout type="vertical" id="scales" />
+			<stretch />
+		</layout>
+	</layout>
+	<program>
+		<![CDATA[
+			var machine = findChildObject(this, 'machine');
+			machine.setText(selectedRoasterName + " (" + selectedRoasterID + ")");
+			var GunitBox = findChildObject(this, 'Gunits');
+			GunitBox.addItem("g");
+			GunitBox.addItem("Kg");
+			GunitBox.addItem("oz");
+			GunitBox.addItem("lb");
+			var scalesLayout = findChildObject(this, 'scales');
+			scalesLayout.spacing = 10;
+			if(navigationwindow.loggingWindow.scales.length > 0)
+			{
+				for(var i = 0; i < navigationwindow.loggingWindow.scales.length; i++)
+				{
+					var scale = navigationwindow.loggingWindow.scales[i];
+					var label = new DragLabel();
+					var weighButton = new QPushButton();
+					weighButton.text = "Weigh";
+					weighButton.clicked.connect(scale.weigh);
+					label.updateMeasurement = function(m, u) {
+						switch(GunitBox.currentIndex) {
+							case 0:
+								this.text = Units.convertWeight(m, u, Units.Gram).toFixed(1);
+								break;
+							case 1:
+								this.text = Units.convertWeight(m, u, Units.Kilogram).toFixed(4);
+								break;
+							case 2:
+								this.text = Units.convertWeight(m, u, Units.Ounce).toFixed(3);
+								break;
+							case 3:
+								this.text = Units.convertWeight(m, u, Units.Pound).toFixed(4);
+								break;
+						}
+					};
+					scalesLayout.addWidget(label);
+					scalesLayout.addWidget(weighButton);
+					scale.newMeasurement.connect(function(m, u) {
+						label.updateMeasurement(m, u);
+					});
+					scale.weigh();
+					GunitBox['currentIndexChanged(int)'].connect(scale.weigh);
+				}
+			}
+			var submit = findChildObject(this, 'submit');
+			submit.setEnabled(false);
+			this.windowTitle = "Typica - New Sample Roasting Batch";
+			var newMenu = findChildObject(this, 'new');
+			newMenu.triggered.connect(function() {
+				createWindow("sampleRoastingBatch");
+			});
+			var batch = this;
+			batch.submitButton = submit;
+			var name = findChildObject(this, 'name');
+			var green = findChildObject(this, 'greenWt');
+			var roasted = findChildObject(this, 'roastedWt');
+			var loss = findChildObject(this, 'loss');
+			var timefield = findChildObject(this, 'time');
+			var convertToPounds = function(w, u) {
+				switch(u)
+				{
+					case "g":
+						return w * 0.0022;
+					case "oz":
+						return w * 0.0625;
+					case "Kg":
+						return w * 2.2;
+				}
+				return w;
+			};
+			var updateWeightLoss = function() {
+				var cgreen = parseFloat(green.text);
+				var croast = parseFloat(roasted.text);
+				if(cgreen > 0)
+				{
+					if(croast > 0)
+					{
+						loss.text = (((cgreen - croast) / cgreen) * 100).toFixed(2) + "%";
+					}
+					else
+					{
+						loss.text = "100%";
+					}
+				}
+			};
+			green.textChanged.connect(function() {
+				updateWeightLoss();
+			});
+			roasted.textChanged.connect(function() {
+				updateWeightLoss();
+			});
+			var roastButton = findChildObject(this, 'load');
+			var profileName = findChildObject(this, 'profile');
+			var greenName = findChildObject(this, 'name');
+			roastButton.clicked.connect(function() {
+				var stop = findChildObject(navigationwindow.loggingWindow, 'stopbutton');
+				stop.clicked.connect(function() {
+					submit.setEnabled(true);
+				});
+				var lc = 1;
+				currentBatchInfo = batch;
+				query = new QSqlQuery();
+				var q = "SELECT file FROM sample_roast_profiles WHERE profile_name = :name AND time = (SELECT max(time) FROM sample_roast_profiles WHERE profile_name = :again)";
+				query.prepare(q);
+				query.bind(":name", profileName.currentText);
+				query.bind(":again", profileName.currentText);
+				query.exec();
+				if(query.next())
+				{
+					var file = query.value(0);
+					query.prepare("SELECT file FROM files WHERE id = :id");
+					query.bind(":id", file);
+					query.exec();
+					if(query.next())
+					{
+						var targetseries = -1;
+						var buffer = new QBuffer(query.value(0));
+						var input = new XMLInput(buffer, 1);
+						var graph = findChildObject(navigationwindow.loggingWindow, 'graph');
+						var log = findChildObject(navigationwindow.loggingWindow, 'log');
+						log.clear();
+						graph.clear();
+						input.newTemperatureColumn.connect(function(col, text) {
+							log.setHeaderData(col, text);
+							if(text == navigationwindow.loggingWindow.targetcolumnname)
+							{
+								targetseries = col;
+							}
+						});
+						input.newAnnotationColumn.connect(log.setHeaderData);
+						input.measure.connect(graph.newMeasurement);
+						input.measure.connect(log.newMeasurement);
+						input.measure.connect(function(data, series) {
+							if(series == targetseries)
+							{
+								targetDetector.newMeasurement(data);
+							}
+						});
+						input.annotation.connect(log.newAnnotation);
+						input.lastColumn.connect(function(c) {
+							lc = c;
+							QSettings.setValue("liveColumn", c+1);
+							navigationwindow.loggingWindow.postLoadColumnSetup(c);
+						});
+						navigationwindow.loggingWindow.raise();
+						navigationwindow.loggingWindow.activateWindow();
+						input.input();
+						log.newAnnotation("End", 1, lc);
+					}
+				}
+				query = query.invalidate();
+				var t = "Typica - Sample Roasting: [*]" + name.text;
+				if(profileName.currentText != '')
+				{
+					t = t + ", " + profileName.currentText;
+				}
+				navigationwindow.loggingWindow.windowTitle = t;
+			});
+			var notes = findChildObject(this, 'annotation');
+			var machine = findChildObject(this, 'machine');
+			var duration = findChildObject(this, 'duration');
+			var arrival = findChildObject(this, 'date');
+			var vendor = findChildObject(this, 'vendor');
+			var attributes = findChildObject(this, 'attributes');
+			var target = findChildObject(this, 'target');
+			submit.clicked.connect(function() {
+				query = new QSqlQuery();
+				query.prepare("INSERT INTO files VALUES(default, :name, 'profile', NULL, :data) RETURNING id");
+				query.bind(":name", timefield.text + " " + name.text + " " + profileName.currentText);
+				query.bindFileData(":data", batch.tempData);
+				query.exec();
+				query.next();
+				var fileno = query.value(0);
+				var file = new QFile(batch.tempData);
+				file.remove();
+				if(target.checked)
+				{
+					query.prepare("INSERT INTO sample_roast_profiles VALUES(:time, :name, :file)");
+					query.bind(":time", timefield.text);
+					query.bind(":name", profileName.currentText);
+					query.bind(":file", Number(fileno));
+					query.exec();
+				}
+				var attnames = sqlToArray(attributes.columnArray(0, 0));
+				for(var i = 0; i < attnames.length; i++)
+				{
+					query.prepare("SELECT id FROM item_attributes WHERE name = :name");
+					query.bind(":name", attnames[i]);
+					query.exec();
+					if(query.next())
+					{
+						attributes.setData(i, 0, query.value(0), 32);
+					}
+					else
+					{
+						query.prepare("INSERT INTO item_attributes VALUES(DEFAULT, :name) RETURNING id");
+						query.bind(":name", attnames[i]);
+						query.exec();
+						query.next();
+						attributes.setData(i, 0, query.value(0), 32);
+					}
+				}
+				query.prepare("INSERT INTO coffee_sample_items(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Green Sample', :arrival, :vendor, :attrids, :attrvals, NULL) RETURNING id");
+				query.bind(":name", name.text);
+				query.bind(":arrival", arrival.date);
+				query.bind(":vendor", vendor.text);
+				query.bind(":attrids", attributes.bindableColumnArray(0, 32));
+				query.bind(":attrvals", attributes.bindableQuotedColumnArray(1, 0));
+				query.exec();
+				query.next();
+				var greenId = query.value(0);
+				query.prepare("INSERT INTO items(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Roasted Sample') RETURNING id");
+				query.bind(":name", name.text + " " + profileName.currentText);
+				query.exec();
+				query.next();
+				var roastedId = query.value(0);
+				query.prepare("INSERT INTO roasting_log VALUES(:time, :unroastedids, NULL, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files)");
+				query.bind(":time", timefield.text);
+				query.bind(":unroastedids", "{" + greenId + "}");
+				query.bind(":green", convertToPounds(parseFloat(green.text), GunitBox.currentText));
+				query.bind(":roastedid", Number(roastedId));
+				query.bind(":roasted", convertToPounds(parseFloat(roasted.text), GunitBox.currentText));
+				query.bind(":note", notes.plainText);
+				query.bind(":machine", Number(selectedRoastedID));
+				query.bind(":duration", duration.text);
+				query.bind(":files", "{" + fileno + "}");
+				query.exec();
+				query = query.invalidate();
+				batch.close();
+			});
+		]]>
+	</program>
+</window>

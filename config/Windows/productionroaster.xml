@@ -24,6 +24,7 @@
     </menu>
     <menu name="Batch">
         <item id="new" shortcut="Ctrl+N">New Batch…</item>
+		<item id="newsample">New Sample Batch…</item>
         <item id="compare">Load Additional Profiles...</item>
     </menu>
     <menu name="Log">
@@ -932,6 +933,10 @@
             var bwindow = createWindow("batchWindow");
             bwindow.windowTitle = "Typica - [*]New Batch";
         });
+		var newSampleMenu = findChildObject(this, 'newsample');
+		newSampleMenu.triggered.connect(function() {
+			var bwindow = createWindow("sampleRoastingBatch");
+		});
 		window.postLoadColumnSetup(0);
 		]]>
     </program>

@@ -32,6 +32,7 @@
 	<include src="Windows/greensales.xml" />
 	<include src="Windows/profilehistory.xml" />
 	<include src="Windows/editbatchdetails.xml" />
+	<include src="Windows/newsamplebatch.xml" />
 	<program>
 		var loggingWindow;
 		var currentBatchInfo;

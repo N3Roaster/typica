@@ -719,15 +719,20 @@
                 var durfield = findChildObject(currentBatchInfo, 'duration');
                 durfield.text = duration;
                 log.clearOutputColumns();
+				channelSkip = 0;
 				for(var i = 0; i < channels.length; i++) {
-					if(channelType[i] == "T") {
-						log.addOutputTemperatureColumn(lc + i);
-					}
-					else {
-						log.addOutputControlColumn(lc + i);
+					if(channelVisibility[i]) {
+						if(channelType[i] == "T") {
+							log.addOutputTemperatureColumn(lc + i - channelSkip);
+						}
+						else {
+							log.addOutputControlColumn(lc + i - channelSkip);
+						}
+					} else {
+						channelSkip++;
 					}
 				}
-				log.addOutputAnnotationColumn(lc + channels.length);
+				log.addOutputAnnotationColumn(lc + channels.length - channelSkip);
                 var filename = log.saveTemporary();
                 currentBatchInfo.tempData = filename;
                 currentBatchInfo.raise();
@@ -893,13 +898,18 @@
                 var lc = Number(QSettings.value("liveColumn"));
                 var file = new QFile(filename);
                 log.clearOutputColumns();
+				channelSkip = 0;
 				for(var i = 0; i < columnNames.length - channelSkip; i++)
 				{
-					if(channelType[i] == "T") {
-						log.addOutputTemperatureColumn(lc + i);
-					}
-					else {
-						log.addOutputControlColumn(lc + i);
+					if(channelVisibility[i]) {
+						if(channelType[i] == "T") {
+							log.addOutputTemperatureColumn(lc + i - channelSkip);
+						}
+						else {
+							log.addOutputControlColumn(lc + i - channelSkip);
+						}
+					} else {
+						channelSkip++;
 					}
 				}
 				log.addOutputAnnotationColumn(lc + columnNames.length - channelSkip);

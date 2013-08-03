@@ -252,7 +252,25 @@ type="push" />
 			query.exec("INSERT INTO TypicaFeatures VALUES('sample-roasting', TRUE, 1)");
 			query = query.invalidate();
 		};
-
+		
+		/* Some changes to the database are required to log who performed what tasks.
+		   This adds logging for all transaction types and also for the roasting log.*/
+		var DBUpdateMultiUser = function() {
+			var query = new QSqlQuery;
+			query.exec("ALTER TABLE transactions ADD COLUMN person text DEFAULT NULL");
+			query.exec("ALTER TABLE roasting_log ADD COLUMN person text DEFAULT NULL");
+			query.exec("CREATE FUNCTION log_session_user() RETURNS trigger AS $$ BEGIN NEW.person := session_name; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON inventory FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
+			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON loss FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
+			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON make FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
+			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON purchase FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
+			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON sale FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
+			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON use FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
+			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON roasting_log FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
+			query.exec("INSERT INTO TypicaFeatures VALUES('base-features', TRUE, 2)");
+			query = query.invalidate();
+		};
+		
 		query = new QSqlQuery();
 		/* A table keeps track of database versioning information. This table is created
 		   if required. */
@@ -266,6 +284,10 @@ type="push" />
 			if(query.value(2) < 1)
 			{
 				DBCreateBase();
+			}
+			if(query.value(2) < 2)
+			{
+				DBUpdateMultiUser();
 			}
 		}
 		else

@@ -259,7 +259,7 @@ type="push" />
 			var query = new QSqlQuery;
 			query.exec("ALTER TABLE transactions ADD COLUMN person text DEFAULT NULL");
 			query.exec("ALTER TABLE roasting_log ADD COLUMN person text DEFAULT NULL");
-			query.exec("CREATE FUNCTION log_session_user() RETURNS trigger AS $$ BEGIN NEW.person := session_name; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE OR REPLACE FUNCTION log_session_user() RETURNS trigger AS $$ BEGIN NEW.person := session_name; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON inventory FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
 			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON loss FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
 			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON make FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
@@ -267,7 +267,7 @@ type="push" />
 			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON sale FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
 			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON use FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
 			query.exec("CREATE TRIGGER log_person BEFORE INSERT ON roasting_log FOR EACH ROW EXECUTE PROCEDURE log_session_user()");
-			query.exec("INSERT INTO TypicaFeatures VALUES('base-features', TRUE, 2)");
+			query.exec("UPDATE TypicaFeatures SET version = 2 WHERE feature = 'base-features'");
 			query = query.invalidate();
 		};
 		

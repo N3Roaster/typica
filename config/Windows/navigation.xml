@@ -294,9 +294,6 @@ type="push" />
 			{
 				DBUpdateMultiUser();
 				DBUpdateHistory();
-				/* Update statistics for better planner performance. Doesn't need to be done
-				   often but nobody is doing this on their own. */
-				query.exec("ANALYZE");
 			}
 		}
 		else

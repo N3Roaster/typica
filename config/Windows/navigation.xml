@@ -271,6 +271,13 @@ type="push" />
 			query = query.invalidate();
 		};
 		
+		/* Bug fix for item_history */
+		var DBUpdateHistory = function() {
+			var query = new QSqlQuery;
+			query.exec("CREATE OR REPLACE FUNCTION item_history(bigint) RETURNS SETOF item_transaction_with_balance AS $$ DECLARE r item_transaction_with_balance; q numeric; BEGIN CREATE TEMPORARY TABLE working(time timestamp without time zone, item bigint, quantity numeric, cost numeric, vendor text, reason text, customer text, type text, balance numeric) ON COMMIT DROP; INSERT INTO working SELECT time, item, quantity, cost, vendor, reason, customer, type, NULL AS balance FROM all_transactions WHERE item = $1 ORDER BY time ASC; q := 0; FOR r IN SELECT time, item, quantity, cost, vendor, reason, customer, type, balance FROM working LOOP CASE r.type WHEN 'PURCHASE', 'MAKE' THEN q := q + r.quantity; WHEN 'INVENTORY' THEN q := r.quantity; WHEN 'USE', 'SALE', 'LOSS' THEN q := q - r.quantity; END CASE; r.balance := q; RETURN NEXT r; END LOOP; DROP TABLE working; RETURN; END; $$ LANGUAGE plpgsql");
+			query.exec("DROP FUNCTION calculate_inventory_balance()");
+		};
+		
 		query = new QSqlQuery();
 		/* A table keeps track of database versioning information. This table is created
 		   if required. */
@@ -288,6 +295,10 @@ type="push" />
 			if(query.value(2) < 2)
 			{
 				DBUpdateMultiUser();
+				DBUpdateHistory();
+				/* Update statistics for better planner performance. Doesn't need to be done
+				   often but nobody is doing this on their own. */
+				query.exec("ANALYZE");
 			}
 		}
 		else

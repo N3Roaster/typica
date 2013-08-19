@@ -91,7 +91,12 @@
 				while(query.next())
 				{
 					output.writeStartElement("tr");
-					output.writeTextElement("td", query.value(0)); //ID
+					output.writeStartElement("td");
+					output.writeStartElement("a");
+					output.writeAttribute("href", "typica://script/" + query.value(0));
+					output.writeTextElement("span", query.value(0)); //ID
+					output.writeEndElement();
+					output.writeEndElement();
 					output.writeTextElement("td", query.value(1)); //Coffee
 					output.writeTextElement("td", query.value(2)); //Reference
 					output.writeTextElement("td", query.value(3)); //Starting Wt
@@ -122,6 +127,9 @@
 			});
 			endDateField.dateChanged.connect(function() {
 				refresh();
+			});
+			view.scriptLinkClicked.connect(function(url) {
+				print(url);
 			});
 		]]>
 	</program>

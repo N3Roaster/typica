@@ -319,10 +319,10 @@
 				{
 					output.writeStartElement("tr");
 					output.writeTextElement("td", query.value(1));
-					qq = "SELECT balance FROM item_history(" + query.value(0) + ") WHERE time = (SELECT max(time) FROM all_transactions WHERE time < '" + dateString + "' AND item = " + query.value(0) + ") OR time = (SELECT max(time) FROM all_transactions WHERE time < '" + dateString + "'::date + integer '1' AND item = " + query.value(0) + ") ORDER BY time ASC";
+					qq = "SELECT balance FROM item_history(" + query.value(0) + ") WHERE time = (SELECT max(time) FROM all_transactions WHERE time <= '" + dateString + "' AND item = " + query.value(0) + ") OR time = (SELECT max(time) FROM all_transactions WHERE time < '" + dateString + "'::date + integer '1' AND item = " + query.value(0) + ") ORDER BY time ASC";
 					subQuery.exec(qq);
-					var startValue = 0;
-					var endValue = 0;
+					var startValue = "0.0";
+					var endValue = "0.0";
 					if(subQuery.next())
 					{
 						switch(unitBox.currentIndex)

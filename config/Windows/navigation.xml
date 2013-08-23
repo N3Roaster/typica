@@ -269,10 +269,13 @@ type="push" />
 			query = query.invalidate();
 		};
 		
-		/* Bug fix for item_history */
+		/* Bug fix and optimization for item_history */
 		var DBUpdateHistory = function() {
 			var query = new QSqlQuery;
-			query.exec("CREATE OR REPLACE FUNCTION item_history(bigint) RETURNS SETOF item_transaction_with_balance AS $$ DECLARE r item_transaction_with_balance; q numeric; BEGIN CREATE TEMPORARY TABLE working(time timestamp without time zone, item bigint, quantity numeric, cost numeric, vendor text, reason text, customer text, type text, balance numeric) ON COMMIT DROP; INSERT INTO working SELECT time, item, quantity, cost, vendor, reason, customer, type, NULL AS balance FROM all_transactions WHERE item = $1 ORDER BY time ASC; q := 0; FOR r IN SELECT time, item, quantity, cost, vendor, reason, customer, type, balance FROM working LOOP CASE r.type WHEN 'PURCHASE', 'MAKE' THEN q := q + r.quantity; WHEN 'INVENTORY' THEN q := r.quantity; WHEN 'USE', 'SALE', 'LOSS' THEN q := q - r.quantity; END CASE; r.balance := q; RETURN NEXT r; END LOOP; DROP TABLE working; RETURN; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE TYPE transaction_type AS (type text, quantity numeric)");
+			query.exec("CREATE FUNCTION update_balance(numeric, transaction_type) RETURNS numeric AS $$ BEGIN CASE $2.type WHEN 'PURCHASE', 'MAKE' THEN RETURN $1 + $2.quantity; WHEN 'INVENTORY' THEN RETURN $2.quantity; WHEN 'USE', 'SALE', 'LOSS' THEN RETURN $1 - $2.quantity; END CASE; END; $$ LANGUAGE plpgsql STRICT");
+			query.exec("CREATE AGGREGATE transaction_balance (BASETYPE = transaction_type, SFUNC = update_balance, STYPE = numeric, INITCOND = '0')");
+			query.exec("CREATE OR REPLACE FUNCTION item_history(bigint) RETURNS SETOF item_transaction_with_balance AS $$ SELECT time, item, quantity, cost, vendor, customer, type, transaction_balance((type, quantity)::transaction_type) OVER (PARTITION BY item ORDER BY time ASC) AS balance FROM all_transactions WHERE item = $1; $$ LANGUAGE SQL");
 			query.exec("DROP FUNCTION calculate_inventory_balance()");
 		};
 		

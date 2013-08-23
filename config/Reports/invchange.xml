@@ -121,6 +121,7 @@
 				output.writeEndDocument();
 				view.setContent(buffer);
 				buffer.close();
+				query = query.invalidate();
 			}
 			refresh();
 			startDateField.dateChanged.connect(function() {

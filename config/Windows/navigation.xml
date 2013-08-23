@@ -275,8 +275,9 @@ type="push" />
 			query.exec("CREATE TYPE transaction_type AS (type text, quantity numeric)");
 			query.exec("CREATE FUNCTION update_balance(numeric, transaction_type) RETURNS numeric AS $$ BEGIN CASE $2.type WHEN 'PURCHASE', 'MAKE' THEN RETURN $1 + $2.quantity; WHEN 'INVENTORY' THEN RETURN $2.quantity; WHEN 'USE', 'SALE', 'LOSS' THEN RETURN $1 - $2.quantity; END CASE; END; $$ LANGUAGE plpgsql STRICT");
 			query.exec("CREATE AGGREGATE transaction_balance (BASETYPE = transaction_type, SFUNC = update_balance, STYPE = numeric, INITCOND = '0')");
-			query.exec("CREATE OR REPLACE FUNCTION item_history(bigint) RETURNS SETOF item_transaction_with_balance AS $$ SELECT time, item, quantity, cost, vendor, customer, type, transaction_balance((type, quantity)::transaction_type) OVER (PARTITION BY item ORDER BY time ASC) AS balance FROM all_transactions WHERE item = $1; $$ LANGUAGE SQL");
+			query.exec("CREATE OR REPLACE FUNCTION item_history(bigint) RETURNS SETOF item_transaction_with_balance AS $$ SELECT time, item, quantity, cost, vendor, reason, customer, type, transaction_balance((type, quantity)::transaction_type) OVER (PARTITION BY item ORDER BY time ASC) AS balance FROM all_transactions WHERE item = $1; $$ LANGUAGE SQL");
 			query.exec("DROP FUNCTION calculate_inventory_balance()");
+			query = query.invalidate();
 		};
 		
 		query = new QSqlQuery();

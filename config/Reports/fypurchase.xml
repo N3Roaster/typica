@@ -24,6 +24,7 @@
 			query.exec("SELECT EXTRACT(YEAR FROM time) FROM purchase WHERE time = (SELECT min(time) FROM purchase)");
 			query.next();
 			startDateField.setDate(query.value(0), 1, 1);
+			query = query.invalidate();
 			/* Set ending year to the current year. */
 			var endDateField = findChildObject(this, 'enddate');
 			endDateField.setDate(endDateField.year(), 12, 31);
@@ -79,12 +80,13 @@
 				var sacktotal = 0;
 				var unittotal = 0;
 				var costtotal = 0;
+				var query = new QSqlQuery();
 				for(var i = startDateField.year(); i <= endDateField.year(); i++)
 				{
-					output.writeStartElement("tr");
-					output.writeAttribute("id", "y"+i);
 					var q = "SELECT sum(quantity/(SELECT conversion FROM lb_bag_conversion WHERE item = purchase.item)), (sum(quantity) / :conversion)::numeric(12,2), sum(cost*quantity)::numeric(12,2) FROM purchase WHERE time >= '" + i + "-01-01' AND time < '" + (i+1) + "-01-01'";
 					query.prepare(q);
+					output.writeStartElement("tr");
+					output.writeAttribute("id", "y"+i);
 					query.bind(":conversion", unitBox.currentIndex == 0 ? 2.2 : 1);
 					query.exec();
 					query.next();
@@ -99,6 +101,7 @@
 					costtotal += Number(query.value(2));
 					output.writeEndElement(); //tr
 				}
+				query = query.invalidate();
 				output.writeEndElement(); //tbody
 				output.writeStartElement("tfoot");
 				output.writeTextElement("th", "Totals:");

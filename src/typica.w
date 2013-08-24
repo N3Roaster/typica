@@ -12721,8 +12721,6 @@ void SqlQueryView::openRow(const QModelIndex &index)
 
 @ The other functions are wrappers around model methods.
 
-\danger |setQuery()| leaks database connections.
-
 @<SqlQueryView implementation@>=
 void SqlQueryView::setQuery(const QString &query)
 {
@@ -12730,6 +12728,7 @@ void SqlQueryView::setQuery(const QString &query)
 	database.open();
 	QSqlQuery q(query, database);
 	((QSqlQueryModel*)model())->setQuery(q);
+	database.close();
 }
 
 bool SqlQueryView::setHeaderData(int section, Qt::Orientation@, orientation,

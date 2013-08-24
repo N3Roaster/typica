@@ -144,7 +144,6 @@
                 output.writeAttribute("y2", "450");
                 output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
                 output.writeEndElement();
-                var query = new QSqlQuery();
                 var q = "SELECT "+curEndDate+"::date - "+curStartDate+"::date";
                 query.exec(q);
                 query.next();
@@ -425,6 +424,7 @@
                         i = days - 1;
                     }
                 }
+				query = query.invalidate();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(0,0,0)");
                 output.writeAttribute("x", "45");

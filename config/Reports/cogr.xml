@@ -101,6 +101,7 @@
 						proportionalCosts.push(partialSum);
 					}
 				}
+				query = query.invalidate();
 				var minCosts = new Array();
 				var maxCosts = new Array();
 				var meanCosts = new Array();

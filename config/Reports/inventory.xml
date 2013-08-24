@@ -174,7 +174,8 @@
                 output.writeTextElement("td", query.value(1));
                 output.writeTextElement("td", "");
                 output.writeTextElement("td", "");
-                output.writeEndElement();
+                query = query.invalidate();
+				output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();

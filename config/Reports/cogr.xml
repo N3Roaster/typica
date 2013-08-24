@@ -46,7 +46,8 @@
 						recipes.push(query.value(0));
 						recipeQuantities.push(query.value(1));
 					} else {
-						print("Error 1");
+						recipes.push("{-1}");
+						recipeQuantities.push("{-1}");
 					}
 				}
 				query.prepare("SELECT min(unroasted_total_quantity / roasted_quantity), max(unroasted_total_quantity / roasted_quantity), avg(unroasted_total_quantity / roasted_quantity) FROM roasting_log WHERE roasted_id = :ri AND unroasted_id = :gi AND unroasted_total_quantity > 0 AND roasted_quantity > 0 AND approval = true");
@@ -54,49 +55,65 @@
 				var maxes = new Array();
 				var means = new Array();
 				for(var i = 0; i < roastedItems.length; i++) {
-					query.bind(":ri", Number(roastedItems[i]));
-					query.bind(":gi", recipes[i]);
-					query.exec();
-					if(query.next()) {
-						mins.push(query.value(0));
-						maxes.push(query.value(1));
-						means.push(query.value(2));
+					if(recipes[i] == "{-1}") {
+						mins.push("undefined");
+						maxes.push("undefined");
+						means.push("undefined");
 					} else {
-						print("Error 2");
+						query.bind(":ri", Number(roastedItems[i]));
+						query.bind(":gi", recipes[i]);
+						query.exec();
+						if(query.next()) {
+							mins.push(query.value(0));
+							maxes.push(query.value(1));
+							means.push(query.value(2));
+						} else {
+							print("Error 2");
+						}
 					}
 				}
 				var proportionalCosts = new Array();
 				query.prepare("SELECT cost * :proportion FROM purchase WHERE item = :id");
 				for(var i = 0; i < roastedItems.length; i++) {
-					greens = sqlToArray(recipes[i]);
-					weights = sqlToArray(recipeQuantities[i]);
-					proportions = new Array();
-					quantitySum = weights.reduce(function(p, c) {
-						return p + c;
-					});
-					for(var j = 0; j < weights.length; j++) {
-						proportions.push(weights[j]/quantitySum);
-					}
-					partialSum = 0;
-					for(var j = 0; j < greens.length; j++) {
-						query.bind(":proportion", proportions[j]);
-						query.bind(":id", greens[j]);
-						query.exec();
-						if(query.next()) {
-							partialSum += query.value(0);
-						} else {
-							print("Error 3");
+					if(recipes[i] == "{-1}") {
+						proportionalCosts.push("undefined");
+					} else {
+						greens = sqlToArray(recipes[i]);
+						weights = sqlToArray(recipeQuantities[i]);
+						proportions = new Array();
+						quantitySum = weights.reduce(function(p, c) {
+							return p + c;
+						});
+						for(var j = 0; j < weights.length; j++) {
+							proportions.push(weights[j]/quantitySum);
 						}
+						partialSum = 0;
+						for(var j = 0; j < greens.length; j++) {
+							query.bind(":proportion", proportions[j]);
+							query.bind(":id", greens[j]);
+							query.exec();
+							if(query.next()) {
+								partialSum += query.value(0);
+							} else {
+								print("Error 3");
+							}
+						}
+						proportionalCosts.push(partialSum);
 					}
-					proportionalCosts.push(partialSum);
 				}
 				var minCosts = new Array();
 				var maxCosts = new Array();
 				var meanCosts = new Array();
 				for(var i = 0; i < roastedItems.length; i++) {
-					minCosts.push(proportionalCosts[i] * mins[i]);
-					maxCosts.push(proportionalCosts[i] * maxes[i]);
-					meanCosts.push(proportionalCosts[i] * means[i]);
+					if(recipes[i] == "{-1}") {
+						minCosts.push("undefined");
+						maxCosts.push("undefined");
+						meanCosts.push("undefined");
+					} else {
+						minCosts.push(proportionalCosts[i] * mins[i]);
+						maxCosts.push(proportionalCosts[i] * maxes[i]);
+						meanCosts.push(proportionalCosts[i] * means[i]);
+					}
 				}
 				output.writeStartElement("table");
 				output.writeAttribute("rules", "groups");

@@ -90,7 +90,7 @@
 					query.bind(":conversion", unitBox.currentIndex == 0 ? 2.2 : 1);
 					query.exec();
 					query.next();
-					output.writeStartElement("th", i);
+					output.writeStartElement("th");
 					output.writeStartElement("a");
 					output.writeAttribute("href", "typica://script/y" + i);
 					output.writeCharacters(i);

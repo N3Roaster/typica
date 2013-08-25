@@ -11798,6 +11798,18 @@ QDomDocument* Application::configuration()
 @ The |database()| method provides access to a database connection for use by
 database aware widgets.
 
+\danger Behavior observed on Linux is that this does create a new connection
+which the caller will successfully open, but a |QSqlQuery| created with the
+newly opened |QSqlDatabase| will instead continue to execute queries on the
+default connection instead of the new connection. Replacing the call to
+|QSqlDatabase::database()| with one that does not open the default connection
+or rather than cloning that connection creating a new non-default connection
+results in query execution failing because the connection is not open despite
+the call to |open()| succeeding and |isValid()| and |isOpen()| both returning
+true. If this behavior can be replicated on other platforms, this entire
+exercise would be pointless. At present I believe this to be a bug in Qt, but I
+have not identified it.
+
 @<Application Implementation@>=
 QSqlDatabase Application::database()
 {
@@ -12562,6 +12574,7 @@ void SqlConnectionSetup::testConnection()
 		settings.setValue("database/dbname", dbname->text());
 		settings.setValue("database/user", user->text());
 		settings.setValue("database/password", password->text());
+		database.close();
 		accept();
 	}
 	else
@@ -12596,6 +12609,10 @@ database.setPassword(settings.value("database/password").toString());
 if(!database.open())
 {
 	settings.setValue("database/exists", "false");
+}
+else
+{
+	database.close();
 }
 
 @** Viewing a record of batches.

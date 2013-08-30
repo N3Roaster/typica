@@ -3369,7 +3369,7 @@ class SqlQueryConnection : public QSqlQuery@/
 	public:@/
 		SqlQueryConnection(const QString &query = QString());
 		~SqlQueryConnection();
-		QSqlQuery* operator->();
+		QSqlQuery* operator->() const;
 	private:@/
 		QString connection;
 		QSqlQuery *q;
@@ -3409,7 +3409,7 @@ SqlQueryConnection::~SqlQueryConnection()
 object.
 
 @<SqlQueryConnection implementation@>=
-QSqlQuery* SqlQueryConnection::operator->()
+QSqlQuery* SqlQueryConnection::operator->() const
 {
 	return q;
 }
@@ -3448,8 +3448,9 @@ value.
 @<Functions for scripting@>=
 QScriptValue constructQSqlQuery(QScriptContext *, QScriptEngine *engine)
 {
+	SqlQueryConnection *obj = new SqlQueryConnection();
 	QScriptValue object =
-	     engine->toScriptValue<void *>(new SqlQueryConnection());
+	     engine->toScriptValue<void *>(obj);
 	setQSqlQueryProperties(object, engine);
 	return object;
 }
@@ -3478,40 +3479,40 @@ void setQSqlQueryProperties(QScriptValue value, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QSqlQuery_exec(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *q = getself<SqlQueryConnection *>(context)->operator->();
 	QScriptValue retval;
 	if(context->argumentCount() == 1)
 	{
 		retval = QScriptValue(engine,
-		                      query->exec(argument<QString>(0, context)));
+		                      q->exec(argument<QString>(0, context)));
 	}
 	else
 	{
-		retval = QScriptValue(engine, query->exec());
+		retval = QScriptValue(engine, q->exec());
 	}
-	if(query->lastError().isValid())
+	if(q->lastError().isValid())
 	{
-		qDebug() << query->lastQuery();
-		qDebug() << query->lastError().text();
+		qDebug() << q->lastQuery();
+		qDebug() << q->lastError().text();
 	}
 	return retval;
 }
 
 QScriptValue QSqlQuery_executedQuery(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(query->lastQuery());
 }
 
 QScriptValue QSqlQuery_next(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(engine, query->next());
 }
 
 QScriptValue QSqlQuery_value(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(engine,
 	                    query->value(argument<int>(0, context)).toString());
 }
@@ -3522,13 +3523,13 @@ data available in a named file, or data from any open |QIODevice|.
 @<Functions for scripting@>=
 QScriptValue QSqlQuery_prepare(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(engine, query->prepare(argument<QString>(0, context)));
 }
 
 QScriptValue QSqlQuery_bind(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	query->bindValue(argument<QString>(0, context),
 	                 argument<QVariant>(1, context));
 	return QScriptValue();
@@ -3537,7 +3538,7 @@ QScriptValue QSqlQuery_bind(QScriptContext *context, QScriptEngine *)
 QScriptValue QSqlQuery_bindFileData(QScriptContext *context,
                                     QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	QString placeholder = argument<QString>(0, context);
 	QString filename = argument<QString>(1, context);
 	QFile file(filename);
@@ -3554,7 +3555,7 @@ QScriptValue QSqlQuery_bindFileData(QScriptContext *context,
 QScriptValue QSqlQuery_bindDeviceData(QScriptContext *context,
                                       QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	QString placeholder = argument<QString>(0, context);
 	QIODevice *device = argument<QIODevice *>(1, context);
 	device->reset();
@@ -3680,13 +3681,14 @@ host environment. The function is now depreciated and should not be used.
 @<Functions for scripting@>=
 QScriptValue annotationFromRecord(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection query;
+	SqlQueryConnection h;
+	QSqlQuery *query = h.operator->();
 	QString q = "SELECT file FROM files WHERE id = :file";
-	query.prepare(q);
-	query.bindValue(":file", argument<int>(0, context));
-	query.exec();
-	query.next();
-	QByteArray array = query.value(0).toByteArray();
+	query->prepare(q);
+	query->bindValue(":file", argument<int>(0, context));
+	query->exec();
+	query->next();
+	QByteArray array = query->value(0).toByteArray();
 	QBuffer buffer(&array);
 	buffer.open(QIODevice::ReadOnly);
 	QXmlQuery xquery;
@@ -11798,28 +11800,17 @@ QDomDocument* Application::configuration()
 @ The |database()| method provides access to a database connection for use by
 database aware widgets.
 
-\danger Behavior observed on Linux is that this does create a new connection
-which the caller will successfully open, but a |QSqlQuery| created with the
-newly opened |QSqlDatabase| will instead continue to execute queries on the
-default connection instead of the new connection. Replacing the call to
-|QSqlDatabase::database()| with one that does not open the default connection
-or rather than cloning that connection creating a new non-default connection
-results in query execution failing because the connection is not open despite
-the call to |open()| succeeding and |isValid()| and |isOpen()| both returning
-true. If this behavior can be replicated on other platforms, this entire
-exercise would be pointless. At present I believe this to be a bug in Qt, but I
-have not identified it.
-
 @<Application Implementation@>=
 QSqlDatabase Application::database()
 {
 	QString connectionName;
-	QSqlDatabase connection = QSqlDatabase::database();
+	QSqlDatabase connection =
+		QSqlDatabase::database(QLatin1String(QSqlDatabase::defaultConnection), false);
 	do
 	{
 		connectionName = QUuid::createUuid().toString();
 	} while (QSqlDatabase::connectionNames().contains(connectionName));
-	return QSqlDatabase::cloneDatabase(connection, connectionName);
+	return QSqlDatabase::cloneDatabase(connection, QString(connectionName));
 }
 
 @** Table editor for ordered arrays with SQL relations.
@@ -12265,7 +12256,8 @@ the combo box with the results.
 @<SqlComboBox Implementation@>=
 void SqlComboBox::addSqlOptions(QString query)
 {
-	SqlQueryConnection *dbquery = new SqlQueryConnection;
+	SqlQueryConnection h;
+	QSqlQuery *dbquery = h.operator->();
 	if(!dbquery->exec(query))
 	{
 		QSqlError error = dbquery->lastError();
@@ -12285,7 +12277,6 @@ void SqlComboBox::addSqlOptions(QString query)
 		}
 		addItem(displayValue, dataValue);
 	}
-	delete dbquery;
 }
 
 @ The constructor initializes some private member data. A size policy is also
@@ -13207,36 +13198,37 @@ placeholders that have not yet had values bound to them), there will be no
 change to the table and the next child element, if any, will be processed.
 
 @<Add SQL query results to report table@>=
-SqlQueryConnection query;
-query.prepare(currentElement.text());
+SqlQueryConnection h;
+QSqlQuery *query = h.operator->();
+query->prepare(currentElement.text());
 foreach(QString key, bindings.uniqueKeys())
 {
 	if(currentElement.text().contains(key))
 	{
-		query.bindValue(key, bindings.value(key));
+		query->bindValue(key, bindings.value(key));
 	}
 }
-query.exec();
-if(!query.next())
+query->exec();
+if(!query->next())
 {
 	continue;
 }
-if(query.record().count() > columns)
+if(query->record().count() > columns)
 {
-	table->appendColumns(query.record().count() - columns);
+	table->appendColumns(query->record().count() - columns);
 }
 do
 {
 	table->appendRows(1);
 	rows++;
 	currentRow++;
-	for(int j = 0; j < query.record().count(); j++)
+	for(int j = 0; j < query->record().count(); j++)
 	{
 		QTextTableCell cell = table->cellAt(currentRow, j);
 		cursor = cell.firstCursorPosition();
-		cursor.insertText(query.value(j).toString());
+		cursor.insertText(query->value(j).toString());
 	}
-} while(query.next());
+} while(query->next());
 
 @ It is sometimes desirable to add fixed data such as column headers to a table.
 This is done with the {\tt <row>} element.

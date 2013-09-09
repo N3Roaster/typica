@@ -2256,6 +2256,7 @@ QScriptValue constructXQuery(QScriptContext *context, QScriptEngine *engine);
 QScriptValue XQuery_bind(QScriptContext *context, QScriptEngine *engine);
 QScriptValue XQuery_exec(QScriptContext *context, QScriptEngine *engine);
 QScriptValue XQuery_setQuery(QScriptContext *context, QScriptEngine *engine);
+QScriptValue XQuery_invalidate(QScriptContext *context, QScriptEngine *engine);
 void setXQueryProperties(QScriptValue value, QScriptEngine *engine);
 
 @ The constructor must be registered with the host environment. This is done a
@@ -2266,7 +2267,7 @@ constructor = engine->newFunction(constructXQuery);
 engine->globalObject().setProperty("XQuery", constructor);
 
 @ The constructor just needs to make sure the functions we want to make
-available are applied.
+available are applied. A method is also provided to free the |QXmlQuery|.
 
 @<Functions for scripting@>=
 QScriptValue constructXQuery(QScriptContext *, QScriptEngine *engine)
@@ -2276,11 +2277,19 @@ QScriptValue constructXQuery(QScriptContext *, QScriptEngine *engine)
 	return object;
 }
 
+QScriptValue XQuery_invalidate(QScriptContext *context, QScriptEngine *)
+{
+	QXmlQuery *self = getself<QXmlQuery *>(context);
+	delete self;
+	return QScriptValue();
+}
+
 void setXQueryProperties(QScriptValue value, QScriptEngine *engine)
 {
 	value.setProperty("bind", engine->newFunction(XQuery_bind));
 	value.setProperty("exec", engine->newFunction(XQuery_exec));
 	value.setProperty("setQuery", engine->newFunction(XQuery_setQuery));
+	value.setProperty("invalidate", engine->newFunction(XQuery_invalidate));
 }
 
 @ The |bind()| property can be used to specify a |QIODevice| to be referenced by

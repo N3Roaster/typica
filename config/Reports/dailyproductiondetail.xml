@@ -312,14 +312,18 @@
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");
-				q = "SELECT DISTINCT item, (SELECT name FROM items WHERE id = item) AS name, (SELECT out FROM coffee_history WHERE id = item) FROM all_transactions WHERE time > '" + dateString + "' AND time < '" + dateString + "'::date + integer '1' ORDER BY name ASC";
+				q = "SELECT DISTINCT item, (SELECT name FROM items WHERE id = item) AS name, (SELECT out FROM coffee_history WHERE id = item) FROM all_transactions WHERE time >= '" + dateString + "' AND time < '" + dateString + "'::date + integer '1' ORDER BY name ASC";
 				query.exec(q)
 				var subQuery = new QSqlQuery();
 				var qq;
 				while(query.next())
 				{
-					output.writeStartElement("tr");
-					output.writeTextElement("td", query.value(1));
+					var validRow = true;
+					var td1 = query.value(1);
+					var td2 = 0;
+					var td3 = 0;
+					var td4 = 0;
+					var td5 = query.value(2);
 					qq = "SELECT balance FROM item_history(" + query.value(0) + ") WHERE time = (SELECT max(time) FROM all_transactions WHERE time <= '" + dateString + "' AND item = " + query.value(0) + ") OR time = (SELECT max(time) FROM all_transactions WHERE time < '" + dateString + "'::date + integer '1' AND item = " + query.value(0) + ") ORDER BY time ASC";
 					subQuery.exec(qq);
 					var startValue = "0.0";
@@ -329,48 +333,61 @@
 						switch(unitBox.currentIndex)
 						{
 							case 0:
-								output.writeTextElement("td", (subQuery.value(0)/2.2).toFixed(subQuery.value(0).split('.').length > 1 ? subQuery.value(0).split('.')[1].length : 0));
+								td2 = (subQuery.value(0)/2.2).toFixed(subQuery.value(0).split('.').length > 1 ? subQuery.value(0).split('.')[1].length : 0);
 								break;
 							case 1:
-								output.writeTextElement("td", subQuery.value(0));
+								td2 = subQuery.value(0);
 								break;
 						}
 						startValue = subQuery.value(0);
 					}
 					else
 					{
-						output.writeEmptyElement("td");
+						/* This should never happen. */
+						validRow = false;
 					}
 					if(subQuery.next())
 					{
 						switch(unitBox.currentIndex)
 						{
 							case 0:
-								output.writeTextElement("td", (subQuery.value(0)/2.2).toFixed(subQuery.value(0).split('.').length > 1 ? subQuery.value(0).split('.')[1].length : 0));
+								td3 = (subQuery.value(0)/2.2).toFixed(subQuery.value(0).split('.').length > 1 ? subQuery.value(0).split('.')[1].length : 0);
 								break;
 							case 1:
-								output.writeTextElement("td", subQuery.value(0));
+								td3 = subQuery.value(0);
 								break;
 						}
 						endValue = subQuery.value(0);
 					}
 					else
 					{
-						output.writeEmptyElement("td");
+						/* If only one transaction exists for the current query
+						   this is a purchase transaction. Until something is
+						   done with the coffee, it should not appear in this
+						   section of the report. */
+						endValue = startValue;
+						validRow = false;
 					}
 					var startPrec = startValue.split('.').length > 1 ? startValue.split('.')[1].length : 0;
 					var endPrec = endValue.split('.').length > 1 ? endValue.split('.')[1].length : 0;
 					switch(unitBox.currentIndex)
 					{
 						case 0:
-							output.writeTextElement("td", (Number(endValue/2.2) - Number(startValue/2.2)).toFixed(Math.max(startPrec, endPrec)));
+							td4 = (Number(endValue/2.2) - Number(startValue/2.2)).toFixed(Math.max(startPrec, endPrec));
 							break;
 						case 1:
-							output.writeTextElement("td", (Number(endValue) - Number(startValue)).toFixed(Math.max(startPrec, endPrec)));
+							td4 = (Number(endValue) - Number(startValue)).toFixed(Math.max(startPrec, endPrec));
 							break;
-					}					
-					output.writeTextElement("td", query.value(2));
-					output.writeEndElement();
+					}
+					if(validRow) {
+						output.writeStartElement("tr");
+						output.writeTextElement("td", td1);
+						output.writeTextElement("td", td2);
+						output.writeTextElement("td", td3);
+						output.writeTextElement("td", td4);
+						output.writeTextElement("td", td5);
+						output.writeEndElement();
+					}
 				}
 				query = query.invalidate();
 				subQuery = subQuery.invalidate();
@@ -379,7 +396,6 @@
 				
 				output.writeEndElement();
 				output.writeEndElement();//End of inventory table
-				
 				
 				output.writeEndElement();
 				output.writeEndElement();

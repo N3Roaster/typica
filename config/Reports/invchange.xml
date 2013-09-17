@@ -89,6 +89,18 @@
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");
+				var sum3 = 0;
+				var sum10 = 0;
+				var sum4 = 0;
+				var sum11 = 0;
+				var sum5 = 0;
+				var sum12 = 0;
+				var sum6 = 0;
+				var sum13 = 0;
+				var sum9 = 0;
+				var sum15 = 0;
+				var sum7 = 0;
+				var sum14 = 0;;
 				while(query.next())
 				{
 					output.writeStartElement("tr");
@@ -100,21 +112,52 @@
 					output.writeEndElement();
 					output.writeTextElement("td", query.value(1)); //Coffee
 					output.writeTextElement("td", query.value(2)); //Reference
-					output.writeTextElement("td", query.value(3)); //Starting Wt
-					output.writeTextElement("td", query.value(10)); //Starting Cost
-					output.writeTextElement("td", query.value(4)); //Purchase Wt
-					output.writeTextElement("td", query.value(11)); //Purchase Cost
-					output.writeTextElement("td", query.value(5)); //Use Wt
-					output.writeTextElement("td", query.value(12)); //Use Cost
-					output.writeTextElement("td", query.value(6)); //Sale Wt
-					output.writeTextElement("td", query.value(13)); //Sale Cost
-					output.writeTextElement("td", query.value(9)); //Adjustment Wt
-					output.writeTextElement("td", query.value(15)); //Adjustment Cost
-					output.writeTextElement("td", query.value(7)); //Ending Wt
-					output.writeTextElement("td", query.value(14)); //Ending Cost
+					output.writeTextElement("td", parseFloat(query.value(3)).toFixed(2)); //Starting Wt
+					output.writeTextElement("td", parseFloat(query.value(10)).toFixed(2)); //Starting Cost
+					output.writeTextElement("td", parseFloat(query.value(4)).toFixed(2)); //Purchase Wt
+					output.writeTextElement("td", parseFloat(query.value(11)).toFixed(2)); //Purchase Cost
+					output.writeTextElement("td", parseFloat(query.value(5)).toFixed(2)); //Use Wt
+					output.writeTextElement("td", parseFloat(query.value(12)).toFixed(2)); //Use Cost
+					output.writeTextElement("td", parseFloat(query.value(6)).toFixed(2)); //Sale Wt
+					output.writeTextElement("td", parseFloat(query.value(13)).toFixed(2)); //Sale Cost
+					output.writeTextElement("td", parseFloat(query.value(9)).toFixed(2)); //Adjustment Wt
+					output.writeTextElement("td", parseFloat(query.value(15)).toFixed(2)); //Adjustment Cost
+					output.writeTextElement("td", parseFloat(query.value(7)).toFixed(2)); //Ending Wt
+					output.writeTextElement("td", parseFloat(query.value(14)).toFixed(2)); //Ending Cost
 					output.writeEndElement();
+					sum3 += parseFloat(query.value(3));
+					sum10 += parseFloat(query.value(10));
+					sum4 += parseFloat(query.value(4));
+					sum11 += parseFloat(query.value(11));
+					sum5 += parseFloat(query.value(5));
+					sum12 += parseFloat(query.value(12));
+					sum6 += parseFloat(query.value(6));
+					sum13 += parseFloat(query.value(13));
+					sum9 += parseFloat(query.value(9));
+					sum15 += parseFloat(query.value(15));
+					sum7 += parseFloat(query.value(7));
+					sum14 += parseFloat(query.value(14));
 				}
 				output.writeEndElement(); // tbody
+				output.writeStartElement("tfoot");
+				output.writeStartElement("tr");
+				output.writeTextElement("td", "");
+				output.writeTextElement("td", "");
+				output.writeTextElement("th", "Total:");
+				output.writeTextElement("td", sum3.toFixed(2));
+				output.writeTextElement("td", sum10.toFixed(2));
+				output.writeTextElement("td", sum4.toFixed(2));
+				output.writeTextElement("td", sum11.toFixed(2));
+				output.writeTextElement("td", sum5.toFixed(2));
+				output.writeTextElement("td", sum12.toFixed(2));
+				output.writeTextElement("td", sum6.toFixed(2));
+				output.writeTextElement("td", sum13.toFixed(2));
+				output.writeTextElement("td", sum9.toFixed(2));
+				output.writeTextElement("td", sum15.toFixed(2));
+				output.writeTextElement("td", sum7.toFixed(2));
+				output.writeTextElement("td", sum14.toFixed(2));
+				output.writeEndElement(); // tr
+				output.writeEndElement(); // tfoot
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeEndElement();

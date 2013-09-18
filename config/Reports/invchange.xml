@@ -49,8 +49,16 @@
 				var startDate = "" + startDateField.year() + "-" + startDateField.month() + "-" + startDateField.day();
 				var endDate = "" + endDateField.year() + "-" + endDateField.month() + "-" + endDateField.day();
 				output.writeTextElement("h1", "Inventory Change Summary: " + startDate + " – " + endDate);
+				var conversion = 1;
+				if(unitBox.currentIndex == 0) {
+					conversion = 2.2;
+				}
+				var unitText = "Lb";
+				if(unitBox.currentIndex == 0) {
+					unitText = "Kg";
+				}
 				var query = new QSqlQuery();
-					var q = "WITH q AS (SELECT id, name, reference, COALESCE((SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :sd1)), 0) AS starting_balance, COALESCE((SELECT sum(quantity) FROM purchase WHERE item = id AND time >= :sd2 AND time < :ed1 ::date + interval '1 day'), 0) AS purchase, COALESCE((SELECT sum(quantity) FROM use WHERE item = id AND time >= :sd3 AND time < :ed2 ::date + interval '1 day'), 0) AS use, COALESCE((SELECT sum(quantity) FROM sale WHERE item = id AND time >= :sd4 AND time < :ed3 ::date + interval '1 day'), 0) AS sale, (SElECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed4 ::date + interval '1 day')) AS quantity, (SELECT sum(cost * quantity) / sum(quantity) FROM purchase WHERE item = id) AS unit_cost FROM coffees WHERE id IN (SELECT item FROM purchase WHERE time >= :sd6 AND time < :ed5 ::date + interval '1 day') OR id IN (SELECT id FROM items WHERE (SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed6 ::date + interval '1 day')) > 0) OR id IN (SELECT DISTINCT item FROM all_transactions WHERE time > :sd7 AND time < :ed7 ::date + interval '1 day')) SELECT *, (starting_balance + purchase - use - sale - quantity) AS adjustment, starting_balance * unit_cost AS starting_cost, purchase * unit_cost AS purchase_cost, use * unit_cost AS use_cost, sale * unit_cost AS sale_cost, quantity * unit_cost AS quantity_cost, (starting_balance + purchase - use - sale - quantity) * unit_cost AS adjustment_cost FROM q ORDER BY name";
+					var q = "WITH q AS (SELECT id, name, reference, COALESCE((SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :sd1)), 0)/:c1 AS starting_balance, COALESCE((SELECT sum(quantity) FROM purchase WHERE item = id AND time >= :sd2 AND time < :ed1 ::date + interval '1 day'), 0)/:c2 AS purchase, COALESCE((SELECT sum(quantity) FROM use WHERE item = id AND time >= :sd3 AND time < :ed2 ::date + interval '1 day'), 0)/:c3 AS use, COALESCE((SELECT sum(quantity) FROM sale WHERE item = id AND time >= :sd4 AND time < :ed3 ::date + interval '1 day'), 0)/:c4 AS sale, (SElECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed4 ::date + interval '1 day'))/:c5 AS quantity, (SELECT sum(cost * quantity) / sum(quantity) FROM purchase WHERE item = id)*:c6 AS unit_cost FROM coffees WHERE id IN (SELECT item FROM purchase WHERE time >= :sd6 AND time < :ed5 ::date + interval '1 day') OR id IN (SELECT id FROM items WHERE (SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed6 ::date + interval '1 day')) > 0) OR id IN (SELECT DISTINCT item FROM all_transactions WHERE time > :sd7 AND time < :ed7 ::date + interval '1 day')) SELECT *, (starting_balance + purchase - use - sale - quantity)/:c7 AS adjustment, starting_balance * unit_cost * :c8 AS starting_cost, purchase * unit_cost * :c9 AS purchase_cost, use * unit_cost * :c10 AS use_cost, sale * unit_cost * :c11 AS sale_cost, quantity * unit_cost * :c12 AS quantity_cost, (starting_balance + purchase - use - sale - quantity) * unit_cost * :c13 AS adjustment_cost FROM q ORDER BY name";
 				query.prepare(q);
 				query.bind(":sd1", startDate);
 				query.bind(":sd2", startDate);
@@ -65,6 +73,19 @@
 				query.bind(":ed5", endDate);
 				query.bind(":ed6", endDate);
 				query.bind(":ed7", endDate);
+				query.bind(":c1", conversion);
+				query.bind(":c2", conversion);
+				query.bind(":c3", conversion);
+				query.bind(":c4", conversion);
+				query.bind(":c5", conversion);
+				query.bind(":c6", conversion);
+				query.bind(":c7", conversion);
+				query.bind(":c8", conversion);
+				query.bind(":c9", conversion);
+				query.bind(":c10", conversion);
+				query.bind(":c11", conversion);
+				query.bind(":c12", conversion);
+				query.bind(":c13", conversion);
 				query.exec();
 				output.writeStartElement("table");
 				output.writeAttribute("rules", "groups");
@@ -74,17 +95,17 @@
 				output.writeTextElement("th", "ID"); // 0
 				output.writeTextElement("th", "Coffee"); // 1
 				output.writeTextElement("th", "Reference"); // 2
-				output.writeTextElement("th", "Starting (Lb)"); // 3
+				output.writeTextElement("th", "Starting (" + unitText + ")"); // 3
 				output.writeTextElement("th", "Cost"); // 10
-				output.writeTextElement("th", "Purchase (Lb)"); // 4
+				output.writeTextElement("th", "Purchase (" + unitText + ")"); // 4
 				output.writeTextElement("th", "Cost"); // 11
-				output.writeTextElement("th", "Use (Lb)"); // 5
+				output.writeTextElement("th", "Use (" + unitText + ")"); // 5
 				output.writeTextElement("th", "Cost"); // 12
-				output.writeTextElement("th", "Sale (Lb)"); // 6
+				output.writeTextElement("th", "Sale (" + unitText + ")"); // 6
 				output.writeTextElement("th", "Cost"); // 13
-				output.writeTextElement("th", "Adjustment (Lb)"); // 9
+				output.writeTextElement("th", "Adjustment (" + unitText + ")"); // 9
 				output.writeTextElement("th", "Cost"); // 15
-				output.writeTextElement("th", "Ending (Lb)"); // 7
+				output.writeTextElement("th", "Ending (" + unitText + ")"); // 7
 				output.writeTextElement("th", "Cost"); // 14
 				output.writeEndElement();
 				output.writeEndElement();

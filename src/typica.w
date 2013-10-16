@@ -5114,6 +5114,14 @@ of presenting a human readable list of choices.
 @<Assign column delegate from SQL@>=
 SqlComboBoxDelegate *delegate = new SqlComboBoxDelegate;
 SqlComboBox *widget = new SqlComboBox();
+if(currentElement.hasAttribute("nulltext"))
+{
+	widget->setNullText(currentElement.attribute("nulltext"));
+}
+if(currentElement.hasAttribute("nulldata"))
+{
+	widget->setNullData(QVariant(currentElement.attribute("nulldata")));
+}
 if(currentElement.hasAttribute("null"))
 {
 	if(currentElement.attribute("null") == "true")
@@ -5567,6 +5575,9 @@ QScriptValue SaltTable_model(QScriptContext *context, QScriptEngine *engine);
 QScriptValue SaltTable_quotedColumnArray(QScriptContext *context,
                                          QScriptEngine *engine);
 QScriptValue SaltTable_setData(QScriptContext *context, QScriptEngine *engine);
+QScriptValue SaltTable_clear(QScriptContext *context, QScriptEngine *engine);
+QScriptValue SaltTable_removeRow(QScriptContext *context, QScriptEngine *engine);
+QScriptValue SaltTable_findData(QScriptContext *context, QScriptEngine *engine);
 
 @ There are times when it is useful to obtain the sum of values in a column of
 a SaltTable object. For example, when a column represents the weight of the
@@ -5697,6 +5708,46 @@ QScriptValue SaltTable_data(QScriptContext *context, QScriptEngine *engine)
 	return retval;
 }
 
+@ There are times when it is useful to clear the content of a table. This is
+used, for example, in the green coffees table after changing the roasted coffee
+item to eliminate excess rows in the case where the previously selected item
+was a pre-roast blend.
+
+@<Functions for scripting@>=
+QScriptValue SaltTable_clear(QScriptContext *context, QScriptEngine *)
+{
+	QTableView *self = getself<QTableView *>(context);
+	SaltModel *model = qobject_cast<SaltModel *>(self->model());
+	model->clear();
+	return QScriptValue();
+}
+
+@ It is sometimes useful to remove a row from a table. This is done in the new
+batch window when the coffee for a row is set to a NULL item.
+
+@<Functions for scripting@>=
+QScriptValue SaltTable_removeRow(QScriptContext *context, QScriptEngine *engine)
+{
+	QTableView *self = getself<QTableView *>(context);
+	SaltModel *model = qobject_cast<SaltModel *>(self->model());
+	int row = argument<int>(0, context);
+	return engine->newVariant(model->removeRow(row));
+}
+
+@ To remove the correct row, it is sometimes useful to query the table for
+special values. This is done with the |findData()| method on the underlying
+model.
+
+@<Functions for scripting@>=
+QScriptValue SaltTable_findData(QScriptContext *context, QScriptEngine *engine)
+{
+	QTableView *self = getself<QTableView *>(context);
+	SaltModel *model = qobject_cast<SaltModel *>(self->model());
+	QVariant value = argument<QVariant>(0, context);
+	int column = argument<int>(1, context);
+	return engine->newVariant(model->findData(value, column));
+}
+
 @ These functions need to be added as properties of the table when it is passed
 to the host environment.
 
@@ -5716,6 +5767,9 @@ void setSaltTableProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("data", engine->newFunction(SaltTable_data));
 	value.setProperty("model", engine->newFunction(SaltTable_model));
 	value.setProperty("setData", engine->newFunction(SaltTable_setData));
+	value.setProperty("clear", engine->newFunction(SaltTable_clear));
+	value.setProperty("removeRow", engine->newFunction(SaltTable_removeRow));
+	value.setProperty("findData", engine->newFunction(SaltTable_findData));
 }
 
 @ The |SqlComboBox| is another class that is not constructed from scripts but is
@@ -11896,6 +11950,10 @@ class SaltModel : public QAbstractItemModel@/
 		QModelIndex parent(const QModelIndex &index) const;
 		QString arrayLiteral(int column, int role) const;
 		QString quotedArrayLiteral(int column, int role) const;
+		void clear();
+		bool removeRows(int row, int count,
+		                const QModelIndex &parent = QModelIndex());
+		int findData(const QVariant &value, int column, int role = Qt::UserRole);
 };
 
 @ The only unique methods in this class are the |arrayLiteral| and
@@ -12166,6 +12224,74 @@ QModelIndex SaltModel::index(int row, int column,
 	return QModelIndex();
 }
 
+@ There are some times when it is useful to clear the model data. Note that
+column header data is retained and the table will contain a single empty row
+after this method is called.
+
+@<SaltModel Implementation@>=
+void SaltModel::clear()
+{
+	beginResetModel();
+	modelData.clear();
+	@<Expand the SaltModel@>@;
+	endResetModel();
+}
+
+@ Another commonly useful operation is the ability to remove rows from the
+model. The new batch window uses this feature to eliminate rows in which the
+coffee is set to NULL. Note that if all rows of the model are removed, a new
+empty row will be created.
+
+@<SaltModel Implementation@>=
+bool SaltModel::removeRows(int row, int count,
+                           const QModelIndex &parent)
+{
+	if(parent == QModelIndex())
+	{
+		if(row >= 0 && count > 0 && (row + count - 1) < modelData.size())
+		{
+			beginRemoveRows(parent, row, row + count - 1);
+			for(int i = 0; i < count; i++)
+			{
+				modelData.removeAt(row);
+			}
+			endRemoveRows();
+			if(modelData.size() == 0)
+			{
+				beginInsertRows(parent, 0, 0);
+				@<Expand the SaltModel@>@;
+				endInsertRows();
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+@ To find the row number for removal operations it is useful to search for
+special values on a given role. The |findData()| method returns the first row
+in which the given value matches for a particular column and a particular role
+or |-1| if no such match exists.
+
+@<SaltModel Implementation@>=
+int SaltModel::findData(const QVariant &value, int column, int role)
+{
+	for(int i = 0; i < modelData.size(); i++)
+	{
+		if(modelData.at(i).size() > column)
+		{
+			if(modelData.at(i).at(column).contains(role))
+			{
+				if(modelData.at(i).at(column).value(role) == value)
+				{
+					return i;
+				}
+			}
+		}
+	}
+	return -1;
+}
+
 @* A Delegate for SQL Relations.
 
 \noindent The first column of the table view being described is responsible for
@@ -12191,6 +12317,8 @@ class SqlComboBox : public QComboBox@/
 	int dataColumn;
 	int displayColumn;
 	bool dataColumnShown;
+	QString specialNullText;
+	QVariant specialNullData;
 	public:@/
 		SqlComboBox();
 		~SqlComboBox();
@@ -12200,7 +12328,9 @@ class SqlComboBox : public QComboBox@/
 		void addSqlOptions(QString query);
 		void setDataColumn(int column);
 		void setDisplayColumn(int column);
-		void showData(bool show);@t\2@>@/
+		void showData(bool show);
+		void setNullText(QString nullText);
+		void setNullData(QVariant nullData);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ In order to make this class work a little more nicely as an item delegate,
@@ -12233,12 +12363,25 @@ void SqlComboBox::showData(bool show)
 @ Next, there is a need to know if the NULL value may legally be selected. Where
 this is the case, we generally want this to be inserted first. As the
 |QComboBox| supports storing both display and user data, much of the code is a
-thin wrapper around calls to the base class.
+thin wrapper around calls to the base class. The text and data for the NULL
+value can be set arbitrarily, which can be useful in certain cases. Note that
+any customization of the NULL text or data must be set before a call to
+|addNullOption()|.
 
 @<SqlComboBox Implementation@>=
 void SqlComboBox::addNullOption()
 {
-	addItem(tr("Unknown"), QVariant(QVariant::String));
+	addItem(specialNullText, specialNullData);
+}
+
+void SqlComboBox::setNullText(QString nullText)
+{
+	specialNullText = nullText;
+}
+
+void SqlComboBox::setNullData(QVariant nullData)
+{
+	specialNullData = nullData;
 }
 
 @ Typically, the SQL query used to populate this widget will request two columns
@@ -12300,7 +12443,8 @@ The destructor is trivial.
 
 @<SqlComboBox Implementation@>=
 SqlComboBox::SqlComboBox() :
-	dataColumn(0), displayColumn(0), dataColumnShown(false)
+	dataColumn(0), displayColumn(0), dataColumnShown(false),
+	specialNullText(tr("Unknown")), specialNullData(QVariant::String)
 {
 	view()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }

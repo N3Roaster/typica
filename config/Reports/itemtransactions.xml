@@ -1,0 +1,199 @@
+<window id="item_transactions">
+	<reporttitle>Inventory:->Item Transactions</reporttitle>
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Item:</label>
+			<sqldrop id="item" data="0" display="1" showdata="true">
+				<null />
+				<query>SELECT id, name FROM items WHERE category = 'Coffee: Unroasted' ORDER BY name</query>
+			</sqldrop>
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
+			<stretch />
+		</layout>
+		<webview id="report" />
+	</layout>
+	<menu name="File">
+		<item id="print" shortcut="Ctrl+P">Print</item>
+	</menu>
+	<program>
+		<![CDATA[
+			this.windowTitle = "Typica - Item Transactions";
+			var itemBox = findChildObject(this, 'item');
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
+			var view = findChildObject(this, 'report');
+			var printMenu = findChildObject(this, 'print');
+			printMenu.triggered.connect(function() {
+				view.print();
+			});
+			itemBox['currentIndexChanged(int)'].connect(function() {
+				refresh();
+			});
+			function refresh() {
+				var buffer = new QBuffer;
+				buffer.open(3);
+				var output = new XmlWriter(buffer);
+				output.writeStartDocument("1.0");
+				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+				output.writeStartElement("html");
+				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+				output.writeStartElement("head");
+				output.writeTextElement("title", "Item Transactions");
+				output.writeStartElement("style");
+				output.writeAttribute("type", "text/css");
+				output.writeCDATA("tr.PURCHASE {background-color: #77FF77}");
+				output.writeCDATA("tr.USE {background-color: #FFFFFF}");
+				output.writeCDATA("tr.INVENTORY {background-color: #7777FF}");
+				output.writeCDATA("tr.SALE {background-color: #FF77FF}");
+				output.writeCDATA("tr.LOSS {background-color: #FF7777}");
+				output.writeCDATA("tr.MAKE {background-color: #FFFF77}");
+				output.writeEndElement(); // style
+				
+				output.writeEndElement();
+				output.writeStartElement("body");
+				output.writeTextElement("h1", "Item Transactions:");
+				output.writeStartElement("table");
+				output.writeStartElement("tr");
+				output.writeStartElement("td");
+				output.writeTextElement("strong", "Item: ")
+				output.writeTextElement("span", itemBox.currentText);
+				output.writeEndElement(); // td
+				var query = new QSqlQuery();
+				query.prepare("SELECT reference, category FROM items WHERE id = :item");
+				query.bind(":item", itemBox.currentData());
+				query.exec();
+				if(query.next()) {
+					output.writeStartElement("td");
+					output.writeTextElement("strong", "Reference: ");
+					output.writeTextElement("span", query.value(0));
+					output.writeEndElement(); // td
+					output.writeStartElement("td");
+					output.writeTextElement("strong", "Category: ");
+					output.writeTextElement("span", query.value(1));
+					output.writeEndElement(); //td
+					output.writeEndElement(); //tr
+					query.prepare("SELECT origin, region, producer, grade, milling, drying FROM coffees WHERE id = :item");
+					query.bind(":item", itemBox.currentData());
+					query.exec();
+					if(query.next()) {
+						output.writeStartElement("tr");
+						output.writeStartElement("td");
+						output.writeTextElement("strong", "Origin: ");
+						output.writeTextElement("span", query.value(0));
+						output.writeEndElement(); // td
+						output.writeStartElement("td");
+						output.writeTextElement("strong", "Region: ");
+						output.writeTextElement("span", query.value(1));
+						output.writeEndElement(); // td
+						output.writeStartElement("td");
+						output.writeTextElement("strong", "Producer: ");
+						output.writeTextElement("span", query.value(2));
+						output.writeEndElement(); // td
+						output.writeEndElement(); // tr
+						output.writeStartElement("tr");
+						output.writeStartElement("td");
+						output.writeTextElement("strong", "Grade: ");
+						output.writeTextElement("span", query.value(3));
+						output.writeEndElement(); // td
+						output.writeStartElement("td");
+						output.writeTextElement("strong", "Milling: ");
+						output.writeTextElement("span", query.value(4));
+						output.writeEndElement(); // td
+						output.writeStartElement("td");
+						output.writeTextElement("strong", "Drying: ");
+						output.writeTextElement("span", query.value(5));
+						output.writeEndElement(); // td
+						output.writeEndElement(); // tr
+						query.prepare("SELECT decaf_method FROM decaf_coffees WHERE id = :item");
+						query.bind(":item", itemBox.currentData());
+						query.exec();
+						if(query.next()) {
+							output.writeStartElement("tr");
+							output.writeStartElement("td");
+							output.writeAttribute("colspan", "3");
+							output.writeTextElement("strong", "Decaffeination Method: ");
+							output.writeTextElement("span", query.value(0));
+							output.writeEndElement(); // td
+							output.writeEndElement(); // tr
+						}
+					}
+					output.writeEndElement() // table
+					
+					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2 FROM item_history(:item)");
+					switch(unitBox.currentIndex)
+					{
+						case 0:
+							query.bind(":c1", 2.2);
+							query.bind(":c2", 2.2);
+							break;
+						case 1:
+							query.bind(":c1", 1);
+							query.bind(":c2", 1);
+							break;
+					}
+					query.bind(":item", itemBox.currentData());
+					query.exec();
+					output.writeStartElement("table");
+					output.writeStartElement("tr");
+					output.writeTextElement("th", "Date");
+					output.writeTextElement("th", "Type");
+					output.writeTextElement("th", "Quantity");
+					output.writeTextElement("th", "Balance");
+					output.writeEndElement(); // tr
+					var prev_balance = "0";
+					var prev_prec = 0;
+					var cur_prec = 0;
+					while(query.next()) {
+						output.writeStartElement("tr");
+						output.writeAttribute("class", query.value(1));
+						output.writeTextElement("td", query.value(0));
+						output.writeTextElement("td", query.value(1));
+						if(query.value(1) == "INVENTORY") {
+							var split = prev_balance.split('.');
+							if(split.length > 1) {
+								prev_prec = split[1].length;
+							} else {
+								prev_prec = 0;
+							}
+							split = query.value(2).split('.');
+							if(split.length > 1) {
+								cur_prec = split[1].length;
+							} else {
+								cur_prec = 0;
+							}
+							var prec = prev_prec > cur_prec ? prev_prec : cur_prec;
+							output.writeTextElement("td", (Number(query.value(2)) - Number(prev_balance)).toFixed(prec));
+						} else {
+							output.writeTextElement("td", query.value(2));
+						}
+						output.writeTextElement("td", query.value(3));
+						prev_balance = query.value(3);
+						output.writeEndElement(); // tr
+					}
+					output.writeEndElement(); // table
+					/* Put the rest of the report here. No sense running queries if
+					   the item doesn't exist. */
+				} else {
+					/* Close tags if item data not found. */
+					output.writeEndElement(); // tr
+					output.writeEndElement(); // table
+				}
+				
+				output.writeEndElement(); // body
+				output.writeEndElement(); // html
+				output.writeEndDocument();
+				view.setContent(buffer);
+				buffer.close();
+				query = query.invalidate();
+			}
+			refresh();
+		]]>
+	</program>
+</window>

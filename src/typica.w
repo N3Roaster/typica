@@ -3877,12 +3877,16 @@ any {\tt <program>} elements that are immediate children of the
 {\tt <window>} element into a window displayed on screen, the script in the
 {\tt <program>} elements must call a function to display a specified window.
 
+Report windows can be produced by scripts in a similar, but slightly different
+manner.
+
 \danger This design works, but it'@q'@>s not particularly good design. It was written
 under severe time constraints and should be redesigned or at least cleaned up
 and reorganized.\endanger
 
 @<Function prototypes for scripting@>=
 QScriptValue createWindow(QScriptContext *context, QScriptEngine *engine);
+QScriptValue createReport(QScriptContext *context, QScriptEngine *engine);
 void addLayoutToWidget(QDomElement element, QStack<QWidget*> *widgetStack,
                        QStack<QLayout*> *layoutStack);
 void addLayoutToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
@@ -3942,12 +3946,14 @@ void addCalendarToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
 void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                         QStack<QLayout *> *layoutStack);
 
-@ The function for creating the window must be made available to the scripting
+@ The functions for creating windows must be made available to the scripting
 engine.
 
 @<Set up the scripting engine@>=
 engine->globalObject().setProperty("createWindow",
                                    engine->newFunction(createWindow));
+engine->globalObject().setProperty("createReport",
+                                   engine->newFunction(createReport));
 
 @ This function must examine the configuration document in search of the
 appropriate window element, parse the contents of that element, and create a
@@ -3963,6 +3969,32 @@ QScriptValue createWindow(QScriptContext *context, QScriptEngine *engine)@/
 	if(!element.isNull())
 	{
 		@<Display the window@>@;
+	}
+	return object;
+}
+
+@ Report files are not part of the configuration document and must be created
+differently. While there is a special menu type that handles all of this
+without involving the host environment, scripted generation and manipulation of
+report windows requires another function. This function will only work after a
+window with a reports menu has been created.
+
+@<Functions for scripting@>=
+QScriptValue createReport(QScriptContext *context, QScriptEngine *engine)
+{
+	QString targetID = argument<QString>(0, context);
+	QFile file(QString("reports:%1").arg(targetID));
+	QScriptValue object;
+	if(file.open(QIODevice::ReadOnly))
+	{
+		QDomDocument document;
+		document.setContent(&file, true);
+		QDomElement element = document.documentElement();
+		if(!element.isNull())
+		{
+			@<Display the window@>@;
+		}
+		file.close();
 	}
 	return object;
 }
@@ -13001,10 +13033,18 @@ presently distributed with Typica, the approach taken to implementing this menu
 type is highly inefficient. There are many optimizations available if this
 becomes problematic.\endanger
 
+When a report menu is generated, the directory used for this is added as a
+search path for the |"reports"| prefix. This is used by the |createReport()|
+script method and is intended to allow access to reports from outside of the
+Report menu.
+
 @<Populate reports menu@>=
 QSettings settings;
-QDir directory(QString("%1/%2").arg(settings.value("config").toString()).
-                                arg(element.attribute("src")));
+QString reportDirectory = QString("%1/%2").arg(settings.value("config").
+                                               toString()).
+                                           arg(element.attribute("src"));
+QDir::addSearchPath("reports", reportDirectory);
+QDir directory(reportDirectory);
 directory.setFilter(QDir::Files);
 directory.setSorting(QDir::Name);
 QStringList nameFilter;

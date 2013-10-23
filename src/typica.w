@@ -2256,6 +2256,7 @@ QScriptValue constructXQuery(QScriptContext *context, QScriptEngine *engine);
 QScriptValue XQuery_bind(QScriptContext *context, QScriptEngine *engine);
 QScriptValue XQuery_exec(QScriptContext *context, QScriptEngine *engine);
 QScriptValue XQuery_setQuery(QScriptContext *context, QScriptEngine *engine);
+QScriptValue XQuery_invalidate(QScriptContext *context, QScriptEngine *engine);
 void setXQueryProperties(QScriptValue value, QScriptEngine *engine);
 
 @ The constructor must be registered with the host environment. This is done a
@@ -2266,7 +2267,7 @@ constructor = engine->newFunction(constructXQuery);
 engine->globalObject().setProperty("XQuery", constructor);
 
 @ The constructor just needs to make sure the functions we want to make
-available are applied.
+available are applied. A method is also provided to free the |QXmlQuery|.
 
 @<Functions for scripting@>=
 QScriptValue constructXQuery(QScriptContext *, QScriptEngine *engine)
@@ -2276,11 +2277,19 @@ QScriptValue constructXQuery(QScriptContext *, QScriptEngine *engine)
 	return object;
 }
 
+QScriptValue XQuery_invalidate(QScriptContext *context, QScriptEngine *)
+{
+	QXmlQuery *self = getself<QXmlQuery *>(context);
+	delete self;
+	return QScriptValue();
+}
+
 void setXQueryProperties(QScriptValue value, QScriptEngine *engine)
 {
 	value.setProperty("bind", engine->newFunction(XQuery_bind));
 	value.setProperty("exec", engine->newFunction(XQuery_exec));
 	value.setProperty("setQuery", engine->newFunction(XQuery_setQuery));
+	value.setProperty("invalidate", engine->newFunction(XQuery_invalidate));
 }
 
 @ The |bind()| property can be used to specify a |QIODevice| to be referenced by
@@ -3369,7 +3378,7 @@ class SqlQueryConnection : public QSqlQuery@/
 	public:@/
 		SqlQueryConnection(const QString &query = QString());
 		~SqlQueryConnection();
-		QSqlQuery* operator->();
+		QSqlQuery* operator->() const;
 	private:@/
 		QString connection;
 		QSqlQuery *q;
@@ -3409,7 +3418,7 @@ SqlQueryConnection::~SqlQueryConnection()
 object.
 
 @<SqlQueryConnection implementation@>=
-QSqlQuery* SqlQueryConnection::operator->()
+QSqlQuery* SqlQueryConnection::operator->() const
 {
 	return q;
 }
@@ -3448,8 +3457,9 @@ value.
 @<Functions for scripting@>=
 QScriptValue constructQSqlQuery(QScriptContext *, QScriptEngine *engine)
 {
+	SqlQueryConnection *obj = new SqlQueryConnection();
 	QScriptValue object =
-	     engine->toScriptValue<void *>(new SqlQueryConnection());
+	     engine->toScriptValue<void *>(obj);
 	setQSqlQueryProperties(object, engine);
 	return object;
 }
@@ -3478,40 +3488,40 @@ void setQSqlQueryProperties(QScriptValue value, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QSqlQuery_exec(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *q = getself<SqlQueryConnection *>(context)->operator->();
 	QScriptValue retval;
 	if(context->argumentCount() == 1)
 	{
 		retval = QScriptValue(engine,
-		                      query->exec(argument<QString>(0, context)));
+		                      q->exec(argument<QString>(0, context)));
 	}
 	else
 	{
-		retval = QScriptValue(engine, query->exec());
+		retval = QScriptValue(engine, q->exec());
 	}
-	if(query->lastError().isValid())
+	if(q->lastError().isValid())
 	{
-		qDebug() << query->lastQuery();
-		qDebug() << query->lastError().text();
+		qDebug() << q->lastQuery();
+		qDebug() << q->lastError().text();
 	}
 	return retval;
 }
 
 QScriptValue QSqlQuery_executedQuery(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(query->lastQuery());
 }
 
 QScriptValue QSqlQuery_next(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(engine, query->next());
 }
 
 QScriptValue QSqlQuery_value(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(engine,
 	                    query->value(argument<int>(0, context)).toString());
 }
@@ -3522,13 +3532,13 @@ data available in a named file, or data from any open |QIODevice|.
 @<Functions for scripting@>=
 QScriptValue QSqlQuery_prepare(QScriptContext *context, QScriptEngine *engine)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	return QScriptValue(engine, query->prepare(argument<QString>(0, context)));
 }
 
 QScriptValue QSqlQuery_bind(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	query->bindValue(argument<QString>(0, context),
 	                 argument<QVariant>(1, context));
 	return QScriptValue();
@@ -3537,7 +3547,7 @@ QScriptValue QSqlQuery_bind(QScriptContext *context, QScriptEngine *)
 QScriptValue QSqlQuery_bindFileData(QScriptContext *context,
                                     QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	QString placeholder = argument<QString>(0, context);
 	QString filename = argument<QString>(1, context);
 	QFile file(filename);
@@ -3554,7 +3564,7 @@ QScriptValue QSqlQuery_bindFileData(QScriptContext *context,
 QScriptValue QSqlQuery_bindDeviceData(QScriptContext *context,
                                       QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
 	QString placeholder = argument<QString>(0, context);
 	QIODevice *device = argument<QIODevice *>(1, context);
 	device->reset();
@@ -3680,13 +3690,14 @@ host environment. The function is now depreciated and should not be used.
 @<Functions for scripting@>=
 QScriptValue annotationFromRecord(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection query;
+	SqlQueryConnection h;
+	QSqlQuery *query = h.operator->();
 	QString q = "SELECT file FROM files WHERE id = :file";
-	query.prepare(q);
-	query.bindValue(":file", argument<int>(0, context));
-	query.exec();
-	query.next();
-	QByteArray array = query.value(0).toByteArray();
+	query->prepare(q);
+	query->bindValue(":file", argument<int>(0, context));
+	query->exec();
+	query->next();
+	QByteArray array = query->value(0).toByteArray();
 	QBuffer buffer(&array);
 	buffer.open(QIODevice::ReadOnly);
 	QXmlQuery xquery;
@@ -3866,12 +3877,16 @@ any {\tt <program>} elements that are immediate children of the
 {\tt <window>} element into a window displayed on screen, the script in the
 {\tt <program>} elements must call a function to display a specified window.
 
+Report windows can be produced by scripts in a similar, but slightly different
+manner.
+
 \danger This design works, but it'@q'@>s not particularly good design. It was written
 under severe time constraints and should be redesigned or at least cleaned up
 and reorganized.\endanger
 
 @<Function prototypes for scripting@>=
 QScriptValue createWindow(QScriptContext *context, QScriptEngine *engine);
+QScriptValue createReport(QScriptContext *context, QScriptEngine *engine);
 void addLayoutToWidget(QDomElement element, QStack<QWidget*> *widgetStack,
                        QStack<QLayout*> *layoutStack);
 void addLayoutToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
@@ -3931,12 +3946,14 @@ void addCalendarToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
 void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                         QStack<QLayout *> *layoutStack);
 
-@ The function for creating the window must be made available to the scripting
+@ The functions for creating windows must be made available to the scripting
 engine.
 
 @<Set up the scripting engine@>=
 engine->globalObject().setProperty("createWindow",
                                    engine->newFunction(createWindow));
+engine->globalObject().setProperty("createReport",
+                                   engine->newFunction(createReport));
 
 @ This function must examine the configuration document in search of the
 appropriate window element, parse the contents of that element, and create a
@@ -3952,6 +3969,32 @@ QScriptValue createWindow(QScriptContext *context, QScriptEngine *engine)@/
 	if(!element.isNull())
 	{
 		@<Display the window@>@;
+	}
+	return object;
+}
+
+@ Report files are not part of the configuration document and must be created
+differently. While there is a special menu type that handles all of this
+without involving the host environment, scripted generation and manipulation of
+report windows requires another function. This function will only work after a
+window with a reports menu has been created.
+
+@<Functions for scripting@>=
+QScriptValue createReport(QScriptContext *context, QScriptEngine *engine)
+{
+	QString targetID = argument<QString>(0, context);
+	QFile file(QString("reports:%1").arg(targetID));
+	QScriptValue object;
+	if(file.open(QIODevice::ReadOnly))
+	{
+		QDomDocument document;
+		document.setContent(&file, true);
+		QDomElement element = document.documentElement();
+		if(!element.isNull())
+		{
+			@<Display the window@>@;
+		}
+		file.close();
 	}
 	return object;
 }
@@ -5103,6 +5146,14 @@ of presenting a human readable list of choices.
 @<Assign column delegate from SQL@>=
 SqlComboBoxDelegate *delegate = new SqlComboBoxDelegate;
 SqlComboBox *widget = new SqlComboBox();
+if(currentElement.hasAttribute("nulltext"))
+{
+	widget->setNullText(currentElement.attribute("nulltext"));
+}
+if(currentElement.hasAttribute("nulldata"))
+{
+	widget->setNullData(QVariant(currentElement.attribute("nulldata")));
+}
 if(currentElement.hasAttribute("null"))
 {
 	if(currentElement.attribute("null") == "true")
@@ -5556,6 +5607,9 @@ QScriptValue SaltTable_model(QScriptContext *context, QScriptEngine *engine);
 QScriptValue SaltTable_quotedColumnArray(QScriptContext *context,
                                          QScriptEngine *engine);
 QScriptValue SaltTable_setData(QScriptContext *context, QScriptEngine *engine);
+QScriptValue SaltTable_clear(QScriptContext *context, QScriptEngine *engine);
+QScriptValue SaltTable_removeRow(QScriptContext *context, QScriptEngine *engine);
+QScriptValue SaltTable_findData(QScriptContext *context, QScriptEngine *engine);
 
 @ There are times when it is useful to obtain the sum of values in a column of
 a SaltTable object. For example, when a column represents the weight of the
@@ -5686,6 +5740,46 @@ QScriptValue SaltTable_data(QScriptContext *context, QScriptEngine *engine)
 	return retval;
 }
 
+@ There are times when it is useful to clear the content of a table. This is
+used, for example, in the green coffees table after changing the roasted coffee
+item to eliminate excess rows in the case where the previously selected item
+was a pre-roast blend.
+
+@<Functions for scripting@>=
+QScriptValue SaltTable_clear(QScriptContext *context, QScriptEngine *)
+{
+	QTableView *self = getself<QTableView *>(context);
+	SaltModel *model = qobject_cast<SaltModel *>(self->model());
+	model->clear();
+	return QScriptValue();
+}
+
+@ It is sometimes useful to remove a row from a table. This is done in the new
+batch window when the coffee for a row is set to a NULL item.
+
+@<Functions for scripting@>=
+QScriptValue SaltTable_removeRow(QScriptContext *context, QScriptEngine *engine)
+{
+	QTableView *self = getself<QTableView *>(context);
+	SaltModel *model = qobject_cast<SaltModel *>(self->model());
+	int row = argument<int>(0, context);
+	return engine->newVariant(model->removeRow(row));
+}
+
+@ To remove the correct row, it is sometimes useful to query the table for
+special values. This is done with the |findData()| method on the underlying
+model.
+
+@<Functions for scripting@>=
+QScriptValue SaltTable_findData(QScriptContext *context, QScriptEngine *engine)
+{
+	QTableView *self = getself<QTableView *>(context);
+	SaltModel *model = qobject_cast<SaltModel *>(self->model());
+	QVariant value = argument<QVariant>(0, context);
+	int column = argument<int>(1, context);
+	return engine->newVariant(model->findData(value, column));
+}
+
 @ These functions need to be added as properties of the table when it is passed
 to the host environment.
 
@@ -5705,6 +5799,9 @@ void setSaltTableProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("data", engine->newFunction(SaltTable_data));
 	value.setProperty("model", engine->newFunction(SaltTable_model));
 	value.setProperty("setData", engine->newFunction(SaltTable_setData));
+	value.setProperty("clear", engine->newFunction(SaltTable_clear));
+	value.setProperty("removeRow", engine->newFunction(SaltTable_removeRow));
+	value.setProperty("findData", engine->newFunction(SaltTable_findData));
 }
 
 @ The |SqlComboBox| is another class that is not constructed from scripts but is
@@ -5719,6 +5816,7 @@ QScriptValue QComboBox_currentData(QScriptContext *context,
 QScriptValue QComboBox_addItem(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QComboBox_setModel(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QComboBox_findText(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QComboBox_findData(QScriptContext *context, QScriptEngine *engine);
 
 @ These functions should seem familiar by now.
 
@@ -5736,6 +5834,7 @@ void setQComboBoxProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("addItem", engine->newFunction(QComboBox_addItem));
 	value.setProperty("setModel", engine->newFunction(QComboBox_setModel));
 	value.setProperty("findText", engine->newFunction(QComboBox_findText));
+	value.setProperty("findData", engine->newFunction(QComboBox_findData));
 }
 
 QScriptValue QComboBox_currentData(QScriptContext *context,
@@ -5764,6 +5863,12 @@ QScriptValue QComboBox_findText(QScriptContext *context, QScriptEngine *engine)
 {
 	QComboBox *self = getself<QComboBox *>(context);
 	return QScriptValue(engine, self->findText(argument<QString>(0, context)));
+}
+
+QScriptValue QComboBox_findData(QScriptContext *context, QScriptEngine *engine)
+{
+	QComboBox *self = getself<QComboBox *>(context);
+	return QScriptValue(engine, self->findData(argument<QVariant>(0, context)));
 }
 
 @i abouttypica.w
@@ -11802,12 +11907,13 @@ database aware widgets.
 QSqlDatabase Application::database()
 {
 	QString connectionName;
-	QSqlDatabase connection = QSqlDatabase::database();
+	QSqlDatabase connection =
+		QSqlDatabase::database(QLatin1String(QSqlDatabase::defaultConnection), false);
 	do
 	{
 		connectionName = QUuid::createUuid().toString();
 	} while (QSqlDatabase::connectionNames().contains(connectionName));
-	return QSqlDatabase::cloneDatabase(connection, connectionName);
+	return QSqlDatabase::cloneDatabase(connection, QString(connectionName));
 }
 
 @** Table editor for ordered arrays with SQL relations.
@@ -11884,6 +11990,10 @@ class SaltModel : public QAbstractItemModel@/
 		QModelIndex parent(const QModelIndex &index) const;
 		QString arrayLiteral(int column, int role) const;
 		QString quotedArrayLiteral(int column, int role) const;
+		void clear();
+		bool removeRows(int row, int count,
+		                const QModelIndex &parent = QModelIndex());
+		int findData(const QVariant &value, int column, int role = Qt::UserRole);
 };
 
 @ The only unique methods in this class are the |arrayLiteral| and
@@ -12154,6 +12264,74 @@ QModelIndex SaltModel::index(int row, int column,
 	return QModelIndex();
 }
 
+@ There are some times when it is useful to clear the model data. Note that
+column header data is retained and the table will contain a single empty row
+after this method is called.
+
+@<SaltModel Implementation@>=
+void SaltModel::clear()
+{
+	beginResetModel();
+	modelData.clear();
+	@<Expand the SaltModel@>@;
+	endResetModel();
+}
+
+@ Another commonly useful operation is the ability to remove rows from the
+model. The new batch window uses this feature to eliminate rows in which the
+coffee is set to NULL. Note that if all rows of the model are removed, a new
+empty row will be created.
+
+@<SaltModel Implementation@>=
+bool SaltModel::removeRows(int row, int count,
+                           const QModelIndex &parent)
+{
+	if(parent == QModelIndex())
+	{
+		if(row >= 0 && count > 0 && (row + count - 1) < modelData.size())
+		{
+			beginRemoveRows(parent, row, row + count - 1);
+			for(int i = 0; i < count; i++)
+			{
+				modelData.removeAt(row);
+			}
+			endRemoveRows();
+			if(modelData.size() == 0)
+			{
+				beginInsertRows(parent, 0, 0);
+				@<Expand the SaltModel@>@;
+				endInsertRows();
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+@ To find the row number for removal operations it is useful to search for
+special values on a given role. The |findData()| method returns the first row
+in which the given value matches for a particular column and a particular role
+or |-1| if no such match exists.
+
+@<SaltModel Implementation@>=
+int SaltModel::findData(const QVariant &value, int column, int role)
+{
+	for(int i = 0; i < modelData.size(); i++)
+	{
+		if(modelData.at(i).size() > column)
+		{
+			if(modelData.at(i).at(column).contains(role))
+			{
+				if(modelData.at(i).at(column).value(role) == value)
+				{
+					return i;
+				}
+			}
+		}
+	}
+	return -1;
+}
+
 @* A Delegate for SQL Relations.
 
 \noindent The first column of the table view being described is responsible for
@@ -12179,6 +12357,8 @@ class SqlComboBox : public QComboBox@/
 	int dataColumn;
 	int displayColumn;
 	bool dataColumnShown;
+	QString specialNullText;
+	QVariant specialNullData;
 	public:@/
 		SqlComboBox();
 		~SqlComboBox();
@@ -12188,7 +12368,9 @@ class SqlComboBox : public QComboBox@/
 		void addSqlOptions(QString query);
 		void setDataColumn(int column);
 		void setDisplayColumn(int column);
-		void showData(bool show);@t\2@>@/
+		void showData(bool show);
+		void setNullText(QString nullText);
+		void setNullData(QVariant nullData);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ In order to make this class work a little more nicely as an item delegate,
@@ -12221,12 +12403,25 @@ void SqlComboBox::showData(bool show)
 @ Next, there is a need to know if the NULL value may legally be selected. Where
 this is the case, we generally want this to be inserted first. As the
 |QComboBox| supports storing both display and user data, much of the code is a
-thin wrapper around calls to the base class.
+thin wrapper around calls to the base class. The text and data for the NULL
+value can be set arbitrarily, which can be useful in certain cases. Note that
+any customization of the NULL text or data must be set before a call to
+|addNullOption()|.
 
 @<SqlComboBox Implementation@>=
 void SqlComboBox::addNullOption()
 {
-	addItem(tr("Unknown"), QVariant(QVariant::String));
+	addItem(specialNullText, specialNullData);
+}
+
+void SqlComboBox::setNullText(QString nullText)
+{
+	specialNullText = nullText;
+}
+
+void SqlComboBox::setNullData(QVariant nullData)
+{
+	specialNullData = nullData;
 }
 
 @ Typically, the SQL query used to populate this widget will request two columns
@@ -12253,7 +12448,8 @@ the combo box with the results.
 @<SqlComboBox Implementation@>=
 void SqlComboBox::addSqlOptions(QString query)
 {
-	SqlQueryConnection *dbquery = new SqlQueryConnection;
+	SqlQueryConnection h;
+	QSqlQuery *dbquery = h.operator->();
 	if(!dbquery->exec(query))
 	{
 		QSqlError error = dbquery->lastError();
@@ -12273,7 +12469,6 @@ void SqlComboBox::addSqlOptions(QString query)
 		}
 		addItem(displayValue, dataValue);
 	}
-	delete dbquery;
 }
 
 @ The constructor initializes some private member data. A size policy is also
@@ -12288,7 +12483,8 @@ The destructor is trivial.
 
 @<SqlComboBox Implementation@>=
 SqlComboBox::SqlComboBox() :
-	dataColumn(0), displayColumn(0), dataColumnShown(false)
+	dataColumn(0), displayColumn(0), dataColumnShown(false),
+	specialNullText(tr("Unknown")), specialNullData(QVariant::String)
 {
 	view()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
@@ -12562,6 +12758,7 @@ void SqlConnectionSetup::testConnection()
 		settings.setValue("database/dbname", dbname->text());
 		settings.setValue("database/user", user->text());
 		settings.setValue("database/password", password->text());
+		database.close();
 		accept();
 	}
 	else
@@ -12596,6 +12793,10 @@ database.setPassword(settings.value("database/password").toString());
 if(!database.open())
 {
 	settings.setValue("database/exists", "false");
+}
+else
+{
+	database.close();
 }
 
 @** Viewing a record of batches.
@@ -12721,8 +12922,6 @@ void SqlQueryView::openRow(const QModelIndex &index)
 
 @ The other functions are wrappers around model methods.
 
-\danger |setQuery()| leaks database connections.
-
 @<SqlQueryView implementation@>=
 void SqlQueryView::setQuery(const QString &query)
 {
@@ -12730,6 +12929,7 @@ void SqlQueryView::setQuery(const QString &query)
 	database.open();
 	QSqlQuery q(query, database);
 	((QSqlQueryModel*)model())->setQuery(q);
+	database.close();
 }
 
 bool SqlQueryView::setHeaderData(int section, Qt::Orientation@, orientation,
@@ -12841,10 +13041,18 @@ presently distributed with Typica, the approach taken to implementing this menu
 type is highly inefficient. There are many optimizations available if this
 becomes problematic.\endanger
 
+When a report menu is generated, the directory used for this is added as a
+search path for the |"reports"| prefix. This is used by the |createReport()|
+script method and is intended to allow access to reports from outside of the
+Report menu.
+
 @<Populate reports menu@>=
 QSettings settings;
-QDir directory(QString("%1/%2").arg(settings.value("config").toString()).
-                                arg(element.attribute("src")));
+QString reportDirectory = QString("%1/%2").arg(settings.value("config").
+                                               toString()).
+                                           arg(element.attribute("src"));
+QDir::addSearchPath("reports", reportDirectory);
+QDir directory(reportDirectory);
 directory.setFilter(QDir::Files);
 directory.setSorting(QDir::Name);
 QStringList nameFilter;
@@ -13191,36 +13399,37 @@ placeholders that have not yet had values bound to them), there will be no
 change to the table and the next child element, if any, will be processed.
 
 @<Add SQL query results to report table@>=
-SqlQueryConnection query;
-query.prepare(currentElement.text());
+SqlQueryConnection h;
+QSqlQuery *query = h.operator->();
+query->prepare(currentElement.text());
 foreach(QString key, bindings.uniqueKeys())
 {
 	if(currentElement.text().contains(key))
 	{
-		query.bindValue(key, bindings.value(key));
+		query->bindValue(key, bindings.value(key));
 	}
 }
-query.exec();
-if(!query.next())
+query->exec();
+if(!query->next())
 {
 	continue;
 }
-if(query.record().count() > columns)
+if(query->record().count() > columns)
 {
-	table->appendColumns(query.record().count() - columns);
+	table->appendColumns(query->record().count() - columns);
 }
 do
 {
 	table->appendRows(1);
 	rows++;
 	currentRow++;
-	for(int j = 0; j < query.record().count(); j++)
+	for(int j = 0; j < query->record().count(); j++)
 	{
 		QTextTableCell cell = table->cellAt(currentRow, j);
 		cursor = cell.firstCursorPosition();
-		cursor.insertText(query.value(j).toString());
+		cursor.insertText(query->value(j).toString());
 	}
-} while(query.next());
+} while(query->next());
 
 @ It is sometimes desirable to add fixed data such as column headers to a table.
 This is done with the {\tt <row>} element.

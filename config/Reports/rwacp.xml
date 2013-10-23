@@ -114,7 +114,8 @@
 				query.exec();
 				query.next();
                 output.writeTextElement("td", query.value(0));
-                output.writeEndElement();
+                query = query.invalidate();
+				output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();

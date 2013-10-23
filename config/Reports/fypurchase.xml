@@ -24,6 +24,7 @@
 			query.exec("SELECT EXTRACT(YEAR FROM time) FROM purchase WHERE time = (SELECT min(time) FROM purchase)");
 			query.next();
 			startDateField.setDate(query.value(0), 1, 1);
+			query = query.invalidate();
 			/* Set ending year to the current year. */
 			var endDateField = findChildObject(this, 'enddate');
 			endDateField.setDate(endDateField.year(), 12, 31);
@@ -79,6 +80,7 @@
 				var sacktotal = 0;
 				var unittotal = 0;
 				var costtotal = 0;
+				var query = new QSqlQuery();
 				for(var i = startDateField.year(); i <= endDateField.year(); i++)
 				{
 					output.writeStartElement("tr");
@@ -89,7 +91,10 @@
 					query.exec();
 					query.next();
 					output.writeStartElement("th");
+					output.writeStartElement("a");
+					output.writeAttribute("href", "typica://script/y" + i);
 					output.writeCharacters(i);
+					output.writeEndElement(); //a
 					output.writeEndElement(); //th
 					output.writeTextElement("td", query.value(0));
 					output.writeTextElement("td", query.value(1));
@@ -99,6 +104,7 @@
 					costtotal += Number(query.value(2));
 					output.writeEndElement(); //tr
 				}
+				query = query.invalidate();
 				output.writeEndElement(); //tbody
 				output.writeStartElement("tfoot");
 				output.writeTextElement("th", "Totals:");
@@ -120,6 +126,59 @@
 			});
 			endDateField.dateChanged.connect(function() {
 				refresh();
+			});
+			/* Expand year data */
+			var expandedYears = new Array();
+			var expandYear = function(url) {
+				if(expandedYears.indexOf(url) == -1) {
+					expandedYears.push(url);
+					var element = new WebElement(view.findFirstElement("#" + url));
+					var year = url.slice(1,url.length);
+					var details = '<tr><td /><td colspan="3"><table><tr><th>Id</th><th>Invoice</th><th>Vendor</th><th>Cost</th></tr>';
+					q = "SELECT id, invoice, vendor, (SELECT sum(cost) FROM invoice_items WHERE invoice_id = id) FROM invoices WHERE time >= '" + year + "-01-01' AND time <= '" + year + "-12-31'";
+					var query = new QSqlQuery();
+					query.exec(q);
+					while(query.next())
+					{
+						details += '<tr><td><a href="typica://script/i' + query.value(0) + '">' + query.value(0) + '</a></td>';
+						details += '<td>' + query.value(1) + '</td>';
+						details += '<td>' + query.value(2) + '</td>';
+						details += '<td>' + Number(query.value(3)).toFixed(2) + '</td></tr>';
+					}
+					query = query.invalidate();
+					details += '</table></td></tr>'
+					element.appendOutside(details);
+				}
+			};
+			/* Open invoices */
+			var openInvoice = function(url) {
+				var arg = url.slice(1, url.length);
+				var info = createWindow("invoiceinfo");
+				info.setInvoiceID(arg);
+				var query = new QSqlQuery();
+				query.exec("SELECT time, invoice, vendor FROM invoices WHERE id = " + arg);
+				query.next();
+				var timefield = findChildObject(info, 'date');
+				timefield.text = query.value(0);
+				var vendorfield = findChildObject(info, 'vendor');
+				vendorfield.text = query.value(2);
+				var invoicefield = findChildObject(info, 'invoice');
+				invoicefield.text = query.value(1);
+				var itemtable = findChildObject(info, 'itemtable');
+				itemtable.setQuery("SELECT record_type, item_id, description, (SELECT reference FROM items WHERE id = item_id) AS reference, (SELECT cost FROM purchase WHERE item = item_id) AS unit_cost, (SELECT quantity FROM purchase WHERE item = item_id) AS quantity, ((SELECT quantity FROM purchase WHERE item = item_id)/(SELECT conversion FROM lb_bag_conversion WHERE item = item_id))::numeric(12,2) AS sacks, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'PURCHASE' UNION SELECT record_type, NULL, description, NULL, NULL, NULL, NULL, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'FEE' ORDER BY item_id");
+				query = query.invalidate();
+			};
+			/* Dispatch script link clicks */
+			view.scriptLinkClicked.connect(function(url) {
+				var linkType = url[0];
+				switch(linkType) {
+					case 'y':
+						expandYear(url);
+						break
+					case 'i':
+						openInvoice(url);
+						break;
+				}
 			});
 		]]>
 	</program>

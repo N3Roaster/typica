@@ -21,7 +21,7 @@
         </layout>
         <label>Green Coffee:</label>
         <sqltablearray columns="2" id="greens">
-            <column name="Coffee" delegate="sql" showdata="true" null="false" data="0" display="1">SELECT id, name FROM coffees WHERE quantity &lt;&gt; 0 ORDER BY name</column>
+            <column name="Coffee" delegate="sql" showdata="true" null="true" nulltext="Delete" nulldata="delete" data="0" display="1">SELECT id, name FROM coffees WHERE quantity &lt;&gt; 0 ORDER BY name</column>
             <column name="Weight" />
         </sqltablearray>
         <layout type="horizontal">
@@ -119,6 +119,20 @@
 				}
 			}
 			model.dataChanged.connect(function() {
+				var deleteRow = -1;
+				/* The combo box delegate updates user data before display data
+				   and this code is executed before the model update is fully
+				   complete. Rather than rely on this behavior continuing, we
+				   check that the display value has also been updated and defer
+				   row removal until both updates are complete.
+				*/
+				while((deleteRow = table.findData("delete", 0)) > -1) {
+					if(table.data(deleteRow, 0, 0) == "Delete") {
+						table.removeRow(table.findData("delete", 0));
+					} else {
+						break;
+					}
+				}
 				green.text = table.columnSum(1, 0);
 				table.resizeColumnToContents(0);
                 if(parseFloat(green.text) > 0)
@@ -160,6 +174,7 @@
             var profilebutton = findChildObject(this, 'load');
             profilebutton.setEnabled(false);
             roasted['currentIndexChanged(int)'].connect(function() {
+				table.clear();
                 var query = new QSqlQuery();
                 var q = "SELECT EXISTS(SELECT 1 FROM item_files WHERE item = ";
                 q = q + roasted.currentData();

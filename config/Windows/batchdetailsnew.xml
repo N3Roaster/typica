@@ -295,6 +295,7 @@
 				rq = rq + 'string($t/annotation), "~")';
 				colQuery.setQuery(rq);
 				var annotationData = colQuery.exec();
+				colQuery = colQuery.invalidate();
 				buffer2.close();
 				output.writeStartElement("tbody");
 				var annotationRecords = annotationData.split("~");

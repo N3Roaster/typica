@@ -1,0 +1,204 @@
+<window id="invchange">
+	<reporttitle>Inventory:->Inventory Change Summary</reporttitle>
+	<layout type="vertical">
+		<layout type="horizontal">
+			<label>Start Date:</label>
+			<calendar id="startdate" />
+			<label>End Date:</label>
+			<calendar id="enddate" />
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
+			<stretch />
+		</layout>
+		<webview id="report" />
+	</layout>
+	<menu name="File">
+		<item id="print" shortcut="Ctrl+P">Print</item>
+	</menu>
+	<program>
+		<![CDATA[
+			this.windowTitle = "Typica - Inventory Change Summary";
+			var startDateField = findChildObject(this, 'startdate');
+			startDateField.setDate(startDateField.year(), 1, 1);
+			var endDateField = findChildObject(this, 'enddate');
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
+			var view = findChildObject(this, 'report');
+			var printMenu = findChildObject(this, 'print');
+			printMenu.triggered.connect(function() {
+				view.print();
+			});
+			function refresh() {
+				var buffer = new QBuffer;
+				buffer.open(3);
+				var output = new XmlWriter(buffer);
+				output.writeStartDocument("1.0");
+				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+				output.writeStartElement("html");
+				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+				output.writeStartElement("head");
+				output.writeTextElement("title", "Inventory Change Summary");
+				output.writeEndElement();
+				output.writeStartElement("body");
+				var startDate = "" + startDateField.year() + "-" + startDateField.month() + "-" + startDateField.day();
+				var endDate = "" + endDateField.year() + "-" + endDateField.month() + "-" + endDateField.day();
+				output.writeTextElement("h1", "Inventory Change Summary: " + startDate + " – " + endDate);
+				var conversion = 1;
+				if(unitBox.currentIndex == 0) {
+					conversion = 2.2;
+				}
+				var unitText = "Lb";
+				if(unitBox.currentIndex == 0) {
+					unitText = "Kg";
+				}
+				var query = new QSqlQuery();
+					var q = "WITH q AS (SELECT id, name, reference, COALESCE((SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :sd1)), 0)/:c1 AS starting_balance, COALESCE((SELECT sum(quantity) FROM purchase WHERE item = id AND time >= :sd2 AND time < :ed1 ::date + interval '1 day'), 0)/:c2 AS purchase, COALESCE((SELECT sum(quantity) FROM use WHERE item = id AND time >= :sd3 AND time < :ed2 ::date + interval '1 day'), 0)/:c3 AS use, COALESCE((SELECT sum(quantity) FROM sale WHERE item = id AND time >= :sd4 AND time < :ed3 ::date + interval '1 day'), 0)/:c4 AS sale, (SElECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed4 ::date + interval '1 day'))/:c5 AS quantity, (SELECT sum(cost * quantity) / sum(quantity) FROM purchase WHERE item = id)*:c6 AS unit_cost FROM coffees WHERE id IN (SELECT item FROM purchase WHERE time >= :sd6 AND time < :ed5 ::date + interval '1 day') OR id IN (SELECT id FROM items WHERE (SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed6 ::date + interval '1 day')) > 0) OR id IN (SELECT DISTINCT item FROM all_transactions WHERE time > :sd7 AND time < :ed7 ::date + interval '1 day')) SELECT *, (starting_balance + purchase - use - sale - quantity)/:c7 AS adjustment, starting_balance * unit_cost * :c8 AS starting_cost, purchase * unit_cost * :c9 AS purchase_cost, use * unit_cost * :c10 AS use_cost, sale * unit_cost * :c11 AS sale_cost, quantity * unit_cost * :c12 AS quantity_cost, (starting_balance + purchase - use - sale - quantity) * unit_cost * :c13 AS adjustment_cost FROM q ORDER BY name";
+				query.prepare(q);
+				query.bind(":sd1", startDate);
+				query.bind(":sd2", startDate);
+				query.bind(":sd3", startDate);
+				query.bind(":sd4", startDate);
+				query.bind(":sd6", startDate);
+				query.bind(":sd7", startDate);
+				query.bind(":ed1", endDate);
+				query.bind(":ed2", endDate);
+				query.bind(":ed3", endDate);
+				query.bind(":ed4", endDate);
+				query.bind(":ed5", endDate);
+				query.bind(":ed6", endDate);
+				query.bind(":ed7", endDate);
+				query.bind(":c1", conversion);
+				query.bind(":c2", conversion);
+				query.bind(":c3", conversion);
+				query.bind(":c4", conversion);
+				query.bind(":c5", conversion);
+				query.bind(":c6", conversion);
+				query.bind(":c7", conversion);
+				query.bind(":c8", conversion);
+				query.bind(":c9", conversion);
+				query.bind(":c10", conversion);
+				query.bind(":c11", conversion);
+				query.bind(":c12", conversion);
+				query.bind(":c13", conversion);
+				query.exec();
+				output.writeStartElement("table");
+				output.writeAttribute("rules", "groups");
+				output.writeAttribute("cellpadding", "3px");
+				output.writeStartElement("thead");
+				output.writeStartElement("tr");
+				output.writeTextElement("th", "ID"); // 0
+				output.writeTextElement("th", "Coffee"); // 1
+				output.writeTextElement("th", "Reference"); // 2
+				output.writeTextElement("th", "Starting (" + unitText + ")"); // 3
+				output.writeTextElement("th", "Cost"); // 10
+				output.writeTextElement("th", "Purchase (" + unitText + ")"); // 4
+				output.writeTextElement("th", "Cost"); // 11
+				output.writeTextElement("th", "Use (" + unitText + ")"); // 5
+				output.writeTextElement("th", "Cost"); // 12
+				output.writeTextElement("th", "Sale (" + unitText + ")"); // 6
+				output.writeTextElement("th", "Cost"); // 13
+				output.writeTextElement("th", "Adjustment (" + unitText + ")"); // 9
+				output.writeTextElement("th", "Cost"); // 15
+				output.writeTextElement("th", "Ending (" + unitText + ")"); // 7
+				output.writeTextElement("th", "Cost"); // 14
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeStartElement("tbody");
+				var sum3 = 0;
+				var sum10 = 0;
+				var sum4 = 0;
+				var sum11 = 0;
+				var sum5 = 0;
+				var sum12 = 0;
+				var sum6 = 0;
+				var sum13 = 0;
+				var sum9 = 0;
+				var sum15 = 0;
+				var sum7 = 0;
+				var sum14 = 0;;
+				while(query.next())
+				{
+					output.writeStartElement("tr");
+					output.writeStartElement("td");
+					output.writeStartElement("a");
+					output.writeAttribute("href", "typica://script/" + query.value(0));
+					output.writeTextElement("span", query.value(0)); //ID
+					output.writeEndElement();
+					output.writeEndElement();
+					output.writeTextElement("td", query.value(1)); //Coffee
+					output.writeTextElement("td", query.value(2)); //Reference
+					output.writeTextElement("td", parseFloat(query.value(3)).toFixed(2)); //Starting Wt
+					output.writeTextElement("td", parseFloat(query.value(10)).toFixed(2)); //Starting Cost
+					output.writeTextElement("td", parseFloat(query.value(4)).toFixed(2)); //Purchase Wt
+					output.writeTextElement("td", parseFloat(query.value(11)).toFixed(2)); //Purchase Cost
+					output.writeTextElement("td", parseFloat(query.value(5)).toFixed(2)); //Use Wt
+					output.writeTextElement("td", parseFloat(query.value(12)).toFixed(2)); //Use Cost
+					output.writeTextElement("td", parseFloat(query.value(6)).toFixed(2)); //Sale Wt
+					output.writeTextElement("td", parseFloat(query.value(13)).toFixed(2)); //Sale Cost
+					output.writeTextElement("td", parseFloat(query.value(9)).toFixed(2)); //Adjustment Wt
+					output.writeTextElement("td", parseFloat(query.value(15)).toFixed(2)); //Adjustment Cost
+					output.writeTextElement("td", parseFloat(query.value(7)).toFixed(2)); //Ending Wt
+					output.writeTextElement("td", parseFloat(query.value(14)).toFixed(2)); //Ending Cost
+					output.writeEndElement();
+					sum3 += parseFloat(query.value(3));
+					sum10 += parseFloat(query.value(10));
+					sum4 += parseFloat(query.value(4));
+					sum11 += parseFloat(query.value(11));
+					sum5 += parseFloat(query.value(5));
+					sum12 += parseFloat(query.value(12));
+					sum6 += parseFloat(query.value(6));
+					sum13 += parseFloat(query.value(13));
+					sum9 += parseFloat(query.value(9));
+					sum15 += parseFloat(query.value(15));
+					sum7 += parseFloat(query.value(7));
+					sum14 += parseFloat(query.value(14));
+				}
+				output.writeEndElement(); // tbody
+				output.writeStartElement("tfoot");
+				output.writeStartElement("tr");
+				output.writeTextElement("td", "");
+				output.writeTextElement("td", "");
+				output.writeTextElement("th", "Total:");
+				output.writeTextElement("td", sum3.toFixed(2));
+				output.writeTextElement("td", sum10.toFixed(2));
+				output.writeTextElement("td", sum4.toFixed(2));
+				output.writeTextElement("td", sum11.toFixed(2));
+				output.writeTextElement("td", sum5.toFixed(2));
+				output.writeTextElement("td", sum12.toFixed(2));
+				output.writeTextElement("td", sum6.toFixed(2));
+				output.writeTextElement("td", sum13.toFixed(2));
+				output.writeTextElement("td", sum9.toFixed(2));
+				output.writeTextElement("td", sum15.toFixed(2));
+				output.writeTextElement("td", sum7.toFixed(2));
+				output.writeTextElement("td", sum14.toFixed(2));
+				output.writeEndElement(); // tr
+				output.writeEndElement(); // tfoot
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndDocument();
+				view.setContent(buffer);
+				buffer.close();
+				query = query.invalidate();
+			}
+			refresh();
+			startDateField.dateChanged.connect(function() {
+				refresh();
+			});
+			endDateField.dateChanged.connect(function() {
+				refresh();
+			});
+			view.scriptLinkClicked.connect(function(url) {
+				var itemReport = createReport("itemtransactions.xml");
+				var sIB = findChildObject(itemReport, 'item');
+				sIB.currentIndex = sIB.findData(url);
+			});
+		]]>
+	</program>
+</window>

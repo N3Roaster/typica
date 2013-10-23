@@ -195,7 +195,9 @@
 				refresh();
 			});
 			view.scriptLinkClicked.connect(function(url) {
-				print(url);
+				var itemReport = createReport("itemtransactions.xml");
+				var sIB = findChildObject(itemReport, 'item');
+				sIB.currentIndex = sIB.findData(url);
 			});
 		]]>
 	</program>

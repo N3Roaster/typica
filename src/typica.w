@@ -5816,6 +5816,7 @@ QScriptValue QComboBox_currentData(QScriptContext *context,
 QScriptValue QComboBox_addItem(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QComboBox_setModel(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QComboBox_findText(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QComboBox_findData(QScriptContext *context, QScriptEngine *engine);
 
 @ These functions should seem familiar by now.
 
@@ -5833,6 +5834,7 @@ void setQComboBoxProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("addItem", engine->newFunction(QComboBox_addItem));
 	value.setProperty("setModel", engine->newFunction(QComboBox_setModel));
 	value.setProperty("findText", engine->newFunction(QComboBox_findText));
+	value.setProperty("findData", engine->newFunction(QComboBox_findData));
 }
 
 QScriptValue QComboBox_currentData(QScriptContext *context,
@@ -5861,6 +5863,12 @@ QScriptValue QComboBox_findText(QScriptContext *context, QScriptEngine *engine)
 {
 	QComboBox *self = getself<QComboBox *>(context);
 	return QScriptValue(engine, self->findText(argument<QString>(0, context)));
+}
+
+QScriptValue QComboBox_findData(QScriptContext *context, QScriptEngine *engine)
+{
+	QComboBox *self = getself<QComboBox *>(context);
+	return QScriptValue(engine, self->findData(argument<QVariant>(0, context)));
 }
 
 @i abouttypica.w

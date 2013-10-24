@@ -19,11 +19,11 @@ in version 1.6.
 #ifndef AboutTypicaHeader
 #define AboutTypicaHeader
 
-class AboutTypica : public QMainWindow
+class AboutTypica : public QMainWindow@/
 {
-	Q_OBJECT
-	public:
-		AboutTypica();
+	@[Q_OBJECT@]@;
+	public:@/
+		AboutTypica();@/
 };
 
 #endif

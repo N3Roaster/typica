@@ -948,9 +948,9 @@ class ScriptQMainWindow : public QMainWindow@/
 		void closeEvent(QCloseEvent *event);
 		void showEvent(QShowEvent *event);@/
 	signals:@/
-		void aboutToClose(void);@t\2@>@/
+		void aboutToClose(void);@/
 	private:@/
-		QString cprompt;
+		QString cprompt;@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The implementation of these functions is simple.

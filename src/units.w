@@ -367,7 +367,7 @@ We do not wish to create any instances, just have access to the |Unit|
 enumeration and conversion methods.
 
 Unfortunately, marking a static method |Q_INVOKABLE| will not work as per Qt
-bug #18840. There seems to be no intention to correct this deficiency so
+bug \#18840. There seems to be no intention to correct this deficiency so
 instead of having something that just works, we must resort to the following
 hackery.
 

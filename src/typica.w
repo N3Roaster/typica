@@ -13687,11 +13687,11 @@ given portion of the scale. One event is generated when the mouse button is
 pressed.
 
 @<ScaleControl implementation@>=
-void ScaleControl::mousePressEvent(QMouseEvent *event)@t\2\2@>@/
-{@t\1@>@/
+void ScaleControl::mousePressEvent(QMouseEvent *event)
+{
 	@<Check that the left button was pressed@>@;
-	scaleDown = true;
-	event->accept();@t\2@>@/
+	scaleDown = @[true@];
+	event->accept();
 }
 
 @ The primary action button on the mouse is the left button. While there might
@@ -13819,10 +13819,10 @@ during a cupping session, you are most likely waiting far too long to pour the
 water.
 
 @<Class declarations@>=
-class IntensityControl : public QGraphicsView
-{
-	Q_OBJECT
-	Q_PROPERTY(double value READ value WRITE setValue)
+class IntensityControl : public QGraphicsView@/
+{@/
+	@[Q_OBJECT@]@;
+	@[Q_PROPERTY(double value READ value WRITE setValue)@]@;
 	QGraphicsScene scene;
 	QGraphicsPolygonItem decrement;
 	QGraphicsPolygonItem increment;
@@ -13836,17 +13836,17 @@ class IntensityControl : public QGraphicsView
 	double theValue;
 	bool valueSet;
 	bool scaleDown;
-	public:
+	public:@/
 		IntensityControl();
 		double value();
-		virtual QSize sizeHint() const;
-	public slots:
-		void setValue(double val);
-	signals:
-		void valueChanged(double);
-	protected:
+		virtual QSize sizeHint() const;@/
+	@[public slots@]:@/
+		void setValue(double val);@/
+	signals:@/
+		void valueChanged(double);@/
+	protected:@/
 		virtual void mousePressEvent(QMouseEvent *event);
-		virtual void mouseReleaseEvent(QMouseEvent *event);
+		virtual void mouseReleaseEvent(QMouseEvent *event);@/
 };
 
 @ Note the similarity between this constructor and the the |ScaleControl|
@@ -13932,7 +13932,7 @@ void IntensityControl::setValue(double val)
 		{
 			scene.addItem(&indicator);
 		}
-		valueSet = true;
+		valueSet = @[true@];
 		indicator.setPos(6, (100 - (val * 10)) + 16);
 		emit(valueChanged(val));
 	}
@@ -13958,7 +13958,7 @@ that the button has been pressed.
 void IntensityControl::mousePressEvent(QMouseEvent *event)
 {
 	@<Check that the left button was pressed@>@;
-	scaleDown = true;
+	scaleDown = @[true@];
 	event->accept();
 }
 
@@ -13977,7 +13977,7 @@ void IntensityControl::mouseReleaseEvent(QMouseEvent *event)
 		event->ignore();
 		return;
 	}
-	scaleDown = false;
+	scaleDown = @[false@];
 	QPointF sceneCoordinate = mapToScene(event->x(), event->y());
 	if(sceneCoordinate.x() >= 0 && sceneCoordinate.x() <= 16)
 	{

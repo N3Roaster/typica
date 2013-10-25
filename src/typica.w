@@ -7355,8 +7355,8 @@ of data.
 @<Class declarations@>=
 class ZeroEmitter : public QObject@/
 {@t\1@>@/
-	Q_OBJECT@;
-	Q_PROPERTY(int column READ column WRITE setColumn)
+	@[Q_OBJECT@]@;
+	@[Q_PROPERTY(int column READ column WRITE setColumn)@]@;
 	Measurement cache;
 	int col;
 	public:@/
@@ -7672,11 +7672,11 @@ if(settings.contains("settings/graph/relative/enable"))
 {
 	if(settings.value("settings/graph/relative/enable").toBool())
 	{
-		relativeEnabled = true;
+		relativeEnabled = @[true@];
 		QColor relativeColor = QColor(settings.value("settings/graph/relative/color").toString());
-		QString unit = QString(settings.value("settings/graph/relative/unit").toInt() == 0 ? "F" : "C");
+		QString unit = QString(settings.value(@|"settings/graph/relative/unit").toInt() == 0 ? "F" : "C");
 		QMap<double, QString> relativeAxisPairs;
-		QStringList relativeAxisLabels = settings.value("settings/graph/relative/grid").toString().split(QRegExp("[\\s,]+"), QString::SkipEmptyParts);
+		QStringList relativeAxisLabels = settings.value(@|"settings/graph/relative/grid").toString().split(QRegExp("[\\s,]+"), QString::SkipEmptyParts);
 		foreach(QString item, relativeAxisLabels)
 		{
 			relativeAxisPairs.insert(item.toDouble(), item);

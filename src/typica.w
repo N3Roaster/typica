@@ -9334,7 +9334,7 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 	{
 		return QVariant(row->at(index.column()));
 	}
-	if(role == Qt::DisplayRole || role == Qt::EditRole)
+	if[role == Qt::DisplayRole || role == Qt::EditRole)
 	{
 		if(index.column() > row->size())
 		{
@@ -9361,12 +9361,12 @@ QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 				{
 					if(v.contains("relative"))
 					{
-						if(v.value("relative") == true)
+						if(v.value("relative").toBool())
 						{
-							return QVariant(QString("%1").arg(Units::convertRelativeTemperature(v.value("measurement").toDouble(), (Units::Unit)(v.value("unit").toInt()), unit)));
+							return QVariant(QString("%1").@|arg(Units::convertRelativeTemperature(v.value("measurement").toDouble(),@| (Units::Unit)(v.value("unit").toInt()), unit)));
 						}
 					}
-					return QVariant(QString("%1").arg(Units::convertTemperature(v.value("measurement").toDouble(), (Units::Unit)(v.value("unit").toInt()), unit)));
+					return QVariant(QString("%1")@|.arg(Units::convertTemperature(v.value("measurement").toDouble(),@| (Units::Unit)(v.value("unit").toInt()), unit)));
 				}
 			}
 			return QVariant(row->at(index.column()).toString());

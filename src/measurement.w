@@ -17,10 +17,10 @@ As |QVariantMap| is implicitly shared and |Measurement| adds no new data
 members we no longer require copy and assignment operators.
 
 @<Class declarations@>=
-class Measurement : public QVariantMap
-{
-	public:
-		Measurement(double temperature = 0, QTime time = QTime(),
+class Measurement : public QVariantMap@/
+{@t\1@>@/
+	public:@/
+		Measurement(double temperature = 0, QTime time = QTime(),@|
                     Units::Unit sc = Units::Fahrenheit);
 		Measurement(double temperature);
 		double temperature() const;
@@ -32,7 +32,7 @@ class Measurement : public QVariantMap
 		Measurement toFahrenheit();
 		Measurement toCelsius();
 		Measurement toKelvin();
-		Measurement toRankine();
+		Measurement toRankine();@t\2@>@/
 };
 
 @ Time, measured value, and unit are stored at well known keys.

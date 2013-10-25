@@ -12404,6 +12404,9 @@ use of the earlier plan but which may solve the matter. This brings in the
 TeX Gyre Pagella font and sets this as the default standard font for all web
 views.
 
+@s QFontDatabase int
+@s QWebSettings int
+
 @<Set up fonts@>=
 QFile entypo(":/resources/fonts/entypo.ttf");
 entypo.open(QIODevice::ReadOnly);

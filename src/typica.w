@@ -11347,11 +11347,7 @@ else if(xmlin.name() == "temperature")
 	column = xmlin.attributes().value("series").toString().isEmpty() ?
 	         firstc : temperatureColumns.value(xmlin.attributes().
 			                                   value("series").toString());
-	bool relative = false;
-	if(xmlin.attributes().value("relative") == "true")
-	{
-		relative = true;
-	}
+	bool relative = (xmlin.attributes().value("relative") == "true");
 	tempval = xmlin.readElementText().toDouble();
 	Measurement measurement(tempval, timeval);
 	if(relative)

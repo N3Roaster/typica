@@ -12580,24 +12580,24 @@ This class also automatically persists column widths when these are changed.
 
 @<Class declarations@>=
 class SqlQueryView : public QTableView@/
-{@t\1@>@/
-	Q_OBJECT@;
+{@/
+	@[Q_OBJECT@]@;
 	public:@/
 		SqlQueryView(QWidget *parent = NULL);
 		void setQuery(const QString &query);
 		bool setHeaderData(int section, Qt::Orientation@, orientation,
 						   const QVariant &value, int role);
-		Q_INVOKABLE QVariant data(int row, int column,
-								  int role = Qt::DisplayRole);@/
+		@[Q_INVOKABLE@,@, QVariant@]@, data(int row, int column,
+								  int role = Qt::DisplayRole);@t\2\2@>@/
 	signals:@/
 		void openEntry(QString key);
-		void openEntryRow(int row);@t\2@>@/
+		void openEntryRow(int row);@/
 	protected:@/
-		virtual void showEvent(QShowEvent *event);
-	private slots@t\kern-3pt@>:@t\1@>@/
+		virtual void showEvent(QShowEvent *event);@/
+	@[private slots@]:@/
 		void openRow(const QModelIndex &index);
-		void persistColumnResize(int column, int oldsize, int newsize);@t\2@>@/
-}@t\kern-3pt@>;
+		void persistColumnResize(int column, int oldsize, int newsize);@/
+};
 
 @ The constructor sets up the communication between the model and the view and
 also provides the connection needed to notice when columns change size to

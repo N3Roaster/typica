@@ -12834,16 +12834,16 @@ information needed to respond to its activation by generating the appropriate
 report.
 
 @<Class declarations@>=
-class ReportAction : public QAction
-{
-	Q_OBJECT
-	public:
+class ReportAction : public QAction@/
+{@/
+	@[Q_OBJECT@]@;
+	public:@/
 		ReportAction(const QString &fileName, const QString &reportName,
-		             QObject *parent = NULL);
-	private slots:
-		void createReport();
-	private:
-		QString reportFile;
+		             QObject *parent = NULL);@/
+	@[private slots@]:@/
+		void createReport();@/
+	private:@/
+		QString reportFile;@/
 };
 
 @ The constructor receives the name of the report file which is used to
@@ -12921,7 +12921,7 @@ It is advised to keep these hierarchies shallow.
 for(int j = 0; j < hierarchy.size() - 1; j++)
 {
 	QObjectList menuList = insertionPoint->children();
-	bool menuFound = false;
+	bool menuFound = @[false@];
 	for(int k = 0; k < menuList.size(); k++)
 	{
 		QMenu *currentItem = qobject_cast<QMenu*>(menuList.at(k));
@@ -12929,7 +12929,7 @@ for(int j = 0; j < hierarchy.size() - 1; j++)
 		{
 			if(currentItem->title() == hierarchy.at(j))
 			{
-				menuFound = true;
+				menuFound = @[true@];
 				insertionPoint = currentItem;
 				break;
 			}

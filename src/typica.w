@@ -5731,7 +5731,7 @@ class DAQ : public QObject@;@/
 		Channel* newChannel(int units, int thermocouple);@/
 		@[Q_INVOKABLE@,@, void@]@, setClockRate(double Hz);@t\2\2@>@/
 		@[Q_INVOKABLE@,@, void@]@, start();@t\2\2@>@/
-		@[Q_INVOKABLE@]@, void stop();
+		@[Q_INVOKABLE@,@, void@]@, stop();@t\2\2@>@/
 		enum ThermocoupleType@/
 		{
 			@!TypeJ = 10072,
@@ -5818,9 +5818,9 @@ void DAQImplementation::measure()@t\2@>@/
 @t\4@>{@/
 	int samplesRead = 0;
 	double buffer[channels];
-	error = read((unsigned int)(handle), (signed long)(1), (double)(10.0),
-                 (unsigned long)(0), buffer, (unsigned long)(channels),
-			     &samplesRead, (signed long)(0));
+	error = read((unsigned int)(handle), (signed long)(1), (double)(10.0),@|
+                 (unsigned long)(0), buffer, (unsigned long)(channels),@|
+			     &samplesRead, (signed long)(0));@/
 	if(error)@/
 	@t\1@>{@/
 		ready = false;@t\2@>@/
@@ -5969,13 +5969,13 @@ void DAQ::stop()
 {
 	if(imp->useBase)
 	{
-		imp->ready = false;
+		imp->ready = @[false@];
 		imp->wait(ULONG_MAX);
 		imp->stopTask(imp->handle);
 	}
 	else
 	{
-		imp->ready = false;
+		imp->ready = @[false@];
 		imp->error = imp->stopTask(imp->handle);
 		if(imp->error)
 		{
@@ -6086,7 +6086,7 @@ attempted to use the device.
 
 @<DAQ Implementation@>=
 DAQ::~DAQ()@/
-@t\4\4@>{@/
+{
 	if(imp->useBase)
 	{
 		imp->resetDevice(imp->device.toAscii().data());
@@ -6096,7 +6096,7 @@ DAQ::~DAQ()@/
 	{
 		if(imp->ready)
 		{
-			imp->ready = false;
+			imp->ready = @[false@];
 			imp->wait(ULONG_MAX);
 			imp->stopTask(imp->handle);
 			imp->resetDevice(imp->device.toAscii().data());
@@ -6104,7 +6104,7 @@ DAQ::~DAQ()@/
 		}
 	}
 	delete imp;
-@t\4\4@>}
+}
 
 @ This just leaves the constructor and destructor for |DAQImplementation|. The
 way the program is currently written, the number of channels available on the
@@ -6212,8 +6212,8 @@ QScriptValue constructDAQ(QScriptContext *context, QScriptEngine *engine);
 QScriptValue DAQ_newChannel(QScriptContext *context, QScriptEngine *engine);
 void setDAQProperties(QScriptValue value, QScriptEngine *engine);
 
-@ First we make these functions known to the scripting engine. We also add
-the values from |Units::Unit| as this was widely used in configurations
+@ These functions and the values from |Units::Unit| must be made available to
+the host environment. The latter because this was widely used in configurations
 before this enumeration was removed from the |DAQ| class. As these properties
 must be available without an instance, the properties must be added here.
 
@@ -6743,12 +6743,12 @@ interpolation may still be implemented in the future, but it is a low
 priority.
 
 @<Class declarations@>=
-class LinearSplineInterpolator : public QObject
-{
-	@[Q_OBJECT@]@/
+class LinearSplineInterpolator : public QObject@/
+{@/
+	@[Q_OBJECT@]@;@/
 	public:@/
 		LinearSplineInterpolator(QObject *parent = NULL);
-		@[Q_INVOKABLE@]@, void add_pair(double source, double destination);
+		@[Q_INVOKABLE@,@, void@]@, add_pair(double source, double destination);@t\2\2@>@/
 	@[public slots@]:@/
 		Measurement newMeasurement(Measurement measure);
 	@[signals@]:@/
@@ -6756,7 +6756,7 @@ class LinearSplineInterpolator : public QObject
 	private:@/
 		void make_interpolators();
 		QMap<double, double> *pairs;
-		QList<LinearCalibrator *> *interpolators;
+		QList<LinearCalibrator *> *interpolators;@/
 };
 
 @ We take advantage of the fact that iterating over a QMap always returns

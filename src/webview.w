@@ -9,6 +9,8 @@ Even the program'@q'@>s about window is primarily a web view.
 In order to simplify the implementation of certain features, we subclass
 |QWebView| and provide some additional functionality.
 
+@s QWebElement int
+
 @(webview.h@>=
 #include <QWebView>
 #include <QFile>
@@ -22,21 +24,21 @@ In order to simplify the implementation of certain features, we subclass
 #ifndef TypicaWebViewHeader
 #define TypicaWebViewHeader
 
-class TypicaWebView : public QWebView
+class TypicaWebView : public QWebView@/
 {
-	Q_OBJECT
-	public:
+	@[Q_OBJECT@]@;
+	public:@/
 		TypicaWebView();
-		Q_INVOKABLE void load(const QString &url);
-		Q_INVOKABLE void print();
-		Q_INVOKABLE void setHtml(const QString &html, const QUrl &baseUrl = QUrl());
-		Q_INVOKABLE void setContent(QIODevice *device);
-		Q_INVOKABLE QString saveXml();
-		Q_INVOKABLE QWebElement documentElement();
-		Q_INVOKABLE QWebElement findFirstElement(const QString &selector);
-	signals:
+		@[Q_INVOKABLE@,@, void@]@, load(const QString &url);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, print();@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, setHtml(const QString &html, const QUrl &baseUrl = QUrl());@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, setContent(QIODevice *device);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, QString@]@, saveXml();@t\2\2@>@/
+		@[Q_INVOKABLE@,@, QWebElement@]@, documentElement();@t\2\2@>@/
+		@[Q_INVOKABLE@,@, QWebElement@]@, findFirstElement(const QString &selector);@t\2\2@>@/
+	@[signals@]:@/
 		void scriptLinkClicked(const QString &link);
-	private slots:
+	@[private slots@]:@/
 		void linkDelegate(const QUrl &url);
 };
 
@@ -228,7 +230,7 @@ QScriptValue QWebElement_toScriptValue(QScriptEngine *engine, const QWebElement 
 
 void QWebElement_fromScriptValue(const QScriptValue &value, QWebElement &element)
 {
-	element = value.toVariant().value<QWebElement>();
+	element = value.toVariant().@[value<QWebElement>()@];
 }
 
 @ These methods must be registered with the engine.
@@ -247,22 +249,22 @@ simple wrapper class.
 #ifndef TypicaWebElementHeader
 #define TypicaWebElementHeader
 
-class TypicaWebElement : public QObject
-{
-	Q_OBJECT
-	public:
+class TypicaWebElement : public QObject@/
+{@/
+	@[Q_OBJECT@]@;
+	public:@/
 		TypicaWebElement(QWebElement element);
-		Q_INVOKABLE void appendInside(const QString &markup);
-		Q_INVOKABLE void appendOutside(const QString &markup);
-		Q_INVOKABLE void prependInside(const QString &markup);
-		Q_INVOKABLE void prependOutside(const QString &markup);
-		Q_INVOKABLE void removeFromDocument();
-		Q_INVOKABLE void replace(const QString &markup);
-		Q_INVOKABLE void setInnerXml(const QString &markup);
-		Q_INVOKABLE void setOuterXml(const QString &markup);
-		Q_INVOKABLE void setPlainText(const QString &text);
-	private:
-		QWebElement e;
+		@[Q_INVOKABLE@,@, void@]@, appendInside(const QString &markup);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, appendOutside(const QString &markup);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, prependInside(const QString &markup);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, prependOutside(const QString &markup);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, removeFromDocument();@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, replace(const QString &markup);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, setInnerXml(const QString &markup);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, setOuterXml(const QString &markup);@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, setPlainText(const QString &text);@t\2\2@>@/
+	private:@/
+		QWebElement e;@/
 };
 
 #endif

@@ -11,13 +11,13 @@ there are some convenience methods for working with unit data.
 #ifndef TypicaUnitsIncluded
 #define TypicaUnitsIncluded
 
-class Units: public QObject
-{
-	Q_OBJECT
-	Q_ENUMS(Unit)
-	public:
-		enum Unit
-		{
+class Units: public QObject@/
+{@/
+	@[Q_OBJECT@]@;
+	@[Q_ENUMS(Unit)@]@;
+	public:@/
+		enum Unit@/
+		{@/
 			Unitless = 0,
 			Fahrenheit = 10144,
 			Celsius = 10143,
@@ -27,12 +27,12 @@ class Units: public QObject
 			Kilogram = 15877,
 			Ounce = 1,
 			Gram = 2
-		};
+		};@/
 		static double convertTemperature(double value, Unit fromUnit, Unit toUnit);
 		static double convertRelativeTemperature(double value, Unit fromUnit, Unit toUnit);
 		static bool isTemperatureUnit(Unit unit);
 		static double convertWeight(double value, Unit fromUnit, Unit toUnit);
-		static bool isWeightUnit(Unit unit);
+		static bool isWeightUnit(Unit unit);@/
 };
 
 #endif
@@ -52,14 +52,10 @@ control settings.
 @(units.cpp@>=
 bool Units::isTemperatureUnit(Unit unit)
 {
-	if(unit == Fahrenheit ||
-	   unit == Celsius ||
-	   unit == Kelvin ||
-	   unit == Rankine)
-	{
-		return true;
-	}
-	return false;
+	return (unit == Fahrenheit ||
+	        unit == Celsius ||
+	        unit == Kelvin ||
+	        unit == Rankind);
 }
 
 @ Temperature conversions can be performed by the |Units| class and should
@@ -72,85 +68,85 @@ that behavior may change in the future. Any code activating that branch should
 be considered flawed.
 
 @(units.cpp@>=
-double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
+double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)@/
 {
-	if(isTemperatureUnit(fromUnit) && isTemperatureUnit(toUnit) == false)
+	if(!(isTemperatureUnit(fromUnit) && isTemperatureUnit(toUnit)))
 	{
 		return 0;
 	}
-	switch(fromUnit)
-	{
-		case Fahrenheit:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+	switch(fromUnit)@/
+	{@t\1@>@/
+		case Fahrenheit:@/
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value;
 					break;
-				case Celsius:
+				case Celsius:@/
 					return (value - 32.0) * 5.0 / 9.0;
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return (value + 459.67) * 5.0 / 9.0;
 					break;
-				case Rankine:
+				case Rankine:@/
 					return value + 459.67;
-					break;
-			}
+					break;@t\2@>@/
+			}@/
 			break;
 		case Celsius:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value * 9.0 / 5.0 + 32.0;
 					break;
-				case Celsius:
+				case Celsius:@/
 					return value;
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return value + 273.15;
 					break;
-				case Rankine:
+				case Rankine:@/
 					return (value + 273.15) * 9.0 / 5.0;
-					break;
-			}
+					break;@t\2@>@/
+			}@/
 			break;
 		case Kelvin:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value * 5.0 / 9.0 - 459.67;
 					break;
-				case Celsius:
+				case Celsius:@/
 					return value - 273.15;
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return value;
 					break;
-				case Rankine:
+				case Rankine:@/
 					return value * 9.0 / 5.0;
-					break;
-			}
+					break;@t\2@>@/
+			}@/
 			break;
 		case Rankine:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value - 457.67;
 					break;
-				case Celsius:
+				case Celsius:@/
 					return (value - 491.67) * 5.0 / 9.0;
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return value * 5.0 / 9.0;
 					break;
-				case Rankine:
+				case Rankine:@/
 					return value;
-					break;
-			}
+					break;@t\2@>@/
+			}@/
 			break;
-		default:
+		default:@/
 			return 0;
-			break;
+			break;@t\2@>@/
 	}
 	return 0;
 }
@@ -160,93 +156,93 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)
 @(units.cpp@>=
 double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUnit)
 {
-	if(isTemperatureUnit(fromUnit) && isTemperatureUnit(toUnit) == false)
+	if(!(isTemperatureUnit(fromUnit) && isTemperatureUnit(toUnit)))@/
 	{
 		return 0;
 	}
-	switch(fromUnit)
-	{
+	switch(fromUnit)@/
+	{@t\1@>@/
 		case Fahrenheit:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value;
 					break;
-				case Celsius:
+				case Celsius:@/
 					return value * (5.0 / 9.0);
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return value * (5.0 / 9.0);
 					break;
-				case Rankine:
+				case Rankine:@/
 					return value;
 					break;
-				default:
+				default:@/
 					return 0;
-					break;
+					break;@t\2@>@/
 			}
 			break;
 		case Celsius:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value * (9.0 / 5.0);
 					break;
-				case Celsius:
+				case Celsius:@/
 					return value;
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return value;
 					break;
-				case Rankine:
+				case Rankine:@/
 					return value * (9.0 / 5.0);
 					break;
-				default:
+				default:@/
 					return 0;
-					break;
+					break;@t\2@>@/
 			}
 			break;
 		case Kelvin:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value * (5.0 / 9.0);
 					break;
-				case Celsius:
+				case Celsius:@/
 					return value;
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return value;
 					break;
-				case Rankine:
+				case Rankine:@/
 					return value * (9.0 / 5.0);
 					break;
-				default:
+				default:@/
 					return 0;
-					break;
+					break;@t\2@>@/
 			}
 			break;
 		case Rankine:
-			switch(toUnit)
-			{
-				case Fahrenheit:
+			switch(toUnit)@/
+			{@t\1@>@/
+				case Fahrenheit:@/
 					return value;
 					break;
-				case Celsius:
+				case Celsius:@/
 					return value * (5.0 / 9.0);
 					break;
-				case Kelvin:
+				case Kelvin:@/
 					return value * (5.0 / 9.0);
 					break;
-				case Rankine:
+				case Rankine:@/
 					return value;
 					break;
 				default:
 					return 0;
-					break;
+					break;@t\2@>@/
 			}
 			break;
-		default:
+		default:@/
 			return 0;
 			break;
 	}
@@ -258,93 +254,93 @@ double Units::convertRelativeTemperature(double value, Unit fromUnit, Unit toUni
 @(units.cpp@>=
 double Units::convertWeight(double value, Unit fromUnit, Unit toUnit)
 {
-	if(isWeightUnit(fromUnit) && isWeightUnit(toUnit))
+	if(isWeightUnit(fromUnit) && isWeightUnit(toUnit))@/
 	{
-		switch(fromUnit)
-		{
+		switch(fromUnit)@/
+		{@t\1@>@/
 			case Pound:
-				switch(toUnit)
-				{
-					case Pound:
+				switch(toUnit)@/
+				{@t\1@>@/
+					case Pound:@/
 						return value;
 						break;
-					case Kilogram:
+					case Kilogram:@/
 						return value / 2.2;
 						break;
-					case Ounce:
+					case Ounce:@/
 						return value * 16.0;
 						break;
-					case Gram:
+					case Gram:@/
 						return value / 0.0022;
 						break;
-					default:
+					default:@/
 						return 0;
-						break;
+						break;@t\2@>@/
 				}
 				break;
 			case Kilogram:
-				switch(toUnit)
-				{
-					case Pound:
+				switch(toUnit)@/
+				{@t\1@>@/
+					case Pound:@/
 						return value * 2.2;
 						break;
-					case Kilogram:
+					case Kilogram:@/
 						return value;
 						break;
-					case Ounce:
+					case Ounce:@/
 						return value * 35.2;
 						break;
-					case Gram:
+					case Gram:@/
 						return value * 1000.0;
 						break;
-					default:
+					default:@/
 						return 0;
-						break;
+						break;@t\2@>@/
 				}
 				break;
 			case Ounce:
-				switch(toUnit)
-				{
-					case Pound:
+				switch(toUnit)@/
+				{@t\1@>@/
+					case Pound:@/
 						return value / 16.0;
 						break;
-					case Kilogram:
+					case Kilogram:@/
 						return value / 35.2;
 						break;
-					case Ounce:
+					case Ounce:@/
 						return value;
 						break;
-					case Gram:
+					case Gram:@/
 						return value / 0.0352;
 						break;
-					default:
+					default:@/
 						return 0;
-						break;
+						break;@t\2@>@/
 				}
 				break;
 			case Gram:
-				switch(toUnit)
-				{
-					case Pound:
+				switch(toUnit)@/
+				{@t\1@>@/
+					case Pound:@/
 						return value * 0.0022;
 						break;
-					case Kilogram:
+					case Kilogram:@/
 						return value / 1000.0;
 						break;
-					case Ounce:
+					case Ounce:@/
 						return value * 0.0352;
 						break;
-					case Gram:
+					case Gram:@/
 						return value;
 						break;
-					default:
+					default:@/
 						return 0;
-						break;
+						break;@t\2@>@/
 				}
 				break;
-			default:
+			default:@/
 				return 0;
-				break;
+				break;@t\2@>@/
 		}
 	}
 	return 0;
@@ -352,14 +348,10 @@ double Units::convertWeight(double value, Unit fromUnit, Unit toUnit)
 
 bool Units::isWeightUnit(Unit unit)
 {
-	if(unit == Pound ||
-	   unit == Kilogram ||
-	   unit == Ounce ||
-	   unit == Gram)
-	{
-		return true;
-	}
-	return false;
+	return (unit == Pound ||
+	        unit == Kilogram ||
+	        unit == Ounce ||
+	        unit == gram);
 }
 
 @ This class is exposed to the host environment. Note the lack of constructor.

@@ -12063,10 +12063,10 @@ bool SaltModel::removeRows(int row, int count,
 				@<Expand the SaltModel@>@;
 				endInsertRows();
 			}
-			return true;
+			return @[true@];
 		}
 	}
-	return false;
+	return @[false@];
 }
 
 @ To find the row number for removal operations it is useful to search for

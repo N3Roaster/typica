@@ -8211,7 +8211,7 @@ if(currentColumnSet.contains(tempcolumn))
 					Measurement synthetic = lastMeasurement.value(replicationcolumn);
 					synthetic.setTime(measure.time());
 					model_ms->newMeasurement(synthetic, replicationcolumn);
-					if(synthetic.time().second() != lastMeasurement.value(replicationcolumn).time().second())
+					if(synthetic.time().second() != lastMeasurement.value(replicationcolumn).time().second())@/
 					{
 						Measurement adjusted = synthetic;
 						adjusted.setTime(QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));

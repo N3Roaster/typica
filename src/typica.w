@@ -11085,7 +11085,7 @@ foreach(int c, temperatureColumns.keys())@/
 		xmlout.writeAttribute("series", temperatureColumns.value(c));
 		if(data->data(data->index(i, c), Qt::UserRole).toMap().contains("relative"))
 		{
-			if(data->data(data->index(i, c), Qt::UserRole).toMap().value("relative").toBool() == true)
+			if(data->data(data->index(i, c), Qt::UserRole).toMap().value("relative").toBool())
 			{
 				xmlout.writeAttribute("relative", "true");
 			}

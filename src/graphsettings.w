@@ -6,10 +6,10 @@ graph widget. The original motivation for the class comes from a need to
 configure secondary axes.
 
 @<Class declarations@>=
-class GraphSettingsWidget : public QWidget
-{
-	Q_OBJECT
-	public:
+class GraphSettingsWidget : public QWidget@/
+{@/
+	@[Q_OBJECT@]@;
+	public:@/
 		GraphSettingsWidget();
 };
 
@@ -21,6 +21,8 @@ This will potentially need to change later as more features are added and the
 tab set becomes excessively large but for now this is the best that I can
 think of. If anybody with UI design experience would like to propose something
 better I would be glad to consider it.
+
+@s GraphSettingsRelativeTab int
 
 @<GraphSettingsWidget implementation@>=
 GraphSettingsWidget::GraphSettingsWidget() : QWidget(NULL)
@@ -42,18 +44,18 @@ used to construct the relative values and the style of coffee roasting. It is
 also possible to disable the graphing of relative temperature measurements.
 
 @<Class declarations@>=
-class GraphSettingsRelativeTab : public QWidget
-{
-	Q_OBJECT
-	public:
-		GraphSettingsRelativeTab();
-	public slots:
+class GraphSettingsRelativeTab : public QWidget@/
+{@/
+	@[Q_OBJECT@]@;
+	public:@/
+		GraphSettingsRelativeTab();@/
+	@[public slots@]:@/
 		void updateEnableSetting(bool enable);
 		void updateColorSetting(const QString &color);
 		void updateAxisSetting(const QString &gridList);
 		void updateUnit(int unit);
-		void showColorPicker();
-	private:
+		void showColorPicker();@/
+	private:@/
 		QLineEdit *colorEdit;
 };
 
@@ -132,7 +134,7 @@ void GraphSettingsRelativeTab::updateAxisSetting(const QString &gridList)
 	QStringList numbers;
 	foreach(QString text, points)
 	{
-		bool okay = false;
+		bool okay = @[false@];
 		text.toDouble(&okay);
 		if(okay)
 		{

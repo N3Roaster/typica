@@ -16799,11 +16799,11 @@ and reset the number without altering the default configuration or requiring a
 reinitialization of the logging view.
 
 @<Class declarations@>=
-class ReconfigurableAnnotationButtonConfWidget : public BasicDeviceConfigurationWidget
-{
-	@[Q_OBJECT@]@/
+class ReconfigurableAnnotationButtonConfWidget : public BasicDeviceConfigurationWidget@/
+{@/
+	@[Q_OBJECT@]@;
 	public:@/
-		@[Q_INVOKABLE@] ReconfigurableAnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index);
+		Q_INVOKABLE ReconfigurableAnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index);
 	@[private slots@]:@/
 		void updateButtonText(const QString &text);
 		void updateAnnotationText(const QString &text);

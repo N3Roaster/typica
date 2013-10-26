@@ -9,16 +9,19 @@ for settings that do not logically belong with a single part of the measurement
 pipeline.
 
 @<Class declarations@>=
-class SettingsWindow : public QMainWindow
-{
-	Q_OBJECT
-	public:
+class SettingsWindow : public QMainWindow@/
+{@/
+	@[Q_OBJECT@]@;
+	public:@/
 		SettingsWindow();
 };
 
 @ The constructor takes care of the initial interface setup. Most of the
 functionality is delegated to more specialized widgets that are available
 through a set of tabs.
+
+@s QTabWidget int
+@s GraphSettingsWidget int
 
 @<SettingsWindow implementation@>=
 SettingsWindow::SettingsWindow() : QMainWindow(NULL)

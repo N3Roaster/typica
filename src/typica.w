@@ -15420,10 +15420,10 @@ use of such a module.
 
 @<Class declarations@>=
 class Ni9211TcConfWidget : public BasicDeviceConfigurationWidget
-{
-	@[Q_OBJECT@]@/
+{@/
+	@[Q_OBJECT@]@;
 	public:@/
-		Q_INVOKABLE Ni9211TcConfWidget(DeviceTreeModel *device,
+		Q_INVOKABLE@,@, Ni9211TcConfWidget(DeviceTreeModel *device,
 		                               const QModelIndex &index);
 	@[private slots@]:@/
 		void updateThermocoupleType(const QString &type);

@@ -14733,7 +14733,7 @@ QScriptValue QAbstractItemModel_hasChildren(QScriptContext *context,
 }
 
 @ Some additional work is needed to handle |QModelIndex| appropriately. First
-we declare |QModelIndex| as a metatype.
+we declare that as a metatype.
 
 @<Class declarations@>=
 Q_DECLARE_METATYPE(QModelIndex)
@@ -15060,7 +15060,7 @@ value = engine->newQMetaObject(&DeviceConfigurationWindow::staticMetaObject,
                                constructor);
 engine->globalObject().setProperty("DeviceConfigurationWindow", value);
 
-@* A Common Base Class for Device Configuration Widgets.
+@* A Base Class for Device Configuration Widgets.
 
 \noindent There are certain operations that are very commonly required
 among device configuration widgets. These common elements have been implemented
@@ -15105,14 +15105,14 @@ void BasicDeviceConfigurationWidget::updateAttribute(const QString &name,
 		deviceModel->data(currentNode, Qt::UserRole).toString());
 	QDomNodeList configData = referenceElement.elementsByTagName("attribute");
 	QDomElement node;
-	bool found = false;
+	bool found = @[false@];
 	for(int i = 0; i < configData.size(); i++)
 	{
 		node = configData.at(i).toElement();
 		if(node.attribute("name") == name)
 		{
 			node.setAttribute("value", value);
-			found = true;
+			found = @[true@];
 			break;
 		}
 	}

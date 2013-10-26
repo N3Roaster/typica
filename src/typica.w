@@ -17005,17 +17005,17 @@ class ModbusRTUDevice : public QObject
 		ModbusRTUDevice(DeviceTreeModel *model, const QModelIndex &index);
 		~ModbusRTUDevice();
 		void queueMessage(QByteArray request, QObject *object, const char *callback);
-		@[Q_INVOKABLE@]@, double SVLower();
-		@[Q_INVOKABLE@]@, double SVUpper();
-		@[Q_INVOKABLE@]@, int decimals();
-		QList<Channel*> channels;
+		@[Q_INVOKABLE@,@, double@]@, SVLower();@t\2\2@>@/
+		@[Q_INVOKABLE@,@, double@]@, SVUpper();@t\2\2@>@/
+		@[Q_INVOKABLE@,@, int@]@, decimals();@t\2\2@>@/
+		QList<Channel*> channels;@/
 	@[public slots@]:@/
-		void outputSV(double sv);
-	@[signals@]:@/
+		void outputSV(double sv);@/
+	signals:@/
 		void SVLowerChanged(double);
 		void SVUpperChanged(double);
 		void SVDecimalChanged(int);
-		void queueEmpty();
+		void queueEmpty();@/
 	@[private slots@]:@/
 		void dataAvailable();
 		void sendNextMessage();
@@ -17025,7 +17025,7 @@ class ModbusRTUDevice : public QObject
 		void svuResponse(QByteArray response);
 		void requestMeasurement();
 		void mResponse(QByteArray response);
-		void ignore(QByteArray response);
+		void ignore(QByteArray response);@/
 	private:@/
 		QextSerialPort *port;
 		QByteArray responseBuffer;
@@ -17064,10 +17064,10 @@ arbitrarily many monitored addresses per device. Communications are initiated
 immediately upon construction.
 
 @<ModbusRTUDevice implementation@>=
-ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model, const QModelIndex &index)
-: QObject(NULL), messageDelayTimer(new QTimer), unitIsF(true), readingsv(false),
-	waiting(false)
-{
+ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &index)
+: QObject(NULL), messageDelayTimer(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
+	waiting(@[false@])@/
+{@/
 	QDomElement portReferenceElement = model->referenceElement(model->data(index,
 		Qt::UserRole).toString());
 	QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
@@ -17130,7 +17130,7 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model, const QModelIndex &inde
 	{
 		if(attributes.value("fixedUnit") == "Celsius")
 		{
-			unitIsF = false;
+			unitIsF = @[false@];
 		}
 	}
 	if(attributes.value("sVWritable") == "true")
@@ -17242,11 +17242,11 @@ void ModbusRTUDevice::unitResponse(QByteArray response)
 	int value = temp;
 	if(value == valueF)
 	{
-		unitIsF = true;
+		unitIsF = @[true@];
 	}
 	else
 	{
-		unitIsF = false;
+		unitIsF = @[false@];
 	}
 }
 
@@ -17415,9 +17415,9 @@ void ModbusRTUDevice::dataAvailable()
 	{
 		QObject *object = retObjQueue.at(0);
 		char *method = callbackQueue.at(0);
-		QMetaMethod metamethod = object->metaObject()->
+		QMetaMethod metamethod = @| object->metaObject()->
 			method(object->metaObject()->
-				indexOfMethod(QMetaObject::normalizedSignature(method)));
+				indexOfMethod(@|QMetaObject::normalizedSignature(method)));
 		metamethod.invoke(object, Qt::QueuedConnection,
 		                  Q_ARG(QByteArray, responseBuffer));
 		messageQueue.removeAt(0);
@@ -17429,7 +17429,7 @@ void ModbusRTUDevice::dataAvailable()
 	{
 		qDebug() << "CRC failed";
 	}
-	waiting = false;
+	waiting = @[false@];
 	responseBuffer.clear();
 }
 
@@ -17544,7 +17544,7 @@ void ModbusRTUDevice::sendNextMessage()
 		message.append(check[1]);
 		port->write(message);
 		messageDelayTimer->start(delayTime);
-		waiting = true;
+		waiting = @[true@];
 	}
 	else
 	{
@@ -17672,9 +17672,9 @@ after such a change.
 @<Class declarations@>=
 class ModbusConfigurator : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]
+	@[Q_OBJECT@]@;
 	public:@/
-		Q_INVOKABLE ModbusConfigurator(DeviceTreeModel *model, const QModelIndex &index);
+		Q_INVOKABLE@,@, ModbusConfigurator(DeviceTreeModel *model, const QModelIndex &index);@/
 	@[private slots@]:@/
 		void updatePort(const QString &newPort);
 		void updateBaudRate(const QString &newRate);
@@ -17703,7 +17703,7 @@ class ModbusConfigurator : public BasicDeviceConfigurationWidget
 		void updatePVColumnName(const QString &name);
 		void updateSVColumnName(const QString &name);
 		void updatePVHidden(bool hidden);
-		void updateSVHidden(bool hidden);
+		void updateSVHidden(bool hidden);@/
 	private:@/
 		PortSelector *port;
 		BaudSelector *baud;

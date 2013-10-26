@@ -15935,9 +15935,9 @@ ParitySelector::ParitySelector(QWidget *parent) : QComboBox(parent)
 @<Class declarations@>=
 class FlowSelector : public QComboBox
 {
-	Q_OBJECT
-	Q_ENUMS(FlowType)
-	public:
+	@[Q_OBJECT@]@;
+	@[Q_ENUMS(FlowType)@]@;
+	public:@/
 		FlowSelector(QWidget *parent = NULL);
 		enum FlowType
 		{
@@ -15968,9 +15968,9 @@ specifying the number of stop bits.
 @<Class declarations@>=
 class StopSelector : public QComboBox
 {
-	Q_OBJECT
-	Q_ENUMS(StopBitsType)
-	public:
+	@[Q_OBJECT@]@;
+	@[Q_ENUMS(StopBitsType)@]@;
+	public:@/
 		StopSelector(QWidget *parent = NULL);
 		enum StopBitsType
 		{
@@ -16021,13 +16021,13 @@ four digit hexadecimal value.
 @<Class declarations@>=
 class ShortHexSpinBox : public QSpinBox
 {
-	Q_OBJECT
-	public:
+	@[Q_OBJECT@]@;
+	public:@/
 		ShortHexSpinBox(QWidget *parent = NULL);
-		virtual QValidator::State validate(QString &input, int &pos) const;
-	protected:
+		virtual QValidator::State validate(QString &input, int &pos) const;@/
+	protected:@/
 		virtual int valueFromText(const QString &text) const;
-		virtual QString textFromValue(int value) const;
+		virtual QString textFromValue(int value) const;@/
 };
 
 @ For this we can set some new defaults in the constructor and must override
@@ -16537,11 +16537,11 @@ or the ability to query the device for its current allowed range, but nothing
 is here that hasn'@q'@>t been seen elsewhere.
 
 @<Class declarations@>=
-class ModbusRtuDeviceTSvConfWidget : public BasicDeviceConfigurationWidget
-{
+class ModbusRtuDeviceTSvConfWidget : public BasicDeviceConfigurationWidget@/
+{@/
 	@[Q_OBJECT@]@;
 	public:@/
-		@[Q_INVOKABLE@]@, ModbusRtuDeviceTSvConfWidget(DeviceTreeModel *model,
+		Q_INVOKABLE@, ModbusRtuDeviceTSvConfWidget(DeviceTreeModel *model,
 		                                               const QModelIndex &index);
 	@[private slots@]:@/
 		void updateReadAddress(int newAddress);
@@ -16550,8 +16550,8 @@ class ModbusRtuDeviceTSvConfWidget : public BasicDeviceConfigurationWidget
 		void updateLower(const QString &lower);
 		void updateUpper(const QString &upper);
 		void updateLowerAddress(int newAddress);
-		void updateUpperAddress(int newAddress);
-	private:
+		void updateUpperAddress(int newAddress);@/
+	private:@/
 		QStackedLayout *boundsLayout;
 };
 

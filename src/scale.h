@@ -1,4 +1,4 @@
-/*853:*/
+/*847:*/
 #line 103 "./scales.w"
 
 #ifndef TypicaScaleInclude
@@ -25,4 +25,4 @@ QByteArray responseBuffer;
 
 #endif
 
-/*:853*/
+/*:847*/

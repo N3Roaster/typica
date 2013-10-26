@@ -1,29 +1,25 @@
-/*235:*/
+/*226:*/
 #line 42 "./units.w"
 
 #include "units.h"
 
-/*:235*//*236:*/
+/*:226*//*227:*/
 #line 52 "./units.w"
 
 bool Units::isTemperatureUnit(Unit unit)
 {
-if(unit==Fahrenheit||
+return(unit==Fahrenheit||
 unit==Celsius||
 unit==Kelvin||
-unit==Rankine)
-{
-return true;
-}
-return false;
+unit==Rankind);
 }
 
-/*:236*//*237:*/
-#line 74 "./units.w"
+/*:227*//*228:*/
+#line 70 "./units.w"
 
 double Units::convertTemperature(double value,Unit fromUnit,Unit toUnit)
 {
-if(isTemperatureUnit(fromUnit)&&isTemperatureUnit(toUnit)==false)
+if(!(isTemperatureUnit(fromUnit)&&isTemperatureUnit(toUnit)))
 {
 return 0;
 }
@@ -104,12 +100,12 @@ break;
 return 0;
 }
 
-/*:237*//*238:*/
-#line 160 "./units.w"
+/*:228*//*229:*/
+#line 156 "./units.w"
 
 double Units::convertRelativeTemperature(double value,Unit fromUnit,Unit toUnit)
 {
-if(isTemperatureUnit(fromUnit)&&isTemperatureUnit(toUnit)==false)
+if(!(isTemperatureUnit(fromUnit)&&isTemperatureUnit(toUnit)))
 {
 return 0;
 }
@@ -202,8 +198,8 @@ break;
 return 0;
 }
 
-/*:238*//*239:*/
-#line 258 "./units.w"
+/*:229*//*230:*/
+#line 254 "./units.w"
 
 double Units::convertWeight(double value,Unit fromUnit,Unit toUnit)
 {
@@ -301,14 +297,10 @@ return 0;
 
 bool Units::isWeightUnit(Unit unit)
 {
-if(unit==Pound||
+return(unit==Pound||
 unit==Kilogram||
 unit==Ounce||
-unit==Gram)
-{
-return true;
-}
-return false;
+unit==gram);
 }
 
-/*:239*/
+/*:230*/

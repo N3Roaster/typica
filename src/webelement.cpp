@@ -1,18 +1,18 @@
-/*522:*/
-#line 363 "./webview.w"
+/*513:*/
+#line 365 "./webview.w"
 
 #include "webelement.h"
 
-/*520:*/
-#line 306 "./webview.w"
+/*511:*/
+#line 308 "./webview.w"
 
 TypicaWebElement::TypicaWebElement(QWebElement element):e(element)
 {
 
 }
 
-/*:520*//*521:*/
-#line 315 "./webview.w"
+/*:511*//*512:*/
+#line 317 "./webview.w"
 
 void TypicaWebElement::appendInside(const QString&markup)
 {
@@ -59,8 +59,8 @@ void TypicaWebElement::setPlainText(const QString&text)
 e.setPlainText(text);
 }
 
-/*:521*/
-#line 366 "./webview.w"
+/*:512*/
+#line 368 "./webview.w"
 
 
-/*:522*/
+/*:513*/

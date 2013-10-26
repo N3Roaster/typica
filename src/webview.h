@@ -1,5 +1,5 @@
-/*499:*/
-#line 12 "./webview.w"
+/*490:*/
+#line 14 "./webview.w"
 
 #include <QWebView> 
 #include <QFile> 
@@ -33,4 +33,4 @@ void linkDelegate(const QUrl&url);
 
 #endif
 
-/*:499*/
+/*:490*/

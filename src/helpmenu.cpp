@@ -1,10 +1,10 @@
-/*175:*/
+/*163:*/
 #line 35 "./helpmenu.w"
 
 #include "helpmenu.h"
 #include "abouttypica.h"
 
-/*176:*/
+/*164:*/
 #line 47 "./helpmenu.w"
 
 HelpMenu::HelpMenu():QMenu()
@@ -17,7 +17,7 @@ addAction(aboutTypicaAction);
 connect(aboutTypicaAction,SIGNAL(triggered()),this,SLOT(displayAboutTypica()));
 }
 
-/*:176*//*177:*/
+/*:164*//*165:*/
 #line 61 "./helpmenu.w"
 
 void HelpMenu::displayAboutTypica()
@@ -26,10 +26,10 @@ AboutTypica*aboutBox= new AboutTypica;
 aboutBox->show();
 }
 
-#line 4138 "./typica.w"
+#line 3946 "./typica.w"
 
-/*:177*/
+/*:165*/
 #line 39 "./helpmenu.w"
 
 
-/*:175*/
+/*:163*/

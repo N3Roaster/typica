@@ -1,4 +1,4 @@
-/*234:*/
+/*225:*/
 #line 8 "./units.w"
 
 #include <QObject> 
@@ -32,4 +32,4 @@ static bool isWeightUnit(Unit unit);
 
 #endif
 
-/*:234*/
+/*:225*/

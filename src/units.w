@@ -55,7 +55,7 @@ bool Units::isTemperatureUnit(Unit unit)
 	return (unit == Fahrenheit ||
 	        unit == Celsius ||
 	        unit == Kelvin ||
-	        unit == Rankind);
+	        unit == Rankine);
 }
 
 @ Temperature conversions can be performed by the |Units| class and should
@@ -351,7 +351,7 @@ bool Units::isWeightUnit(Unit unit)
 	return (unit == Pound ||
 	        unit == Kilogram ||
 	        unit == Ounce ||
-	        unit == gram);
+	        unit == Gram);
 }
 
 @ This class is exposed to the host environment. Note the lack of constructor.

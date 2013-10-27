@@ -11,7 +11,7 @@ bool Units::isTemperatureUnit(Unit unit)
 return(unit==Fahrenheit||
 unit==Celsius||
 unit==Kelvin||
-unit==Rankind);
+unit==Rankine);
 }
 
 /*:227*//*228:*/
@@ -300,7 +300,7 @@ bool Units::isWeightUnit(Unit unit)
 return(unit==Pound||
 unit==Kilogram||
 unit==Ounce||
-unit==gram);
+unit==Gram);
 }
 
 /*:230*/

@@ -27,6 +27,10 @@
 			unitBox.addItem("Kg");
 			unitBox.addItem("oz");
 			unitBox.addItem("lb");
+			unitBox.currentIndex = (QSettings.value("script/greensales_unit", unitBox.findText("lb")));
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/greensales_unit", unitBox.currentIndex);
+			});
 			var convertToPounds = function(w, u) {
 				switch(u)
 				{

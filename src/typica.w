@@ -5655,6 +5655,8 @@ Measurement times are represented as instances of |QTime|.
 
 @i measurement.w
 
+@i clock.w
+
 @** The Main Measurement Pipeline.
 
 \noindent Measurements are sent through \pn{} in a way similar to liquid moving

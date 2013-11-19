@@ -23,7 +23,8 @@ HEADERS += moc_typica.cpp \
     webview.h \
     webelement.h \
     scale.h \
-    draglabel.h
+    draglabel.h \
+    clock.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
     abouttypica.cpp \
@@ -31,7 +32,8 @@ SOURCES += typica.cpp \
     webview.cpp \
     webelement.cpp \
     scale.cpp \
-    draglabel.cpp
+    draglabel.cpp \
+    clock.cpp
 
 RESOURCES += \
     resources.qrc

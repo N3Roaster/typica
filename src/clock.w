@@ -93,3 +93,29 @@ void Clock::setEpoch()
 	guard.unlock();
 	emit newTime(0);
 }
+
+@ The host environment must be able to instantiate this class. This is done in
+the usual way.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructClock(QScriptContext *context, QScriptEngine *engine);
+
+@ The host environment is informed of this function.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructClock);
+engine->globalObject().setProperty("Clock", constructor);
+
+@ Implementation is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructClock(QScriptContext *context, QScriptEngine *engine)
+{
+	return engine->newQObject(new Clock());
+}
+
+@ The header must be included.
+
+@<Header files to include@>=
+#include "clock.h"
+

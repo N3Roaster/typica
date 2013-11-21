@@ -109,7 +109,7 @@ engine->globalObject().setProperty("Clock", constructor);
 @ Implementation is trivial.
 
 @<Functions for scripting@>=
-QScriptValue constructClock(QScriptContext *context, QScriptEngine *engine)
+QScriptValue constructClock(QScriptContext *, QScriptEngine *engine)
 {
 	return engine->newQObject(new Clock());
 }

@@ -496,7 +496,7 @@ DataqSdkDevice::DataqSdkDevice(QString device) : imp(new DataqSdkDeviceImplement
 	int rstart = finalizedPort.indexOf("COM");
 	finalizedPort.remove(0, rstart + 3);
 	bool chopFinished = false;
-	int finalizedPortNumber;
+	int finalizedPortNumber = 0;
 	while(finalizedPort.size() > 0 && !chopFinished)
 	{
 		finalizedPortNumber = finalizedPort.toInt(&chopFinished);
@@ -1098,7 +1098,7 @@ in.
 @<DATAQ SDK device settings@>=
 bool autoSelect;
 QString deviceID;
-int channelOfInterest;
+unsigned int channelOfInterest;
 
 @ This information is accessed through the reference element associated with
 the parent node of the current configuration and from the row number of the
@@ -1141,7 +1141,7 @@ void DataqSdkChannelConfWidget::startCalibration()
 	resetButton->setEnabled(true);
 	calibrationDevice = new DataqSdkDevice(deviceID);
 	Channel *channel;
-	for(int i = 0; i <= channelOfInterest; i++)
+	for(unsigned int i = 0; i <= channelOfInterest; i++)
 	{
 		channel = calibrationDevice->newChannel(Units::Unitless);
 	}

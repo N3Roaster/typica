@@ -386,7 +386,7 @@ engine->globalObject().setProperty("Units", value);
 @ The implementation of these functions is trivial.
 
 @<Functions for scripting@>=
-QScriptValue Units_convertTemperature(QScriptContext *context, QScriptEngine *engine)
+QScriptValue Units_convertTemperature(QScriptContext *context, QScriptEngine *)
 {
 	return QScriptValue(Units::convertTemperature(argument<double>(0, context),
 	                                              argument<Units::Unit>(1, context),
@@ -394,7 +394,7 @@ QScriptValue Units_convertTemperature(QScriptContext *context, QScriptEngine *en
 }
 
 QScriptValue Units_convertRelativeTemperature(QScriptContext *context,
-                                              QScriptEngine *engine)
+                                              QScriptEngine *)
 {
 	return QScriptValue(Units::convertRelativeTemperature(
 	                         argument<double>(0, context),
@@ -402,19 +402,19 @@ QScriptValue Units_convertRelativeTemperature(QScriptContext *context,
 	                         argument<Units::Unit>(2, context)));
 }
 
-QScriptValue Units_isTemperatureUnit(QScriptContext *context, QScriptEngine *engine)
+QScriptValue Units_isTemperatureUnit(QScriptContext *context, QScriptEngine *)
 {
 	return QScriptValue(Units::isTemperatureUnit(argument<Units::Unit>(0, context)));
 }
 
-QScriptValue Units_convertWeight(QScriptContext *context, QScriptEngine *engine)
+QScriptValue Units_convertWeight(QScriptContext *context, QScriptEngine *)
 {
 	return QScriptValue(Units::convertWeight(argument<double>(0, context),
 	                                         argument<Units::Unit>(1, context),
 	                                         argument<Units::Unit>(2, context)));
 }
 
-QScriptValue Units_isWeightUnit(QScriptContext *context, QScriptEngine *engine)
+QScriptValue Units_isWeightUnit(QScriptContext *context, QScriptEngine *)
 {
 	return QScriptValue(Units::isWeightUnit(argument<Units::Unit>(0, context)));
 }

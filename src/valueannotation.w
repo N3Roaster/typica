@@ -276,7 +276,7 @@ engine->globalObject().setProperty("ValueAnnotation", value);
 @ The implementation of the functions also proceeds as usual.
 
 @<Functions for scripting@>=
-QScriptValue constructValueAnnotation(QScriptContext *context, QScriptEngine *engine)
+QScriptValue constructValueAnnotation(QScriptContext *, QScriptEngine *engine)
 {
 	QScriptValue object = engine->newQObject(new ValueAnnotation);
 	setValueAnnotationProperties(object, engine);

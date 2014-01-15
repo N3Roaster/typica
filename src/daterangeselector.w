@@ -43,6 +43,8 @@ class DateRangeSelector : public QWidget
 		DateRangeSelector(QWidget *parent = NULL);
 		void setCustomRange(QVariant range);
 		Q_INVOKABLE QVariant currentRange();@/
+	@[public slots@]:@/
+		void setCurrentIndex(int index);@/
 	@[signals@]:@/
 		void rangeUpdated(QVariant);
 	@[private slots@]:@/
@@ -397,6 +399,14 @@ QVariant DateRangeSelector::currentRange()
 	return quickSelector->itemData(lastIndex);
 }
 
+@ Similarly, a method is provided to set the current index of the combo box.
+
+@<DateRangeSelector implementation@>=
+void DateRangeSelector::setCurrentIndex(int index)
+{
+	quickSelector->setCurrentIndex(index);
+}
+
 @ To use this new control in Typica, we should provide a way to create it from
 the XML description of a window.
 
@@ -407,10 +417,8 @@ else if(currentElement.tagName() == "daterange")
 }
 
 @ The method for adding a date range selector to a layout is currently trivial.
-Additional features may be added to this in the future to provide better
-support for specifying an initial default selection. At present the only
-supported attribute is the |"id"| attribute which is used to make the widget
-accessible to scripts.
+The |"id"| attribute is supported as usual, as is an |"initial"| attribute for
+setting the combo box index.
 
 @<Functions for scripting@>=
 void addDateRangeToLayout(QDomElement element, QStack<QWidget *> *,@|
@@ -420,6 +428,10 @@ void addDateRangeToLayout(QDomElement element, QStack<QWidget *> *,@|
 	if(element.hasAttribute("id"))
 	{
 		widget->setObjectName(element.attribute("id"));
+	}
+	if(element.hasAttribute("initial"))
+	{
+		widget->setCurrentIndex(element.attribute("initial").toInt());
 	}
 	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
 	layout->addWidget(widget);

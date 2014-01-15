@@ -29,7 +29,6 @@ class RateOfChange : public QObject
 		int ct;
 		int st;
 		QList<Measurement> cache;
-		QMap<double,double> smoothCache;
 };
 
 @ The interesting part of this class is in the |newMeasurement()| method. This
@@ -88,51 +87,33 @@ if(cache.size() > 2)
 	}
 }
 
-@ The calculation method here is subject to change as this is still noisier
-than I would like. What we are doing here is calculating the rate of change
-between each pair of adjacent measurements in the cache and averaging them to
-produce something that is a little less noisy than just using the first and
-last measurements in the cache. Other techniques may be useful for reducing the
-noise further.
+@ Rather than work directly with changes from one measurement to the next and
+attempting to filter out the noise, we instead calculate the slope of a simple
+linear regression on the current window of data.
 
 The measurement will carry the fact that it is a relative measurement.
 
 @<Calculate rate of change@>=
-QList<double> rates;
-for(int i = 1; i < cache.size(); i++)
+int N = cache.size();
+double SXY = 0;
+double SX = 0;
+double SXX = 0;
+double SY = 0;
+double y;
+double x;
+for(int i = 0; i < N; i++)
 {
-	double mdiff = cache.at(i).temperature() - cache.at(i-1).temperature();
-	double tdiff = (double)(cache.at(i-1).time().msecsTo(cache.at(i).time())) / 1000.0;
-	rates.append(mdiff/tdiff);
+	y = cache.at(i).temperature();
+	SY += y;
+	x = cache.at(0).time().msecsTo(cache.at(i).time()) / 1000.0;
+	SX += x;
+	SXX += (x*x);
+	SXY += (x*y);
 }
-double acc = 0.0;
-for(int i = 0; i < rates.size(); i++)
-{
-	acc += rates.at(i);
-}
-double pavg = acc /= rates.size();
-double v2 = pavg * st;
-double refm = cache.back().temperature() - cache.front().temperature();
-double reft = (double)(cache.front().time().msecsTo(cache.back().time())) / 1000.0;
-double ref = refm/reft;
-Measurement value(v2, cache.back().time(), cache.back().scale());
+double M = ((N * SXY) - (SX * SY)) / ((N * SXX) - (SX * SX));
+Measurement value(M * st, cache.back().time(), cache.back().scale());
 value.insert("relative", true);
 emit newData(value);
-double calcdiff = ref - pavg;
-if(calcdiff < 0)
-{
-	calcdiff = -calcdiff;
-}
-if(pavg < 0)
-{
-	pavg = -pavg;
-}
-if(calcdiff > (pavg * 0.2))
-{
-	Measurement save = cache.back();
-	cache.clear();
-	cache.append(save);
-}
 
 @ The rest of the class implementation is trivial.
 

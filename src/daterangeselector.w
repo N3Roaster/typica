@@ -44,7 +44,9 @@ class DateRangeSelector : public QWidget
 		void setCustomRange(QVariant range);
 		Q_INVOKABLE QVariant currentRange();@/
 	@[public slots@]:@/
-		void setCurrentIndex(int index);@/
+		void setCurrentIndex(int index);
+		void setLifetimeRange(QString startDate, QString endDate);
+		void removeIndex(int index);@/
 	@[signals@]:@/
 		void rangeUpdated(QVariant);
 	@[private slots@]:@/
@@ -301,6 +303,7 @@ quickSelector->addItem("Last 365 Days", QVariant(QStringList() <<
 	currentDate.addDays(-364).toString(Qt::ISODate) <<
 	currentDate.toString(Qt::ISODate)));
 quickSelector->insertSeparator(quickSelector->count());
+quickSelector->addItem("Lifetime");
 quickSelector->addItem("Custom");
 
 @ Special handling of the Custom range is required because it is possible to
@@ -405,6 +408,31 @@ QVariant DateRangeSelector::currentRange()
 void DateRangeSelector::setCurrentIndex(int index)
 {
 	quickSelector->setCurrentIndex(index);
+}
+
+@ The Lifetime range is handled somewhat differently from other ranges as there
+is no general way to know what that range should be without making unsafe
+assumptions. As such, reports are expected to remove the option, provide a
+sensible range for it, or handle this selection in a special case. The expected
+source of the lifetime date range is the result of a database query so a method
+is provided that accepts string representations of the dates. Note that this
+method must not be called if the Lifetime option is no longer the second to
+last option in the combo box.
+
+@<DateRangeSelector implementation@>=
+void DateRangeSelector::setLifetimeRange(QString startDate, QString endDate)
+{
+	quickSelector->setItemData(quickSelector->count() - 2,
+		QVariant(QStringList() << startDate << endDate));
+}
+
+@ The |removeIndex()| method is intended for removing the Lifetime option in
+cases where this is not supported. Use of this method is strongly discouraged.
+
+@<DateRangeSelector implementation@>=
+void DateRangeSelector::removeIndex(int index)
+{
+	quickSelector->removeItem(index);
 }
 
 @ To use this new control in Typica, we should provide a way to create it from

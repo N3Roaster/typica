@@ -16,6 +16,18 @@
 		<![CDATA[
 			this.windowTitle = "Typica - Inventory Change Summary";
 			var dateSelect = findChildObject(this, 'dates');
+			var dateQuery = new QSqlQuery();
+			dateQuery.exec("SELECT time::date FROM transactions WHERE time = (SELECT min(time) FROM transactions) OR time = (SELECT max(time) FROM transactions) ORDER BY time ASC");
+			dateQuery.next();
+			var lifetimeStartDate = dateQuery.value(0);
+			var lifetimeEndDate;
+			if(dateQuery.next()) {
+				lifetimeEndDate = dateQuery.value(0);
+			} else {
+				lifetimeEndDate = lifetimeStartDate;
+			}
+			dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+			dateQuery = dateQuery.invalidate();
 			var unitBox = findChildObject(this, 'unit');
 			unitBox.addItem("Kg");
 			unitBox.addItem("Lb");

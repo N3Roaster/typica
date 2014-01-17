@@ -4263,6 +4263,7 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
 				QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
 				layout->addStretch();
 			}
+			@<Additional box layout elements@>@;
 		}
 	}
 }
@@ -13267,6 +13268,8 @@ void setQTextEditProperties(QScriptValue value, QScriptEngine *engine)
 	setQAbstractScrollAreaProperties(value, engine);
 	value.setProperty("print", engine->newFunction(QTextEdit_print));
 }
+
+@i daterangeselector.w
 
 @** An area for repeated user interface elements.
 

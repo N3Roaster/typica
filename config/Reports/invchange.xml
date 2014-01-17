@@ -2,10 +2,7 @@
 	<reporttitle>Inventory:->Inventory Change Summary</reporttitle>
 	<layout type="vertical">
 		<layout type="horizontal">
-			<label>Start Date:</label>
-			<calendar id="startdate" />
-			<label>End Date:</label>
-			<calendar id="enddate" />
+			<daterange id="dates" initial="19" /><!-- Current Year to Date-->
 			<label>Weight Unit:</label>
 			<sqldrop id="unit" />
 			<stretch />
@@ -18,9 +15,19 @@
 	<program>
 		<![CDATA[
 			this.windowTitle = "Typica - Inventory Change Summary";
-			var startDateField = findChildObject(this, 'startdate');
-			startDateField.setDate(startDateField.year(), 1, 1);
-			var endDateField = findChildObject(this, 'enddate');
+			var dateSelect = findChildObject(this, 'dates');
+			var dateQuery = new QSqlQuery();
+			dateQuery.exec("SELECT time::date FROM transactions WHERE time = (SELECT min(time) FROM transactions) OR time = (SELECT max(time) FROM transactions) ORDER BY time ASC");
+			dateQuery.next();
+			var lifetimeStartDate = dateQuery.value(0);
+			var lifetimeEndDate;
+			if(dateQuery.next()) {
+				lifetimeEndDate = dateQuery.value(0);
+			} else {
+				lifetimeEndDate = lifetimeStartDate;
+			}
+			dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+			dateQuery = dateQuery.invalidate();
 			var unitBox = findChildObject(this, 'unit');
 			unitBox.addItem("Kg");
 			unitBox.addItem("Lb");
@@ -46,8 +53,9 @@
 				output.writeTextElement("title", "Inventory Change Summary");
 				output.writeEndElement();
 				output.writeStartElement("body");
-				var startDate = "" + startDateField.year() + "-" + startDateField.month() + "-" + startDateField.day();
-				var endDate = "" + endDateField.year() + "-" + endDateField.month() + "-" + endDateField.day();
+				var dateRange = dateSelect.currentRange();
+				var startDate = dateRange[0];
+				var endDate = dateRange[dateRange.length - 1];
 				output.writeTextElement("h1", "Inventory Change Summary: " + startDate + " – " + endDate);
 				var conversion = 1;
 				if(unitBox.currentIndex == 0) {
@@ -206,10 +214,7 @@
 				query = query.invalidate();
 			}
 			refresh();
-			startDateField.dateChanged.connect(function() {
-				refresh();
-			});
-			endDateField.dateChanged.connect(function() {
+			dateSelect.rangeUpdated.connect(function() {
 				refresh();
 			});
 			view.scriptLinkClicked.connect(function(url) {

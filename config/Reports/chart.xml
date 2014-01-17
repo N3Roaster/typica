@@ -18,6 +18,7 @@
         <![CDATA[
             this.windowTitle = "Typica - Previous Year Production Comparison";
 			var dateSelect = findChildObject(this, 'dates');
+			dateSelect.removeIndex(23); // Remove Lifetime range
             var view = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {

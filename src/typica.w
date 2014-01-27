@@ -17667,13 +17667,22 @@ void setModbusRTUDeviceProperties(QScriptValue value, QScriptEngine *engine)
 \noindent This class was minimally adapted from a prototype implementation to
 use the new configuration system introduced in \pn{} 1.4.
 
-With all of the custom widgets for specifying a device configuration in place,
-we can proceed to combine these in a form. As all of the options might use more
-screen space than is available we make this scrollable. Some reorganization of
-this will be done prior to release to enable the use of multiple devices on the
-port which may obviate the need for this, but as there are those who prefer to
-have a small screen it may be better to leave the scroll area in place even
-after such a change.
+This original configuration control, while adequate for basic logging purposes,
+is highly restrictive. There is a limit of 1 device per bus and only a single
+temperature process value and set value control is supported.
+
+The current plan is to replace this configuration control with a set of
+controls which separate device configuration from port configuration,
+separate measurement interpretation from device configuration, and separate
+channel configuration from measurement interpretation. When the new
+configuration controls are available this one will be de-listed but will still
+be available for those who have already configured their devices. More flexible
+communications classes will be written to take advantage of the greater
+configuration flexibility. After this is done, those classes can be extended to
+support reading configurations from |ModbusConfigurator| allowing the old
+communication code to be removed. Following this, configuration code can be
+updated to modify old Modbus RTU preferences and map those configurations to
+the new structure which will finally allow this class to be removed.
 
 @<Class declarations@>=
 class ModbusConfigurator : public BasicDeviceConfigurationWidget

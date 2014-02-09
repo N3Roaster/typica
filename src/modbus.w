@@ -178,31 +178,24 @@ void ModbusRtuPortConfWidget::updateStopBits(const QString &newStopBits)
 	updateAttribute("stopbits", newStopBits);
 }
 
-@ From here we need to provide a widget for configuring a particular device.
-At a minimum this would require setting the station number to a value between
-0 and 255. Zero is typically the broadcast address which reaches all devices
-on the bus and is not generally recommended for use except in particular
-circumstances. There are, however, a number of settings that influence all of
-the currently supported child nodes and these settings are in the device
-configuration widget instead of requiring that information to be duplicated
-across multiple child nodes.
+@ With the port the bus is connected to configured, we need to provide a
+widget for configuring a particular device. At present the device
+configuration consists of the station ID and the maximum number of
+contiguous registers that can be grouped into a single request for functions
+that normally allow access to multiple registers in a single request. This
+setting is required as I have encountered devices which only allow a single
+register to be accessed in one request despite the use of functions which are
+intended for access to multiple registers. Setting a value other than 1 would
+allow devices to combine requests to multiple contiguous registers in a single
+request which would allow collecting these measurements at a faster rate with
+clock skew.
 
-The Modbus RTU protocol is very general in scope and leaves many of the
-details of how to do certain things up to the manufacturer. For rudimentary
-support of devices using this protocol, the documentation for several devices
-was consulted and a test rig with one device was set up. There are a number of
-assumptions made for this initial support and to better support additional
-device classes it may become necessary to expand on what is provided initially.
-The primary focus presently is on the use of PID controllers as temperature
-indicators with the ability to modify a set value in the case where this is
-used as a controller rather than just a display.
+The station ID is a number between 0 and 255. Zero is typically the broadcast
+address which reaches all devices on the bus and is generally not recommended
+except in particular circumstances.
 
-All of the devices studied prior to adding this support made use of scaled
-integer representation. In order to correctly determine the measured process
-value it is necessary to know the unit of the measurement and the position of
-the decimal point. It is generally possible to query this information, however
-it may be useful to provide a way to specify fixed values in the event that a
-device exposes these details in a way that is incompatible with my assumptions.
+Under each device it is possible to set up a configuration group which
+determines how certain measurements are interpreted.
 
 @<Class declarations@>=
 class ModbusRtuDeviceConfWidget : public BasicDeviceConfigurationWidget
@@ -213,43 +206,152 @@ class ModbusRtuDeviceConfWidget : public BasicDeviceConfigurationWidget
 		                                            const QModelIndex &index);
 	@[private slots@]:@/
 		void updateStationNumber(int newStation);
-		void updateFixedUnit(bool newFixed);
-		void updateFixedDecimal(bool newFixed);
-		void updateUnit(const QString &newUnit);
-		void updateUnitAddress(int newAddress);
-		void updateValueF(int newValue);
-		void updateValueC(int newValue);
-		void updatePrecisionAddress(int newAddress);
-		void updatePrecisionValue(int newValue);
-	private:@/
-		QStackedLayout *unitSpecificationLayout;
-		QStackedLayout *decimalSpecificationLayout;
+		void updateRegisterLimit(int newLimit);
 };
 
-@ This widget has a number of differences from previous configuration widgets.
-Perhaps most significantly there are controls which do not provide a text based
-signal on state change. We also set certain controls as disabled when the
-provided values are not relevant to operations such as when switching between
-fixed decimal position and looking up decimal position from the device. Aside
-from these details the widget operates according to the same principles as the
-other widgets already seen.
+@ The values in |registerLimit| range from 1 to 125. Setting this value to 1
+means that every register read will require a separate message to request that
+value. Higher values allow device communications code to combine requests for
+multiple contiguous registers in a single request with the upper limit of 125
+a consequence of the maximum message length imposed by the Modbus RTU protocol.
+
+It is possible to configure arbitrarily many configuration groups under a
+device and the "Custom Unit Values" option allows logging different types of
+control variables in sensible units. Each custom unit should also have
+configuration options set for the graph view.
 
 @<ModbusRtuDeviceConfWidget implementation@>=
 ModbusRtuDeviceConfWidget::ModbusRtuDeviceConfWidget(DeviceTreeModel *model,
                                                      const QModelIndex &index)
+: BasicDeviceConfigurationWidget(model, index)
+{
+	QFormLayout *layout = new QFormLayout;
+	QToolButton *addGroupButton = new QToolButton;
+	addGroupButton->setText(tr("Add Value Interpretation Group"));
+	NodeInserter *addTempConfGroup = new NodeInserter("Temperature Values",
+	                                                  "Temperature Values",
+													  "modbustempconfgroup");
+	NodeInserter *addCustomConfGroup = new NodeInserter("Custom Unit Values",
+	                                                    "Custom Unit Values",
+	                                                    "modbuscustomunitconfgroup");
+	connect(addTempConfGroup, SIGNAL(triggered(QString, QString)),
+	        this, SLOT(insertChildNode(QString, QString)));
+	connect(addCustomConfGroup, SIGNAL(triggered(QString, QString)),
+	        this, SLOT(insertChildNode(QString, QString)));
+	QMenu *configMenu = new QMenu;
+	configMenu->addAction(addTempConfGroup);
+	configMenu->addAction(addCustomConfGroup);
+	addGroupButton->setMenu(channelMenu);
+	addGroupButton->setPopupMode(QToolButton::InstantPopup);
+	layout->addRow(QString(), addGroupButton);
+
+	QSpinBox *stationNumber = new QSpinBox;
+	stationNumber->setMinimum(0);
+	stationNumber->setMaximum(255);
+	layout->addRow(tr("Station ID"), stationNumber);
+
+	QSpinBox *registerLimit = new QSpinBox;
+	registerLimit->setMinimum(1);
+	registerLimit->setMaximum(125);
+	layout->addRow(tr("Maximum Registers per Message"), registerLimit);
+	
+	@<Get device configuration data for current node@>@;
+	for(int i = 0; i < configData.size(); i++)
+	{
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "station")
+		{
+			stationNumber->setValue(node.attribute("value").toInt());
+		}
+		else if(node.attribute("name") == "registerlimit")
+		{
+			registerLimit->setValue(node.attribute("value").toInt());
+		}
+	}
+	
+	updateStationNumber(stationNumber->value());
+	updateRegisterLimit(registerLimit->value());
+
+	connect(stationNumber, SIGNAL(valueChanged(int)),
+	        this, SLOT(updateStationNumber(int)));
+	connect(registerLimitm SIGNAL(valueChanged(int)),
+	        this, SLOT(updateRegisterLimit(int)));
+
+	setLayout(layout);
+}
+
+void ModbusRtuDeviceConfWidget::updateStationNumber(int newStation)
+{
+	updateAttribute("station", QString("%1").arg(newStation));
+}
+
+void ModbusRtuDeviceConfWidget::updateRegisterLimit(int newLimit)
+{
+	updateAttribute("registerlimit", QString("%1").arg(newLimit));
+}
+
+@ There are several plausible types of information that we may wish to log from
+devices that understand Modbus RTU and some devices will support more than one
+type of data. Due to limitations in the protocol, this information is not
+self-documenting and Typica must be told how the data is to be interpreted. To
+avoid excessive data entry when monitoring multiple registers with information
+that should be interpreted in the same way as is common, the configuration of
+these registers is grouped.
+
+@<Class declarations@>=
+class ModbusRtuTempConfGroupConfWidget : public BasicDeviceConfigurationWidget
+{
+	@[Q_OBJECT@]@/
+	public:@/
+		@[Q_INVOKABLE@]@, ModbusRtuTempConfGroupConfWidget(DeviceTreeModel *model,
+		                                                   const QModelIndex &index);
+	@[private slots@]:@/
+		void updateFixedUnit(bool newValue);
+		void updateFixedPrecision(bool newValue);
+		void updateUnit(const QString &newValue);
+		void updatePrecision(int newValue);
+		void updateUnitAddress(int newValue);
+		void updateFValue(int newValue);
+		void updateCValue(int newValue);
+		void updatePrecisionAddress(int newValue);
+	private:
+		QStackedLayout *unitSpecificationLayout;
+		QStackedLayout *precisionSpecificationLayout;
+};
+
+@ Registers in Modbus RTU provide access to 16 bit integer values, but most
+devices that provide access to temperature data will present this as a fixed
+point decimal value. In order to correctly interpret this information we must
+know how many positions the decimal point should be shifted and what the
+current measurement unit is. Both of these are often configurable and Typica
+provides two options for configuring this. One option is to fix the value. If
+you know that a particular device will always be set so that one place should
+be considered to be after the decimal point and temperature measurements will
+always be in degrees Fahrenheit, you can just specify that this is the case.
+Alternately, you can specify the function and address to check the current
+configuration and in the case of units provide which unit maps to what value.
+
+As details that are specific to temperature handling are configured in the
+group configuration, register configuration nodes can be generic.
+
+At present, when querying configuration details
+
+@<ModbusRtuTempConfGroupConfWidget implementation@>=
+ModbusRtuTempConfGroupConfWidget::ModbusRtuTempConfGroupConfWidget(DeviceTreeModel *model,
+                                                                   const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
-	unitSpecificationLayout(new QStackedLayout),
-	decimalSpecificationLayout(new QStackedLayout)
+unitSpecificationLayout(new QStackedLayout),
+precisionSpecificationLayout(new QStackedLayout)
 {
 	QVBoxLayout *layout = new QVBoxLayout;
 	QToolButton *addChannelButton = new QToolButton;
 	addChannelButton->setText(tr("Add Channel"));
-	NodeInserter *addTemperaturePV = new NodeInserter("Temperature Process Value",
-	                                                  "Temperature Process Value",
-													  "modbustemperaturepv");
-	NodeInserter *addTemperatureSV = new NodeInserter("Temperature Set Value",
-	                                                  "Temperature Set Value",
-													  "modbustemperaturesv");
+	NodeInserter *addTemperaturePV = new NodeInserter("Read Only Value",
+	                                                  "Read Only Value",
+	                                                  "modbusrvalue");
+	NodeInserter *addTemperatureSV = new NodeInserter("Read Write Value",
+	                                                  "Read Write Value",
+	                                                  "modbusrwvalue");
 	connect(addTemperaturePV, SIGNAL(triggered(QString, QString)),
 	        this, SLOT(insertChildNode(QString, QString)));
 	connect(addTemperatureSV, SIGNAL(triggered(QString, QString)),
@@ -260,19 +362,12 @@ ModbusRtuDeviceConfWidget::ModbusRtuDeviceConfWidget(DeviceTreeModel *model,
 	addChannelButton->setMenu(channelMenu);
 	addChannelButton->setPopupMode(QToolButton::InstantPopup);
 	layout->addWidget(addChannelButton);
-	QHBoxLayout *stationLayout = new QHBoxLayout;
-	QLabel *stationLabel = new QLabel(tr("Station:"));
-	QSpinBox *stationNumber = new QSpinBox;
-	stationNumber->setMinimum(0);
-	stationNumber->setMaximum(255);
-	stationLayout->addWidget(stationLabel);
-	stationLayout->addWidget(stationNumber);
-	layout->addLayout(stationLayout);
+	
 	QCheckBox *fixedUnit = new QCheckBox(tr("Fixed Temperature Unit"));
 	layout->addWidget(fixedUnit);
-	QWidget *fixedUnitPlaceholder = new QWidget(this);
+	QWidget *fixedUnitPlaceholder = new QWidget;
 	QHBoxLayout *fixedUnitLayout = new QHBoxLayout;
-	QLabel *fixedUnitLabel = new QLabel(tr("Temperature Unit:"));
+	QLabel *fixedUnitLabel = new QLabel(tr("Unit:"));
 	QComboBox *fixedUnitSelector = new QComboBox;
 	fixedUnitSelector->addItem("Fahrenheit");
 	fixedUnitSelector->addItem("Celsius");
@@ -280,7 +375,8 @@ ModbusRtuDeviceConfWidget::ModbusRtuDeviceConfWidget(DeviceTreeModel *model,
 	fixedUnitLayout->addWidget(fixedUnitSelector);
 	fixedUnitPlaceholder->setLayout(fixedUnitLayout);
 	unitSpecificationLayout->addWidget(fixedUnitPlaceholder);
-	QWidget *queriedUnitPlaceholder = new QWidget(this);
+	
+	QWidget *queriedUnitPlaceholder = new QWidget;
 	QFormLayout *queriedUnitLayout = new QFormLayout;
 	ShortHexSpinBox *unitAddress = new ShortHexSpinBox;
 	queriedUnitLayout->addRow(tr("Function 0x03 Unit Address:"), unitAddress);
@@ -295,165 +391,336 @@ ModbusRtuDeviceConfWidget::ModbusRtuDeviceConfWidget(DeviceTreeModel *model,
 	queriedUnitPlaceholder->setLayout(queriedUnitLayout);
 	unitSpecificationLayout->addWidget(queriedUnitPlaceholder);
 	layout->addLayout(unitSpecificationLayout);
+	
 	QCheckBox *fixedPrecision = new QCheckBox(tr("Fixed Precision"));
 	layout->addWidget(fixedPrecision);
-	QWidget *fixedPrecisionPlaceholder = new QWidget(this);
+	QWidget *fixedPrecisionPlaceholder = new QWidget;
 	QFormLayout *fixedPrecisionLayout = new QFormLayout;
 	QSpinBox *fixedPrecisionValue = new QSpinBox;
 	fixedPrecisionValue->setMinimum(0);
 	fixedPrecisionValue->setMaximum(9);
-	fixedPrecisionLayout->addRow("Places after the decimal point:",
-	                             fixedPrecisionValue);
+	fixedPrecisionLayout->addRow("Places after the decimal point:", fixedPrecisionValue);
 	fixedPrecisionPlaceholder->setLayout(fixedPrecisionLayout);
-	decimalSpecificationLayout->addWidget(fixedPrecisionPlaceholder);
-	QWidget *queriedPrecisionPlaceholder = new QWidget(this);
+	precisionSpecificationLayout->addWidget(fixedPrecisionPlaceholder);
+	
+	QWidget *queriedPrecisionPlaceholder = new QWidget;
 	QFormLayout *queriedPrecisionLayout = new QFormLayout;
 	ShortHexSpinBox *precisionAddress = new ShortHexSpinBox;
-	queriedPrecisionLayout->addRow("Function 0x03 Decimal Position Address:",
-	                                    precisionAddress);
-	queriedPrecisionPlaceholder->setLayout(queriedPrecisionLayout);
-	decimalSpecificationLayout->addWidget(queriedPrecisionPlaceholder);
-	layout->addLayout(decimalSpecificationLayout);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
+	queriedPrecisionLayout->addRow(tr("Function 0x03 Decimal Position Address"),
+                                   precisionAddress);
+    queriedPrecisionPlaceholder->setLayout(queriedPrecisionLayout);
+    precisionSpecificationLayout->addWidget(queriedPrecisionPlaceholder);
+    layout->addLayout(precisionSpecificationLayout);
+    
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
 		node = configData.at(i).toElement();
-		if(node.attribute("name") == "station")
+		switch(node.attribute("name"))
 		{
-			stationNumber->setValue(node.attribute("value").toInt());
+			case "fixedunit":
+				if(node.attribute("value") == "true")
+				{
+					fixedUnit->setCheckState(Qt::Checked);
+				}
+				else
+				{
+					fixedUnit->setCheckState(Qt::Unchecked);
+				}
+				break;
+			case "fixedprecision":
+				if(node.attribute("value") == "true")
+				{
+					fixedPrecision->setCheckState(Qt::Checked);
+				}
+				else
+				{
+					fixedPrecision->setCheckState(Qt::Unchecked);
+				}
+				break;
+			case "unit":
+				fixedUnitSelector->
+					setCurrentIndex(fixedUnitSelector->findText(node.attribute("value")));
+				break;
+			case "unitaddress":
+				unitAddress->setValue(node.attribute("value").toInt());
+				break;
+			case "fvalue":
+				valueF->setValue(node.attribute("value").toInt());
+				break;
+			case "cvalue":
+				valueC->setValue(node.attribute("value").toInt());
+				break;
+			case "precisionaddress":
+				precisionAddress->setValue(node.attribute("value").toInt());
+				break;
+			case "precision":
+				fixedPrecisionValue->setValue(node.attribute("value").toInt());
+				break;
+			default:
+				break;
 		}
-		else if(node.attribute("name") == "fixedunit")
-		{
-			if(node.attribute("value") == "true")
-			{
-				fixedUnit->setCheckState(Qt::Checked);
-			}
-			else if(node.attribute("value") == "false")
-			{
-				fixedUnit->setCheckState(Qt::Unchecked);
-			}
-		}
-		else if(node.attribute("name") == "fixedprecision")
-		{
-			fixedPrecisionValue->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "unit")
-		{
-			fixedUnitSelector->setCurrentIndex(fixedUnitSelector->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "unitaddress")
-		{
-			unitAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "fvalue")
-		{
-			valueF->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "cvalue")
-		{
-			valueC->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "precisionaddress")
-		{
-			precisionAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "precision")
-		{
-			fixedPrecisionValue->setValue(node.attribute("value").toInt());
-		}
-	}
-	updateStationNumber(stationNumber->value());
-	updateFixedUnit(fixedUnit->isChecked());
-	updateFixedDecimal(fixedPrecision->isChecked());
-	updateUnit(fixedUnitSelector->currentText());
-	updateUnitAddress(unitAddress->value());
-	updateValueF(valueF->value());
-	updateValueC(valueC->value());
-	updatePrecisionAddress(precisionAddress->value());
-	updatePrecisionValue(fixedPrecisionValue->value());
-	connect(stationNumber, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateStationNumber(int)));
-	connect(fixedUnitSelector, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateUnit(QString)));
-	connect(unitAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateUnitAddress(int)));
-	connect(valueF, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateValueF(int)));
-	connect(valueC, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateValueC(int)));
-	connect(fixedUnit, SIGNAL(toggled(bool)),
-	        this, SLOT(updateFixedUnit(bool)));
-	connect(fixedPrecision, SIGNAL(toggled(bool)),
-	        this, SLOT(updateFixedDecimal(bool)));
-	connect(fixedPrecisionValue, SIGNAL(valueChanged(int)),
-	        this, SLOT(updatePrecisionValue(int)));
-	connect(precisionAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updatePrecisionAddress(int)));
-	setLayout(layout);
+    }
+    updateFixedUnit(fixedUnit->isChecked());
+    updateFixedPrecision(fixedPrecision->isChecked());
+    updateUnit(fixedUnitSelector->currentText());
+    updateUnitAddress(unitAddress->value());
+    updateFValue(valueF->value());
+    updateCValue(valueC->value());
+    updatePrecisionAddress(precisionAddress->value());
+    updatePrecision(fixedPrecisionValue->value());
+    
+    connect(fixedUnit, SIGNAL(toggled(bool)), this, SLOT(updateFixedUnit(bool)));
+    connect(fixedPrecision, SIGNAL(toggled(bool)), this, SLOT(updateFixedPrecision(bool)));
+    connect(fixedUnitSelector, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updateUnit(QString)));
+    connect(unitAddress, SIGNAL(valueChanged(int)), this, SLOT(updateUnitAddress(int)));
+    connect(valueF, SIGNAL(valueChanged(int)), this, SLOT(updateFValue(int)));
+    connect(valueC, SIGNAL(valueChanged(int)), this, SLOT(updateCValue(int)));
+    connect(precisionAddress, SIGNAL(valueChanged(int)), this, SLOT(updatePrecisionAddress(int)));
+    connect(fixedPrecisionValue, SIGNAL(valueChanged(int)), this, SLOT(updatePrecision(int)));
 }
 
-void ModbusRtuDeviceConfWidget::updateStationNumber(int newStation)
-{
-	updateAttribute("station", QString("%1").arg(newStation));
-}
+@ The methods that update the current configuration attributes are typical,
+however the check boxes also update which configuration controls are currently
+displayed.
 
-void ModbusRtuDeviceConfWidget::updateFixedUnit(bool newFixed)
+@<ModbusRtuTempConfGroupConfWidget implementation@>=
+void ModbusRtuTempConfGroupConfWidget::updateFixedUnit(bool newValue)
 {
-	if(newFixed)
+	if(newValue)
 	{
 		unitSpecificationLayout->setCurrentIndex(0);
 		updateAttribute("fixedunit", "true");
-	}
-	else
-	{
+	} else {
 		unitSpecificationLayout->setCurrentIndex(1);
 		updateAttribute("fixedunit", "false");
 	}
 }
 
-void ModbusRtuDeviceConfWidget::updateFixedDecimal(bool newFixed)
+void ModbusRtuTempConfGroupConfWidget::updateFixedPrecision(bool newValue)
 {
-	if(newFixed)
+	if(newValue)
 	{
-		decimalSpecificationLayout->setCurrentIndex(0);
+		precisionSpecificationLayout->setCurrentIndex(0);
 		updateAttribute("fixedprecision", "true");
-	}
-	else
-	{
-		decimalSpecificationLayout->setCurrentIndex(1);
-		updateAttribute("fixedprecision", "false");
+	} else {
+		precisionSpecificationLayout->setCurrentIndex(1);
+		updateAttribute("fixedprexision", "false");
 	}
 }
 
-void ModbusRtuDeviceConfWidget::updateUnit(const QString &newUnit)
+void ModbusRtuTempConfGroupConfWidget::updateUnit(const QString &newValue)
 {
-	updateAttribute("unit", newUnit);
+	updateAttribute("unit", newValue);
 }
 
-void ModbusRtuDeviceConfWidget::updateUnitAddress(int newAddress)
+void ModbusRtuTempConfGroupConfWidget::updatePrecision(int newValue)
 {
-	updateAttribute("unitaddress", QString("%1").arg(newAddress));
+	updateAttribute("precision", QString("%1").arg(newValue));
 }
 
-void ModbusRtuDeviceConfWidget::updateValueF(int newValue)
+void ModbusRtuTempConfGroupConfWidget::updateUnitAddress(int newValue)
+{
+	updateAttribute("unitaddress", QString("%1").arg(newValue));
+}
+
+void ModbusRtuTempConfGroupConfWidget::updateFValue(int newValue)
 {
 	updateAttribute("fvalue", QString("%1").arg(newValue));
 }
 
-void ModbusRtuDeviceConfWidget::updateValueC(int newValue)
+void ModbusRtuTempConfGroupConfWidget::updateCValue(int newValue)
 {
 	updateAttribute("cvalue", QString("%1").arg(newValue));
 }
 
-void ModbusRtuDeviceConfWidget::updatePrecisionAddress(int newAddress)
+void ModbusRtuTempConfGroupConfWidget::updatePrecisionAddress(int newValue)
 {
-	updateAttribute("precisionaddress", QString("%1").arg(newAddress));
+	updateAttribute("precisionaddress", QString("%1").arg(newValue));
 }
 
-void ModbusRtuDeviceConfWidget::updatePrecisionValue(int newValue)
+@ Custom unit value configuration groups are slightly different from
+temperature value configuration groups. At present only fixed configuration
+options are available. That limitation may be removed in the future in
+support of other desired features, however it is expected that most people do
+not change unit representation on a given device often enough that the need
+to change preferences in software as well are an inconvenience.
+
+@<Class declarations@>=
+class ModbusRtuCustomGroupConfWidget : public BasicDeviceConfigurationWidget
+{
+	@[Q_OBJECT@]@/
+	public:@/
+		@[Q_INVOKABLE@]@, ModbusRtuCustomGroupConfWidget(DeviceTreeModel *model,
+		                                                 const QModelIndex &index);
+	@[private slots@]:@/
+		void updateUnit(const QString &newValue);
+		void updatePrecision(int newValue);
+};
+
+@ The unit string is used as a key for the graph widget and its configuration,
+allowing proper construction of secondary axes and matching of measurements to
+the proper representation.
+
+@<ModbusRtuCustomGroupConfWidget implementation@>=
+ModbusRtuCustomGroupConfWidget::ModbusRtuCustomGroupConfWidget(DeviceTreeModel *model,
+                                                               const QModelIndex &index)
+{
+	QFormLayout *layout = new QFormLayout;
+	QToolButton *addChannelButton = new QToolButton;
+	addChannelButton->setText(tr("Add Channel"));
+	NodeInserter *addTemperaturePV = new NodeInserter("Read Only Value",
+	                                                  "Read Only Value",
+	                                                  "modbusrvalue");
+	NodeInserter *addTemperatureSV = new NodeInserter("Read Write Value",
+	                                                  "Read Write Value",
+	                                                  "modbusrwvalue");
+	connect(addTemperaturePV, SIGNAL(triggered(QString, QString)),
+	        this, SLOT(insertChildNode(QString, QString)));
+	connect(addTemperatureSV, SIGNAL(triggered(QString, QString)),
+	        this, SLOT(insertChildNode(QString, QString)));
+	QMenu *channelMenu = new QMenu;
+	channelMenu->addAction(addTemperaturePV);
+	channelMenu->addAction(addTemperatureSV);
+	addChannelButton->setMenu(channelMenu);
+	addChannelButton->setPopupMode(QToolButton::InstantPopup);
+	layout->addRow(QString(), addChannelButton);
+	
+	QLineEdit *unit = new QLineEdit;
+	QSpinBox *precision = new QSpinBox;
+	precision->setMinimum(0);
+	precision->setMaximum(9);
+	layout->addRow(tr("Unit name:"), unit);
+	layout->addRow(tr("Places after the decimal point:"), precision);
+	@<Get device configuration data for current node@>@;
+	for(int i = 0; i < configData.size(); i++)
+	{
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "unit")
+		{
+			unit->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "precision")
+		{
+			precision->setValue(node.attribute("value").toInt());
+		}
+	}
+	updateUnit(unit->text());
+	updatePrecision(precision->value());
+	connect(unit, SIGNAL(textChanged(QString)), this, SLOT(updateUnit(QString)));
+	connect(precision, SIGNAL(valueChanged(int)), this, SLOT(updatePrecision(int)));
+}
+
+void ModbusRtuCustomGroupConfWidget::updateUnit(const QString &newValue)
+{
+	updateAttribute("unit", newValue);
+}
+
+void ModbusRtuCustomGroupConfWidget::updatePrecision(int newValue)
 {
 	updateAttribute("precision", QString("%1").arg(newValue));
 }
+
+@ With the details of measurement interpretation configured elsewhere, the
+configuration of which registers we would like to read and write apply equally
+well to any sort of register group. Read only values require the request function,
+the address to read, the column name for the data channel that address represents,
+and if we would like to hide that channel.
+
+@<Class declarations@>=
+class ModbusRtuReadRegisterConfWidget : public BasicDeviceConfigurationWidget
+{
+	@[Q_OBJECT@]@/
+	public:@/
+		@[Q_INVOKABLE@]@, ModbusRtuReadRegisterConfWidget(DeviceTreeModel *model,
+		                                                  const QModelIndex &index);
+	@[private slots@]:@/
+		void updateFunction(int newValue);
+		void updateAddress(int newValue);
+		void updateName(const QString &newValue);
+		void updateHidden(bool newValue);
+};
+
+@ There is nothing exceptional about the implementation.
+
+@<ModbusRtuReadRegisterConfWidget implementation@>=
+ModbusRtuReadRegisterConfWidget::ModbusRtuReadRegisterConfWidget(DeviceTreeModel *model,
+                                                                 const QModelIndex &index)
+: BasicDeviceConfigurationWidget(model, index)
+{
+	QFormLayout *layout = new QFormLayout;
+	ShortHexSpinBox *function = new ShortHexSpinBox;
+	function->setValue(4);
+	function->setMinimum(1);
+	function->setMaximum(255);
+	ShortHexSpinBox *address = new ShortHexSpinBox;
+	QLineEdit *column = new QLineEdit;
+	QCheckBox *hidden = new QComboBox(tr("Hide this channel"));
+	layout->addRow(tr("Read function"), function);
+	layout->addRow(tr("Read address"), address);
+	layout->addRow(tr("Column name"), column);
+	layout->addRow(QString(), hidden);
+	
+	@<Get device configuration data for current node@>@;
+	for(int i = 0; i < configData.size(); i++)
+	{
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "function")
+		{
+			function->setValue(node.attribute("value").toInt());
+		}
+		else if(node.attribute("name") == "address")
+		{
+			address->setValue(node.attribute("value").toInt());
+		}
+		else if(node.attribute("name") == "column")
+		{
+			column->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "hidden")
+		{
+			if(node.attribute("value") == "true")
+			{
+				hidden->setCheckState(Qt::Checked);
+			}
+			else
+			{
+				hidden->setCheckState(Qt::Unchecked);
+			}
+		}
+	}
+	updateFunction(function->value());
+	updateAddress(address->value());
+	updateName(column->text());
+	updateHidden(hidden->isChecked());
+	connect(function, SIGNAL(valueChanged(int)), this, SLOT(updateFunction(int)));
+	connect(address, SIGNAL(valueChanged(int)), this, SLOT(updateAddress(int)));
+	connect(column, SIGNAL(textChanged(QString)), this, SLOT(updateName(QString)));
+	connect(hidden, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
+	setLayout(layout);
+}
+
+void ModbusRtuReadRegisterConfWidget::updateFunction(int newValue)
+{
+	updateAttribute("function", QString("%1").arg(newValue));
+}
+
+void ModbusRtuReadRegisterConfWidget::updateAddress(int newValue)
+{
+	updateAttribute("address", QString("%1").arg(newValue));
+}
+
+void ModbusRtuReadRegisterConfWidget::updateName(const QString &newValue)
+{
+	updateAttribute("column", newValue);
+}
+
+void ModbusRtuReadRegisterConfWidget::updateHidden(bool newValue)
+{
+	updateAttribute("hidden", newValue ? "true" : "false");
+}
+
 
 @ Initial Modbus RTU support is very limited and only considers temperature
 process and set values. While in some cases it would be possible to cleverly

@@ -22,8 +22,8 @@
 \mark{\noexpand\nullsec0{A Note on Notation}}
 \def\pn{Typica}
 \def\filebase{typica}
-\def\version{1.6.1 \number\year-\number\month-\number\day}
-\def\years{2007--2013}
+\def\version{1.6.2 \number\year-\number\month-\number\day}
+\def\years{2007--2014}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip
@@ -4263,6 +4263,7 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
 				QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
 				layout->addStretch();
 			}
+			@<Additional box layout elements@>@;
 		}
 	}
 }
@@ -13267,6 +13268,8 @@ void setQTextEditProperties(QScriptValue value, QScriptEngine *engine)
 	setQAbstractScrollAreaProperties(value, engine);
 	value.setProperty("print", engine->newFunction(QTextEdit_print));
 }
+
+@i daterangeselector.w
 
 @** An area for repeated user interface elements.
 

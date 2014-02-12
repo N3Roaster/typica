@@ -2,10 +2,7 @@
 	<reporttitle>Production:->Previous Year Production Comparison</reporttitle>
     <layout type="vertical">
         <layout type="horizontal">
-            <label>Start Date:</label>
-            <calendar id="startdate" />
-            <label>End Date:</label>
-            <calendar id="enddate" />
+			<daterange id="dates" initial="19" /><!-- Current Year to Date -->
             <label>Days to Average</label>
             <line validator="integer" id="days">7</line>
 			<label>Weight Unit:</label>
@@ -20,9 +17,8 @@
     <program>
         <![CDATA[
             this.windowTitle = "Typica - Previous Year Production Comparison";
-            var startDateField = findChildObject(this, 'startdate');
-            startDateField.setDate(startDateField.year(), 1, 1);
-            var endDateField = findChildObject(this, 'enddate');
+			var dateSelect = findChildObject(this, 'dates');
+			dateSelect.removeIndex(23); // Remove Lifetime range
             var view = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
@@ -79,10 +75,12 @@
                 output.writeStartElement("tbody");
                 var query = new QSqlQuery();
                 query.exec("START TRANSACTION");
-                var curStartDate = "'"+startDateField.year()+"-"+startDateField.month()+"-"+startDateField.day()+"'";
-                query.exec("SELECT "+curStartDate+"::date - interval '1 year', '"+endDateField.year()+"-"+endDateField.month()+"-"+endDateField.day()+"'::date - interval '1 year' + interval '1 day', '"+endDateField.year()+"-"+endDateField.month()+"-"+endDateField.day()+"'::date + interval '1 day'");
-                query.next();
-                var curEndDate = "'"+query.value(2)+"'";
+				var dateRange = dateSelect.currentRange();
+				var curStartDate = "'"+dateRange[0]+"'";
+				var curEndDate = "'"+dateRange[dateRange.length - 1]+"'";
+                query.exec("SELECT "+curStartDate+"::date - interval '1 year', "+curEndDate+"::date - interval '1 year' + interval '1 day', "+curEndDate+"::date + interval '1 day'");
+				query.next();
+                curEndDate = "'"+query.value(2)+"'";
                 var prevStartDate = "'"+query.value(0)+"'";
                 var prevEndDate = "'"+query.value(1)+"'";
                 var q = "CREATE TEMPORARY TABLE previous ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS p FROM roasting_log WHERE time > "+prevStartDate+" AND time < "+prevEndDate+" AND roasted_id IS NOT NULL GROUP BY roasted_id";
@@ -501,12 +499,9 @@
                 buffer.close();
             }
             refresh();
-            startDateField.dateChanged.connect(function() {
-                refresh();
-            });
-            endDateField.dateChanged.connect(function() {
-                refresh();
-            });
+			dateSelect.rangeUpdated.connect(function() {
+				refresh();
+			});
 			avgField.editingFinished.connect(function() {
 				refresh();
 			});

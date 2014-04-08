@@ -18204,6 +18204,8 @@ app.registerDeviceConfigurationWidget("modbusrtu", ModbusConfigurator::staticMet
 inserter = new NodeInserter(tr("Modbus RTU Device"), tr("Modbus RTU Device"), "modbusrtu", NULL);
 topLevelNodeInserters.append(inserter);
 
+@i unsupportedserial.w
+
 @* Configuration widget for a calibrated data series.
 
 \noindent This control is used for adding a |LinearSplineInterpolator| to the

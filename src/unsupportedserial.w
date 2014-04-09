@@ -100,12 +100,12 @@ UnsupportedSerialDeviceConfWidget::UnsupportedSerialDeviceConfWidget(DeviceTreeM
 				data.chop(2);
 				data = data.remove(0, 2);
 			}
-			QStringList keyList = data.split(",");
+			QStringList keyList = data.split(", ");
 			for(int j = 0; j < keyList.size(); j++)
 			{
 				deviceSettingsModel->setData(deviceSettingsModel->index(j, column),
 				                             QVariant(keyList.at(j)),
-				                             Qt::DisplayRole);
+				                             Qt::EditRole);
 			}
 		}
 		else if(node.attribute("name") == "script")
@@ -114,7 +114,7 @@ UnsupportedSerialDeviceConfWidget::UnsupportedSerialDeviceConfWidget(DeviceTreeM
 		}
 	}
 	
-	connect(deviceSettingsModel, SIGNAL(dataChanged()),
+	connect(deviceSettingsModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)),
 	        this, SLOT(updateConfiguration()));
 	connect(scriptEditor, SIGNAL(textChanged()), this, SLOT(saveScript()));
 	setLayout(dummyLayout);
@@ -132,7 +132,7 @@ delimiter must be chosen.
 void UnsupportedSerialDeviceConfWidget::updateConfiguration()
 {
 	updateAttribute("keys", deviceSettingsModel->arrayLiteral(0, Qt::DisplayRole));
-	updateAttribute("values", deviceSettingsModel->arrayLiteral(0, Qt::DisplayRole));
+	updateAttribute("values", deviceSettingsModel->arrayLiteral(1, Qt::DisplayRole));
 }
 
 @ Every time the script text is changed, the new version of the script is
@@ -200,11 +200,41 @@ UnsupportedDeviceChannelConfWidget::UnsupportedDeviceChannelConfWidget(DeviceTre
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
 	{
-	
+		node = configData.at(i).toElement();
+		if(node.attribute("name") == "columnname")
+		{
+			columnName->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "hidden")
+		{
+			hideSeries->setChecked(node.attribute("value") == "true");
+		}
+		else if(node.attribute("name") == "keys" || node.attribute("name") == "values")
+		{
+			int column = 0;
+			if(node.attribute("name") == "values")
+			{
+				column = 1;
+			}
+			QString data = node.attribute("value");
+			if(data.length() > 3)
+			{
+				data.chop(2);
+				data = data.remove(0, 2);
+			}
+			QStringList keyList = data.split(", ");
+			for(int j = 0; j < keyList.size(); j++)
+			{
+				channelSettingsModel->setData(channelSettingsModel->index(j, column),
+				                              QVariant(keyList.at(j)),
+				                              Qt::EditRole);
+			}
+		}
 	}
 	connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
 	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
-	connect(channelSettingsModel, SIGNAL(dataChanged()), this, SLOT(updateConfiguration()));
+	connect(channelSettingsModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+	        this, SLOT(updateConfiguration()));
 }
 
 @ Arbitrary channel configuration data is handled in the same way as device
@@ -225,7 +255,7 @@ void UnsupportedDeviceChannelConfWidget::updateHidden(bool hidden)
 void UnsupportedDeviceChannelConfWidget::updateConfiguration()
 {
 	updateAttribute("keys", channelSettingsModel->arrayLiteral(0, Qt::DisplayRole));
-	updateAttribute("values", channelSettingsModel->arrayLiteral(0, Qt::DisplayRole));
+	updateAttribute("values", channelSettingsModel->arrayLiteral(1, Qt::DisplayRole));
 }
 
 @ The configuration widgets need to be registered so they can be instantiated

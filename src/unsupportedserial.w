@@ -1,4 +1,4 @@
-@** Unsupported Serial Port Devices
+@** Unsupported Serial Port Devices.
 
 \noindent There are many data acquisition products which connect over or
 present themselves as a serial port and it has become relatively easy for
@@ -274,9 +274,306 @@ inserter = new NodeInserter(tr("Other Device"), tr("Other Device"),
 	"unsupporteddevice", NULL);
 topLevelNodeInserters.append(inserter);
 
+@ A device abstraction is not strictly required for this feature, however
+having one greatly simplifies integrating this feature. At some point I would
+like to revise other device abstraction classes so that a huge amount of
+boilerplate associated with these can be removed from configuration documents.
+
+This device abstraction includes features in a few particular categories. First
+there are methods that are required for integrating the device with the logging
+view. The logging view instantiates the device abstraction, passing in the
+configuration data required to properly set up the device. It then is able to
+query information about the measurement channels that have been configured for
+this device and can set up all of the relevant indicators. Some device classes
+may be able to produce annotations, so this class can be treated exactly the
+same as any other annotation source. Another requested feature includes the
+ability of a device to trigger the start and end of batches, so signals are
+provided for this capability. Finally, there are methods associated with
+starting and stopping the device. The |start()| method will be called when the
+logging view has finished making all of the signal connections. The |stop()|
+method will be called when the logging view is closed, giving script code the
+chance to cleanly release any resources that must be held for device
+communications.
+
+@<Class declarations@>=
+class JavaScriptDevice : public QObject
+{
+	Q_OBJECT
+	public:
+		Q_INVOKABLE JavaScriptDevice(const QModelIndex &deviceIndex,
+		                             QScriptEngine *engine);
+		Q_INVOKABLE int channelCount();
+		Channel* getChannel(int channel);
+		Q_INVOKABLE bool isChannelHidden(int channel);
+		Q_INVOKABLE Units::Unit expectedChannelUnit(int channel);
+		Q_INVOKABLE QString channelColumnName(int channel);
+		Q_INVOKABLE QString channelIndicatorText(int channel);
+	public slots:
+		void setTemperatureColumn(int tcol);
+		void setAnnotationColumn(int ncol);
+		void start();
+		void stop();
+	signals:
+		void annotation(QString note, int tcol, int ncol);
+		void triggerStartBatch();
+		void triggerStopBatch();
+		void deviceStopRequested();
+	private:
+		QVariantMap deviceSettings;
+		QString deviceScript;
+		QList<Channel *> channelList;
+		QList<bool> hiddenState;
+		QList<Units::Unit> channelUnits;
+		QList<QString> columnNames;
+		QList<QString> indicatorTexts;
+		QList<QVariantMap> channelSettings;
+		int annotationTemperatureColumn;
+		int annotationNoteColumn;
+		QScriptEngine *scriptengine;
+};
+
+@ The |JavaScriptDevice| instance provides two interfaces. Its invokable
+methods provide the information needed to integrate script driven devices with
+a generic logging view. Additional information is also exposed through the host
+environment running the device script. This means that the class requires
+knowledge of the host environment, which it obtains through a script function
+similar to what is done for window creation.
+
+The name of the function is generic so this may be easily extended later to
+create all device abstraction instances.
+
+@<Function prototypes for scripting@>=
+QScriptValue createDevice(QScriptContext *context, QScriptEngine *engine);
+
+@ That method is made available to the scripting engine.
+
+@<Set up the scripting engine@>=
+engine->globalObject().setProperty("createDevice",
+                                   engine->newFunction(createDevice));
+
+@ This function currently creates a |JavaScriptDevice| from a device
+configuration node which must be passed through as an argument.
+
+@<Functions for scripting@>=
+QScriptValue createDevice(QScriptContext *context, QScriptEngine *engine)@/
+{
+	QModelIndex deviceIndex = argument<QModelIndex>(0, context);
+	JavaScriptDevice *device = new JavaScriptDevice(deviceIndex, engine);
+	QScriptValue object = engine->newQObject(device);
+	setQObjectProperties(object, engine);
+	object.setProperty("getChannel", engine->newFunction(JavaScriptDevice_getChannel));
+	return object;
+}
+
+@ The |start()| method is responsible for preparing the host environment and
+executing the device script.
+
+@<JavaScriptDevice implementation@>=
+void JavaScriptDevice::start()
+{
+	QScriptValue object = scriptengine->newQObject(this);
+	QScriptContext *context = scriptengine->currentContext();
+	QScriptValue oldThis = context->thisObject();
+	context->setThisObject(object);
+	QScriptValue result = scriptengine->evaluate(deviceScript);
+	QScriptEngine *engine = scriptengine;
+	@<Report scripting errors@>@;
+	context->setThisObject(oldThis);
+}
+
+@ Currently we require wrapper functions to work with channels in the host
+environment.
+
+@<Function prototypes for scripting@>=
+QScriptValue JavaScriptDevice_getChannel(QScriptContext *context, QScriptEngine *engine);
+
+@ The implementation is trivial.
+
+@<Functions for scripting@>=
+QScriptValue JavaScriptDevice_getChannel(QScriptContext *context, QScriptEngine *engine)
+{
+	JavaScriptDevice *self = getself<JavaScriptDevice *>(context);
+	QScriptValue object;
+	if(self)
+	{
+		object = engine->newQObject(self->getChannel(argument<int>(0, context)));
+		setChannelProperties(object, engine);
+	}
+	return object;
+}
+
+@ The |stop()| method just fires off a signal that the script can hook into for
+any required cleanup.
+
+@<JavaScriptDevice implementation@>=
+void JavaScriptDevice::stop()
+{
+	emit deviceStopRequested();
+}
+
+@ The constructor is responsible for all boilerplate initialization required
+for integrating script defined devices with the logging view.
+
+Note: At present expected units are assumed to be Fahrenheit. The configuration
+widget must be updated to allow at least for control measurements and
+eventually support for runtime defined units should also be added.
+
+@<JavaScriptDevice implementation@>=
+JavaScriptDevice::JavaScriptDevice(const QModelIndex &index,
+                                   QScriptEngine *engine) :
+	QObject(NULL), scriptengine(engine)
+{
+	DeviceTreeModel *model = (DeviceTreeModel *)(index.model());
+	QDomElement deviceReferenceElement =
+		model->referenceElement(model->data(index, Qt::UserRole).toString());
+	QDomNodeList deviceConfigData = deviceReferenceElement.elementsByTagName("attribute");
+	QDomElement node;
+	QStringList deviceKeys;
+	QStringList deviceValues;
+	for(int i = 0; i < deviceConfigData.size(); i++)
+	{
+		node = deviceConfigData.at(i).toElement();
+		if(node.attribute("name") == "keys")
+		{
+			QString data = node.attribute("value");
+			if(data.length() > 3)
+			{
+				data.chop(2);
+				data = data.remove(0, 2);
+			}
+			deviceKeys = data.split(", ");
+		}
+		else if(node.attribute("name") == "values")
+		{
+			QString data = node.attribute("value");
+			if(data.length() > 3)
+			{
+				data.chop(2);
+				data = data.remove(0, 2);
+			}
+			deviceValues = data.split(", ");
+		}
+		else if(node.attribute("name") == "script")
+		{
+			deviceScript = node.attribute("value");
+		}
+		deviceSettings.insert(node.attribute("name"), node.attribute("value"));
+	}
+	for(int i = 0; i < qMin(deviceKeys.length(), deviceValues.length()); i++)
+	{
+		deviceSettings.insert(deviceKeys[i], deviceValues[i]);
+	}
+	if(model->hasChildren(index))
+	{
+		for(int i = 0; i < model->rowCount(index); i++)
+		{
+			QModelIndex channelIndex = model->index(i, 0, index);
+			QDomElement channelReference = model->referenceElement(model->data(channelIndex, 32).toString());
+			channelList.append(new Channel);
+			QDomElement channelReferenceElement =
+				model->referenceElement(model->data(channelIndex, Qt::UserRole).toString());
+			QDomNodeList channelConfigData =
+				channelReferenceElement.elementsByTagName("attribute");
+			QStringList channelKeys;
+			QStringList channelValues;
+			for(int j = 0; j < channelConfigData.size(); j++)
+			{
+				node = channelConfigData.at(i).toElement();
+				if(node.attribute("name") == "keys")
+				{
+					QString data = node.attribute("value");
+					if(data.length() > 3)
+					{
+						data.chop(2);
+						data = data.remove(0, 2);
+					}
+					channelKeys = data.split(", ");
+				}
+				else if(node.attribute("name") == "values")
+				{
+					QString data = node.attribute("value");
+					if(data.length() > 3)
+					{
+						data.chop(2);
+						data = data.remove(0, 2);
+					}
+					channelValues = data.split(", ");
+				}
+				else if(node.attribute("nane") == "hidden")
+				{
+					hiddenState.append(node.attribute("value") == "true");
+				}
+				else if(node.attribute("name") == "columnname")
+				{
+					columnNames.append(node.attribute("value"));
+				}
+			}
+			QVariantMap cs;
+			for(int j = 0; j < qMin(channelKeys.length(), channelValues.length()); j++)
+			{
+				cs.insert(channelKeys[j], channelValues[j]);
+			}
+			channelSettings.append(cs);
+			indicatorTexts.append(model->data(channelIndex, Qt::DisplayRole).toString());
+			channelUnits.append(Units::Fahrenheit);
+		}
+	}
+}
+
+@ Several methods are available to query information about the configured
+channels.
+
+@<JavaScriptDevice implementation@>=
+int JavaScriptDevice::channelCount()
+{
+	return channelList.length();
+}
+
+Channel* JavaScriptDevice::getChannel(int channel)
+{
+	return channelList.at(channel);
+}
+
+bool JavaScriptDevice::isChannelHidden(int channel)
+{
+	return hiddenState.at(channel);
+}
+
+Units::Unit JavaScriptDevice::expectedChannelUnit(int channel)
+{
+	return channelUnits.at(channel);
+}
+
+QString JavaScriptDevice::channelColumnName(int channel)
+{
+	if(channel >= 0 && channel < columnNames.length())
+	{
+		return columnNames.at(channel);
+	}
+	return QString();
+}
+
+QString JavaScriptDevice::channelIndicatorText(int channel)
+{
+	return indicatorTexts.at(channel);
+}
+
+@ Two slots are provided for controlling the placement of annotations.
+
+@<JavaScriptDevice implementation@>=
+void JavaScriptDevice::setTemperatureColumn(int tcol)
+{
+	annotationTemperatureColumn = tcol;
+}
+
+void JavaScriptDevice::setAnnotationColumn(int ncol)
+{
+	annotationNoteColumn = ncol;
+}
+
 @ At present, implementations are not broken out to a separate file. This
 should be changed at some point.
 
 @<Class implementations@>=
 @<UnsupportedSerialDeviceConfWidget implementation@>
-
+@<JavaScriptDevice implementation@>

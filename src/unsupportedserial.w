@@ -609,6 +609,30 @@ void JavaScriptDevice::setAnnotationColumn(int ncol)
 	annotationNoteColumn = ncol;
 }
 
+@ Device scripts must be able to produce measurements on a channel. To do this,
+a function is provided for obtaining a timestamp. The returned timestamp should
+not be examined as future changes may break assumptions about the content of
+the timestamp.
+
+@<Function prototypes for scripting@>=
+QScriptValue getMeasurementTimestamp(QScriptContext *context, QScriptEngine *engine);
+
+@ That method is made available to the scripting engine.
+
+@<Set up the scripting engine@>=
+engine->globalObject().setProperty("getMeasurementTimestamp",
+                                   engine->newFunction(getMeasurementTimestamp));
+
+@ At present this simply obtains the current system time. It is planned to
+switch to a better quality clock in the future, but this should be done for
+everything that uses |Measurement| objects at once.
+
+@<Functions for scripting@>=
+QScriptValue getMeasurementTimestamp(QScriptContext *, QScriptEngine *engine)@/
+{
+	return engine->toScriptValue<QTime>(QTime::currentTime());
+}
+
 @ At present, implementations are not broken out to a separate file. This
 should be changed at some point.
 

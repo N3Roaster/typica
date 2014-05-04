@@ -3034,6 +3034,15 @@ QScriptValue QTime_fromString(QScriptContext *context, QScriptEngine *engine)
 	return object;
 }
 
+@ In order to pass |QTime| objects back from a script, we also need to overload
+|argument()| for this type.
+
+@<Functions for scripting@>=
+template<> QTime argument(int arg, QScriptContext *context)
+{
+	return qscriptvalue_cast<QTime>(context->argument(arg));
+}
+
 @* Scripting Item View Classes.
 
 \noindent |QAbstractScrollArea| is a |QFrame| that serves as the base class for

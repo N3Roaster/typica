@@ -373,6 +373,7 @@ void JavaScriptDevice::start()
 {
 	QScriptValue object = scriptengine->newQObject(this);
 	@<Expose device settings as object property@>@;
+	@<Expose channels and channel settings to device script@>@;
 	QScriptContext *context = scriptengine->currentContext();
 	QScriptValue oldThis = context->thisObject();
 	context->setThisObject(object);
@@ -395,6 +396,28 @@ while(i != deviceSettings.constEnd())
 	i++;
 }
 object.setProperty("settings", settingsObject);
+
+@ While channels are available to the device script through the same
+|getChannel()| interface used outside of the device script for integration
+purposes, it is more convenient to have an array of channels with channel
+specific settings as properties of the channel.
+
+@<Expose channels and channel settings to device script@>=
+QScriptValue channelsArray = scriptengine->newArray(channelCount());
+for(int i = 0; i < channelCount(); i++)
+{
+	QScriptValue channelObject = scriptengine->newQObject(getChannel(i));
+	QScriptValue channelSettingsObject = scriptengine->newObject();
+	QVariantMap::const_iterator j = channelSettings.at(i).constBegin();
+	while(j != channelSettings.at(i).constEnd())
+	{
+		channelSettingsObject.setProperty(j.key(), j.value().toString());
+		j++;
+	}
+	channelObject.setProperty("settings", channelSettingsObject);
+	channelsArray.setProperty(i, channelObject);
+}
+object.setProperty("channels", channelsArray);
 
 @ Currently we require wrapper functions to work with channels in the host
 environment.
@@ -493,7 +516,7 @@ JavaScriptDevice::JavaScriptDevice(const QModelIndex &index,
 			QStringList channelValues;
 			for(int j = 0; j < channelConfigData.size(); j++)
 			{
-				node = channelConfigData.at(i).toElement();
+				node = channelConfigData.at(j).toElement();
 				if(node.attribute("name") == "keys")
 				{
 					QString data = node.attribute("value");
@@ -514,7 +537,7 @@ JavaScriptDevice::JavaScriptDevice(const QModelIndex &index,
 					}
 					channelValues = data.split(", ");
 				}
-				else if(node.attribute("nane") == "hidden")
+				else if(node.attribute("name") == "hidden")
 				{
 					hiddenState.append(node.attribute("value") == "true");
 				}

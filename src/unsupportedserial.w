@@ -372,6 +372,7 @@ executing the device script.
 void JavaScriptDevice::start()
 {
 	QScriptValue object = scriptengine->newQObject(this);
+	@<Expose device settings as object property@>@;
 	QScriptContext *context = scriptengine->currentContext();
 	QScriptValue oldThis = context->thisObject();
 	context->setThisObject(object);
@@ -380,6 +381,20 @@ void JavaScriptDevice::start()
 	@<Report scripting errors@>@;
 	context->setThisObject(oldThis);
 }
+
+@ Device settings are only needed from the device script itself. As such, these
+are presented under a settings property available from the |this| object when
+the script is run.
+
+@<Expose device settings as object property@>=
+QScriptValue settingsObject = scriptengine->newObject();
+QVariantMap::const_iterator i = deviceSettings.constBegin();
+while(i != deviceSettings.constEnd())
+{
+	settingsObject.setProperty(i.key(), i.value().toString());
+	i++;
+}
+object.setProperty("settings", settingsObject);
 
 @ Currently we require wrapper functions to work with channels in the host
 environment.

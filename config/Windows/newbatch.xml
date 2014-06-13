@@ -279,12 +279,16 @@
 								targetDetector.newMeasurement(data);
 							}
 						});
-						input.annotation.connect(log.newAnnotation);
 						var lc;
 						input.lastColumn.connect(function(c) {
 							lc = c;
 							QSettings.setValue("liveColumn", c + 1);
 							navigationwindow.loggingWindow.postLoadColumnSetup(c)
+						});
+						input.annotation.connect(function(note, tcol, ncol) {
+							for(var i = tcol; i < ncol; i++) {
+								log.newAnnotation(note, i, ncol);
+							}
 						});
 					}
 				}

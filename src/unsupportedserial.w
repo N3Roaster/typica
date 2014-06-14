@@ -1,38 +1,37 @@
-@** Unsupported Serial Port Devices.
+@** Script Driven Devices.
 
-\noindent There are many data acquisition products which connect over or
-present themselves as a serial port and it has become relatively easy for
-hardware tinkerers to develop new devices matching this description. In this
-space there is no apparent consideration given to interoperability and with
-some devices the communications protocol even changes significantly between
-firmware revisions. There are far too many devices like this to support
-everything. At the same time, there are people who have these devices, are
-capable of programming the basic communications handling, but have difficulty
-with all of the supporting code that must be written to properly integrate with
-the rest of \pn. By providing an in-program environment that handles much of
-the boilerplate and allowing people to write scripts implementing these
-protocols without the need to modify core \pn code or recompile the program,
-these people may find it easier to make their existing hardware work. Such
-scripts can also serve as prototypes for later integration.
+\noindent There are many data acquisition products that are reasonable to use
+with \pn which are not natively supported due to lack of available hardware
+for testing, lack of time or money to develop that support, or lack of
+documentation. It has also become relatively simple for hardware tinkerers to
+develop new devices matching this description as well. Vendors in this space
+tend to give inadequate consideration to interoperability and with some devices
+the communications protocol used changes significantly between firmware
+revisions. There are simply far too many devices like this to support
+everything. At the same time there are people with these devices who are
+capable of programming the basic communications handling but have difficulty
+with integrating that with \pn. By providing an in-program environment that
+handles much of the boilerplate and allowing people to write scripts
+implementing these protocols without the need to modify core \pn code or
+recompile the program, these people may find it easier to make their existing
+hardware work. Such scripts can also serve as prototypes for native support.
 
-It is common among these devices that port settings aside from the port name
-are fixed, but there may be other characteristics that are configurable on a
-per-device or per-channel basis. As it is impossible to know what these
-details might be, the configuration widgets for these devices and channels
-simply provide space to provide key value pairs which are provided to the host
-environment. Common configurations will have a device node representing a
-single logical device, usually a single physical device but this is not in any
-way enforced, and one child node per channel, the details of which are made
-available to the device script and are also used to integrate with the logging
-view.
+Configuration widgets for these devices allow key value pairs to be specified
+both at the device level and on a per-channel basis. This is intentionally kept
+generic as it is impossible to know what configurable details may be required.
+Common configurations will have a device node representing a single logical
+device, usually a single physical device but this is not in any way enforced,
+and one child node per channel. These details are made available to the device
+script and are used to integrate with the logging view.
 
-The use of the word serial should be considered legacy of the initial
-conception of this feature. The implementation here is sufficiently generic
-that there is no reason this could not be extended to cover devices that are
+Some of the naming conventions used here are legacy of the initial conception
+of this feature and should be changed before release if there is time to do so.
+While initial support will be focused on devices that present as a serial port,
+there is no reason this could not be extended to cover devices that are
 interfaced through USB HID, Bluetooth, COM, output piped from an external
 console program, devices interfaced through arbitrary libraries, or any other
 class of device not directly supported in the core code should there be an
-interest in these.
+interest in any of these.
 
 @<Class declarations@>=
 class UnsupportedSerialDeviceConfWidget : public BasicDeviceConfigurationWidget
@@ -639,3 +638,57 @@ should be changed at some point.
 @<Class implementations@>=
 @<UnsupportedSerialDeviceConfWidget implementation@>
 @<JavaScriptDevice implementation@>
+
+@* Serial Ports.
+
+\noindent The first use case for script driven devices was connecting to
+devices which present themselves as a serial port. This covers a broad range
+of data acquisition products. To provide this support, |QextSerialPort|, which
+was already used to support some other hardware options, is directly exposed to
+the host environment.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructSerialPort(QScriptContext *context, QScriptEngine *engine);
+void setSerialPortProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue SerialPort_flush(QScriptContext *context, QScriptEngine *engine);
+
+@ Our constructor is passed to the scripting engine.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructSerialPort);
+value = engine->newQMetaObject(&QextSerialPort::staticMetaObject, constructor);
+engine->globalObject().setProperty("SerialPort", value);
+
+@ At present we only support event driven communications and are not passing
+any port settings through the constructor. Such functionality may be added in
+the future, but it is not strictly necessary.
+
+@<Functions for scripting@>=
+QScriptValue constructSerialPort(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QextSerialPort());
+	setSerialPortProperties(object, engine);
+	return object;
+}
+
+@ Some properties of |QIODevice| are brought in as usual for similar subclasses
+but we also add a wrapper around the |flush()| method.
+
+@<Functions for scripting@>=
+void setSerialPortProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQIODeviceProperties(value, engine);
+	value.setProperty("flush", engine->newFunction(SerialPort_flush));
+}
+
+@ The wrapper around |flush()| is trivial.
+
+@<Functions for scripting@>=
+QScriptValue SerialPort_flush(QScriptContext *context, QScriptEngine *)
+{
+	QextSerialPort *self = getself<QextSerialPort *>(context);
+	self->flush();
+	return QScriptValue();
+}
+
+

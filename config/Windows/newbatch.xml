@@ -311,6 +311,7 @@
 			var notes = findChildObject(this, 'annotation');
 			var duration = findChildObject(this, 'duration');
 			var approval = findChildObject(this, 'approval');
+			approval.checked = true;
 			var target = findChildObject(this, 'target');
 			submitbutton.clicked.connect(function() {
 				checkQuery = new QSqlQuery();

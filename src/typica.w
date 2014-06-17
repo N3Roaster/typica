@@ -1937,18 +1937,19 @@ not passed, it is assumed that the user wants read and write access.
 QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *)
 {
 	QIODevice *self = getself<QIODevice *>(context);
+	bool retval = false;
 	if(context->argumentCount() == 1)
 	{
 		switch(argument<int>(0, context))
 		{
 			case 1:
-				self->open(QIODevice::ReadOnly);
+				retval = self->open(QIODevice::ReadOnly);
 				break;
 			case 2:
-				self->open(QIODevice::WriteOnly);
+				retval = self->open(QIODevice::WriteOnly);
 				break;
 			case 3:
-				self->open(QIODevice::ReadWrite);
+				retval = self->open(QIODevice::ReadWrite);
 				break;
 			default:
 				break;
@@ -1956,9 +1957,9 @@ QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *)
 	}
 	else
 	{
-		self->open(QIODevice::ReadWrite);
+		retval = self->open(QIODevice::ReadWrite);
 	}
-	return QScriptValue();
+	return QScriptValue(retval);
 }
 
 QScriptValue QIODevice_close(QScriptContext *context, QScriptEngine *)

@@ -282,7 +282,7 @@ type="push" />
 		
 		/* Asynchronous notifications */
 		var DBUpdateNotifications = function() {
-			var query = new new QSqlQuery;
+			var query = new QSqlQuery;
 			query.exec("CREATE OR REPLACE FUNCTION notify_roasting_log_change() RETURNS TRIGGER AS $$ BEGIN NOTIFY RoastingLogChange; RETURN NULL; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE TRIGGER notify_roasting_log_change AFTER INSERT OR UPDATE ON roasting_log FOR EACH STATEMENT EXECUTE PROCEDURE notify_roasting_log_change()");
 			query = query.invalidate();

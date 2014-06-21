@@ -68,6 +68,7 @@
 		var annotationButtons = new Array();
 		var nidevices = new Array();
 		var dataqsdkdevices = new Array();
+		var jsdevices = new Array();
 		var temperatureDisplays = new Array();
 		var columnNames = new Array();
 		var modbusdevices = new Array();
@@ -356,6 +357,36 @@
 						tabControls.push(outputControl);
 					}
 				}
+				else if(driverReference.driver == "unsupporteddevice")
+				{
+					var device = createDevice(driverIndex);
+					for(var j = 0; j < device.channelCount(); j++) {
+						channels.push(device.getChannel(j));
+						columnNames.push(device.channelColumnName(j));
+						var unit = device.expectedChannelUnit(j);
+						if(unit == Units.Fahrenheit) {
+							channelType.push("T");
+						} else {
+							channelType.push("C");
+						}
+						if(device.isChannelHidden(j)) {
+							channelVisibility.push(false);
+						} else {
+							channelVisibility.push(true);
+							var indicator = new TemperatureDisplay;
+							if(unit == Units.Unitless) {
+								indicator.setDisplayUnits(Units.Unitless);
+								indicator.digitCount = 6;
+							}
+							temperatureDisplays.push(indicator);
+							var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+							device.getChannel(j).newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
+					}
+					device.start();
+					jsdevices.push(device);
+				}
 				else if(driverReference.driver == "annotationbutton")
 				{
 					var button = new AnnotationButton(driverReference.buttontext);
@@ -598,9 +629,15 @@
 			{
 				dataqsdkdevices[i].deleteLater();
 			}
+			for(var i = 0; i < jsdevices.length; i++)
+			{
+				jsdevices[i].stop();
+				jsdevices[i].deleteLater();
+			}
 			delete nidevices;
 			delete modbusdevices;
 			delete dataqsdkdevices;
+			delete jsdevices;
             window.saveSizeAndPosition("window");
             vsplit.saveState("script/mainSplitter");
             isplit.saveState("script/instrumentSplitter");

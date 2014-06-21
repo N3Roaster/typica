@@ -122,3 +122,74 @@ and a public destructor. These latter two are default generated.
 
 @<Register meta-types@>=
 qRegisterMetaType<Measurement>("Measurement");
+
+@ A little more is required to use |Measurement| objects in scripts.
+
+@<Class declarations@>=
+Q_DECLARE_METATYPE(Measurement)
+
+@ The only thing unusual here is the conversion to and from script values.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructMeasurement(QScriptContext *context, QScriptEngine *engine);
+void setMeasurementProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue Measurement_toScriptValue(QScriptEngine *engine, const Measurement &measurement);
+void Measurement_fromScriptValue(const QScriptValue &value, Measurement &measurement);
+
+@ This follows much the same pattern as other types not derived from |QObject|.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructMeasurement);
+engine->globalObject().setProperty("Measurement", constructor);
+qScriptRegisterMetaType(engine, Measurement_toScriptValue, Measurement_fromScriptValue);
+
+@ The constructor takes two or three arguments. If the third arguement is not
+supplied, we will assume that the measurements are in degrees Fahrenheit.
+
+@<Functions for scripting@>=
+QScriptValue constructMeasurement(QScriptContext *context, QScriptEngine *engine)
+{
+	QScriptValue object;
+	if(context->argumentCount() == 2 || context->argumentCount() == 3)
+	{
+		double measurement = argument<double>(0, context);
+		QTime timestamp = argument<QTime>(1, context);
+		Units::Unit unit = Units::Fahrenheit;
+		if(context->argumentCount() == 3)
+		{
+			unit = argument<Units::Unit>(2, context);
+		}
+		object = engine->toScriptValue<Measurement>(Measurement(measurement, timestamp, unit));
+		setMeasurementProperties(object, engine);
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+		                    "Measurement::Measurement(). This method takes two "@|
+		                    "or three arguments.");
+	}
+	return object;
+}
+
+@ No additional properties are currently needed, but if they were, they would go here.
+
+@<Functions for scripting@>=
+void setMeasurementProperties(QScriptValue, QScriptEngine *)
+{
+	/* Nothing needs to be done here. */
+}
+
+@ The script value conversions are reasonably straightforward.
+
+@<Functions for scripting@>=
+QScriptValue Measurement_toScriptValue(QScriptEngine *engine, const Measurement &measurement)
+{
+	QVariant var;
+	var.setValue(measurement);
+	return engine->newVariant(var);
+}
+
+void Measurement_fromScriptValue(const QScriptValue &value, Measurement &measurement)
+{
+	measurement = value.toVariant().value<Measurement>();
+}

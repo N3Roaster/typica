@@ -679,6 +679,12 @@ template<> QTime getself(QScriptContext *context)
 	return self;
 }
 
+template<> QByteArray getself(QScriptContext *context)
+{
+	QByteArray self = context->thisObject().toVariant().toByteArray();
+	return self;
+}
+
 template<> SqlQueryConnection* getself(QScriptContext *context)
 {
 	SqlQueryConnection *self =@|
@@ -752,6 +758,11 @@ template<> double argument(int arg, QScriptContext *context)
 template<> Units::Unit argument(int arg, QScriptContext *context)
 {
 	return (Units::Unit)(context->argument(arg).toInt32());
+}
+
+template<> QByteArray argument(int arg, QScriptContext *context)
+{
+	return qscriptvalue_cast<QByteArray>(context->argument(arg));
 }
 
 @ The scripting engine is informed of a number of classes defined elsewhere in
@@ -1858,6 +1869,9 @@ QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QIODevice_close(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QIODevice_readToString(QScriptContext *context,
                                     QScriptEngine *engine);
+QScriptValue QIODevice_putChar(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_writeString(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *engine);
 
 @ This function is passed to the scripting engine.
 
@@ -1909,6 +1923,9 @@ void setQIODeviceProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("close", engine->newFunction(QIODevice_close));
 	value.setProperty("readToString",
 	                  engine->newFunction(QIODevice_readToString));
+	value.setProperty("putChar", engine->newFunction(QIODevice_putChar));
+	value.setProperty("writeString", engine->newFunction(QIODevice_writeString));
+	value.setProperty("writeBytes", engine->newFunction(QIODevice_writeBytes));
 }
 
 @ These are simple wrappers. In the case of the |open()| property, one argument
@@ -1920,18 +1937,19 @@ not passed, it is assumed that the user wants read and write access.
 QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *)
 {
 	QIODevice *self = getself<QIODevice *>(context);
+	bool retval = false;
 	if(context->argumentCount() == 1)
 	{
 		switch(argument<int>(0, context))
 		{
 			case 1:
-				self->open(QIODevice::ReadOnly);
+				retval = self->open(QIODevice::ReadOnly);
 				break;
 			case 2:
-				self->open(QIODevice::WriteOnly);
+				retval = self->open(QIODevice::WriteOnly);
 				break;
 			case 3:
-				self->open(QIODevice::ReadWrite);
+				retval = self->open(QIODevice::ReadWrite);
 				break;
 			default:
 				break;
@@ -1939,9 +1957,9 @@ QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *)
 	}
 	else
 	{
-		self->open(QIODevice::ReadWrite);
+		retval = self->open(QIODevice::ReadWrite);
 	}
-	return QScriptValue();
+	return QScriptValue(retval);
 }
 
 QScriptValue QIODevice_close(QScriptContext *context, QScriptEngine *)
@@ -1961,6 +1979,128 @@ QScriptValue QIODevice_readToString(QScriptContext *context, QScriptEngine *)
 	QIODevice *self = getself<QIODevice *>(context);
 	self->reset();
 	return QScriptValue(QString(self->readAll()));
+}
+
+@ In support of serial port communications, wrappers around two methods for
+writing data have been added. As these are valid for other classes derived from
+|QIODevice|, they are added here so the functionality is available more
+broadly.
+
+As we are unable to pass a type that guarantees only a single character, we
+instead accept a string and only pass along the first character.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_putChar(QScriptContext *context, QScriptEngine *)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	if(context->argumentCount() == 1)
+	{
+		return QScriptValue(self->putChar(argument<QString>(0, context).toUtf8().at(0)));
+	}
+	context->throwError("Incorrect number of arguments passed to "@|
+	                    "QIODevice::putChar()");
+	return QScriptValue();
+}
+
+@ Two wrappers are provided around |QIODevice::write()| for outputting
+multi-byte data. If we are writing strings that are valid UTF-8, we can use the
+|writeString| wrapper, but if we require full control over exactly which bytes
+are output, the |writeBytes| wrapper is more appropriate.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_writeString(QScriptContext *context, QScriptEngine *)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	if(context->argumentCount() == 1)
+	{
+		self->write(argument<QString>(0, context).toUtf8());
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+	                        "QIODevice::writeString()");
+	}
+	return QScriptValue();
+}
+
+QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	if(context->argumentCount() == 1)
+	{
+		self->write(argument<QByteArray>(0, context));
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+	                        "QIODevice::writeBytes()");
+	}
+	return QScriptValue();
+}
+
+@ In order to work with |QByteArray| this should also be exposed to the host
+environment.
+
+@<Function prototypes for scripting@>=
+QScriptValue QByteArray_toScriptValue(QScriptEngine *engine, const QByteArray &bytes);
+void QByteArray_fromScriptValue(const QScriptValue &value, QByteArray &bytes);
+QScriptValue constructQByteArray(QScriptContext *context, QScriptEngine *engine);
+void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine);
+
+@ First, we provide some functionns for moving array data across the
+language barrier.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_toScriptValue(QScriptEngine *engine, const QByteArray &bytes)
+{
+	QScriptValue object = engine->newVariant(QVariant(bytes));
+	setQByteArrayProperties(object, engine);
+	return object;
+}
+
+void QByteArray_fromScriptValue(const QScriptValue &value, QByteArray &bytes)
+{
+	bytes = value.toVariant().toByteArray();
+}
+
+@ We register this our conversion functions and allow creation of new arrays
+next.
+
+@<Set up the scripting engine@>=
+qScriptRegisterMetaType(engine, QByteArray_toScriptValue, QByteArray_fromScriptValue);
+constructor = engine->newFunction(constructQByteArray);
+engine->globalObject().setProperty("QByteArray", constructor);
+
+@ The constructor is straightforward.
+
+@<Functions for scripting@>=
+QScriptValue constructQByteArray(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->toScriptValue<QByteArray>(QByteArray());
+	setQByteArrayProperties(object, engine);
+	return object;
+}
+
+@ There are many methods which are not automatically available which we may
+want to have wrappers around. These should be added as required.
+
+@<Functions for scripting@>=
+void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
+{
+	value.setProperty("fromHex", engine->newFunction(QByteArray_fromHex));
+}
+
+@ Perhaps the easiest way to deal with fixed byte strings for serial
+communications across script boundaries is to use a hex encoded string.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QByteArray retval;
+	retval = self.fromHex(argument<QString>(0, context).toUtf8());
+	return engine->toScriptValue<QByteArray>(retval);
 }
 
 @* Scripting QBuffer.
@@ -3032,6 +3172,15 @@ QScriptValue QTime_fromString(QScriptContext *context, QScriptEngine *engine)
 							"string arguments.");
 	}
 	return object;
+}
+
+@ In order to pass |QTime| objects back from a script, we also need to overload
+|argument()| for this type.
+
+@<Functions for scripting@>=
+template<> QTime argument(int arg, QScriptContext *context)
+{
+	return qscriptvalue_cast<QTime>(context->argument(arg));
 }
 
 @* Scripting Item View Classes.
@@ -14971,6 +15120,7 @@ DeviceConfigurationWindow::DeviceConfigurationWindow() : QWidget(NULL),
 	splitter->addWidget(leftWidget);
 	configArea->setMinimumWidth(580);
 	configArea->setMinimumHeight(460);
+	configArea->setWidgetResizable(true);
 	splitter->addWidget(configArea);
 	QVBoxLayout *centralLayout = new QVBoxLayout;
 	centralLayout->addWidget(splitter);
@@ -18203,6 +18353,8 @@ app.registerDeviceConfigurationWidget("modbusrtu", ModbusConfigurator::staticMet
 @<Register top level device configuration nodes@>=
 inserter = new NodeInserter(tr("Modbus RTU Device"), tr("Modbus RTU Device"), "modbusrtu", NULL);
 topLevelNodeInserters.append(inserter);
+
+@i unsupportedserial.w
 
 @* Configuration widget for a calibrated data series.
 

@@ -15120,6 +15120,7 @@ DeviceConfigurationWindow::DeviceConfigurationWindow() : QWidget(NULL),
 	splitter->addWidget(leftWidget);
 	configArea->setMinimumWidth(580);
 	configArea->setMinimumHeight(460);
+	configArea->setWidgetResizable(true);
 	splitter->addWidget(configArea);
 	QVBoxLayout *centralLayout = new QVBoxLayout;
 	centralLayout->addWidget(splitter);

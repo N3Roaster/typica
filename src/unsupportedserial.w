@@ -62,6 +62,7 @@ UnsupportedSerialDeviceConfWidget::UnsupportedSerialDeviceConfWidget(DeviceTreeM
 	deviceSettingsModel(new SaltModel(2)),
 	scriptEditor(new QTextEdit)
 {
+	scriptEditor->setTabStopWidth(20);
 	QVBoxLayout *dummyLayout = new QVBoxLayout;
 	QTabWidget *central = new QTabWidget;
 	QWidget *deviceConfigurationWidget = new QWidget;

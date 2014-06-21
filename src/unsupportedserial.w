@@ -692,4 +692,45 @@ QScriptValue SerialPort_flush(QScriptContext *context, QScriptEngine *)
 	return QScriptValue();
 }
 
+@* Timers.
+
+\noindent While some devices will output a steady stream of measurements which
+can be continuously read as they come in, other devices must be polled for
+their current state. One approach is to poll the device immediately after
+reading the response from the previous polling, but there are times when we may
+want to limit the rate at which we poll the device. There are also devices
+which specify a length of time during which data should not be sent. For these
+cases, we expose |QTimer| to the host environment which allows us to wait. This
+is also useful for producing simulations to test features without needing to be
+connected to real hardware.
+
+<@Function prototypes for scripting@>=
+void setQTimerProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue constructQTimer(QScriptContext *context, QScriptEngine *engine);
+
+@ The host environment is informed of the constructor.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQTimer);
+value = engine->newQMetaObject(&QTimer::staticMetaObject, constructor);
+engine->globalObject().setProperty("Timer", value);
+
+@ Everything that we are interested in here is a signal, slot, or property so
+there is little else to do.
+
+@<Functions for scripting@>=
+void setQTimerProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQObjectProperties(value, engine);
+}
+
+QScriptValue constructQTimer(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QTimer);
+	setQTimerProperties(object, engine);
+	return object;
+}
+
+
+
 

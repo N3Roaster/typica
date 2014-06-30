@@ -17,15 +17,14 @@
 			var compare = findChildObject(this, 'compare');
 			var edit = findChildObject(this, 'edit');
 			edit.enabled = false;
-			if("navigationwindow" in this) {
-				if(typeof(navigationwindow.loggingWindow) == "undefined") {
-					compare.enabled = false;
-					target.enabled = false;
-				}
-			} else {
+			if(typeof(navigationwindow) == "undefined") {
+				compare.enabled = false;
+				target.enabled = false;
+			} else if(typeof(navigationwindow.loggingWindow) == "undefined") {
 				compare.enabled = false;
 				target.enabled = false;
 			}
+
 			var tableReference;
 			var rowReference;
 			var batchTime;

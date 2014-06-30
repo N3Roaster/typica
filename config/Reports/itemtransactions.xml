@@ -18,7 +18,6 @@
 	</menu>
 	<program>
 		<![CDATA[
-			var externpath = "file:///home/neal/TCS/";
 			this.windowTitle = "Typica - Item Transactions";
 			var itemBox = findChildObject(this, 'item');
 			var unitBox = findChildObject(this, 'unit');

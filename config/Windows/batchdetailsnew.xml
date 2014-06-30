@@ -17,7 +17,12 @@
 			var compare = findChildObject(this, 'compare');
 			var edit = findChildObject(this, 'edit');
 			edit.enabled = false;
-			if(typeof(navigationwindow.loggingWindow) == "undefined") {
+			if("navigationwindow" in this) {
+				if(typeof(navigationwindow.loggingWindow) == "undefined") {
+					compare.enabled = false;
+					target.enabled = false;
+				}
+			} else {
 				compare.enabled = false;
 				target.enabled = false;
 			}

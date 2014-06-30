@@ -20,6 +20,7 @@ In order to simplify the implementation of certain features, we subclass
 #include <QPrintDialog>
 #include <QWebFrame>
 #include <QWebElement>
+#include <QSettings>
 
 #ifndef TypicaWebViewHeader
 #define TypicaWebViewHeader
@@ -131,9 +132,11 @@ void TypicaWebView::setHtml(const QString &html, const QUrl &baseUrl)
 
 void TypicaWebView::setContent(QIODevice *device)
 {
+	QSettings settings;
 	device->reset();
 	QByteArray content = device->readAll();
-	QWebView::setContent(content, "application/xhtml+xml");
+	QUrl baseDir = QUrl("file://" + settings.value("config").toString() + "/");
+	QWebView::setContent(content, "application/xhtml+xml", baseDir);
 }
 
 QString TypicaWebView::saveXml()

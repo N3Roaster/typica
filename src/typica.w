@@ -2038,6 +2038,130 @@ QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *)
 	return QScriptValue();
 }
 
+@* Scripting QProcess.
+
+\noindent Sometimes it is useful to have \pn work with an external program.
+The initial use case was document generation by typesetting instructions to a
+file and then running \TeX to generate a shelf sign or a sheet of labels.
+Other likely use cases include interfacing with external programs that output
+measurement streams. There are several methods which we may want to expose,
+however this is being done only as needed.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructQProcess(QScriptContext *context, QScriptEngine *engine);
+void setQProcessProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *engine);
+
+@ We follow the same pattern with this as with many other types.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQProcess);
+value = engine->newQMetaObject(&QProcess::staticMetaObject, constructor);
+engine->globalObject().setProperty("QProcess", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQProcess(QScriptContext *context, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QProcess);
+	setQProcessProperties(object, engine);
+	return object;
+}
+
+@ As |QProcess| is a |QIODevice| we inherit some properties from that. We also
+expose some details that are specific to |QProcess|.
+
+@<Functions for scripting@>=
+void setQProcessProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQIODeviceProperties(value, engine);
+	value.setProperty("execute", engine->newFunction(QProcess_execute));
+	value.setProperty("startDetached", engine->newFunction(QProcess_startDetached));
+	value.setProperty("setWorkingDirectory", engine->newFunction(QProcess_setWorkingDirectory));
+	value.setProperty("start", engine->newFunction(QProcess_start));
+}
+
+@ The |execute()| method comes in two flavors: one with arguments and one without.
+We always call the one with arguments and simply pass in an empty list if no
+arguments are specified.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *engine)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString program = argument<QString>(0, context);
+	QStringList arguments = QStringList();
+	if(context->argumentCount() > 1) {
+		arguments = argument<QVariant>(1, context).toStringList();
+	}
+	int retval = self->execute(program, arguments);
+	return QScriptValue(retval);
+}
+
+@ Similarly |startDetached()| can be called in a few different ways.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *engine)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString program = argument<QString>(0, context);
+	QStringList arguments = QStringList();
+	if(context->argumentCount() > 1) {
+		arguments = argument<QVariant>(1, context).toStringList();
+	}
+	QString workingDirectory = "";
+	if(context->argumentCount() > 2) {
+		workingDirectory = argument<QString>(2, context);
+	}
+	bool retval;
+	switch(context->argumentCount())
+	{
+		case 1:
+			retval = self->startDetached(program);
+			break;
+		case 2:
+			retval = self->startDetached(program, arguments);
+			break;
+		case 3:
+			retval = self->startDetached(program, arguments, workingDirectory);
+			break;
+		default:
+			retval = false;
+	}
+	return QScriptValue(retval);
+}
+
+@ Sometimes we care about the working directory for our program.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *engine)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString directory = argument<QString>(0, context);
+	self->setWorkingDirectory(directory);
+	return QScriptValue();
+}
+
+@ When using the |start()| method we always assume that we want read and write
+access.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *engine)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString program = argument<QString>(0, context);
+	QStringList arguments = QStringList();
+	if(context->argumentCount() > 1) {
+		arguments = argument<QVariant>(1, context).toStringList();
+	}
+	self->start(program, arguments);
+	return QScriptValue();
+}
+
 @ In order to work with |QByteArray| this should also be exposed to the host
 environment.
 

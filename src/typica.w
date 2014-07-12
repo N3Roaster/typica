@@ -5288,13 +5288,38 @@ editor. This one provides a calendar.
 void addCalendarToLayout(QDomElement element, QStack<QWidget *> *,@|
                          QStack<QLayout *> *layoutStack)
 {
-	QDateEdit *widget = new QDateEdit;
-	widget->setCalendarPopup(true);
+	QWidget *widget;
+	if(element.hasAttribute("time"))
+	{
+		if(element.attribute("time") == "true")
+		{
+			QDateTimeEdit *edit = new QDateTimeEdit;
+			edit->setDateTime(QDateTime::currentDateTime());
+			edit->setCalendarPopup(true);
+			edit->setDisplayFormat("yyyy-MM-dd hh:mm:ss");
+			widget = qobject_cast<QWidget *>(edit);
+		}
+		else
+		{
+			QDateEdit *edit = new QDateEdit;
+			edit->setDate(QDate::currentDate());
+			edit->setCalendarPopup(true);
+			edit->setDisplayFormat("yyyy-MM-dd");
+			widget = qobject_cast<QWidget *>(edit);
+		}
+	}
+	else
+	{
+		QDateEdit *edit = new QDateEdit;
+		edit->setDate(QDate::currentDate());
+		edit->setCalendarPopup(true);
+		edit->setDisplayFormat("yyyy-MM-dd");
+		widget = qobject_cast<QWidget *>(edit);
+	}
 	if(element.hasAttribute("id"))
 	{
 		widget->setObjectName(element.attribute("id"));
 	}
-	widget->setDate(QDate::currentDate());
 	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
 	layout->addWidget(widget);
 }
@@ -5427,6 +5452,10 @@ else if(className == "QBoxLayout")
 else if(className == "QDateEdit")
 {
 	setQDateEditProperties(value, engine);
+}
+else if(className == "QDateTimeEdit")
+{
+	setQDateTimeEditProperties(value, engine);
 }
 else if(className == "QFrame")
 {

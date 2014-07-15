@@ -2,7 +2,7 @@
 	<layout type="vertical">
 		<layout type="horizontal">
 			<label>Date:</label>
-			<calendar id="date" />
+			<calendar time="true" id="date" />
 			<label>Customer:</label>
 			<line id="customer" />
 			<label>Weight Unit:</label>

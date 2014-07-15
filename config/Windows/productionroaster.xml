@@ -644,6 +644,7 @@
             lsplit.saveState("script/logSplitter");
             log.saveState("script/log", 7);
 			window.navigationWindow.loggingWindow = undefined;
+			Windows.loggingWindow = undefined;
         });
 		this.restoreSizeAndPosition('window');
         vsplit.restoreState("script/mainSplitter");
@@ -985,6 +986,7 @@
 			var bwindow = createWindow("sampleRoastingBatch");
 		});
 		window.postLoadColumnSetup(0);
+		Windows.loggingWindow = window;
 		]]>
     </program>
 </window>

@@ -17,14 +17,10 @@
 			var compare = findChildObject(this, 'compare');
 			var edit = findChildObject(this, 'edit');
 			edit.enabled = false;
-			if(typeof(navigationwindow) == "undefined") {
-				compare.enabled = false;
-				target.enabled = false;
-			} else if(typeof(navigationwindow.loggingWindow) == "undefined") {
+			if(typeof(Windows.loggingWindow) == "undefined") {
 				compare.enabled = false;
 				target.enabled = false;
 			}
-
 			var tableReference;
 			var rowReference;
 			var batchTime;
@@ -48,7 +44,7 @@
                 var nextSeries = startSeries + 2;
                 QSettings.setValue('cseries', nextSeries);
                 var input = new XMLInput(buffer, startSeries);
-                var graph = findChildObject(navigationwindow.loggingWindow, 'graph');
+                var graph = findChildObject(Windows.loggingWindow, 'graph');
                 input.measure.connect(graph.newMeasurement);
                 input.input();
 				query = query.invalidate();
@@ -63,13 +59,13 @@
 				var pname = query.value(1);
                 query = query.invalidate();
 				var input = new XMLInput(buffer, 1);
-				var graph = findChildObject(navigationwindow.loggingWindow, 'graph');
-				var log = findChildObject(navigationwindow.loggingWindow, 'log');
+				var graph = findChildObject(Windows.loggingWindow, 'graph');
+				var log = findChildObject(Windows.loggingWindow, 'log');
 				log.clear();
 				graph.clear();
 				input.newTemperatureColumn.connect(log.setHeaderData);
 				input.newTemperatureColumn.connect(function(col, text) {
-					if(text == navigationwindow.loggingWindow.targetcolumnname)
+					if(text == Windows.loggingWindow.targetcolumnname)
 					{
 						targetseries = col;
 					}
@@ -87,7 +83,7 @@
 				input.lastColumn.connect(function(c) {
 					lc = c;
 					QSettings.setValue("liveColumn", c + 1);
-					navigationwindow.loggingWindow.postLoadColumnSetup(c);
+					Windows.loggingWindow.postLoadColumnSetup(c);
 				});
 				input.annotation.connect(log.newAnnotation);
 				input.annotation.connect(function(note, tcol, ncol) {
@@ -95,9 +91,9 @@
 						log.newAnnotation(note, i, ncol);
 					}
 				});
-				navigationwindow.loggingWindow.windowTitle = "Typica - " + pname;
-				navigationwindow.loggingWindow.raise();
-				navigationwindow.loggingWindow.activateWindow();
+				Windows.loggingWindow.windowTitle = "Typica - " + pname;
+				Windows.loggingWindow.raise();
+				Windows.loggingWindow.activateWindow();
 				input.input();
 				log.newAnnotation("End", 1, lc);
 				query = query.invalidate();

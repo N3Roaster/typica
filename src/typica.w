@@ -3530,7 +3530,8 @@ engine->globalObject().setProperty("sqlToArray",
 engine->globalObject().setProperty("setFont", engine->newFunction(setFont));
 engine->globalObject().setProperty("annotationFromRecord",
                                    engine->newFunction(annotationFromRecord));
-engine->globalObject().setProperty("setTabOrder", engine->newFunction(setTabOrder));
+engine->globalObject().setProperty("setTabOrder",
+                                   engine->newFunction(setTabOrder));
 
 @ These functions are not part of an object. They expect a string specifying
 the path to a file and return a string with either the name of the file without

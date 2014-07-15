@@ -34,6 +34,7 @@
 	<include src="Windows/editbatchdetails.xml" />
 	<include src="Windows/newsamplebatch.xml" />
 	<program>
+		Windows = new Object();
 		var loggingWindow;
 		var currentBatchInfo;
 		var navwindow = createWindow("navwindow");

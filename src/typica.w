@@ -2096,6 +2096,9 @@ QScriptValue QByteArray_right(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_mid(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_chop(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toInt8(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toInt16(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toInt32(QScriptContext *context, QScriptEngine *engine);
 
 @ First, we provide some functionns for moving array data across the
 language barrier.
@@ -2148,6 +2151,9 @@ void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("mid", engine->newFunction(QByteArray_mid));
 	value.setProperty("chop", engine->newFunction(QByteArray_chop));
 	value.setProperty("remove", engine->newFunction(QByteArray_remove));
+	value.setProperty("toInt8", engine->newFunction(QByteArray_toInt8));
+	value.setProperty("toInt16", engine->newFunction(QByteArray_toInt16));
+	value.setProperty("toInt32", engine->newFunction(QByteArray_toInt32));
 }
 
 @ Perhaps the easiest way to deal with fixed byte strings for serial
@@ -2267,6 +2273,44 @@ QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine)
 		self.remove(argument<int>(0, context), argument<int>(1, context)));
 	setQByteArrayProperties(value, engine);
 	return value;
+}
+
+@ When receiving data in a byte array, bytes are sometimes intended to
+represent 8, 16, or 32 bit integers. In such cases we often want to perform
+some computation on these values so having the ability to split off that
+portion of the array (for example, with |mid()|) and convert to a Number is
+useful.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_toInt8(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int value = 0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	return QScriptValue(value);
+}
+
+QScriptValue QByteArray_toInt16(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int value = 0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	return QScriptValue(value);
+}
+
+QScriptValue QByteArray_toInt32(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int value = 0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	bytes[2] = self[2];
+	bytes[3] = self[3];
+	return QScriptValue(value);
 }
 
 @ Some protocols require manipulating larger than 8 bit numbers as a sequence

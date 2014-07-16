@@ -2082,6 +2082,8 @@ void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine);
 QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_getAt(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_appendBytes(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *engine);
 
 @ First, we provide some functionns for moving array data across the
 language barrier.
@@ -2126,6 +2128,8 @@ void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("fromHex", engine->newFunction(QByteArray_fromHex));
 	value.setProperty("getAt", engine->newFunction(QByteArray_getAt));
 	value.setProperty("setAt", engine->newFunction(QByteArray_setAt));
+	value.setProperty("appendBytes", engine->newFunction(QByteArray_appendBytes));
+	value.setProperty("appendString", engine->newFunction(QByteArray_appendString));
 }
 
 @ Perhaps the easiest way to deal with fixed byte strings for serial
@@ -2154,6 +2158,25 @@ QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *)
 {
 	QByteArray self = getself<QByteArray>(context);
 	self[argument<int>(0, context)] = (char)(argument<int>(1, context));
+}
+
+@ Methods are provided for appending either another |QByteArray| or a string
+to a |QByteArray|. The only difference between these functions is the expected
+argument type.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_appendBytes(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	return engine->toScriptValue<QByteArray>(
+		self.append(argument<QByteArray>(0, context)));
+}
+
+QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	return engine->toScriptValue<QByteArray>(
+		self.append(argument<QString>(0, context)));
 }
 
 @* Scripting QBuffer.

@@ -2080,6 +2080,8 @@ void QByteArray_fromScriptValue(const QScriptValue &value, QByteArray &bytes);
 QScriptValue constructQByteArray(QScriptContext *context, QScriptEngine *engine);
 void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine);
 QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_getAt(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *engine);
 
 @ First, we provide some functionns for moving array data across the
 language barrier.
@@ -2122,6 +2124,8 @@ want to have wrappers around. These should be added as required.
 void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
 {
 	value.setProperty("fromHex", engine->newFunction(QByteArray_fromHex));
+	value.setProperty("getAt", engine->newFunction(QByteArray_getAt));
+	value.setProperty("setAt", engine->newFunction(QByteArray_setAt));
 }
 
 @ Perhaps the easiest way to deal with fixed byte strings for serial
@@ -2134,6 +2138,22 @@ QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine)
 	QByteArray retval;
 	retval = self.fromHex(argument<QString>(0, context).toUtf8());
 	return engine->toScriptValue<QByteArray>(retval);
+}
+
+@ A pair of methods is provided for getting and setting values at a particular
+byte.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_getAt(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	return QScriptValue((int)(self.at(argument<int>(0, context))));
+}
+
+QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	self[argument<int>(0, context)] = (char)(argument<int>(1, context));
 }
 
 @* Scripting QBuffer.

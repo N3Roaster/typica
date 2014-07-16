@@ -2179,6 +2179,60 @@ QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *eng
 		self.append(argument<QString>(0, context)));
 }
 
+@ Some protocols require manipulating larger than 8 bit numbers as a sequence
+of bytes. To facilitate this, methods are provided to construct a |QByteArray|
+from different sized numbers. 8 bit numbers are provided for uniformity.
+
+@<Function prototypes for scripting@>=
+QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine);
+
+@ These are globally available.
+
+@<Set up the scripting engine@>=
+engine->globalObject().setProperty("bytesFromInt8", engine->newFunction(bytesFromInt8));
+engine->globalObject().setProperty("bytesFromInt16", engine->newFunction(bytesFromInt16));
+engine->globalObject().setProperty("bytesFromInt32", engine->newFunction(bytesFromInt32));
+
+@ The methods all work by casting the appropriate integer type to a |char *|
+and copying the bytes to a new |QByteArray|.
+
+@<Functions for scripting@>=
+QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine)
+{
+	qint8 value = (qint8)(argument<int>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(1);
+	retval[0] = bytes[0];
+	return engine->toScriptValue<QByteArray>(retval);
+}
+
+QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine)
+{
+	qint16 value = (qint16)(argument<int>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(2);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	return engine->toScriptValue<QByteArray>(retval);
+}
+
+QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine)
+{
+	qint32 value = (qint32)(argument<int>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(4);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	retval[2] = bytes[2];
+	retval[3] = bytes[3];
+	return engine->toScriptValue<QByteArray>(retval);
+}
+
 @* Scripting QBuffer.
 
 \noindent Sometimes it is desirable to load a roast profile from a file. At

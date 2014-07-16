@@ -2051,7 +2051,9 @@ which returns the |QByteArray| instead of converting this to a |QString|.
 QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine)
 {
 	QIODevice *self = getself<QIODevice *>(context);
-	return QScriptValue(engine->toScriptValue<QByteArray>(self->readAll()));
+	QScriptValue value = engine->toScriptValue<QByteArray>(self->readAll());
+	setQByteArrayProperties(value, engine);
+	return value;
 }
 
 @ Wrappers around |peek()| and |read()| are also provided.
@@ -2060,15 +2062,19 @@ QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine)
 QScriptValue QIODevice_peek(QScriptContext *context, QScriptEngine *engine)
 {
 	QIODevice *self = getself<QIODevice *>(context);
-	return QScriptValue(engine->toScriptValue<QByteArray>(
-		self->peek(argument<int>(0, context))));
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self->peek(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
 }
 
 QScriptValue QIODevice_read(QScriptContext *context, QScriptEngine *engine)
 {
 	QIODevice *self = getself<QIODevice *>(context);
-	return QScriptValue(engine->toScriptValue<QByteArray>(
-		self->read(argument<int>(0, context))));
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self->read(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
 }
 
 @ In order to work with |QByteArray| this should also be exposed to the host
@@ -2084,6 +2090,12 @@ QScriptValue QByteArray_getAt(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_appendBytes(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_size(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_left(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_right(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_mid(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_chop(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine);
 
 @ First, we provide some functionns for moving array data across the
 language barrier.
@@ -2130,6 +2142,12 @@ void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("setAt", engine->newFunction(QByteArray_setAt));
 	value.setProperty("appendBytes", engine->newFunction(QByteArray_appendBytes));
 	value.setProperty("appendString", engine->newFunction(QByteArray_appendString));
+	value.setProperty("size", engine->newFunction(QByteArray_size));
+	value.setProperty("left", engine->newFunction(QByteArray_left));
+	value.setProperty("right", engine->newFunction(QByteArray_right));
+	value.setProperty("mid", engine->newFunction(QByteArray_mid));
+	value.setProperty("chop", engine->newFunction(QByteArray_chop));
+	value.setProperty("remove", engine->newFunction(QByteArray_remove));
 }
 
 @ Perhaps the easiest way to deal with fixed byte strings for serial
@@ -2141,7 +2159,9 @@ QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine)
 	QByteArray self = getself<QByteArray>(context);
 	QByteArray retval;
 	retval = self.fromHex(argument<QString>(0, context).toUtf8());
-	return engine->toScriptValue<QByteArray>(retval);
+	QScriptValue value = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(value, engine);
+	return value;
 }
 
 @ A pair of methods is provided for getting and setting values at a particular
@@ -2158,6 +2178,7 @@ QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *)
 {
 	QByteArray self = getself<QByteArray>(context);
 	self[argument<int>(0, context)] = (char)(argument<int>(1, context));
+	return QScriptValue();
 }
 
 @ Methods are provided for appending either another |QByteArray| or a string
@@ -2168,15 +2189,84 @@ argument type.
 QScriptValue QByteArray_appendBytes(QScriptContext *context, QScriptEngine *engine)
 {
 	QByteArray self = getself<QByteArray>(context);
-	return engine->toScriptValue<QByteArray>(
-		self.append(argument<QByteArray>(0, context)));
+	QScriptValue value =
+		engine->toScriptValue<QByteArray>(
+			self.append(argument<QByteArray>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
 }
 
 QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *engine)
 {
 	QByteArray self = getself<QByteArray>(context);
-	return engine->toScriptValue<QByteArray>(
+	QScriptValue value = engine->toScriptValue<QByteArray>(
 		self.append(argument<QString>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@ Checking the size of our byte array frequently a requirement.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_size(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	return QScriptValue(self.size());
+}
+
+@ It is also frequently useful to be able to work with specific parts of a byte
+array, so a few methods are provided for carving these up.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_left(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.left(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+QScriptValue QByteArray_right(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.right(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+QScriptValue QByteArray_mid(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int length = -1;
+	if(context->argumentCount() > 1)
+	{
+		length = argument<int>(1, context);
+	}
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.mid(argument<int>(0, context), length));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@ We may also want to remove bytes from an array.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_chop(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	self.chop(argument<int>(0, context));
+	return QScriptValue();
+}
+
+QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.remove(argument<int>(0, context), argument<int>(1, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
 }
 
 @ Some protocols require manipulating larger than 8 bit numbers as a sequence
@@ -2206,7 +2296,9 @@ QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine)
 	QByteArray retval;
 	retval.resize(1);
 	retval[0] = bytes[0];
-	return engine->toScriptValue<QByteArray>(retval);
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
 }
 
 QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine)
@@ -2217,7 +2309,9 @@ QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine)
 	retval.resize(2);
 	retval[0] = bytes[0];
 	retval[1] = bytes[1];
-	return engine->toScriptValue<QByteArray>(retval);
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
 }
 
 QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine)
@@ -2230,7 +2324,9 @@ QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine)
 	retval[1] = bytes[1];
 	retval[2] = bytes[2];
 	retval[3] = bytes[3];
-	return engine->toScriptValue<QByteArray>(retval);
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
 }
 
 @* Scripting QBuffer.

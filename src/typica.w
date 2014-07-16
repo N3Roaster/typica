@@ -1872,6 +1872,9 @@ QScriptValue QIODevice_readToString(QScriptContext *context,
 QScriptValue QIODevice_putChar(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QIODevice_writeString(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_peek(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_read(QScriptContext *context, QScriptEngine *engine);
 
 @ This function is passed to the scripting engine.
 
@@ -1926,6 +1929,9 @@ void setQIODeviceProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("putChar", engine->newFunction(QIODevice_putChar));
 	value.setProperty("writeString", engine->newFunction(QIODevice_writeString));
 	value.setProperty("writeBytes", engine->newFunction(QIODevice_writeBytes));
+	value.setProperty("readBytes", engine->newFunction(QIODevice_readBytes));
+	value.setProperty("peek", engine->newFunction(QIODevice_peek));
+	value.setProperty("read", engine->newFunction(QIODevice_read));
 }
 
 @ These are simple wrappers. In the case of the |open()| property, one argument
@@ -2036,6 +2042,33 @@ QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *)
 	                        "QIODevice::writeBytes()");
 	}
 	return QScriptValue();
+}
+
+@ The readBytes method is an alternate wrapper around |QByteArray::readAll()|
+which returns the |QByteArray| instead of converting this to a |QString|.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	return QScriptValue(engine->toScriptValue<QByteArray>(self->readAll()));
+}
+
+@ Wrappers around |peek()| and |read()| are also provided.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_peek(QScriptContext *context, QScriptEngine *engine)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	return QScriptValue(engine->toScriptValue<QByteArray>(
+		self->peek(argument<int>(0, context))));
+}
+
+QScriptValue QIODevice_read(QScriptContext *context, QScriptEngine *engine)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	return QScriptValue(engine->toScriptValue<QByteArray>(
+		self->read(argument<int>(0, context))));
 }
 
 @ In order to work with |QByteArray| this should also be exposed to the host

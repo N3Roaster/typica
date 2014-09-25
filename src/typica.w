@@ -1414,6 +1414,8 @@ QScriptValue QSplitter_saveState(QScriptContext *context,
 									QScriptEngine *engine);
 QScriptValue QSplitter_restoreState(QScriptContext *context,
 									QScriptEngine *engine);
+QScriptValue QSplitter_count(QScriptContext *context,
+                             QScriptEngine *engine);
 void setQSplitterProperties(QScriptValue value, QScriptEngine *engine);
 
 @ Of these, the scripting engine must be informed of the constructor.
@@ -1440,6 +1442,7 @@ void setQSplitterProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("saveState", engine->newFunction(QSplitter_saveState));
 	value.setProperty("restoreState",
 	                  engine->newFunction(QSplitter_restoreState));
+	value.setProperty("count", engine->newFunction(QSplitter_count));
 }
 
 @ The |"addWidget"| property is a simple wrapper around
@@ -1470,6 +1473,23 @@ QScriptValue QSplitter_addWidget(QScriptContext *context, QScriptEngine *)
 							"QWidget as an argument.");
 	}
 	return QScriptValue();
+}
+
+@ The methods for saving and restoring the state of a splitter do not behave
+well when the number of widgets contained in the splitter increase. This is a
+problem in the logging view where we may want to allow zero width indicators
+but reconfiguration can cause the number of indicators to increase. This would
+result in the right most indicators such as the batch timer disappearing. Most
+people do not notice the splitter handle or think to drag that to the left to
+correct this issue so it would be better to save the number of indicators when
+saving the state and if the number of indicators does not match, we should not
+restore the obsolete saved state.
+
+@<Functions for scripting@>=
+QScriptValue QSplitter_count(QScriptContext *context, QScriptEngine *)
+{
+	QSplitter *self = getself<QSplitter *>(context);
+	return QScriptValue(self->count());
 }
 
 @ When saving and restoring the state of a splitter, we always want to do this

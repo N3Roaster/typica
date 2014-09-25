@@ -889,7 +889,11 @@
                     QSettings.setValue("liveColumn", c + 1);
 					window.postLoadColumnSetup(c);
 				});
+				graph.updatesEnabled = false;
+				log.updatesEnabled = false;
                 input.input();
+				log.updatesEnabled = true;
+				graph.updatesEnabled = true;
                 window.windowTitle = 'Typica - [*]' + baseName(filename);
                 QSettings.setValue("script/lastDir", dir(filename));
 				log.newAnnotation("End", 1, lc);

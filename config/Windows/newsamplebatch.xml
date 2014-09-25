@@ -227,7 +227,11 @@
 						});
 						navigationwindow.loggingWindow.raise();
 						navigationwindow.loggingWindow.activateWindow();
+						log.updatesEnabled = false;
+						graph.updatesEnabled = false;
 						input.input();
+						graph.updatesEnabled = true;
+						log.updatesEnabled = true;
 						log.newAnnotation("End", 1, lc);
 					}
 				}

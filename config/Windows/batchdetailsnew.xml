@@ -139,7 +139,11 @@
 					viewer.windowTitle = "Typica - " + pname;
 					viewer.raise();
 					viewer.activateWindow();
+					graph.updatesEnabled = false;
+					log.updatesEnabled = false;
 					input.input();
+					log.updatesEnabled = true;
+					graph.updatesEnabled = true;
 					log.newAnnotation("End", 1, lc);
 				}
 				else {

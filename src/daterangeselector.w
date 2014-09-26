@@ -34,7 +34,7 @@ access to the ISO 8601 string representation of these dates is provided.
 #ifndef TypicaDateRangeSelectorHeader
 #define TypicaDateRangeSelectorHeader
 
-class CustomDateRangePopup;
+@<CustomDateRangePopup declaration@>@;
 
 class DateRangeSelector : public QWidget
 {
@@ -74,7 +74,6 @@ class DateRangeSelector : public QWidget
 
 #include "daterangeselector.h"
 
-@<CustomDateRangePopup declaration@>
 @<CustomDateRangePopup implementation@>
 @<DateRangeSelector implementation@>
 

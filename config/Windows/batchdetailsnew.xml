@@ -216,7 +216,7 @@
 					nameQuery.bind(":id", items[i]);
 					nameQuery.exec();
 					nameQuery.next();
-					output.writeTextElement("td", nameQuery.value(0));
+					output.writeTextElement("td", nameQuery.value(0) + " (" + items[i] + ")");
 					output.writeStartElement("td");
 					output.writeAttribute("align", "center");
 					output.writeCharacters(quantities[i]);

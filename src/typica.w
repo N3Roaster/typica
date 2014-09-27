@@ -3663,6 +3663,7 @@ QScriptValue setFont(QScriptContext *context, QScriptEngine *engine);
 QScriptValue annotationFromRecord(QScriptContext *context,
                                   QScriptEngine *engine);
 QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *engine);
+QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *engine);
 
 @ These functions are passed to the scripting engine.
 
@@ -3676,6 +3677,8 @@ engine->globalObject().setProperty("annotationFromRecord",
                                    engine->newFunction(annotationFromRecord));
 engine->globalObject().setProperty("setTabOrder",
                                    engine->newFunction(setTabOrder));
+engine->globalObject().setProperty("saveFileFromDatabase",
+                                   engine->newFunction(saveFileFromDatabase));
 
 @ These functions are not part of an object. They expect a string specifying
 the path to a file and return a string with either the name of the file without
@@ -3695,6 +3698,27 @@ QScriptValue dir(QScriptContext *context, QScriptEngine *engine)
 	QDir dir = info.dir();
 	QScriptValue retval(engine, dir.path());
 	return retval;
+}
+
+@ This function takes a file ID and a file name and copies file data stored in
+the database out to the file system.
+
+@<Functions for scripting@>=
+QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *engine)
+{
+	SqlQueryConnection h;
+	QSqlQuery *query = h.operator->();
+	QString q = "SELECT file FROM files WHERE id = :file";
+	query->prepare(q);
+	query->bindValue(":file", argument<int>(0, context));
+	query->exec();
+	query->next();
+	QByteArray array = query->value(0).toByteArray();
+	QFile file(argument<QString>(1, context));
+	file.open(QIODevice::WriteOnly);
+	file.write(array);
+	file.close();
+	return QScriptValue();
 }
 
 @ This function takes a string representing a SQL array and returns an array

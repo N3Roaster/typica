@@ -8,6 +8,9 @@
         </layout>
         <webview id="view" />
     </layout>
+	<menu name="File">
+		<item id="save" shortcut="Ctrl+S">Save…</item>
+	</menu>
     <program>
         <![CDATA[
 			var window = this;
@@ -334,6 +337,13 @@
 				query = query.invalidate();
 				edit.enabled = true;
 			};
+			var saveMenu = findChildObject(this, 'save');
+			saveMenu.triggered.connect(function() {
+				var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
+				if(filename != "") {
+					saveFileFromDatabase(fileID, filename);
+				}
+			});
         ]]>
     </program>
 </window>

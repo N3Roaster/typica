@@ -26,6 +26,7 @@ class HelpMenu : public QMenu
 		HelpMenu();
 	public slots:
 		void displayAboutTypica();
+		void displayFeedbackWizard();
 };
 
 #endif
@@ -35,6 +36,7 @@ class HelpMenu : public QMenu
 @(helpmenu.cpp@>=
 #include "helpmenu.h"
 #include "abouttypica.h"
+#include "feedback.h"
 
 @<Help menu implementation@>@;
 
@@ -53,6 +55,10 @@ HelpMenu::HelpMenu() : QMenu()
 	aboutTypicaAction->setObjectName("aboutTypicaAction");
 	addAction(aboutTypicaAction);
 	connect(aboutTypicaAction, SIGNAL(triggered()), this, SLOT(displayAboutTypica()));
+	QAction *sendFeedbackAction = new QAction(tr("Send Feedback"), this);
+	sendFeedbackAction->setObjectName("sendFeedback");
+	addAction(sendFeedbackAction);
+	connect(sendFeedbackAction, SIGNAL(triggered()), this, SLOT(displayFeedbackWizard()));
 }
 
 @ When "About Typica" is selected from the menu, we display an about box. This
@@ -63,5 +69,14 @@ void HelpMenu::displayAboutTypica()
 {
 	AboutTypica *aboutBox = new AboutTypica;
 	aboutBox->show();
+}
+
+@ A feedback wizard is also available from the Help menu.
+
+@<Help menu implementation@>=
+void HelpMenu::displayFeedbackWizard()
+{
+	FeedbackWizard *window = new FeedbackWizard;
+	window->show();
 }
 

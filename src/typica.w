@@ -2085,7 +2085,7 @@ engine->globalObject().setProperty("QProcess", value);
 @ The constructor is trivial.
 
 @<Functions for scripting@>=
-QScriptValue constructQProcess(QScriptContext *context, QScriptEngine *engine)
+QScriptValue constructQProcess(QScriptContext *, QScriptEngine *engine)
 {
 	QScriptValue object = engine->newQObject(new QProcess);
 	setQProcessProperties(object, engine);
@@ -2110,7 +2110,7 @@ We always call the one with arguments and simply pass in an empty list if no
 arguments are specified.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString program = argument<QString>(0, context);
@@ -2125,7 +2125,7 @@ QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *engine)
 @ Similarly |startDetached()| can be called in a few different ways.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString program = argument<QString>(0, context);
@@ -2158,7 +2158,7 @@ QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *engi
 @ Sometimes we care about the working directory for our program.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString directory = argument<QString>(0, context);
@@ -2170,7 +2170,7 @@ QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine
 access.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString program = argument<QString>(0, context);
@@ -3704,7 +3704,7 @@ QScriptValue dir(QScriptContext *context, QScriptEngine *engine)
 the database out to the file system.
 
 @<Functions for scripting@>=
-QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *engine)
+QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *)
 {
 	SqlQueryConnection h;
 	QSqlQuery *query = h.operator->();
@@ -4261,6 +4261,8 @@ while(j < menuItems.count())
 }
 
 @i helpmenu.w
+
+@i feedback.w
 
 @ A layout can contain a number of different elements including a variety of
 widget types and other layouts. This function is responsible for applying any

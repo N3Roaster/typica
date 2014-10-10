@@ -525,8 +525,10 @@ generated file empty.
 @<Header files to include@>@/
 @<Class declarations@>@/
 @<Function prototypes for scripting@>@/
+@<Logging function prototype@>@/
 @<Class implementations@>@/
 @<Functions for scripting@>@/
+@<Logging function implementation@>@/
 @<The main program@>
 #include "moc_typica.cpp"
 
@@ -12717,6 +12719,7 @@ build.
 @<The main program@>=
 int main(int argc, char **argv)@/
 {@/
+	@<Set up logging@>@;
 	int *c = &argc;
 	Application app(*c, argv);
 	@<Set up icons@>@;
@@ -12734,6 +12737,31 @@ int main(int argc, char **argv)@/
 	int retval = app.exec();
 	delete engine;
 	return retval;@/
+}
+
+@ Proof of concept for the introduction of logging warnings to a file. This is
+primarily for the benefit of people using Windows without an attached debugger.
+Before this is merged to development it should allow the person using Typica
+more control over if this should be enabled (by default it should not) and
+where the output is sent.
+
+@<Set up logging@>=
+qInstallMsgHandler(messageFileOutput);
+
+@ This requires that we have our messageFileOutput function.
+
+@<Logging function prototype@>=
+void messageFileOutput(QtMsgType type, const char *msg);
+
+@ The current implementation is straightforward.
+
+@<Logging function implementation@>=
+void messageFileOutput(QtMsgType type, const char *msg)
+{
+	QFile output("Typica-"+QDate::currentDate().toString("yyyy-MM-dd")+".log");
+	output.open(QIODevice::WriteOnly | QIODevice::Append);
+	QTextStream outstream(&output);
+	outstream << msg << "\n";
 }
 
 @ \pn{} 1.4 introduces the ability to use icons in certain interface elements.

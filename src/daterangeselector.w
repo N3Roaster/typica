@@ -30,6 +30,8 @@ access to the ISO 8601 string representation of these dates is provided.
 @(daterangeselector.h@>=
 
 #include <QComboBox>
+#include <QPushButton>
+#incldue <QCalendarWidget>
 
 #ifndef TypicaDateRangeSelectorHeader
 #define TypicaDateRangeSelectorHeader

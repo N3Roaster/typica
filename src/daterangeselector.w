@@ -31,7 +31,7 @@ access to the ISO 8601 string representation of these dates is provided.
 
 #include <QComboBox>
 #include <QPushButton>
-#incldue <QCalendarWidget>
+#include <QCalendarWidget>
 
 #ifndef TypicaDateRangeSelectorHeader
 #define TypicaDateRangeSelectorHeader

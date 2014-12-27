@@ -64,6 +64,7 @@
 		var translationCurrentColumn = -1;
 		var configModel = new DeviceTreeModel;
 		var rootIndex = configModel.index(roasterlist.currentIndex, 0);
+		var roasterIndex = roasterlist.currentIndex;
 		var channels = new Array();
 		var annotationButtons = new Array();
 		var nidevices = new Array();
@@ -639,17 +640,20 @@
 			delete dataqsdkdevices;
 			delete jsdevices;
             window.saveSizeAndPosition("window");
-            vsplit.saveState("script/mainSplitter");
-            isplit.saveState("script/instrumentSplitter");
-            lsplit.saveState("script/logSplitter");
+            vsplit.saveState("script/loggingView/" + roasterIndex + "/mainSplitter");
+			QSettings.setValue("script/loggingView/" + roasterIndex + "/instrumentCount", isplit.count());
+            isplit.saveState("script/loggingView/" + roasterIndex + "/instrumentSplitter");
+            lsplit.saveState("script/loggingView/" + roasterIndex + "/logSplitter");
             log.saveState("script/log", 7);
 			window.navigationWindow.loggingWindow = undefined;
 			Windows.loggingWindow = undefined;
         });
 		this.restoreSizeAndPosition('window');
-        vsplit.restoreState("script/mainSplitter");
-        isplit.restoreState("script/instrumentSplitter");
-        lsplit.restoreState("script/logSplitter");
+        vsplit.restoreState("script/loggingView/" + roasterIndex + "/mainSplitter");
+		if(QSettings.value("script/loggingView/" + roasterIndex + "/instrumentCount") == isplit.count()) {
+			isplit.restoreState("script/loggingView/" + roasterIndex + "/instrumentSplitter");
+		}
+        lsplit.restoreState("script/loggingView/" + roasterIndex + "/logSplitter");
 		log.restoreState("script/log", 7);
 		var offsets = new Array();
 		var zeroemitters = new Array();
@@ -889,7 +893,11 @@
                     QSettings.setValue("liveColumn", c + 1);
 					window.postLoadColumnSetup(c);
 				});
+				graph.updatesEnabled = false;
+				log.updatesEnabled = false;
                 input.input();
+				log.updatesEnabled = true;
+				graph.updatesEnabled = true;
                 window.windowTitle = 'Typica - [*]' + baseName(filename);
                 QSettings.setValue("script/lastDir", dir(filename));
 				log.newAnnotation("End", 1, lc);

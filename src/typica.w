@@ -525,8 +525,10 @@ generated file empty.
 @<Header files to include@>@/
 @<Class declarations@>@/
 @<Function prototypes for scripting@>@/
+@<Logging function prototype@>@/
 @<Class implementations@>@/
 @<Functions for scripting@>@/
+@<Logging function implementation@>@/
 @<The main program@>
 #include "moc_typica.cpp"
 
@@ -1414,6 +1416,8 @@ QScriptValue QSplitter_saveState(QScriptContext *context,
 									QScriptEngine *engine);
 QScriptValue QSplitter_restoreState(QScriptContext *context,
 									QScriptEngine *engine);
+QScriptValue QSplitter_count(QScriptContext *context,
+                             QScriptEngine *engine);
 void setQSplitterProperties(QScriptValue value, QScriptEngine *engine);
 
 @ Of these, the scripting engine must be informed of the constructor.
@@ -1440,6 +1444,7 @@ void setQSplitterProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("saveState", engine->newFunction(QSplitter_saveState));
 	value.setProperty("restoreState",
 	                  engine->newFunction(QSplitter_restoreState));
+	value.setProperty("count", engine->newFunction(QSplitter_count));
 }
 
 @ The |"addWidget"| property is a simple wrapper around
@@ -1470,6 +1475,23 @@ QScriptValue QSplitter_addWidget(QScriptContext *context, QScriptEngine *)
 							"QWidget as an argument.");
 	}
 	return QScriptValue();
+}
+
+@ The methods for saving and restoring the state of a splitter do not behave
+well when the number of widgets contained in the splitter increase. This is a
+problem in the logging view where we may want to allow zero width indicators
+but reconfiguration can cause the number of indicators to increase. This would
+result in the right most indicators such as the batch timer disappearing. Most
+people do not notice the splitter handle or think to drag that to the left to
+correct this issue so it would be better to save the number of indicators when
+saving the state and if the number of indicators does not match, we should not
+restore the obsolete saved state.
+
+@<Functions for scripting@>=
+QScriptValue QSplitter_count(QScriptContext *context, QScriptEngine *)
+{
+	QSplitter *self = getself<QSplitter *>(context);
+	return QScriptValue(self->count());
 }
 
 @ When saving and restoring the state of a splitter, we always want to do this
@@ -2104,7 +2126,7 @@ engine->globalObject().setProperty("QProcess", value);
 @ The constructor is trivial.
 
 @<Functions for scripting@>=
-QScriptValue constructQProcess(QScriptContext *context, QScriptEngine *engine)
+QScriptValue constructQProcess(QScriptContext *, QScriptEngine *engine)
 {
 	QScriptValue object = engine->newQObject(new QProcess);
 	setQProcessProperties(object, engine);
@@ -2129,7 +2151,7 @@ We always call the one with arguments and simply pass in an empty list if no
 arguments are specified.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString program = argument<QString>(0, context);
@@ -2144,7 +2166,7 @@ QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *engine)
 @ Similarly |startDetached()| can be called in a few different ways.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString program = argument<QString>(0, context);
@@ -2177,7 +2199,7 @@ QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *engi
 @ Sometimes we care about the working directory for our program.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString directory = argument<QString>(0, context);
@@ -2189,7 +2211,7 @@ QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine
 access.
 
 @<Functions for scripting@>=
-QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *engine)
+QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *)
 {
 	QProcess *self = getself<QProcess *>(context);
 	QString program = argument<QString>(0, context);
@@ -3913,6 +3935,7 @@ QScriptValue setFont(QScriptContext *context, QScriptEngine *engine);
 QScriptValue annotationFromRecord(QScriptContext *context,
                                   QScriptEngine *engine);
 QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *engine);
+QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *engine);
 
 @ These functions are passed to the scripting engine.
 
@@ -3926,6 +3949,8 @@ engine->globalObject().setProperty("annotationFromRecord",
                                    engine->newFunction(annotationFromRecord));
 engine->globalObject().setProperty("setTabOrder",
                                    engine->newFunction(setTabOrder));
+engine->globalObject().setProperty("saveFileFromDatabase",
+                                   engine->newFunction(saveFileFromDatabase));
 
 @ These functions are not part of an object. They expect a string specifying
 the path to a file and return a string with either the name of the file without
@@ -3945,6 +3970,27 @@ QScriptValue dir(QScriptContext *context, QScriptEngine *engine)
 	QDir dir = info.dir();
 	QScriptValue retval(engine, dir.path());
 	return retval;
+}
+
+@ This function takes a file ID and a file name and copies file data stored in
+the database out to the file system.
+
+@<Functions for scripting@>=
+QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *)
+{
+	SqlQueryConnection h;
+	QSqlQuery *query = h.operator->();
+	QString q = "SELECT file FROM files WHERE id = :file";
+	query->prepare(q);
+	query->bindValue(":file", argument<int>(0, context));
+	query->exec();
+	query->next();
+	QByteArray array = query->value(0).toByteArray();
+	QFile file(argument<QString>(1, context));
+	file.open(QIODevice::WriteOnly);
+	file.write(array);
+	file.close();
+	return QScriptValue();
 }
 
 @ This function takes a string representing a SQL array and returns an array
@@ -4487,6 +4533,8 @@ while(j < menuItems.count())
 }
 
 @i helpmenu.w
+
+@i feedback.w
 
 @ A layout can contain a number of different elements including a variety of
 widget types and other layouts. This function is responsible for applying any
@@ -12943,10 +12991,10 @@ int main(int argc, char **argv)@/
 {@/
 	int *c = &argc;
 	Application app(*c, argv);
+	QSettings settings;
+	@<Set up logging@>@;
 	@<Set up icons@>@;
 	@<Set up fonts@>@;
-
-	QSettings settings;
 
 	@<Register device configuration widgets@>@;
 	@<Prepare the database connection@>@;
@@ -12958,6 +13006,32 @@ int main(int argc, char **argv)@/
 	int retval = app.exec();
 	delete engine;
 	return retval;@/
+}
+
+@ \pn{} 1.6.3 introduces optional logging of diagnostic messages to a file. By
+default this feature is not enabled. A sensible future refinement to this would
+allow specification of where this file should be created.
+
+@<Set up logging@>=
+if(settings.value("settings/advanced/logging", false).toBool())
+{
+	qInstallMsgHandler(messageFileOutput);
+}
+
+@ This requires that we have our messageFileOutput function.
+
+@<Logging function prototype@>=
+void messageFileOutput(QtMsgType type, const char *msg);
+
+@ The current implementation is straightforward.
+
+@<Logging function implementation@>=
+void messageFileOutput(QtMsgType type, const char *msg)
+{
+	QFile output("Typica-"+QDate::currentDate().toString("yyyy-MM-dd")+".log");
+	output.open(QIODevice::WriteOnly | QIODevice::Append);
+	QTextStream outstream(&output);
+	outstream << msg << "\r\n";
 }
 
 @ \pn{} 1.4 introduces the ability to use icons in certain interface elements.
@@ -17605,7 +17679,8 @@ class ModbusRTUDevice : public QObject
 		void svuResponse(QByteArray response);
 		void requestMeasurement();
 		void mResponse(QByteArray response);
-		void ignore(QByteArray response);@/
+		void ignore(QByteArray response);
+		void timeout();@/
 	private:@/
 		QextSerialPort *port;
 		QByteArray responseBuffer;
@@ -17614,6 +17689,7 @@ class ModbusRTUDevice : public QObject
 		QList<char *> callbackQueue;
 		quint16 calculateCRC(QByteArray data);
 		QTimer *messageDelayTimer;
+		QTimer *commTimeout;
 		int delayTime;
 		char station;
 		int decimalPosition;
@@ -17645,9 +17721,10 @@ immediately upon construction.
 
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &index)
-: QObject(NULL), messageDelayTimer(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
+: QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
 	waiting(@[false@])@/
 {@/
+qDebug() << "Initializing Modbus RTU Device";
 	QDomElement portReferenceElement = model->referenceElement(model->data(index,
 		Qt::UserRole).toString());
 	QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
@@ -17665,7 +17742,9 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &in
 	double temp = ((double)(1) / (double)(baudRate)) * 48;
 	delayTime = (int)(temp * 3000);
 	messageDelayTimer->setSingleShot(true);
+	commTimeout->setSingleShot(true);
 	connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
+	connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
 	port->setDataBits(DATA_8);
 	port->setParity((ParityType)attributes.value("parity").toInt());
 	port->setStopBits((StopBitsType)attributes.value("stop").toInt());
@@ -17828,6 +17907,7 @@ void ModbusRTUDevice::unitResponse(QByteArray response)
 	{
 		unitIsF = @[false@];
 	}
+	qDebug() << "Received unit response";
 }
 
 void ModbusRTUDevice::svlResponse(QByteArray response)
@@ -17842,6 +17922,7 @@ void ModbusRTUDevice::svlResponse(QByteArray response)
 		outputSVLower /= 10;
 	}
 	emit SVLowerChanged(outputSVLower);
+	qDebug() << "Received set value lower bound response";
 }
 
 void ModbusRTUDevice::svuResponse(QByteArray response)
@@ -17856,6 +17937,7 @@ void ModbusRTUDevice::svuResponse(QByteArray response)
 		outputSVUpper /= 10;
 	}
 	emit SVUpperChanged(outputSVUpper);
+	qDebug() << "Received set value upper bound response";
 }
 
 void ModbusRTUDevice::requestMeasurement()
@@ -17963,6 +18045,7 @@ else
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::~ModbusRTUDevice()
 {
+	commTimeout->stop();
 	messageDelayTimer->stop();
 	port->close();
 }
@@ -17982,6 +18065,10 @@ remove the message and callback information from the message queue, and start
 a timer which will trigger sending the next message after a safe amount of
 time has passed.
 
+If a response is received with an invalid CRC, we do not pass that message
+out. Instead, the message handling queues are kept as they are and the previous
+command will be sent again once the message delay timer is finished.
+
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::dataAvailable()
 {
@@ -17991,6 +18078,7 @@ void ModbusRTUDevice::dataAvailable()
 	}
 	responseBuffer.append(port->readAll());
 	@<Check Modbus RTU message size@>@;
+	commTimeout->stop();
 	if(calculateCRC(responseBuffer) == 0)
 	{
 		QObject *object = retObjQueue.at(0);
@@ -18003,12 +18091,12 @@ void ModbusRTUDevice::dataAvailable()
 		messageQueue.removeAt(0);
 		retObjQueue.removeAt(0);
 		callbackQueue.removeAt(0);
-		messageDelayTimer->start(delayTime);
 	}
 	else
 	{
 		qDebug() << "CRC failed";
 	}
+	messageDelayTimer->start(delayTime);
 	waiting = @[false@];
 	responseBuffer.clear();
 }
@@ -18123,6 +18211,7 @@ void ModbusRTUDevice::sendNextMessage()
 		message.append(check[0]);
 		message.append(check[1]);
 		port->write(message);
+		commTimeout->start(2000);
 		messageDelayTimer->start(delayTime);
 		waiting = @[true@];
 	}
@@ -18152,6 +18241,22 @@ void ModbusRTUDevice::outputSV(double value)
 void ModbusRTUDevice::ignore(QByteArray)
 {
 	return;
+}
+
+@ Sometimes a communications failure will occur in which a response to a
+command is never received. To reset communications we set a timer whenever a
+command is sent and stop that once a full response is received. If the timer
+times out, we should clear the response buffer and attempt to re-establish
+communications. Currently this timeout is hard coded at 2 seconds, however
+this should be configurable and smaller values may well be acceptable.
+
+@<ModbusRTUDevice implementation@>=
+void ModbusRTUDevice::timeout()
+{
+	qDebug() << "Communications timeout.";
+	responseBuffer.clear();
+	waiting = false;
+	messageDelayTimer->start();
 }
 
 @ This class must be exposed to the host environment.

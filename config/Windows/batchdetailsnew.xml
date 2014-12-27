@@ -8,6 +8,9 @@
         </layout>
         <webview id="view" />
     </layout>
+	<menu name="File">
+		<item id="save" shortcut="Ctrl+S">Save…</item>
+	</menu>
     <program>
         <![CDATA[
 			var window = this;
@@ -139,7 +142,11 @@
 					viewer.windowTitle = "Typica - " + pname;
 					viewer.raise();
 					viewer.activateWindow();
+					graph.updatesEnabled = false;
+					log.updatesEnabled = false;
 					input.input();
+					log.updatesEnabled = true;
+					graph.updatesEnabled = true;
 					log.newAnnotation("End", 1, lc);
 				}
 				else {
@@ -209,7 +216,7 @@
 					nameQuery.bind(":id", items[i]);
 					nameQuery.exec();
 					nameQuery.next();
-					output.writeTextElement("td", nameQuery.value(0));
+					output.writeTextElement("td", nameQuery.value(0) + " (" + items[i] + ")");
 					output.writeStartElement("td");
 					output.writeAttribute("align", "center");
 					output.writeCharacters(quantities[i]);
@@ -330,6 +337,13 @@
 				query = query.invalidate();
 				edit.enabled = true;
 			};
+			var saveMenu = findChildObject(this, 'save');
+			saveMenu.triggered.connect(function() {
+				var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
+				if(filename != "") {
+					saveFileFromDatabase(fileID, filename);
+				}
+			});
         ]]>
     </program>
 </window>

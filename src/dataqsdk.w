@@ -339,7 +339,7 @@ void DataqSdkDeviceImplementation::run()
 	sampleRate = di_sample_rate(sampleRate * channels * 40, &oversample,
 	                            &burstDivisor);
 	buffer = new qint16[(int)sampleRate];
-	di_inlist_struct inlist[16] = {{0}};
+	di_inlist_struct inlist[16] = {{0, 0, 0, 0, 0, 0, 0, 0}};
 	for(unsigned short i = 0; i < channels; i++)
 	{
 		inlist[i].chan = i;

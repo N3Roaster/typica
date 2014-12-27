@@ -6,7 +6,7 @@
 		<![CDATA[
 			this.windowTitle = "Typica - Invoice List";
 			var table = findChildObject(this, 'table');
-			table.setQuery("SELECT id, time, invoice, vendor FROM invoices ORDER BY time DESC");
+			table.setQuery("SELECT id, time, invoice, vendor, (SELECT sum(cost) FROM invoice_items WHERE invoice_id = id) AS cost FROM invoices ORDER BY time DESC");
 			table.openEntry.connect(function(arg) {
 				var info = createWindow("invoiceinfo");
 				info.setInvoiceID(arg);

@@ -100,7 +100,12 @@
 					output.writeStartElement("tr");
 					output.writeTextElement("td", String(query.value(0)).split("T")[1]);
 					output.writeTextElement("td", query.value(2));
-					output.writeTextElement("td", query.value(11));
+					output.writeStartElement("td");
+					output.writeStartElement("a");
+					output.writeAttribute("href", "typica://script/p" + query.value(11).slice(1,-1));
+					output.writeCDATA(query.value(11));
+					output.writeEndElement();
+					output.writeEndElement();
 					var unroastedWeightsList = sqlToArray(query.value(5));
 					output.writeStartElement("td");
 					for(var i = 0; i < unroastedWeightsList.length; i++)
@@ -406,6 +411,24 @@
 			refresh();
 			dateField.dateChanged.connect(function() {
 				refresh();
+			});
+			
+			view.scriptLinkClicked.connect(function(url) {
+				var arg = url.slice(1, url.length);
+				var details = createWindow("batchDetails");
+				var fakeTable = new Object;
+				fakeTable.holding = new Array(7);
+				fakeTable.data = function(r, c) {
+					return this.holding[c];
+				};
+				var query = new QSqlQuery();
+				query.exec("SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration, annotation FROM roasting_log WHERE files = '{" + arg + "}'");
+				query.next();
+				for(var i = 0; i < 8; i++) {
+					fakeTable.holding[i] = query.value(i);
+				}
+				query = query.invalidate();
+				details.loadData(fakeTable, 0);
 			});
 		]]>
 	</program>

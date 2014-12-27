@@ -10,3 +10,4 @@ typica.c
 *.scn
 *.toc
 Typica-build*
+*.o

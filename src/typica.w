@@ -12719,13 +12719,12 @@ build.
 @<The main program@>=
 int main(int argc, char **argv)@/
 {@/
-	@<Set up logging@>@;
 	int *c = &argc;
 	Application app(*c, argv);
+	QSettings settings;
+	@<Set up logging@>@;
 	@<Set up icons@>@;
 	@<Set up fonts@>@;
-
-	QSettings settings;
 
 	@<Register device configuration widgets@>@;
 	@<Prepare the database connection@>@;
@@ -12739,14 +12738,15 @@ int main(int argc, char **argv)@/
 	return retval;@/
 }
 
-@ Proof of concept for the introduction of logging warnings to a file. This is
-primarily for the benefit of people using Windows without an attached debugger.
-Before this is merged to development it should allow the person using Typica
-more control over if this should be enabled (by default it should not) and
-where the output is sent.
+@ \pn{} 1.6.3 introduces optional logging of diagnostic messages to a file. By
+default this feature is not enabled. A sensible future refinement to this would
+allow specification of where this file should be created.
 
 @<Set up logging@>=
-qInstallMsgHandler(messageFileOutput);
+if(settings.value("settings/advanced/logging", false).toBool())
+{
+	qInstallMsgHandler(messageFileOutput);
+}
 
 @ This requires that we have our messageFileOutput function.
 
@@ -12761,7 +12761,7 @@ void messageFileOutput(QtMsgType type, const char *msg)
 	QFile output("Typica-"+QDate::currentDate().toString("yyyy-MM-dd")+".log");
 	output.open(QIODevice::WriteOnly | QIODevice::Append);
 	QTextStream outstream(&output);
-	outstream << msg << "\n";
+	outstream << msg << "\r\n";
 }
 
 @ \pn{} 1.4 introduces the ability to use icons in certain interface elements.

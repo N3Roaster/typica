@@ -17409,7 +17409,8 @@ class ModbusRTUDevice : public QObject
 		void svuResponse(QByteArray response);
 		void requestMeasurement();
 		void mResponse(QByteArray response);
-		void ignore(QByteArray response);@/
+		void ignore(QByteArray response);
+		void timeout();@/
 	private:@/
 		QextSerialPort *port;
 		QByteArray responseBuffer;
@@ -17418,6 +17419,7 @@ class ModbusRTUDevice : public QObject
 		QList<char *> callbackQueue;
 		quint16 calculateCRC(QByteArray data);
 		QTimer *messageDelayTimer;
+		QTimer *commTimeout;
 		int delayTime;
 		char station;
 		int decimalPosition;
@@ -17449,9 +17451,10 @@ immediately upon construction.
 
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &index)
-: QObject(NULL), messageDelayTimer(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
+: QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
 	waiting(@[false@])@/
 {@/
+qDebug() << "Initializing Modbus RTU Device";
 	QDomElement portReferenceElement = model->referenceElement(model->data(index,
 		Qt::UserRole).toString());
 	QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
@@ -17469,7 +17472,9 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &in
 	double temp = ((double)(1) / (double)(baudRate)) * 48;
 	delayTime = (int)(temp * 3000);
 	messageDelayTimer->setSingleShot(true);
+	commTimeout->setSingleShot(true);
 	connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
+	connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
 	port->setDataBits(DATA_8);
 	port->setParity((ParityType)attributes.value("parity").toInt());
 	port->setStopBits((StopBitsType)attributes.value("stop").toInt());
@@ -17632,6 +17637,7 @@ void ModbusRTUDevice::unitResponse(QByteArray response)
 	{
 		unitIsF = @[false@];
 	}
+	qDebug() << "Received unit response";
 }
 
 void ModbusRTUDevice::svlResponse(QByteArray response)
@@ -17646,6 +17652,7 @@ void ModbusRTUDevice::svlResponse(QByteArray response)
 		outputSVLower /= 10;
 	}
 	emit SVLowerChanged(outputSVLower);
+	qDebug() << "Received set value lower bound response";
 }
 
 void ModbusRTUDevice::svuResponse(QByteArray response)
@@ -17660,6 +17667,7 @@ void ModbusRTUDevice::svuResponse(QByteArray response)
 		outputSVUpper /= 10;
 	}
 	emit SVUpperChanged(outputSVUpper);
+	qDebug() << "Received set value upper bound response";
 }
 
 void ModbusRTUDevice::requestMeasurement()
@@ -17767,6 +17775,7 @@ else
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::~ModbusRTUDevice()
 {
+	commTimeout->stop();
 	messageDelayTimer->stop();
 	port->close();
 }
@@ -17786,6 +17795,10 @@ remove the message and callback information from the message queue, and start
 a timer which will trigger sending the next message after a safe amount of
 time has passed.
 
+If a response is received with an invalid CRC, we do not pass that message
+out. Instead, the message handling queues are kept as they are and the previous
+command will be sent again once the message delay timer is finished.
+
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::dataAvailable()
 {
@@ -17795,6 +17808,7 @@ void ModbusRTUDevice::dataAvailable()
 	}
 	responseBuffer.append(port->readAll());
 	@<Check Modbus RTU message size@>@;
+	commTimeout->stop();
 	if(calculateCRC(responseBuffer) == 0)
 	{
 		QObject *object = retObjQueue.at(0);
@@ -17807,12 +17821,12 @@ void ModbusRTUDevice::dataAvailable()
 		messageQueue.removeAt(0);
 		retObjQueue.removeAt(0);
 		callbackQueue.removeAt(0);
-		messageDelayTimer->start(delayTime);
 	}
 	else
 	{
 		qDebug() << "CRC failed";
 	}
+	messageDelayTimer->start(delayTime);
 	waiting = @[false@];
 	responseBuffer.clear();
 }
@@ -17927,6 +17941,7 @@ void ModbusRTUDevice::sendNextMessage()
 		message.append(check[0]);
 		message.append(check[1]);
 		port->write(message);
+		commTimeout->start(2000);
 		messageDelayTimer->start(delayTime);
 		waiting = @[true@];
 	}
@@ -17956,6 +17971,22 @@ void ModbusRTUDevice::outputSV(double value)
 void ModbusRTUDevice::ignore(QByteArray)
 {
 	return;
+}
+
+@ Sometimes a communications failure will occur in which a response to a
+command is never received. To reset communications we set a timer whenever a
+command is sent and stop that once a full response is received. If the timer
+times out, we should clear the response buffer and attempt to re-establish
+communications. Currently this timeout is hard coded at 2 seconds, however
+this should be configurable and smaller values may well be acceptable.
+
+@<ModbusRTUDevice implementation@>=
+void ModbusRTUDevice::timeout()
+{
+	qDebug() << "Communications timeout.";
+	responseBuffer.clear();
+	waiting = false;
+	messageDelayTimer->start();
 }
 
 @ This class must be exposed to the host environment.

@@ -51,7 +51,7 @@
 		var currentProfileID;
 		setCurrent.clicked.connect(function() {
 			var query = new QSqlQuery();
-			query.prepare("INSERT INTO item_files VALUES('now', :coffee, :profile)");
+			query.prepare("INSERT INTO item_files (time, item, files) VALUES('now', :coffee, :profile)");
 			query.bind(":coffee", coffeelist.currentData());
 			query.bind(":profile", "{" + currentProfileID + "}");
 			query.exec();

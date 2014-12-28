@@ -203,7 +203,7 @@
             var dateField = findChildObject(this, 'date');
             submitButton.clicked.connect(function() {
                 var query = new QSqlQuery;
-                var q = "INSERT INTO invoices VALUES (default, :invoice, :vendor, :date) RETURNING id";
+                var q = "INSERT INTO invoices (id, invoice, vendor, time) VALUES (default, :invoice, :vendor, :date) RETURNING id";
                 query.prepare(q);
                 query.bind(":invoice", invoiceField.text);
                 query.bind(":vendor", vendorField.currentText);
@@ -246,11 +246,11 @@
                     }
                     if(decafSelection.checked)
                     {
-                        q = "INSERT INTO decaf_coffees VALUES (default, :name, :reference, :unit, 0, 'Coffee: Unroasted', :origin, :region, :producer, :grade, :milling, :drying, :decafMethod) RETURNING id";
+                        q = "INSERT INTO decaf_coffees (id, name, reference, unit, quantity, category, origin, region, producer, grade, milling, drying, decaf_method) VALUES (default, :name, :reference, :unit, 0, 'Coffee: Unroasted', :origin, :region, :producer, :grade, :milling, :drying, :decafMethod) RETURNING id";
                     }
                     else
                     {
-                        q = "INSERT INTO coffees VALUES (default, :name, :reference, :unit, 0, 'Coffee: Unroasted', :origin, :region, :producer, :grade, :milling, :drying) RETURNING id";
+                        q = "INSERT INTO coffees (id, name, reference, unit, quantity, category, origin, region, producer, grade, milling, drying) VALUES (default, :name, :reference, :unit, 0, 'Coffee: Unroasted', :origin, :region, :producer, :grade, :milling, :drying) RETURNING id";
                     }
                     query.prepare(q);
                     query.bind(":name", nameEntry.currentText);
@@ -317,7 +317,7 @@
                     query.exec();
                     query.next();
                     var item_id = query.value(0);
-                    q = "INSERT INTO purchase VALUES(:time, :item, :quantity, :cost, :vendor)";
+                    q = "INSERT INTO purchase (time, item, quantity, cost, vendor) VALUES(:time, :item, :quantity, :cost, :vendor)";
                     query.prepare(q);
                     query.bind(":time", dateField.date);
                     query.bind(":item", item_id);
@@ -333,14 +333,14 @@
                     }
                     query.bind(":vendor", vendorField.currentText);
                     query.exec();
-                    q = "INSERT INTO lb_bag_conversion VALUES(:item, :conversion)";
+                    q = "INSERT INTO lb_bag_conversion (item, conversion) VALUES(:item, :conversion)";
                     query.prepare(q);
                     query.bind(":item", item_id);
                     var bagsEntry = findChildObject(current, 'bags');
                     var conversion = convertToPounds(parseFloat(quantityEntry.text), unitEntry.currentText) / Number(bagsEntry.text);
                     query.bind(":conversion", conversion);
                     query.exec();
-                    q = "INSERT INTO invoice_items VALUES(:id, 'PURCHASE', :item, :description, :cost)";
+                    q = "INSERT INTO invoice_items (invoice_id, record_type, item_id, description, cost) VALUES(:id, 'PURCHASE', :item, :description, :cost)";
                     query.prepare(q);
                     query.bind(":id", invoiceNumber);
                     query.bind(":item", item_id);
@@ -356,7 +356,7 @@
                     query.exec();
                     var certifications = findChildObject(current, 'certdisplay');
                     var certlist = certifications.text.split(",");
-                    q = "INSERT INTO certifications VALUES (:item, :certification)";
+                    q = "INSERT INTO certifications (item, certification) VALUES (:item, :certification)";
                     query.prepare(q);
                     query.bind(":item", item_id);
                     for(var j = 0; j < certlist.length; j++)
@@ -366,7 +366,7 @@
                     }
                 }
                 var descriptionArray = sqlToArray(feesTable.columnArray(0, 0));
-                var q = "INSERT INTO invoice_items VALUES (:id, 'FEE', NULL, :description, :cost)";
+                var q = "INSERT INTO invoice_items (invoice_id, record_type, item_id, description, cost) VALUES (:id, 'FEE', NULL, :description, :cost)";
                 query.prepare(q);
                 query.bind(":id", invoiceNumber);
                 if(descriptionArray.length > 0)

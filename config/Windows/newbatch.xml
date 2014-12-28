@@ -324,13 +324,13 @@
 				checkQuery.exec("SELECT 1 FROM machine WHERE id = " + selectedRoasterID);
 				if(!checkQuery.next())
 				{
-					checkQuery.prepare("INSERT INTO machine VALUES(:id, :name)");
+					checkQuery.prepare("INSERT INTO machine (id, name) VALUES(:id, :name)");
 					checkQuery.bind(":id", selectedRoasterID);
 					checkQuery.bind(":name", selectedRoasterName);
 					checkQuery.exec();
 				}
 				checkQuery = checkQuery.invalidate();
-				var q = "INSERT INTO files VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
+				var q = "INSERT INTO files (id, name, type, note, file) VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
 				query = new QSqlQuery();
 				query.prepare(q);
 				query.bind(":name", timefield.text + " " + roasted.currentText);
@@ -340,7 +340,7 @@
 				var fileno = query.value(0);
 				var file = new QFile(batch.tempData);
 				file.remove();
-				var q2 = "INSERT INTO roasting_log VALUES(:time, ";
+				var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, ";
 				q2 = q2 + table.columnArray(0, 32);
 				q2 = q2 + ", ";
 				for(var i = 0; table.data(i, 1, 0).value != ""; i++)
@@ -368,7 +368,7 @@
 				query2.exec();
                 query2 = query2.invalidate();
 				if(target.checked) {
-					var q3 = "INSERT INTO item_files VALUES(:time, :item, '{";
+					var q3 = "INSERT INTO item_files (time, item, files) VALUES(:time, :item, '{";
 					q3 = q3 + fileno;
 					q3 = q3 + "}')";
 					query.prepare(q3);

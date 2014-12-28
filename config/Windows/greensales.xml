@@ -53,7 +53,7 @@
 			var submit = findChildObject(this, 'submit');
 			submit.clicked.connect(function() {
 				var query = new QSqlQuery();
-				query.prepare("INSERT INTO sale VALUES(:time, :item, :quantity, :customer)");
+				query.prepare("INSERT INTO sale (time, item, quantity, customer) VALUES(:time, :item, :quantity, :customer)");
 				query.bind(":time", dateField.text);
 				if(customerField.text == "") {
 					query.bind(":customer", null);

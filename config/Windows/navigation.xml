@@ -210,8 +210,6 @@ type="push" />
 			query.exec("CREATE VIEW short_log AS SELECT roasting_log.\"time\", (SELECT items.name FROM items WHERE (items.id = roasting_log.roasted_id)) AS name, roasting_log.unroasted_total_quantity, roasting_log.roasted_quantity, ((((roasting_log.unroasted_total_quantity - roasting_log.roasted_quantity) / roasting_log.unroasted_total_quantity) * (100)::numeric))::numeric(12,2) AS weight_loss, roasting_log.duration FROM roasting_log ORDER BY roasting_log.\"time\"");
 			query.exec("CREATE FUNCTION add_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = quantity + NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE FUNCTION bags_in_stock(bigint) RETURNS numeric AS $_$SELECT quantity / (SELECT conversion FROM lb_bag_conversion WHERE item = id) FROM items WHERE id = $1;$_$ LANGUAGE sql IMMUTABLE STRICT");
-			query.exec("CREATE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
-			query.exec("CREATE FUNCTION log_make_update() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity <> OLD.roasted_quantity AND NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN WHILE i <= u LOOP INSERT INTO use VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE FUNCTION replace_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE FUNCTION subtract_inventory() RETURNS trigger AS $$ BEGIN UPDATE items SET quantity = quantity - NEW.quantity WHERE id = NEW.item; RETURN NEW; END; $$ LANGUAGE plpgsql");
@@ -236,7 +234,7 @@ type="push" />
 			query.exec("CREATE TRIGGER subtract_inventory_trigger AFTER INSERT ON use FOR EACH ROW EXECUTE PROCEDURE subtract_inventory()");
 			query.exec("ALTER TABLE ONLY item_files ADD CONSTRAINT item_files_item_fkey FOREIGN KEY (item) REFERENCES items(id)");
 			query.exec("ALTER TABLE ONLY transactions ADD CONSTRAINT transactions_item_fkey FOREIGN KEY (item) REFERENCES items(id)");
-			query.exec("INSERT INTO TypicaFeatures VALUES('base-features', TRUE, 1)");
+			query.exec("INSERT INTO TypicaFeatures (feature, enabled, version) VALUES('base-features', TRUE, 1)");
 			query = query.invalidate();
 		};
 		
@@ -244,10 +242,9 @@ type="push" />
 		   Typica 1.6 and later. */
 		var DBCreateSampleRoasting = function() {
 			var query = new QSqlQuery;
-			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE TABLE IF NOT EXISTS item_attributes (id bigint PRIMARY KEY NOT NULL, name text NOT NULL)");
 			query.exec("CREATE TABLE IF NOT EXISTS coffee_sample_items(arrival timestamp without time zone, vendor text, attribute_ids bigint[], attribute_values text[], item_id bigint) INHERITS (items)");
-			query.exec("INSERT INTO TypicaFeatures VALUES('sample-roasting', TRUE, 1)");
+			query.exec("INSERT INTO TypicaFeatures (feature, enabled, version) VALUES('sample-roasting', TRUE, 1)");
 			query = query.invalidate();
 		};
 		
@@ -288,6 +285,15 @@ type="push" />
 			query = query.invalidate();
 		};
 		
+		/* Update trigger functions to make column names explicit */
+		var DBUpdateTriggers = function() {
+			var query = new QSqlQuery;
+			query.exec("CREATE OR REPLACE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE OR REPLACE FUNCTION log_make_update() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity <> OLD.roasted_quantity AND NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use (time, item, quantity) VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("UPDATE TypicaFeatures SET version = 4 WHERE feature = 'base-features'");
+		};
+		
 		query = new QSqlQuery();
 		/* A table keeps track of database versioning information. This table is created
 		   if required. */
@@ -310,6 +316,10 @@ type="push" />
 			if(query.value(2) < 3)
 			{
 				DBUpdateNotifications();
+			}
+			if(query.value(2) < 4)
+			{
+				DBUpdateTriggers();
 			}
 		}
 		else

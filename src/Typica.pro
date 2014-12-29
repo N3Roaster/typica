@@ -24,8 +24,7 @@ HEADERS += moc_typica.cpp \
     webelement.h \
     scale.h \
     draglabel.h \
-    daterangeselector.h \
-    feedback.h
+    daterangeselector.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
     abouttypica.cpp \
@@ -34,8 +33,7 @@ SOURCES += typica.cpp \
     webelement.cpp \
     scale.cpp \
     draglabel.cpp \
-    daterangeselector.cpp \
-    feedback.cpp
+    daterangeselector.cpp
 
 RESOURCES += \
     resources.qrc

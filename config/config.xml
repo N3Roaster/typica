@@ -34,6 +34,7 @@
 	<include src="Windows/editbatchdetails.xml" />
 	<include src="Windows/newsamplebatch.xml" />
 	<program>
+		<![CDATA[
 		Windows = new Object();
 		var loggingWindow;
 		var currentBatchInfo;
@@ -43,5 +44,6 @@
 		var azero;
 		var bzero;
 		navwindow.windowTitle = "Typica - Choose Your Path";
+		]]>
 	</program>
 </application>

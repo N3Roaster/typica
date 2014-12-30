@@ -2245,6 +2245,8 @@ QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_toInt8(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_toInt16(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QByteArray_toInt32(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toFloat(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toDouble(QScriptContext *context, QScriptEngine *engine);
 
 @ First, we provide some functionns for moving array data across the
 language barrier.
@@ -2300,6 +2302,8 @@ void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("toInt8", engine->newFunction(QByteArray_toInt8));
 	value.setProperty("toInt16", engine->newFunction(QByteArray_toInt16));
 	value.setProperty("toInt32", engine->newFunction(QByteArray_toInt32));
+	value.setProperty("toFloat", engine->newFunction(QByteArray_toFloat));
+	value.setProperty("toDouble", engine->newFunction(QByteArray_toDouble));
 }
 
 @ Perhaps the easiest way to deal with fixed byte strings for serial
@@ -2459,6 +2463,39 @@ QScriptValue QByteArray_toInt32(QScriptContext *context, QScriptEngine *)
 	return QScriptValue(value);
 }
 
+@ Similar methods are provided for converting bytes to a |float| or |double|.
+Note that the return value from |toFloat| will, in the host environment, be
+represented as a |double|.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_toFloat(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	float value = 0.0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	bytes[2] = self[2];
+	bytes[3] = self[3];
+	return QScriptValue(value);
+}
+
+QScriptValue QByteArray_toDouble(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	double value = 0.0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	bytes[2] = self[2];
+	bytes[3] = self[3];
+	bytes[4] = self[4];
+	bytes[5] = self[5];
+	bytes[6] = self[6];
+	bytes[7] = self[7];
+	return QScriptValue(value);
+}
+
 @ Some protocols require manipulating larger than 8 bit numbers as a sequence
 of bytes. To facilitate this, methods are provided to construct a |QByteArray|
 from different sized numbers. 8 bit numbers are provided for uniformity.
@@ -2467,6 +2504,8 @@ from different sized numbers. 8 bit numbers are provided for uniformity.
 QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine);
 QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine);
 QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromFloat(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromDouble(QScriptContext *context, QScriptEngine *engine);
 
 @ These are globally available.
 
@@ -2474,9 +2513,14 @@ QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine);
 engine->globalObject().setProperty("bytesFromInt8", engine->newFunction(bytesFromInt8));
 engine->globalObject().setProperty("bytesFromInt16", engine->newFunction(bytesFromInt16));
 engine->globalObject().setProperty("bytesFromInt32", engine->newFunction(bytesFromInt32));
+engine->globalObject().setProperty("bytesFromFloat", engine->newFunction(bytesFromFloat));
+engine->globalObject().setProperty("bytesFromDouble", engine->newFunction(bytesFromDouble));
 
-@ The methods all work by casting the appropriate integer type to a |char *|
-and copying the bytes to a new |QByteArray|.
+@ The methods all work by casting the appropriate numeric type to a |char *|
+and copying the bytes to a new |QByteArray|. Note that the ECMA-262 standard
+only has one type of number and this is an IEEE 754 binary64 double precision
+floating point number. Functions other than |bytesFromDouble| will be cast
+from |double|.
 
 @<Functions for scripting@>=
 QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine)
@@ -2514,6 +2558,40 @@ QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine)
 	retval[1] = bytes[1];
 	retval[2] = bytes[2];
 	retval[3] = bytes[3];
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
+}
+
+QScriptValue bytesFromFloat(QScriptContext *context, QScriptEngine *engine)
+{
+	float value = (float)(argument<double>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(4);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	retval[2] = bytes[2];
+	retval[3] = bytes[3];
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
+}
+
+QScriptValue bytesFromDouble(QScriptContext *context, QScriptEngine *engine)
+{
+	double value = (double)(argument<double>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(8);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	retval[2] = bytes[2];
+	retval[3] = bytes[3];
+	retval[4] = bytes[4];
+	retval[5] = bytes[5];
+	retval[6] = bytes[6];
+	retval[7] = bytes[7];
 	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
 	setQByteArrayProperties(v, engine);
 	return v;

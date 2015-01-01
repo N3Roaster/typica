@@ -23,7 +23,7 @@
 \def\pn{Typica}
 \def\filebase{typica}
 \def\version{1.6.2 \number\year-\number\month-\number\day}
-\def\years{2007--2014}
+\def\years{2007--2015}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip
@@ -18614,6 +18614,8 @@ inserter = new NodeInserter(tr("Modbus RTU Device"), tr("Modbus RTU Device"), "m
 topLevelNodeInserters.append(inserter);
 
 @i unsupportedserial.w
+
+@i phidgets.w
 
 @* Configuration widget for a calibrated data series.
 

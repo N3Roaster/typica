@@ -19,7 +19,7 @@ BEGIN
 			VALUE "FileDescription", "Typica 1.6.3\0"
 			VALUE "FileVersion", "1.6.3\0"
 			VALUE "InternalName", "Typica\0"
-			VALUE "LegalCopyright", "Copyright 2007-2014 Neal Evan Wilson\0"
+			VALUE "LegalCopyright", "Copyright 2007-2015 Neal Evan Wilson\0"
 			VALUE "OriginalFilename", "Typica.exe\0"
 			VALUE "ProductName", "Typica\0"
 			VALUE "ProductVersion", "1.6.3\0"

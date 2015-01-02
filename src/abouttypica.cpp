@@ -1,9 +1,9 @@
-/*249:*/
+/*260:*/
 #line 33 "./abouttypica.w"
 
 #include "abouttypica.h"
 
-/*250:*/
+/*261:*/
 #line 42 "./abouttypica.w"
 
 AboutTypica::AboutTypica():QMainWindow(NULL)
@@ -17,10 +17,10 @@ aboutFile.close();
 setCentralWidget(banner);
 }
 
-#line 5992 "./typica.w"
+#line 6340 "./typica.w"
 
-/*:250*/
+/*:261*/
 #line 36 "./abouttypica.w"
 
 
-/*:249*/
+/*:260*/

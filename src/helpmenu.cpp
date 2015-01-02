@@ -1,12 +1,11 @@
-/*182:*/
-#line 36 "./helpmenu.w"
+/*194:*/
+#line 35 "./helpmenu.w"
 
 #include "helpmenu.h"
 #include "abouttypica.h"
-#include "feedback.h"
 
-/*183:*/
-#line 49 "./helpmenu.w"
+/*195:*/
+#line 47 "./helpmenu.w"
 
 HelpMenu::HelpMenu():QMenu()
 {
@@ -16,14 +15,10 @@ QAction*aboutTypicaAction= new QAction(tr("About Typica"),this);
 aboutTypicaAction->setObjectName("aboutTypicaAction");
 addAction(aboutTypicaAction);
 connect(aboutTypicaAction,SIGNAL(triggered()),this,SLOT(displayAboutTypica()));
-QAction*sendFeedbackAction= new QAction(tr("Send Feedback"),this);
-sendFeedbackAction->setObjectName("sendFeedback");
-addAction(sendFeedbackAction);
-connect(sendFeedbackAction,SIGNAL(triggered()),this,SLOT(displayFeedbackWizard()));
 }
 
-/*:183*//*184:*/
-#line 67 "./helpmenu.w"
+/*:195*//*196:*/
+#line 61 "./helpmenu.w"
 
 void HelpMenu::displayAboutTypica()
 {
@@ -31,20 +26,11 @@ AboutTypica*aboutBox= new AboutTypica;
 aboutBox->show();
 }
 
-/*:184*//*185:*/
-#line 76 "./helpmenu.w"
-
-void HelpMenu::displayFeedbackWizard()
-{
-FeedbackWizard*window= new FeedbackWizard;
-window->show();
-}
-
-#line 4266 "./typica.w"
+#line 4614 "./typica.w"
 
 #line 1 "./feedback.w"
-/*:185*/
-#line 41 "./helpmenu.w"
+/*:196*/
+#line 39 "./helpmenu.w"
 
 
-/*:182*/
+/*:194*/

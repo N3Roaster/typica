@@ -1,4 +1,4 @@
-/*523:*/
+/*534:*/
 #line 14 "./webview.w"
 
 #include <QWebView> 
@@ -34,4 +34,4 @@ void linkDelegate(const QUrl&url);
 
 #endif
 
-/*:523*/
+/*:534*/

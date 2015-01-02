@@ -1,4 +1,4 @@
-/*958:*/
+/*972:*/
 #line 33 "./scales.w"
 
 #include "draglabel.h"
@@ -26,4 +26,4 @@ drag->exec();
 }
 }
 
-/*:958*/
+/*:972*/

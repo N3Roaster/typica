@@ -1,4 +1,4 @@
-/*639:*/
+/*650:*/
 #line 68 "./daterangeselector.w"
 
 #include <QCalendarWidget> 
@@ -11,7 +11,7 @@
 
 #include "daterangeselector.h"
 
-/*641:*/
+/*652:*/
 #line 111 "./daterangeselector.w"
 
 CustomDateRangePopup::CustomDateRangePopup(QWidget*parent):
@@ -55,7 +55,7 @@ outerLayout->addLayout(buttonLayout);
 setLayout(outerLayout);
 }
 
-/*:641*//*642:*/
+/*:652*//*653:*/
 #line 159 "./daterangeselector.w"
 
 void CustomDateRangePopup::hideEvent(QHideEvent*)
@@ -63,7 +63,7 @@ void CustomDateRangePopup::hideEvent(QHideEvent*)
 emit hidingPopup();
 }
 
-/*:642*//*643:*/
+/*:653*//*654:*/
 #line 168 "./daterangeselector.w"
 
 void CustomDateRangePopup::applyRange()
@@ -78,7 +78,7 @@ endDateSelector->selectedDate().toString(Qt::ISODate)));
 hide();
 }
 
-/*:643*//*644:*/
+/*:654*//*655:*/
 #line 185 "./daterangeselector.w"
 
 void CustomDateRangePopup::validateRange()
@@ -93,10 +93,10 @@ applyButton->setEnabled(true);
 }
 }
 
-/*:644*/
+/*:655*/
 #line 79 "./daterangeselector.w"
 
-/*645:*/
+/*656:*/
 #line 203 "./daterangeselector.w"
 
 DateRangeSelector::DateRangeSelector(QWidget*parent):
@@ -108,7 +108,7 @@ connect(quickSelector,SIGNAL(currentIndexChanged(int)),this,SLOT(updateRange(int
 QDate currentDate= QDate::currentDate();
 
 QHBoxLayout*layout= new QHBoxLayout;
-/*646:*/
+/*657:*/
 #line 232 "./daterangeselector.w"
 
 quickSelector->addItem("Yesterday",QVariant(QStringList()<<
@@ -188,7 +188,7 @@ quickSelector->insertSeparator(quickSelector->count());
 quickSelector->addItem("Lifetime");
 quickSelector->addItem("Custom");
 
-/*:646*/
+/*:657*/
 #line 213 "./daterangeselector.w"
 
 QToolButton*customButton= new QToolButton;
@@ -201,7 +201,7 @@ setLayout(layout);
 connect(customButton,SIGNAL(clicked()),this,SLOT(toggleCustom()));
 }
 
-/*:645*//*647:*/
+/*:656*//*658:*/
 #line 315 "./daterangeselector.w"
 
 void DateRangeSelector::updateRange(int index)
@@ -217,7 +217,7 @@ emit rangeUpdated(quickSelector->itemData(quickSelector->currentIndex()));
 }
 }
 
-/*:647*//*648:*/
+/*:658*//*659:*/
 #line 332 "./daterangeselector.w"
 
 void DateRangeSelector::popupHidden()
@@ -227,7 +227,7 @@ customRangeSelector= NULL;
 quickSelector->setCurrentIndex(lastIndex);
 }
 
-/*:648*//*649:*/
+/*:659*//*660:*/
 #line 343 "./daterangeselector.w"
 
 void DateRangeSelector::setCustomRange(QVariant range)
@@ -238,7 +238,7 @@ lastIndex= quickSelector->count()-1;
 quickSelector->setCurrentIndex(lastIndex);
 }
 
-/*:649*//*650:*/
+/*:660*//*661:*/
 #line 358 "./daterangeselector.w"
 
 void DateRangeSelector::toggleCustom()
@@ -279,7 +279,7 @@ customRangeSelector= NULL;
 }
 }
 
-/*:650*//*651:*/
+/*:661*//*662:*/
 #line 400 "./daterangeselector.w"
 
 QVariant DateRangeSelector::currentRange()
@@ -287,7 +287,7 @@ QVariant DateRangeSelector::currentRange()
 return quickSelector->itemData(lastIndex);
 }
 
-/*:651*//*652:*/
+/*:662*//*663:*/
 #line 408 "./daterangeselector.w"
 
 void DateRangeSelector::setCurrentIndex(int index)
@@ -295,7 +295,7 @@ void DateRangeSelector::setCurrentIndex(int index)
 quickSelector->setCurrentIndex(index);
 }
 
-/*:652*//*653:*/
+/*:663*//*664:*/
 #line 423 "./daterangeselector.w"
 
 void DateRangeSelector::setLifetimeRange(QString startDate,QString endDate)
@@ -304,7 +304,7 @@ quickSelector->setItemData(quickSelector->count()-2,
 QVariant(QStringList()<<startDate<<endDate));
 }
 
-/*:653*//*654:*/
+/*:664*//*665:*/
 #line 433 "./daterangeselector.w"
 
 void DateRangeSelector::removeIndex(int index)
@@ -312,10 +312,10 @@ void DateRangeSelector::removeIndex(int index)
 quickSelector->removeItem(index);
 }
 
-/*:654*/
+/*:665*/
 #line 80 "./daterangeselector.w"
 
 
 #include "moc_daterangeselector.cpp"
 
-/*:639*/
+/*:650*/

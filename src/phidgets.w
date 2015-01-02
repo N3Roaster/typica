@@ -198,7 +198,7 @@ if(phidgetsCheck.load())
 }
 else
 {
-	phidgetsCheck.setFileName("Phidget21.framework/phidget21");
+	phidgetsCheck.setFileName("Phidget21.framework/Phidget21");
 	if(phidgetsCheck.load())
 	{
 		inserter = new NodeInserter(tr("Phidgets 1048"), tr("Phidgets 1048"),
@@ -366,7 +366,7 @@ void PhidgetsTemperatureSensor::start()
 {
 	if(!driver.load())
 	{
-		driver.setFileName("Phidget21.framework/phidget21");
+		driver.setFileName("Phidget21.framework/Phidget21");
 		if(!driver.load())
 		{
 			QMessageBox::critical(NULL, tr("Typica: Driver not found"),

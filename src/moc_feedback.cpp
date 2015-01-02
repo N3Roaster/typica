@@ -22,7 +22,7 @@ static const uint qt_meta_data_FeedbackWizard[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       1,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -31,18 +31,12 @@ static const uint qt_meta_data_FeedbackWizard[] = {
 
  // slots: signature, parameters, type, tag, flags
       22,   16,   15,   15, 0x08,
-      50,   15,   15,   15, 0x08,
-      70,   15,   15,   15, 0x08,
-      91,   15,   15,   15, 0x08,
-     107,   15,   15,   15, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_FeedbackWizard[] = {
     "FeedbackWizard\0\0index\0setCommentInstructions(int)\0"
-    "updateMessageText()\0printButtonPressed()\0"
-    "printAccepted()\0copyButtonPressed()\0"
 };
 
 void FeedbackWizard::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -52,10 +46,6 @@ void FeedbackWizard::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         FeedbackWizard *_t = static_cast<FeedbackWizard *>(_o);
         switch (_id) {
         case 0: _t->setCommentInstructions((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 1: _t->updateMessageText(); break;
-        case 2: _t->printButtonPressed(); break;
-        case 3: _t->printAccepted(); break;
-        case 4: _t->copyButtonPressed(); break;
         default: ;
         }
     }
@@ -93,9 +83,9 @@ int FeedbackWizard::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 1)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 1;
     }
     return _id;
 }

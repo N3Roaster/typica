@@ -1,4 +1,4 @@
-/*490:*/
+/*523:*/
 #line 14 "./webview.w"
 
 #include <QWebView> 
@@ -9,6 +9,7 @@
 #include <QPrintDialog> 
 #include <QWebFrame> 
 #include <QWebElement> 
+#include <QSettings> 
 
 #ifndef TypicaWebViewHeader
 #define TypicaWebViewHeader
@@ -33,4 +34,4 @@ void linkDelegate(const QUrl&url);
 
 #endif
 
-/*:490*/
+/*:523*/

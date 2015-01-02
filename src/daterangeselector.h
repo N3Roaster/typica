@@ -1,13 +1,39 @@
-/*602:*/
+/*638:*/
 #line 30 "./daterangeselector.w"
 
 
 #include <QComboBox> 
+#include <QPushButton> 
+#include <QCalendarWidget> 
 
 #ifndef TypicaDateRangeSelectorHeader
 #define TypicaDateRangeSelectorHeader
 
-class CustomDateRangePopup;
+/*640:*/
+#line 87 "./daterangeselector.w"
+
+class CustomDateRangePopup:public QWidget
+{
+Q_OBJECT
+public:
+CustomDateRangePopup(QWidget*parent= NULL);
+public slots:
+void applyRange();
+signals:
+void hidingPopup();
+protected:
+virtual void hideEvent(QHideEvent*event);
+private slots:
+void validateRange();
+private:
+QCalendarWidget*startDateSelector;
+QCalendarWidget*endDateSelector;
+QPushButton*applyButton;
+};
+
+/*:640*/
+#line 39 "./daterangeselector.w"
+
 
 class DateRangeSelector:public QWidget
 {
@@ -34,4 +60,4 @@ int lastIndex;
 
 #endif
 
-/*:602*/
+/*:638*/

@@ -1,4 +1,4 @@
-/*162:*/
+/*181:*/
 #line 16 "./helpmenu.w"
 
 #include <QMenu> 
@@ -13,8 +13,9 @@ public:
 HelpMenu();
 public slots:
 void displayAboutTypica();
+void displayFeedbackWizard();
 };
 
 #endif
 
-/*:162*/
+/*:181*/

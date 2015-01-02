@@ -347,10 +347,17 @@ required. This approach also means the associated header does not need to
 exist at compile time.
 
 @<Phidgets 1048 function pointers@>=
+#ifdef _WIN32
+typedef int (__stdcall *PhidgetHandleOnly)(void *);
+typedef int (__stdcall *PhidgetHandleInt)(void *, int);
+typedef int (__stdcall *PhidgetHandleIntInt)(void *, int, int);
+typedef int (__stdcall *PhidgetHandleIntDoubleOut)(void *, int, double*);
+#else
 typedef int (*PhidgetHandleOnly)(void *);
 typedef int (*PhidgetHandleInt)(void *, int);
 typedef int (*PhidgetHandleIntInt)(void *, int, int);
 typedef int (*PhidgetHandleIntDoubleOut)(void *, int, double*);
+#endif
 PhidgetHandleOnly createDevice;
 PhidgetHandleInt openDevice;
 PhidgetHandleInt waitForOpen;

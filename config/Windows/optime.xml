@@ -63,7 +63,7 @@
 			});
 			submitbutton.clicked.connect(function() {
 				query = new QSqlQuery();
-				var q = "INSERT INTO operational_time VALUES (:machine, :start, :stop, :duration)";
+				var q = "INSERT INTO operational_time (machine, start_time, end_time, duration) VALUES (:machine, :start, :stop, :duration)";
 				query.prepare(q);
 				query.bind(":machine", machine.currentData());
 				query.bind(":start", startline.text);

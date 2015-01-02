@@ -227,7 +227,11 @@
 						});
 						navigationwindow.loggingWindow.raise();
 						navigationwindow.loggingWindow.activateWindow();
+						log.updatesEnabled = false;
+						graph.updatesEnabled = false;
 						input.input();
+						graph.updatesEnabled = true;
+						log.updatesEnabled = true;
 						log.newAnnotation("End", 1, lc);
 					}
 				}
@@ -248,7 +252,7 @@
 			var target = findChildObject(this, 'target');
 			submit.clicked.connect(function() {
 				query = new QSqlQuery();
-				query.prepare("INSERT INTO files VALUES(DEFAULT, :name, 'profile', NULL, :data) RETURNING id");
+				query.prepare("INSERT INTO files (id, name, type, note, file) VALUES(DEFAULT, :name, 'profile', NULL, :data) RETURNING id");
 				query.bind(":name", timefield.text + " " + name.text + " " + profileName.currentText);
 				query.bindFileData(":data", batch.tempData);
 				query.exec();
@@ -258,7 +262,7 @@
 				file.remove();
 				if(target.checked)
 				{
-					query.prepare("INSERT INTO sample_roast_profiles VALUES(:time, :name, :file)");
+					query.prepare("INSERT INTO sample_roast_profiles (time, profile_name, file) VALUES(:time, :name, :file)");
 					query.bind(":time", timefield.text);
 					query.bind(":name", profileName.currentText);
 					query.bind(":file", Number(fileno));
@@ -289,14 +293,14 @@
 					}
 					else
 					{
-						query.prepare("INSERT INTO item_attributes VALUES(DEFAULT, :name) RETURNING id");
+						query.prepare("INSERT INTO item_attributes (id, name) VALUES(DEFAULT, :name) RETURNING id");
 						query.bind(":name", attname);
 						query.exec();
 						query.next();
 						attributes.setData(i, 0, query.value(0), 32);
 					}
 				}
-				query.prepare("INSERT INTO coffee_sample_items VALUES(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Green Sample', :arrival, :vendor, :attrids, :attrvals, NULL) RETURNING id");
+				query.prepare("INSERT INTO coffee_sample_items (id, name, reference, unit, quantity, category, arrival, vendor, attribute_ids, attribute_values) VALUES(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Green Sample', :arrival, :vendor, :attrids, :attrvals) RETURNING id");
 				query.bind(":name", name.text);
 				query.bind(":arrival", arrival.date);
 				query.bind(":vendor", vendor.text);
@@ -305,12 +309,12 @@
 				query.exec();
 				query.next();
 				var greenId = query.value(0);
-				query.prepare("INSERT INTO items VALUES(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Roasted Sample') RETURNING id");
+				query.prepare("INSERT INTO items (id, name, reference, unit, quantity, category) VALUES(DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Roasted Sample') RETURNING id");
 				query.bind(":name", name.text + " " + profileName.currentText);
 				query.exec();
 				query.next();
 				var roastedId = query.value(0);
-				query.prepare("INSERT INTO roasting_log VALUES(:time, :unroastedids, NULL, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files)");
+				query.prepare("INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, :unroastedids, NULL, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files)");
 				query.bind(":time", timefield.text);
 				query.bind(":unroastedids", "{" + greenId + "}");
 				query.bind(":green", convertToPounds(parseFloat(green.text), GunitBox.currentText));

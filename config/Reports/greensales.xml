@@ -1,0 +1,112 @@
+<window id="greensales">
+	<reporttitle>Sales:->Green Coffee Sales</reporttitle>
+	<layout type="vertical">
+		<layout type="horizontal">
+			<daterange id="dates" initial="9" /><!-- Current Month to Date-->
+			<label>Weight Unit:</label>
+			<sqldrop id="unit" />
+			<stretch />
+		</layout>
+		<webview id="report" />
+	</layout>
+	<menu name="File">
+		<item id="print" shortcut="Ctrl+P">Print</item>
+	</menu>
+	<program>
+		<![CDATA[
+			this.windowTitle = "Typica - Green Coffee Sales";
+			var dateSelect = findChildObject(this, 'dates');
+			var dateQuery = new QSqlQuery();
+			dateQuery.exec("SELECT time::date FROM sale WHERE time = (SELECT min(time) FROM sale) OR time = (SELECT max(time) FROM sale) ORDER BY time ASC");
+			dateQuery.next();
+			var lifetimeStartDate = dateQuery.value(0);
+			var lifetimeEndDate;
+			if(dateQuery.next()) {
+				lifetimeEndDate = dateQuery.value(0);
+			} else {
+				lifetimeEndDate = lifetimeStartDate;
+			}
+			dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+			dateQuery = dateQuery.invalidate();
+			var unitBox = findChildObject(this, 'unit');
+			unitBox.addItem("Kg");
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+			unitBox['currentIndexChanged(int)'].connect(function() {
+				QSettings.setValue("script/report_unit", unitBox.currentIndex);
+				refresh();
+			});
+			var view = findChildObject(this, 'report');
+			var printMenu = findChildObject(this, 'print');
+			printMenu.triggered.connect(function() {
+				view.print();
+			});
+			var reportitems = new Array();
+			function refresh() {
+				var buffer = new QBuffer;
+				buffer.open(3);
+				var output = new XmlWriter(buffer);
+				var output = new XmlWriter(buffer);
+				output.writeStartDocument("1.0");
+				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+				output.writeStartElement("html");
+				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+				output.writeStartElement("head");
+				output.writeTextElement("title", "Green Coffee Sales");
+				output.writeEndElement();
+				output.writeStartElement("body");
+				var dateRange = dateSelect.currentRange();
+				var startDate = dateRange[0];
+				var endDate = dateRange[dateRange.length - 1];
+				output.writeTextElement("h1", "Green Coffee Sales: " + startDate + " - " + endDate);
+				var conversion = 1;
+				var unitText = 'Lb';
+				if(unitBox.currentIndex == 0) {
+					conversion = 2.2;
+					unitText = 'Kg';
+				}
+				var query = new QSqlQuery();
+				query.prepare("SELECT item, (SELECT name FROM coffees WHERE id = item) AS name, (SELECT origin FROM coffees WHERE id = item) AS origin, (SELECT reference FROM coffees WHERE id = item) AS reference, (SUM(quantity)/:conversion)::numeric(12,3) FROM sale WHERE time < :ed ::date + interval '1 day' AND time >= :sd GROUP BY item ORDER BY name ASC");
+				query.bind(":conversion", conversion);
+				query.bind(":ed", endDate);
+				query.bind(":sd", startDate);
+				query.exec();
+				output.writeStartElement("table");
+				output.writeAttribute("rules", "groups");
+				output.writeAttribute("cellpadding", "3px");
+				output.writeStartElement("thead");
+				output.writeStartElement("tr");
+				output.writeTextElement("th", "ID"); // 0
+				output.writeTextElement("th", "Coffee"); // 1
+				output.writeTextElement("th", "Origin"); // 2
+				output.writeTextElement("th", "Reference"); // 3
+				output.writeTextElement("th", "Quantity"); // 4
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeStartElement("tbody");
+				while(query.next()) {
+					output.writeStartElement("tr");
+					output.writeAttribute("id", "r"+query.value(0));
+					reportitems.push(query.value(0));
+					output.writeTextElement("td", query.value(0));
+					output.writeTextElement("td", query.value(1));
+					output.writeTextElement("td", query.value(2));
+					output.writeTextElement("td", query.value(3));
+					output.writeTextElement("td", query.value(4));
+					output.writeEndElement();
+				}
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndDocument();
+				view.setContent(buffer);
+				buffer.close();
+				query = query.invalidate();
+			}
+			refresh();
+			dateSelect.rangeUpdated.connect(refresh);
+		]]>
+	</program>
+</window>
+

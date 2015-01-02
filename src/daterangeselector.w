@@ -30,11 +30,13 @@ access to the ISO 8601 string representation of these dates is provided.
 @(daterangeselector.h@>=
 
 #include <QComboBox>
+#include <QPushButton>
+#include <QCalendarWidget>
 
 #ifndef TypicaDateRangeSelectorHeader
 #define TypicaDateRangeSelectorHeader
 
-class CustomDateRangePopup;
+@<CustomDateRangePopup declaration@>@;
 
 class DateRangeSelector : public QWidget
 {
@@ -74,7 +76,6 @@ class DateRangeSelector : public QWidget
 
 #include "daterangeselector.h"
 
-@<CustomDateRangePopup declaration@>
 @<CustomDateRangePopup implementation@>
 @<DateRangeSelector implementation@>
 

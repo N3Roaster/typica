@@ -46,7 +46,7 @@
                 window.displayStatus("Item removed.");
             });
             restoreButton.clicked.connect(function() {
-                var q = "INSERT INTO current_items VALUES (:id)";
+                var q = "INSERT INTO current_items (item) VALUES (:id)";
                 query = new QSqlQuery();
                 query.prepare(q);
                 query.bind(":id", drop2.currentData());
@@ -59,14 +59,14 @@
                 window.displayStatus("Item restored.");
             });
             newItemButton.clicked.connect(function() {
-                var q = "INSERT INTO items VALUES (default, :name, NULL, 'lb', 0, 'Coffee: Roasted') RETURNING id";
+                var q = "INSERT INTO items (id, name, reference, unit, quantity, category) VALUES (default, :name, NULL, 'lb', 0, 'Coffee: Roasted') RETURNING id";
                 query = new QSqlQuery();
                 query.prepare(q);
                 query.bind(":name", itemname.text);
                 query.exec();
                 query.next();
                 var i = query.value(0);
-                q = "INSERT INTO current_items VALUES(:id)";
+                q = "INSERT INTO current_items (item) VALUES(:id)";
                 query.prepare(q);
                 query.bind(":id", i);
                 query.exec();

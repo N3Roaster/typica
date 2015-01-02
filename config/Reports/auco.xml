@@ -37,7 +37,10 @@
 				QSettings.setValue("script/report_unit", unitBox.currentIndex);
 				refresh();
 			});
+			var rowData = new Array();
+			var rowIndex;
             function refresh() {
+				rowIndex = 0;
                 var buffer = new QBuffer;
                 buffer.open(3);
                 var output = new XmlWriter(buffer);
@@ -119,7 +122,15 @@
                 while(query.next())
                 {
                     output.writeStartElement("tr");
-                    output.writeTextElement("td", query.value(0));
+					output.writeAttribute("id", "r" + rowIndex);
+					output.writeStartElement("td");
+					output.writeStartElement("a");
+					output.writeAttribute("href", "typica://script/r" + rowIndex);
+					rowIndex++;
+					rowData.push(query.value(0));
+					output.writeCharacters(query.value(0));
+					output.writeEndElement();
+					output.writeEndElement();
                     output.writeTextElement("td", query.value(1));
                     output.writeTextElement("td", query.value(2));
 					output.writeTextElement("td", query.value(3));
@@ -146,7 +157,15 @@
                 while(query.next())
                 {
                     output.writeStartElement("tr");
-                    output.writeTextElement("td", query.value(0));
+					output.writeAttribute("id", "d" + rowIndex);
+					output.writeStartElement("td");
+					output.writeStartElement("a");
+					output.writeAttribute("href", "typica://script/d" + rowIndex);
+					rowIndex++;
+					rowData.push(query.value(0));
+					output.writeCharacters(query.value(0));
+					output.writeEndElement();
+					output.writeEndElement();
                     output.writeTextElement("td", query.value(1));
                     output.writeTextElement("td", query.value(2));
 					output.writeTextElement("td", query.value(3));
@@ -170,6 +189,39 @@
                 QSettings.setValue("auco_sort", sortBox.currentIndex);
                 refresh();
             });
+			report.scriptLinkClicked.connect(function(url) {
+				var element = new WebElement(report.findFirstElement("#" + url));
+				var regular = url[0] == 'r';
+				var index = url.slice(1, url.length);
+				var tableref;
+				if(regular) {
+					tableref = "regular_coffees";
+				} else {
+					tableref = "decaf_coffees";
+				}
+				var origin = rowData[Number(url.slice(1, url.length))];
+				var details = '<tr><td /><td colspan="6"><table><tr><th>Id</th><th>Name</th><th>Rate</th><th>Inventory</th><th>First Use</th><th>Last Use</th></tr>';
+				var query = new QSqlQuery();
+				query.prepare("SELECT id, name, (rate/:conversion1)::numeric(12,3), (stock/:conversion2)::numeric(12,3), (SELECT min(time)::date FROM use WHERE item = id) AS first_use, (SELECT max(time)::date FROM use WHERE item = id) AS last_use FROM coffee_history WHERE origin = :origin AND id IN (SELECT id FROM " + tableref + ") ORDER BY first_use DESC");
+				var conversion = 1;
+				if(unitBox.currentIndex == 0) {
+					conversion = 2.2;
+				}
+				query.bind(":conversion1", conversion);
+				query.bind(":conversion2", conversion);
+				query.bind(":origin", origin);
+				query.exec();
+				while(query.next()) {
+					details += "<tr>";
+					for(var i = 0; i < 6; i++) {
+						details += "<td>" + query.value(i) + "</td>";
+					}
+					details += "</tr>";
+				}
+				query = query.invalidate();
+				details += "</table></td></tr>";
+				element.appendOutside(details);
+			});
         ]]>
     </program>
 </window>

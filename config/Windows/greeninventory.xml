@@ -40,7 +40,7 @@
 			var button = findChildObject(this, 'update');
 			var value = findChildObject(this, 'quantity');
 			button.clicked.connect(function() {
-				q = "INSERT INTO inventory VALUES ('now', ";
+				q = "INSERT INTO inventory (time, item, quantity) VALUES ('now', ";
 				q = q + items.currentData();
 				q = q + ", ";
 				if(units.currentText == "lb") {

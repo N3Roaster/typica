@@ -244,6 +244,8 @@
                 query.bind(":item", Number(roasted.currentData()));
                 query.bind(":again", Number(roasted.currentData()));
 				query.exec();
+				var graph;
+				var log;
 				if(query.next())
 				{
 					var files = query.value(0);
@@ -259,8 +261,8 @@
 						var buffer = new QBuffer(query.value(0));
 						var pname = query.value(1);
 						var input = new XMLInput(buffer, 1);
-						var graph = findChildObject(navigationwindow.loggingWindow, 'graph');
-						var log = findChildObject(navigationwindow.loggingWindow, 'log');
+						graph = findChildObject(navigationwindow.loggingWindow, 'graph');
+						log = findChildObject(navigationwindow.loggingWindow, 'log');
 						log.clear();
 						graph.clear();
 						input.newTemperatureColumn.connect(log.setHeaderData);
@@ -279,12 +281,16 @@
 								targetDetector.newMeasurement(data);
 							}
 						});
-						input.annotation.connect(log.newAnnotation);
 						var lc;
 						input.lastColumn.connect(function(c) {
 							lc = c;
 							QSettings.setValue("liveColumn", c + 1);
 							navigationwindow.loggingWindow.postLoadColumnSetup(c)
+						});
+						input.annotation.connect(function(note, tcol, ncol) {
+							for(var i = tcol; i < ncol; i++) {
+								log.newAnnotation(note, i, ncol);
+							}
 						});
 					}
 				}
@@ -292,7 +298,11 @@
 				navigationwindow.loggingWindow.windowTitle = "Typica - [*]" + pname;
 				navigationwindow.loggingWindow.raise();
 				navigationwindow.loggingWindow.activateWindow();
+				graph.updatesEnabled = false;
+				log.updatesEnabled = false;
 				input.input();
+				log.updatesEnabled = true;
+				graph.updatesEnabled = true;
 				log.newAnnotation("End", 1, lc);
 			});
 			var noprofilebutton = findChildObject(this, 'noprofile');
@@ -307,19 +317,20 @@
 			var notes = findChildObject(this, 'annotation');
 			var duration = findChildObject(this, 'duration');
 			var approval = findChildObject(this, 'approval');
+			approval.checked = true;
 			var target = findChildObject(this, 'target');
 			submitbutton.clicked.connect(function() {
 				checkQuery = new QSqlQuery();
 				checkQuery.exec("SELECT 1 FROM machine WHERE id = " + selectedRoasterID);
 				if(!checkQuery.next())
 				{
-					checkQuery.prepare("INSERT INTO machine VALUES(:id, :name)");
+					checkQuery.prepare("INSERT INTO machine (id, name) VALUES(:id, :name)");
 					checkQuery.bind(":id", selectedRoasterID);
 					checkQuery.bind(":name", selectedRoasterName);
 					checkQuery.exec();
 				}
 				checkQuery = checkQuery.invalidate();
-				var q = "INSERT INTO files VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
+				var q = "INSERT INTO files (id, name, type, note, file) VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
 				query = new QSqlQuery();
 				query.prepare(q);
 				query.bind(":name", timefield.text + " " + roasted.currentText);
@@ -329,7 +340,7 @@
 				var fileno = query.value(0);
 				var file = new QFile(batch.tempData);
 				file.remove();
-				var q2 = "INSERT INTO roasting_log VALUES(:time, ";
+				var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, ";
 				q2 = q2 + table.columnArray(0, 32);
 				q2 = q2 + ", ";
 				for(var i = 0; table.data(i, 1, 0).value != ""; i++)
@@ -357,7 +368,7 @@
 				query2.exec();
                 query2 = query2.invalidate();
 				if(target.checked) {
-					var q3 = "INSERT INTO item_files VALUES(:time, :item, '{";
+					var q3 = "INSERT INTO item_files (time, item, files) VALUES(:time, :item, '{";
 					q3 = q3 + fileno;
 					q3 = q3 + "}')";
 					query.prepare(q3);

@@ -17,7 +17,7 @@
 			var rnumber = findChildObject(this, 'id');
 			var nrwindow = this;
 			button.clicked.connect(function() {
-				var q = "INSERT INTO machine VALUES (";
+				var q = "INSERT INTO machine (id, name) VALUES (";
 				q = q + rnumber.text;
 				q = q + ", :name)";
 				query = new QSqlQuery();

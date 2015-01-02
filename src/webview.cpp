@@ -1,10 +1,10 @@
-/*491:*/
-#line 49 "./webview.w"
+/*535:*/
+#line 50 "./webview.w"
 
 #include "webview.h"
 
-/*492:*/
-#line 56 "./webview.w"
+/*536:*/
+#line 57 "./webview.w"
 
 TypicaWebView::TypicaWebView():QWebView()
 {
@@ -12,16 +12,16 @@ page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 connect(page(),SIGNAL(linkClicked(QUrl)),this,SLOT(linkDelegate(QUrl)));
 }
 
-/*:492*//*493:*/
-#line 72 "./webview.w"
+/*:536*//*537:*/
+#line 73 "./webview.w"
 
 void TypicaWebView::linkDelegate(const QUrl&url)
 {
 if(url.scheme()=="typica")
 {
 QString address(url.toEncoded());
-/*494:*/
-#line 90 "./webview.w"
+/*538:*/
+#line 91 "./webview.w"
 
 if(address=="typica://aboutqt")
 {
@@ -29,11 +29,11 @@ QMessageBox::aboutQt(this);
 return;
 }
 
-/*:494*/
-#line 78 "./webview.w"
+/*:538*/
+#line 79 "./webview.w"
 
-/*495:*/
-#line 99 "./webview.w"
+/*539:*/
+#line 100 "./webview.w"
 
 if(address.startsWith("typica://script/"))
 {
@@ -41,8 +41,8 @@ emit scriptLinkClicked(address.remove(0,16));
 return;
 }
 
-/*:495*/
-#line 79 "./webview.w"
+/*:539*/
+#line 80 "./webview.w"
 
 }
 else
@@ -51,8 +51,8 @@ QDesktopServices::openUrl(url);
 }
 }
 
-/*:493*//*496:*/
-#line 111 "./webview.w"
+/*:537*//*540:*/
+#line 112 "./webview.w"
 
 void TypicaWebView::load(const QString&url)
 {
@@ -76,9 +76,11 @@ QWebView::setHtml(html,baseUrl);
 
 void TypicaWebView::setContent(QIODevice*device)
 {
+QSettings settings;
 device->reset();
 QByteArray content= device->readAll();
-QWebView::setContent(content,"application/xhtml+xml");
+QUrl baseDir= QUrl("file://"+settings.value("config").toString()+"/");
+QWebView::setContent(content,"application/xhtml+xml",baseDir);
 }
 
 QString TypicaWebView::saveXml()
@@ -86,8 +88,8 @@ QString TypicaWebView::saveXml()
 return page()->currentFrame()->documentElement().toOuterXml();
 }
 
-/*:496*//*502:*/
-#line 202 "./webview.w"
+/*:540*//*546:*/
+#line 205 "./webview.w"
 
 QWebElement TypicaWebView::documentElement()
 {
@@ -99,8 +101,8 @@ QWebElement TypicaWebView::findFirstElement(const QString&selector)
 return page()->mainFrame()->findFirstElement(selector);
 }
 
-/*:502*/
-#line 52 "./webview.w"
+/*:546*/
+#line 53 "./webview.w"
 
 
-/*:491*/
+/*:535*/

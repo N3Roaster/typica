@@ -64,10 +64,13 @@
 		var translationCurrentColumn = -1;
 		var configModel = new DeviceTreeModel;
 		var rootIndex = configModel.index(roasterlist.currentIndex, 0);
+		var roasterIndex = roasterlist.currentIndex;
 		var channels = new Array();
 		var annotationButtons = new Array();
 		var nidevices = new Array();
 		var dataqsdkdevices = new Array();
+		var jsdevices = new Array();
+		var pdevices = new Array();
 		var temperatureDisplays = new Array();
 		var columnNames = new Array();
 		var modbusdevices = new Array();
@@ -356,6 +359,57 @@
 						tabControls.push(outputControl);
 					}
 				}
+				else if(driverReference.driver == "unsupporteddevice")
+				{
+					var device = createDevice(driverIndex);
+					for(var j = 0; j < device.channelCount(); j++) {
+						channels.push(device.getChannel(j));
+						columnNames.push(device.channelColumnName(j));
+						var unit = device.expectedChannelUnit(j);
+						if(unit == Units.Fahrenheit) {
+							channelType.push("T");
+						} else {
+							channelType.push("C");
+						}
+						if(device.isChannelHidden(j)) {
+							channelVisibility.push(false);
+						} else {
+							channelVisibility.push(true);
+							var indicator = new TemperatureDisplay;
+							if(unit == Units.Unitless) {
+								indicator.setDisplayUnits(Units.Unitless);
+								indicator.digitCount = 6;
+							}
+							temperatureDisplays.push(indicator);
+							var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+							device.getChannel(j).newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
+					}
+					device.start();
+					jsdevices.push(device);
+				}
+				else if(driverReference.driver == "phidgets1048")
+				{
+					var device = new PhidgetsTemperatureSensor(driverIndex);
+					for(var j = 0; j < device.channelCount(); j++) {
+						channels.push(device.getChannel(j));
+						columnNames.push(device.channelColumnName(j));
+						channelType.push("T");
+						if(device.isChannelHidden(j)) {
+							channelVisibility.push(false);
+						} else {
+							channelVisibility.push(true);
+							var indicator = new TemperatureDisplay;
+							temperatureDisplays.push(indicator);
+							var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+							device.getChannel(j).newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
+					}
+					device.start();
+					pdevices.push(device);
+				}
 				else if(driverReference.driver == "annotationbutton")
 				{
 					var button = new AnnotationButton(driverReference.buttontext);
@@ -598,20 +652,36 @@
 			{
 				dataqsdkdevices[i].deleteLater();
 			}
+			for(var i = 0; i < jsdevices.length; i++)
+			{
+				jsdevices[i].stop();
+				jsdevices[i].deleteLater();
+			}
+			for(var i = 0; i < pdevices.length; i++)
+			{
+				pdevices[i].stop();
+				pdevices[i].deleteLater();
+			}
 			delete nidevices;
 			delete modbusdevices;
 			delete dataqsdkdevices;
+			delete jsdevices;
+			delete pdevices;
             window.saveSizeAndPosition("window");
-            vsplit.saveState("script/mainSplitter");
-            isplit.saveState("script/instrumentSplitter");
-            lsplit.saveState("script/logSplitter");
+            vsplit.saveState("script/loggingView/" + roasterIndex + "/mainSplitter");
+			QSettings.setValue("script/loggingView/" + roasterIndex + "/instrumentCount", isplit.count());
+            isplit.saveState("script/loggingView/" + roasterIndex + "/instrumentSplitter");
+            lsplit.saveState("script/loggingView/" + roasterIndex + "/logSplitter");
             log.saveState("script/log", 7);
 			window.navigationWindow.loggingWindow = undefined;
+			Windows.loggingWindow = undefined;
         });
 		this.restoreSizeAndPosition('window');
-        vsplit.restoreState("script/mainSplitter");
-        isplit.restoreState("script/instrumentSplitter");
-        lsplit.restoreState("script/logSplitter");
+        vsplit.restoreState("script/loggingView/" + roasterIndex + "/mainSplitter");
+		if(QSettings.value("script/loggingView/" + roasterIndex + "/instrumentCount") == isplit.count()) {
+			isplit.restoreState("script/loggingView/" + roasterIndex + "/instrumentSplitter");
+		}
+        lsplit.restoreState("script/loggingView/" + roasterIndex + "/logSplitter");
 		log.restoreState("script/log", 7);
 		var offsets = new Array();
 		var zeroemitters = new Array();
@@ -851,7 +921,11 @@
                     QSettings.setValue("liveColumn", c + 1);
 					window.postLoadColumnSetup(c);
 				});
+				graph.updatesEnabled = false;
+				log.updatesEnabled = false;
                 input.input();
+				log.updatesEnabled = true;
+				graph.updatesEnabled = true;
                 window.windowTitle = 'Typica - [*]' + baseName(filename);
                 QSettings.setValue("script/lastDir", dir(filename));
 				log.newAnnotation("End", 1, lc);
@@ -948,6 +1022,7 @@
 			var bwindow = createWindow("sampleRoastingBatch");
 		});
 		window.postLoadColumnSetup(0);
+		Windows.loggingWindow = window;
 		]]>
     </program>
 </window>

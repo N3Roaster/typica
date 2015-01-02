@@ -22,8 +22,8 @@
 \mark{\noexpand\nullsec0{A Note on Notation}}
 \def\pn{Typica}
 \def\filebase{typica}
-\def\version{1.6.2 \number\year-\number\month-\number\day}
-\def\years{2007--2014}
+\def\version{1.6.3 \number\year-\number\month-\number\day}
+\def\years{2007--2015}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip
@@ -525,8 +525,10 @@ generated file empty.
 @<Header files to include@>@/
 @<Class declarations@>@/
 @<Function prototypes for scripting@>@/
+@<Logging function prototype@>@/
 @<Class implementations@>@/
 @<Functions for scripting@>@/
+@<Logging function implementation@>@/
 @<The main program@>
 #include "moc_typica.cpp"
 
@@ -679,6 +681,12 @@ template<> QTime getself(QScriptContext *context)
 	return self;
 }
 
+template<> QByteArray getself(QScriptContext *context)
+{
+	QByteArray self = context->thisObject().toVariant().toByteArray();
+	return self;
+}
+
 template<> SqlQueryConnection* getself(QScriptContext *context)
 {
 	SqlQueryConnection *self =@|
@@ -752,6 +760,11 @@ template<> double argument(int arg, QScriptContext *context)
 template<> Units::Unit argument(int arg, QScriptContext *context)
 {
 	return (Units::Unit)(context->argument(arg).toInt32());
+}
+
+template<> QByteArray argument(int arg, QScriptContext *context)
+{
+	return qscriptvalue_cast<QByteArray>(context->argument(arg));
 }
 
 @ The scripting engine is informed of a number of classes defined elsewhere in
@@ -1403,6 +1416,8 @@ QScriptValue QSplitter_saveState(QScriptContext *context,
 									QScriptEngine *engine);
 QScriptValue QSplitter_restoreState(QScriptContext *context,
 									QScriptEngine *engine);
+QScriptValue QSplitter_count(QScriptContext *context,
+                             QScriptEngine *engine);
 void setQSplitterProperties(QScriptValue value, QScriptEngine *engine);
 
 @ Of these, the scripting engine must be informed of the constructor.
@@ -1429,6 +1444,7 @@ void setQSplitterProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("saveState", engine->newFunction(QSplitter_saveState));
 	value.setProperty("restoreState",
 	                  engine->newFunction(QSplitter_restoreState));
+	value.setProperty("count", engine->newFunction(QSplitter_count));
 }
 
 @ The |"addWidget"| property is a simple wrapper around
@@ -1459,6 +1475,23 @@ QScriptValue QSplitter_addWidget(QScriptContext *context, QScriptEngine *)
 							"QWidget as an argument.");
 	}
 	return QScriptValue();
+}
+
+@ The methods for saving and restoring the state of a splitter do not behave
+well when the number of widgets contained in the splitter increase. This is a
+problem in the logging view where we may want to allow zero width indicators
+but reconfiguration can cause the number of indicators to increase. This would
+result in the right most indicators such as the batch timer disappearing. Most
+people do not notice the splitter handle or think to drag that to the left to
+correct this issue so it would be better to save the number of indicators when
+saving the state and if the number of indicators does not match, we should not
+restore the obsolete saved state.
+
+@<Functions for scripting@>=
+QScriptValue QSplitter_count(QScriptContext *context, QScriptEngine *)
+{
+	QSplitter *self = getself<QSplitter *>(context);
+	return QScriptValue(self->count());
 }
 
 @ When saving and restoring the state of a splitter, we always want to do this
@@ -1858,6 +1891,12 @@ QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QIODevice_close(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QIODevice_readToString(QScriptContext *context,
                                     QScriptEngine *engine);
+QScriptValue QIODevice_putChar(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_writeString(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_peek(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QIODevice_read(QScriptContext *context, QScriptEngine *engine);
 
 @ This function is passed to the scripting engine.
 
@@ -1909,6 +1948,12 @@ void setQIODeviceProperties(QScriptValue value, QScriptEngine *engine)
 	value.setProperty("close", engine->newFunction(QIODevice_close));
 	value.setProperty("readToString",
 	                  engine->newFunction(QIODevice_readToString));
+	value.setProperty("putChar", engine->newFunction(QIODevice_putChar));
+	value.setProperty("writeString", engine->newFunction(QIODevice_writeString));
+	value.setProperty("writeBytes", engine->newFunction(QIODevice_writeBytes));
+	value.setProperty("readBytes", engine->newFunction(QIODevice_readBytes));
+	value.setProperty("peek", engine->newFunction(QIODevice_peek));
+	value.setProperty("read", engine->newFunction(QIODevice_read));
 }
 
 @ These are simple wrappers. In the case of the |open()| property, one argument
@@ -1920,18 +1965,19 @@ not passed, it is assumed that the user wants read and write access.
 QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *)
 {
 	QIODevice *self = getself<QIODevice *>(context);
+	bool retval = false;
 	if(context->argumentCount() == 1)
 	{
 		switch(argument<int>(0, context))
 		{
 			case 1:
-				self->open(QIODevice::ReadOnly);
+				retval = self->open(QIODevice::ReadOnly);
 				break;
 			case 2:
-				self->open(QIODevice::WriteOnly);
+				retval = self->open(QIODevice::WriteOnly);
 				break;
 			case 3:
-				self->open(QIODevice::ReadWrite);
+				retval = self->open(QIODevice::ReadWrite);
 				break;
 			default:
 				break;
@@ -1939,9 +1985,9 @@ QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *)
 	}
 	else
 	{
-		self->open(QIODevice::ReadWrite);
+		retval = self->open(QIODevice::ReadWrite);
 	}
-	return QScriptValue();
+	return QScriptValue(retval);
 }
 
 QScriptValue QIODevice_close(QScriptContext *context, QScriptEngine *)
@@ -1961,6 +2007,594 @@ QScriptValue QIODevice_readToString(QScriptContext *context, QScriptEngine *)
 	QIODevice *self = getself<QIODevice *>(context);
 	self->reset();
 	return QScriptValue(QString(self->readAll()));
+}
+
+@ In support of serial port communications, wrappers around two methods for
+writing data have been added. As these are valid for other classes derived from
+|QIODevice|, they are added here so the functionality is available more
+broadly.
+
+As we are unable to pass a type that guarantees only a single character, we
+instead accept a string and only pass along the first character.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_putChar(QScriptContext *context, QScriptEngine *)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	if(context->argumentCount() == 1)
+	{
+		return QScriptValue(self->putChar(argument<QString>(0, context).toUtf8().at(0)));
+	}
+	context->throwError("Incorrect number of arguments passed to "@|
+	                    "QIODevice::putChar()");
+	return QScriptValue();
+}
+
+@ Two wrappers are provided around |QIODevice::write()| for outputting
+multi-byte data. If we are writing strings that are valid UTF-8, we can use the
+|writeString| wrapper, but if we require full control over exactly which bytes
+are output, the |writeBytes| wrapper is more appropriate.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_writeString(QScriptContext *context, QScriptEngine *)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	if(context->argumentCount() == 1)
+	{
+		self->write(argument<QString>(0, context).toUtf8());
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+	                        "QIODevice::writeString()");
+	}
+	return QScriptValue();
+}
+
+QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	if(context->argumentCount() == 1)
+	{
+		self->write(argument<QByteArray>(0, context));
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+	                        "QIODevice::writeBytes()");
+	}
+	return QScriptValue();
+}
+
+@ The readBytes method is an alternate wrapper around |QByteArray::readAll()|
+which returns the |QByteArray| instead of converting this to a |QString|.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(self->readAll());
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@ Wrappers around |peek()| and |read()| are also provided.
+
+@<Functions for scripting@>=
+QScriptValue QIODevice_peek(QScriptContext *context, QScriptEngine *engine)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self->peek(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+QScriptValue QIODevice_read(QScriptContext *context, QScriptEngine *engine)
+{
+	QIODevice *self = getself<QIODevice *>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self->read(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@* Scripting QProcess.
+
+\noindent Sometimes it is useful to have \pn work with an external program.
+The initial use case was document generation by typesetting instructions to a
+file and then running \TeX to generate a shelf sign or a sheet of labels.
+Other likely use cases include interfacing with external programs that output
+measurement streams. There are several methods which we may want to expose,
+however this is being done only as needed.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructQProcess(QScriptContext *context, QScriptEngine *engine);
+void setQProcessProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *engine);
+
+@ We follow the same pattern with this as with many other types.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQProcess);
+value = engine->newQMetaObject(&QProcess::staticMetaObject, constructor);
+engine->globalObject().setProperty("QProcess", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQProcess(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QProcess);
+	setQProcessProperties(object, engine);
+	return object;
+}
+
+@ As |QProcess| is a |QIODevice| we inherit some properties from that. We also
+expose some details that are specific to |QProcess|.
+
+@<Functions for scripting@>=
+void setQProcessProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQIODeviceProperties(value, engine);
+	value.setProperty("execute", engine->newFunction(QProcess_execute));
+	value.setProperty("startDetached", engine->newFunction(QProcess_startDetached));
+	value.setProperty("setWorkingDirectory", engine->newFunction(QProcess_setWorkingDirectory));
+	value.setProperty("start", engine->newFunction(QProcess_start));
+}
+
+@ The |execute()| method comes in two flavors: one with arguments and one without.
+We always call the one with arguments and simply pass in an empty list if no
+arguments are specified.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString program = argument<QString>(0, context);
+	QStringList arguments = QStringList();
+	if(context->argumentCount() > 1) {
+		arguments = argument<QVariant>(1, context).toStringList();
+	}
+	int retval = self->execute(program, arguments);
+	return QScriptValue(retval);
+}
+
+@ Similarly |startDetached()| can be called in a few different ways.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString program = argument<QString>(0, context);
+	QStringList arguments = QStringList();
+	if(context->argumentCount() > 1) {
+		arguments = argument<QVariant>(1, context).toStringList();
+	}
+	QString workingDirectory = "";
+	if(context->argumentCount() > 2) {
+		workingDirectory = argument<QString>(2, context);
+	}
+	bool retval;
+	switch(context->argumentCount())
+	{
+		case 1:
+			retval = self->startDetached(program);
+			break;
+		case 2:
+			retval = self->startDetached(program, arguments);
+			break;
+		case 3:
+			retval = self->startDetached(program, arguments, workingDirectory);
+			break;
+		default:
+			retval = false;
+	}
+	return QScriptValue(retval);
+}
+
+@ Sometimes we care about the working directory for our program.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString directory = argument<QString>(0, context);
+	self->setWorkingDirectory(directory);
+	return QScriptValue();
+}
+
+@ When using the |start()| method we always assume that we want read and write
+access.
+
+@<Functions for scripting@>=
+QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *)
+{
+	QProcess *self = getself<QProcess *>(context);
+	QString program = argument<QString>(0, context);
+	QStringList arguments = QStringList();
+	if(context->argumentCount() > 1) {
+		arguments = argument<QVariant>(1, context).toStringList();
+	}
+	self->start(program, arguments);
+	return QScriptValue();
+}
+
+@ In order to work with |QByteArray| this should also be exposed to the host
+environment.
+
+@<Function prototypes for scripting@>=
+QScriptValue QByteArray_toScriptValue(QScriptEngine *engine, const QByteArray &bytes);
+void QByteArray_fromScriptValue(const QScriptValue &value, QByteArray &bytes);
+QScriptValue constructQByteArray(QScriptContext *context, QScriptEngine *engine);
+void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_getAt(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_appendBytes(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_size(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_left(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_right(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_mid(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_chop(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toInt8(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toInt16(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toInt32(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toFloat(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QByteArray_toDouble(QScriptContext *context, QScriptEngine *engine);
+
+@ First, we provide some functionns for moving array data across the
+language barrier.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_toScriptValue(QScriptEngine *engine, const QByteArray &bytes)
+{
+	QScriptValue object = engine->newVariant(QVariant(bytes));
+	setQByteArrayProperties(object, engine);
+	return object;
+}
+
+void QByteArray_fromScriptValue(const QScriptValue &value, QByteArray &bytes)
+{
+	bytes = value.toVariant().toByteArray();
+}
+
+@ We register this our conversion functions and allow creation of new arrays
+next.
+
+@<Set up the scripting engine@>=
+qScriptRegisterMetaType(engine, QByteArray_toScriptValue, QByteArray_fromScriptValue);
+constructor = engine->newFunction(constructQByteArray);
+engine->globalObject().setProperty("QByteArray", constructor);
+
+@ The constructor is straightforward.
+
+@<Functions for scripting@>=
+QScriptValue constructQByteArray(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->toScriptValue<QByteArray>(QByteArray());
+	setQByteArrayProperties(object, engine);
+	return object;
+}
+
+@ There are many methods which are not automatically available which we may
+want to have wrappers around. These should be added as required.
+
+@<Functions for scripting@>=
+void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
+{
+	value.setProperty("fromHex", engine->newFunction(QByteArray_fromHex));
+	value.setProperty("getAt", engine->newFunction(QByteArray_getAt));
+	value.setProperty("setAt", engine->newFunction(QByteArray_setAt));
+	value.setProperty("appendBytes", engine->newFunction(QByteArray_appendBytes));
+	value.setProperty("appendString", engine->newFunction(QByteArray_appendString));
+	value.setProperty("size", engine->newFunction(QByteArray_size));
+	value.setProperty("left", engine->newFunction(QByteArray_left));
+	value.setProperty("right", engine->newFunction(QByteArray_right));
+	value.setProperty("mid", engine->newFunction(QByteArray_mid));
+	value.setProperty("chop", engine->newFunction(QByteArray_chop));
+	value.setProperty("remove", engine->newFunction(QByteArray_remove));
+	value.setProperty("toInt8", engine->newFunction(QByteArray_toInt8));
+	value.setProperty("toInt16", engine->newFunction(QByteArray_toInt16));
+	value.setProperty("toInt32", engine->newFunction(QByteArray_toInt32));
+	value.setProperty("toFloat", engine->newFunction(QByteArray_toFloat));
+	value.setProperty("toDouble", engine->newFunction(QByteArray_toDouble));
+}
+
+@ Perhaps the easiest way to deal with fixed byte strings for serial
+communications across script boundaries is to use a hex encoded string.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QByteArray retval;
+	retval = self.fromHex(argument<QString>(0, context).toUtf8());
+	QScriptValue value = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@ A pair of methods is provided for getting and setting values at a particular
+byte.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_getAt(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	return QScriptValue((int)(self.at(argument<int>(0, context))));
+}
+
+QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	self[argument<int>(0, context)] = (char)(argument<int>(1, context));
+	return QScriptValue();
+}
+
+@ Methods are provided for appending either another |QByteArray| or a string
+to a |QByteArray|. The only difference between these functions is the expected
+argument type.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_appendBytes(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value =
+		engine->toScriptValue<QByteArray>(
+			self.append(argument<QByteArray>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.append(argument<QString>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@ Checking the size of our byte array frequently a requirement.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_size(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	return QScriptValue(self.size());
+}
+
+@ It is also frequently useful to be able to work with specific parts of a byte
+array, so a few methods are provided for carving these up.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_left(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.left(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+QScriptValue QByteArray_right(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.right(argument<int>(0, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+QScriptValue QByteArray_mid(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int length = -1;
+	if(context->argumentCount() > 1)
+	{
+		length = argument<int>(1, context);
+	}
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.mid(argument<int>(0, context), length));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@ We may also want to remove bytes from an array.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_chop(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	self.chop(argument<int>(0, context));
+	return QScriptValue();
+}
+
+QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine)
+{
+	QByteArray self = getself<QByteArray>(context);
+	QScriptValue value = engine->toScriptValue<QByteArray>(
+		self.remove(argument<int>(0, context), argument<int>(1, context)));
+	setQByteArrayProperties(value, engine);
+	return value;
+}
+
+@ When receiving data in a byte array, bytes are sometimes intended to
+represent 8, 16, or 32 bit integers. In such cases we often want to perform
+some computation on these values so having the ability to split off that
+portion of the array (for example, with |mid()|) and convert to a Number is
+useful.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_toInt8(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int value = 0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	return QScriptValue(value);
+}
+
+QScriptValue QByteArray_toInt16(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int value = 0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	return QScriptValue(value);
+}
+
+QScriptValue QByteArray_toInt32(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	int value = 0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	bytes[2] = self[2];
+	bytes[3] = self[3];
+	return QScriptValue(value);
+}
+
+@ Similar methods are provided for converting bytes to a |float| or |double|.
+Note that the return value from |toFloat| will, in the host environment, be
+represented as a |double|.
+
+@<Functions for scripting@>=
+QScriptValue QByteArray_toFloat(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	float value = 0.0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	bytes[2] = self[2];
+	bytes[3] = self[3];
+	return QScriptValue(value);
+}
+
+QScriptValue QByteArray_toDouble(QScriptContext *context, QScriptEngine *)
+{
+	QByteArray self = getself<QByteArray>(context);
+	double value = 0.0;
+	char *bytes = (char *)&value;
+	bytes[0] = self[0];
+	bytes[1] = self[1];
+	bytes[2] = self[2];
+	bytes[3] = self[3];
+	bytes[4] = self[4];
+	bytes[5] = self[5];
+	bytes[6] = self[6];
+	bytes[7] = self[7];
+	return QScriptValue(value);
+}
+
+@ Some protocols require manipulating larger than 8 bit numbers as a sequence
+of bytes. To facilitate this, methods are provided to construct a |QByteArray|
+from different sized numbers. 8 bit numbers are provided for uniformity.
+
+@<Function prototypes for scripting@>=
+QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromFloat(QScriptContext *context, QScriptEngine *engine);
+QScriptValue bytesFromDouble(QScriptContext *context, QScriptEngine *engine);
+
+@ These are globally available.
+
+@<Set up the scripting engine@>=
+engine->globalObject().setProperty("bytesFromInt8", engine->newFunction(bytesFromInt8));
+engine->globalObject().setProperty("bytesFromInt16", engine->newFunction(bytesFromInt16));
+engine->globalObject().setProperty("bytesFromInt32", engine->newFunction(bytesFromInt32));
+engine->globalObject().setProperty("bytesFromFloat", engine->newFunction(bytesFromFloat));
+engine->globalObject().setProperty("bytesFromDouble", engine->newFunction(bytesFromDouble));
+
+@ The methods all work by casting the appropriate numeric type to a |char *|
+and copying the bytes to a new |QByteArray|. Note that the ECMA-262 standard
+only has one type of number and this is an IEEE 754 binary64 double precision
+floating point number. Functions other than |bytesFromDouble| will be cast
+from |double|.
+
+@<Functions for scripting@>=
+QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine)
+{
+	qint8 value = (qint8)(argument<int>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(1);
+	retval[0] = bytes[0];
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
+}
+
+QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine)
+{
+	qint16 value = (qint16)(argument<int>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(2);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
+}
+
+QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine)
+{
+	qint32 value = (qint32)(argument<int>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(4);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	retval[2] = bytes[2];
+	retval[3] = bytes[3];
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
+}
+
+QScriptValue bytesFromFloat(QScriptContext *context, QScriptEngine *engine)
+{
+	float value = (float)(argument<double>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(4);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	retval[2] = bytes[2];
+	retval[3] = bytes[3];
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
+}
+
+QScriptValue bytesFromDouble(QScriptContext *context, QScriptEngine *engine)
+{
+	double value = (double)(argument<double>(0, context));
+	char *bytes = (char *)&value;
+	QByteArray retval;
+	retval.resize(8);
+	retval[0] = bytes[0];
+	retval[1] = bytes[1];
+	retval[2] = bytes[2];
+	retval[3] = bytes[3];
+	retval[4] = bytes[4];
+	retval[5] = bytes[5];
+	retval[6] = bytes[6];
+	retval[7] = bytes[7];
+	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+	setQByteArrayProperties(v, engine);
+	return v;
 }
 
 @* Scripting QBuffer.
@@ -3034,6 +3668,15 @@ QScriptValue QTime_fromString(QScriptContext *context, QScriptEngine *engine)
 	return object;
 }
 
+@ In order to pass |QTime| objects back from a script, we also need to overload
+|argument()| for this type.
+
+@<Functions for scripting@>=
+template<> QTime argument(int arg, QScriptContext *context)
+{
+	return qscriptvalue_cast<QTime>(context->argument(arg));
+}
+
 @* Scripting Item View Classes.
 
 \noindent |QAbstractScrollArea| is a |QFrame| that serves as the base class for
@@ -3370,6 +4013,7 @@ QScriptValue setFont(QScriptContext *context, QScriptEngine *engine);
 QScriptValue annotationFromRecord(QScriptContext *context,
                                   QScriptEngine *engine);
 QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *engine);
+QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *engine);
 
 @ These functions are passed to the scripting engine.
 
@@ -3381,7 +4025,10 @@ engine->globalObject().setProperty("sqlToArray",
 engine->globalObject().setProperty("setFont", engine->newFunction(setFont));
 engine->globalObject().setProperty("annotationFromRecord",
                                    engine->newFunction(annotationFromRecord));
-engine->globalObject().setProperty("setTabOrder", engine->newFunction(setTabOrder));
+engine->globalObject().setProperty("setTabOrder",
+                                   engine->newFunction(setTabOrder));
+engine->globalObject().setProperty("saveFileFromDatabase",
+                                   engine->newFunction(saveFileFromDatabase));
 
 @ These functions are not part of an object. They expect a string specifying
 the path to a file and return a string with either the name of the file without
@@ -3401,6 +4048,27 @@ QScriptValue dir(QScriptContext *context, QScriptEngine *engine)
 	QDir dir = info.dir();
 	QScriptValue retval(engine, dir.path());
 	return retval;
+}
+
+@ This function takes a file ID and a file name and copies file data stored in
+the database out to the file system.
+
+@<Functions for scripting@>=
+QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *)
+{
+	SqlQueryConnection h;
+	QSqlQuery *query = h.operator->();
+	QString q = "SELECT file FROM files WHERE id = :file";
+	query->prepare(q);
+	query->bindValue(":file", argument<int>(0, context));
+	query->exec();
+	query->next();
+	QByteArray array = query->value(0).toByteArray();
+	QFile file(argument<QString>(1, context));
+	file.open(QIODevice::WriteOnly);
+	file.write(array);
+	file.close();
+	return QScriptValue();
 }
 
 @ This function takes a string representing a SQL array and returns an array
@@ -3943,6 +4611,8 @@ while(j < menuItems.count())
 }
 
 @i helpmenu.w
+
+@i feedback.w
 
 @ A layout can contain a number of different elements including a variety of
 widget types and other layouts. This function is responsible for applying any
@@ -5139,13 +5809,38 @@ editor. This one provides a calendar.
 void addCalendarToLayout(QDomElement element, QStack<QWidget *> *,@|
                          QStack<QLayout *> *layoutStack)
 {
-	QDateEdit *widget = new QDateEdit;
-	widget->setCalendarPopup(true);
+	QWidget *widget;
+	if(element.hasAttribute("time"))
+	{
+		if(element.attribute("time") == "true")
+		{
+			QDateTimeEdit *edit = new QDateTimeEdit;
+			edit->setDateTime(QDateTime::currentDateTime());
+			edit->setCalendarPopup(true);
+			edit->setDisplayFormat("yyyy-MM-dd hh:mm:ss");
+			widget = qobject_cast<QWidget *>(edit);
+		}
+		else
+		{
+			QDateEdit *edit = new QDateEdit;
+			edit->setDate(QDate::currentDate());
+			edit->setCalendarPopup(true);
+			edit->setDisplayFormat("yyyy-MM-dd");
+			widget = qobject_cast<QWidget *>(edit);
+		}
+	}
+	else
+	{
+		QDateEdit *edit = new QDateEdit;
+		edit->setDate(QDate::currentDate());
+		edit->setCalendarPopup(true);
+		edit->setDisplayFormat("yyyy-MM-dd");
+		widget = qobject_cast<QWidget *>(edit);
+	}
 	if(element.hasAttribute("id"))
 	{
 		widget->setObjectName(element.attribute("id"));
 	}
-	widget->setDate(QDate::currentDate());
 	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
 	layout->addWidget(widget);
 }
@@ -5278,6 +5973,10 @@ else if(className == "QBoxLayout")
 else if(className == "QDateEdit")
 {
 	setQDateEditProperties(value, engine);
+}
+else if(className == "QDateTimeEdit")
+{
+	setQDateTimeEditProperties(value, engine);
 }
 else if(className == "QFrame")
 {
@@ -12370,10 +13069,10 @@ int main(int argc, char **argv)@/
 {@/
 	int *c = &argc;
 	Application app(*c, argv);
+	QSettings settings;
+	@<Set up logging@>@;
 	@<Set up icons@>@;
 	@<Set up fonts@>@;
-
-	QSettings settings;
 
 	@<Register device configuration widgets@>@;
 	@<Prepare the database connection@>@;
@@ -12385,6 +13084,32 @@ int main(int argc, char **argv)@/
 	int retval = app.exec();
 	delete engine;
 	return retval;@/
+}
+
+@ \pn{} 1.6.3 introduces optional logging of diagnostic messages to a file. By
+default this feature is not enabled. A sensible future refinement to this would
+allow specification of where this file should be created.
+
+@<Set up logging@>=
+if(settings.value("settings/advanced/logging", false).toBool())
+{
+	qInstallMsgHandler(messageFileOutput);
+}
+
+@ This requires that we have our messageFileOutput function.
+
+@<Logging function prototype@>=
+void messageFileOutput(QtMsgType type, const char *msg);
+
+@ The current implementation is straightforward.
+
+@<Logging function implementation@>=
+void messageFileOutput(QtMsgType type, const char *msg)
+{
+	QFile output("Typica-"+QDate::currentDate().toString("yyyy-MM-dd")+".log");
+	output.open(QIODevice::WriteOnly | QIODevice::Append);
+	QTextStream outstream(&output);
+	outstream << msg << "\r\n";
 }
 
 @ \pn{} 1.4 introduces the ability to use icons in certain interface elements.
@@ -14971,6 +15696,7 @@ DeviceConfigurationWindow::DeviceConfigurationWindow() : QWidget(NULL),
 	splitter->addWidget(leftWidget);
 	configArea->setMinimumWidth(580);
 	configArea->setMinimumHeight(460);
+	configArea->setWidgetResizable(true);
 	splitter->addWidget(configArea);
 	QVBoxLayout *centralLayout = new QVBoxLayout;
 	centralLayout->addWidget(splitter);
@@ -17031,7 +17757,8 @@ class ModbusRTUDevice : public QObject
 		void svuResponse(QByteArray response);
 		void requestMeasurement();
 		void mResponse(QByteArray response);
-		void ignore(QByteArray response);@/
+		void ignore(QByteArray response);
+		void timeout();@/
 	private:@/
 		QextSerialPort *port;
 		QByteArray responseBuffer;
@@ -17040,6 +17767,7 @@ class ModbusRTUDevice : public QObject
 		QList<char *> callbackQueue;
 		quint16 calculateCRC(QByteArray data);
 		QTimer *messageDelayTimer;
+		QTimer *commTimeout;
 		int delayTime;
 		char station;
 		int decimalPosition;
@@ -17071,9 +17799,10 @@ immediately upon construction.
 
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &index)
-: QObject(NULL), messageDelayTimer(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
+: QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
 	waiting(@[false@])@/
 {@/
+qDebug() << "Initializing Modbus RTU Device";
 	QDomElement portReferenceElement = model->referenceElement(model->data(index,
 		Qt::UserRole).toString());
 	QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
@@ -17091,7 +17820,9 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &in
 	double temp = ((double)(1) / (double)(baudRate)) * 48;
 	delayTime = (int)(temp * 3000);
 	messageDelayTimer->setSingleShot(true);
+	commTimeout->setSingleShot(true);
 	connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
+	connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
 	port->setDataBits(DATA_8);
 	port->setParity((ParityType)attributes.value("parity").toInt());
 	port->setStopBits((StopBitsType)attributes.value("stop").toInt());
@@ -17254,6 +17985,7 @@ void ModbusRTUDevice::unitResponse(QByteArray response)
 	{
 		unitIsF = @[false@];
 	}
+	qDebug() << "Received unit response";
 }
 
 void ModbusRTUDevice::svlResponse(QByteArray response)
@@ -17268,6 +18000,7 @@ void ModbusRTUDevice::svlResponse(QByteArray response)
 		outputSVLower /= 10;
 	}
 	emit SVLowerChanged(outputSVLower);
+	qDebug() << "Received set value lower bound response";
 }
 
 void ModbusRTUDevice::svuResponse(QByteArray response)
@@ -17282,6 +18015,7 @@ void ModbusRTUDevice::svuResponse(QByteArray response)
 		outputSVUpper /= 10;
 	}
 	emit SVUpperChanged(outputSVUpper);
+	qDebug() << "Received set value upper bound response";
 }
 
 void ModbusRTUDevice::requestMeasurement()
@@ -17389,6 +18123,7 @@ else
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::~ModbusRTUDevice()
 {
+	commTimeout->stop();
 	messageDelayTimer->stop();
 	port->close();
 }
@@ -17408,6 +18143,10 @@ remove the message and callback information from the message queue, and start
 a timer which will trigger sending the next message after a safe amount of
 time has passed.
 
+If a response is received with an invalid CRC, we do not pass that message
+out. Instead, the message handling queues are kept as they are and the previous
+command will be sent again once the message delay timer is finished.
+
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::dataAvailable()
 {
@@ -17417,6 +18156,7 @@ void ModbusRTUDevice::dataAvailable()
 	}
 	responseBuffer.append(port->readAll());
 	@<Check Modbus RTU message size@>@;
+	commTimeout->stop();
 	if(calculateCRC(responseBuffer) == 0)
 	{
 		QObject *object = retObjQueue.at(0);
@@ -17429,12 +18169,12 @@ void ModbusRTUDevice::dataAvailable()
 		messageQueue.removeAt(0);
 		retObjQueue.removeAt(0);
 		callbackQueue.removeAt(0);
-		messageDelayTimer->start(delayTime);
 	}
 	else
 	{
 		qDebug() << "CRC failed";
 	}
+	messageDelayTimer->start(delayTime);
 	waiting = @[false@];
 	responseBuffer.clear();
 }
@@ -17549,6 +18289,7 @@ void ModbusRTUDevice::sendNextMessage()
 		message.append(check[0]);
 		message.append(check[1]);
 		port->write(message);
+		commTimeout->start(2000);
 		messageDelayTimer->start(delayTime);
 		waiting = @[true@];
 	}
@@ -17578,6 +18319,22 @@ void ModbusRTUDevice::outputSV(double value)
 void ModbusRTUDevice::ignore(QByteArray)
 {
 	return;
+}
+
+@ Sometimes a communications failure will occur in which a response to a
+command is never received. To reset communications we set a timer whenever a
+command is sent and stop that once a full response is received. If the timer
+times out, we should clear the response buffer and attempt to re-establish
+communications. Currently this timeout is hard coded at 2 seconds, however
+this should be configurable and smaller values may well be acceptable.
+
+@<ModbusRTUDevice implementation@>=
+void ModbusRTUDevice::timeout()
+{
+	qDebug() << "Communications timeout.";
+	responseBuffer.clear();
+	waiting = false;
+	messageDelayTimer->start();
 }
 
 @ This class must be exposed to the host environment.
@@ -18203,6 +18960,10 @@ app.registerDeviceConfigurationWidget("modbusrtu", ModbusConfigurator::staticMet
 @<Register top level device configuration nodes@>=
 inserter = new NodeInserter(tr("Modbus RTU Device"), tr("Modbus RTU Device"), "modbusrtu", NULL);
 topLevelNodeInserters.append(inserter);
+
+@i unsupportedserial.w
+
+@i phidgets.w
 
 @* Configuration widget for a calibrated data series.
 

@@ -18963,6 +18963,8 @@ topLevelNodeInserters.append(inserter);
 
 @i unsupportedserial.w
 
+@i phidgets.w
+
 @* Configuration widget for a calibrated data series.
 
 \noindent This control is used for adding a |LinearSplineInterpolator| to the

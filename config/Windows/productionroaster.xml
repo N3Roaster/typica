@@ -70,6 +70,7 @@
 		var nidevices = new Array();
 		var dataqsdkdevices = new Array();
 		var jsdevices = new Array();
+		var pdevices = new Array();
 		var temperatureDisplays = new Array();
 		var columnNames = new Array();
 		var modbusdevices = new Array();
@@ -388,6 +389,27 @@
 					device.start();
 					jsdevices.push(device);
 				}
+				else if(driverReference.driver == "phidgets1048")
+				{
+					var device = new PhidgetsTemperatureSensor(driverIndex);
+					for(var j = 0; j < device.channelCount(); j++) {
+						channels.push(device.getChannel(j));
+						columnNames.push(device.channelColumnName(j));
+						channelType.push("T");
+						if(device.isChannelHidden(j)) {
+							channelVisibility.push(false);
+						} else {
+							channelVisibility.push(true);
+							var indicator = new TemperatureDisplay;
+							temperatureDisplays.push(indicator);
+							var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+							device.getChannel(j).newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
+					}
+					device.start();
+					pdevices.push(device);
+				}
 				else if(driverReference.driver == "annotationbutton")
 				{
 					var button = new AnnotationButton(driverReference.buttontext);
@@ -635,10 +657,16 @@
 				jsdevices[i].stop();
 				jsdevices[i].deleteLater();
 			}
+			for(var i = 0; i < pdevices.length; i++)
+			{
+				pdevices[i].stop();
+				pdevices[i].deleteLater();
+			}
 			delete nidevices;
 			delete modbusdevices;
 			delete dataqsdkdevices;
 			delete jsdevices;
+			delete pdevices;
             window.saveSizeAndPosition("window");
             vsplit.saveState("script/loggingView/" + roasterIndex + "/mainSplitter");
 			QSettings.setValue("script/loggingView/" + roasterIndex + "/instrumentCount", isplit.count());

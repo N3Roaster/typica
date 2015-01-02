@@ -1,8 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'typica.cpp'
 **
-** Created: Thu Jul 3 12:34:58 2014
-**      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
+** Created by: The Qt Meta Object Compiler version 63 (Qt 4.8.6)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,7 +9,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'typica.cpp' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.4. It"
+#error "This file was generated using the moc from 4.8.6. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -5625,13 +5624,87 @@ int GraphSettingsRelativeTab::qt_metacall(QMetaObject::Call _c, int _id, void **
     }
     return _id;
 }
+static const uint qt_meta_data_AdvancedSettingsWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       1,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      32,   24,   23,   23, 0x0a,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_AdvancedSettingsWidget[] = {
+    "AdvancedSettingsWidget\0\0enabled\0"
+    "enableDiagnosticLogging(bool)\0"
+};
+
+void AdvancedSettingsWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        AdvancedSettingsWidget *_t = static_cast<AdvancedSettingsWidget *>(_o);
+        switch (_id) {
+        case 0: _t->enableDiagnosticLogging((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData AdvancedSettingsWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject AdvancedSettingsWidget::staticMetaObject = {
+    { &QWidget::staticMetaObject, qt_meta_stringdata_AdvancedSettingsWidget,
+      qt_meta_data_AdvancedSettingsWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &AdvancedSettingsWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *AdvancedSettingsWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *AdvancedSettingsWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_AdvancedSettingsWidget))
+        return static_cast<void*>(const_cast< AdvancedSettingsWidget*>(this));
+    return QWidget::qt_metacast(_clname);
+}
+
+int AdvancedSettingsWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 1)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 1;
+    }
+    return _id;
+}
 static const uint qt_meta_data_ModbusRTUDevice[] = {
 
  // content:
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -5655,11 +5728,12 @@ static const uint qt_meta_data_ModbusRTUDevice[] = {
      262,   16,   16,   16, 0x08,
      283,  152,   16,   16, 0x08,
      305,  152,   16,   16, 0x08,
+     324,   16,   16,   16, 0x08,
 
  // methods: signature, parameters, type, tag, flags
-     331,   16,  324,   16, 0x02,
-     341,   16,  324,   16, 0x02,
-     355,   16,  351,   16, 0x02,
+     341,   16,  334,   16, 0x02,
+     351,   16,  334,   16, 0x02,
+     365,   16,  361,   16, 0x02,
 
        0        // eod
 };
@@ -5673,8 +5747,8 @@ static const char qt_meta_stringdata_ModbusRTUDevice[] = {
     "unitResponse(QByteArray)\0"
     "svlResponse(QByteArray)\0svuResponse(QByteArray)\0"
     "requestMeasurement()\0mResponse(QByteArray)\0"
-    "ignore(QByteArray)\0double\0SVLower()\0"
-    "SVUpper()\0int\0decimals()\0"
+    "ignore(QByteArray)\0timeout()\0double\0"
+    "SVLower()\0SVUpper()\0int\0decimals()\0"
 };
 
 void ModbusRTUDevice::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -5697,11 +5771,12 @@ void ModbusRTUDevice::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 11: _t->requestMeasurement(); break;
         case 12: _t->mResponse((*reinterpret_cast< QByteArray(*)>(_a[1]))); break;
         case 13: _t->ignore((*reinterpret_cast< QByteArray(*)>(_a[1]))); break;
-        case 14: { double _r = _t->SVLower();
+        case 14: _t->timeout(); break;
+        case 15: { double _r = _t->SVLower();
             if (_a[0]) *reinterpret_cast< double*>(_a[0]) = _r; }  break;
-        case 15: { double _r = _t->SVUpper();
+        case 16: { double _r = _t->SVUpper();
             if (_a[0]) *reinterpret_cast< double*>(_a[0]) = _r; }  break;
-        case 16: { int _r = _t->decimals();
+        case 17: { int _r = _t->decimals();
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -5740,9 +5815,9 @@ int ModbusRTUDevice::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 18;
     }
     return _id;
 }
@@ -6260,6 +6335,289 @@ void JavaScriptDevice::triggerStopBatch()
 void JavaScriptDevice::deviceStopRequested()
 {
     QMetaObject::activate(this, &staticMetaObject, 3, 0);
+}
+static const uint qt_meta_data_PhidgetsTemperatureSensorConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       2,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   24, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      37,   36,   36,   36, 0x08,
+      53,   50,   36,   36, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+      81,   69,   36,   36, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_PhidgetsTemperatureSensorConfWidget[] = {
+    "PhidgetsTemperatureSensorConfWidget\0"
+    "\0addChannel()\0ms\0updateRate(int)\0"
+    "model,index\0"
+    "PhidgetsTemperatureSensorConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void PhidgetsTemperatureSensorConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { PhidgetsTemperatureSensorConfWidget *_r = new PhidgetsTemperatureSensorConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        PhidgetsTemperatureSensorConfWidget *_t = static_cast<PhidgetsTemperatureSensorConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->addChannel(); break;
+        case 1: _t->updateRate((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData PhidgetsTemperatureSensorConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject PhidgetsTemperatureSensorConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_PhidgetsTemperatureSensorConfWidget,
+      qt_meta_data_PhidgetsTemperatureSensorConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &PhidgetsTemperatureSensorConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *PhidgetsTemperatureSensorConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *PhidgetsTemperatureSensorConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_PhidgetsTemperatureSensorConfWidget))
+        return static_cast<void*>(const_cast< PhidgetsTemperatureSensorConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int PhidgetsTemperatureSensorConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 2)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 2;
+    }
+    return _id;
+}
+static const uint qt_meta_data_PhidgetTemperatureSensorChannelConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       4,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   34, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      49,   43,   42,   42, 0x08,
+      82,   75,   42,   42, 0x08,
+     107,  101,   42,   42, 0x08,
+     129,  121,   42,   42, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+     160,  148,   42,   42, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_PhidgetTemperatureSensorChannelConfWidget[] = {
+    "PhidgetTemperatureSensorChannelConfWidget\0"
+    "\0value\0updateColumnName(QString)\0"
+    "hidden\0updateHidden(bool)\0index\0"
+    "updateTC(int)\0channel\0updateChannel(int)\0"
+    "model,index\0"
+    "PhidgetTemperatureSensorChannelConfWidget(DeviceTreeModel*,QModelIndex"
+    ")\0"
+};
+
+void PhidgetTemperatureSensorChannelConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { PhidgetTemperatureSensorChannelConfWidget *_r = new PhidgetTemperatureSensorChannelConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        PhidgetTemperatureSensorChannelConfWidget *_t = static_cast<PhidgetTemperatureSensorChannelConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateColumnName((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->updateHidden((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 2: _t->updateTC((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: _t->updateChannel((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData PhidgetTemperatureSensorChannelConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject PhidgetTemperatureSensorChannelConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_PhidgetTemperatureSensorChannelConfWidget,
+      qt_meta_data_PhidgetTemperatureSensorChannelConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &PhidgetTemperatureSensorChannelConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *PhidgetTemperatureSensorChannelConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *PhidgetTemperatureSensorChannelConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_PhidgetTemperatureSensorChannelConfWidget))
+        return static_cast<void*>(const_cast< PhidgetTemperatureSensorChannelConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int PhidgetTemperatureSensorChannelConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 4)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 4;
+    }
+    return _id;
+}
+static const uint qt_meta_data_PhidgetsTemperatureSensor[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       7,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   49, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      27,   26,   26,   26, 0x0a,
+      35,   26,   26,   26, 0x0a,
+      42,   26,   26,   26, 0x08,
+
+ // methods: signature, parameters, type, tag, flags
+      64,   26,   60,   26, 0x02,
+      92,   84,   79,   26, 0x02,
+     121,   84,  113,   26, 0x02,
+     144,   84,  113,   26, 0x02,
+
+ // constructors: signature, parameters, type, tag, flags
+     182,  170,   26,   26, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_PhidgetsTemperatureSensor[] = {
+    "PhidgetsTemperatureSensor\0\0start()\0"
+    "stop()\0getMeasurements()\0int\0"
+    "channelCount()\0bool\0channel\0"
+    "isChannelHidden(int)\0QString\0"
+    "channelColumnName(int)\0channelIndicatorText(int)\0"
+    "deviceIndex\0PhidgetsTemperatureSensor(QModelIndex)\0"
+};
+
+void PhidgetsTemperatureSensor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { PhidgetsTemperatureSensor *_r = new PhidgetsTemperatureSensor((*reinterpret_cast< const QModelIndex(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        PhidgetsTemperatureSensor *_t = static_cast<PhidgetsTemperatureSensor *>(_o);
+        switch (_id) {
+        case 0: _t->start(); break;
+        case 1: _t->stop(); break;
+        case 2: _t->getMeasurements(); break;
+        case 3: { int _r = _t->channelCount();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 4: { bool _r = _t->isChannelHidden((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 5: { QString _r = _t->channelColumnName((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 6: { QString _r = _t->channelIndicatorText((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData PhidgetsTemperatureSensor::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject PhidgetsTemperatureSensor::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_PhidgetsTemperatureSensor,
+      qt_meta_data_PhidgetsTemperatureSensor, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &PhidgetsTemperatureSensor::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *PhidgetsTemperatureSensor::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *PhidgetsTemperatureSensor::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_PhidgetsTemperatureSensor))
+        return static_cast<void*>(const_cast< PhidgetsTemperatureSensor*>(this));
+    return QObject::qt_metacast(_clname);
+}
+
+int PhidgetsTemperatureSensor::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 7)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 7;
+    }
+    return _id;
 }
 static const uint qt_meta_data_LinearSplineInterpolationConfWidget[] = {
 

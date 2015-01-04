@@ -848,6 +848,7 @@
 			}
             log.setDisplayUnits(Units.Celsius);
             graph.showC();
+			QSettings.setValue("temperatureUnit", "C");
         });
         var showF = findChildObject(this, 'showF');
         showF.triggered.connect(function() {
@@ -857,7 +858,12 @@
 			}
             log.setDisplayUnits(Units.Fahrenheit);
             graph.showF();
+			QSettings.setValue("temperatureUnit", "F");
         });
+		if(QSettings.value("temperatureUnit", "F") == "C")
+		{
+			showC.trigger();
+		}
 		var clear = findChildObject(this, 'clear');
         clear.triggered.connect(log.clear);
         clear.triggered.connect(graph.clear);

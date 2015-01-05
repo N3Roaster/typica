@@ -26,6 +26,7 @@ class HelpMenu : public QMenu
 		HelpMenu();
 	public slots:
 		void displayAboutTypica();
+		void displayLicenseWindow();
 };
 
 #endif
@@ -35,14 +36,12 @@ class HelpMenu : public QMenu
 @(helpmenu.cpp@>=
 #include "helpmenu.h"
 #include "abouttypica.h"
+#include "licensewindow.h"
 
 @<Help menu implementation@>@;
 
 @ The constructor sets an object name for the menu so scripts are able to look
-up the menu and add additional items. The "About Typica" menu item also has an
-object name which can be used to provide custom handling if this is desired.
-The |triggered()| signal from that item is immediately connected to a handler
-for displaying an about box.
+up the menu and add additional items.
 
 @<Help menu implementation@>=
 HelpMenu::HelpMenu() : QMenu()
@@ -53,6 +52,10 @@ HelpMenu::HelpMenu() : QMenu()
 	aboutTypicaAction->setObjectName("aboutTypicaAction");
 	addAction(aboutTypicaAction);
 	connect(aboutTypicaAction, SIGNAL(triggered()), this, SLOT(displayAboutTypica()));
+	QAction *licenseAction = new QAction(tr("License Information"), this);
+	licenseAction->setObjectName("licenseAction");
+	addAction(licenseAction);
+	connect(licenseAction, SIGNAL(triggered()), this, SLOT(displayLicenseWindow()));
 }
 
 @ When "About Typica" is selected from the menu, we display an about box. This
@@ -63,5 +66,15 @@ void HelpMenu::displayAboutTypica()
 {
 	AboutTypica *aboutBox = new AboutTypica;
 	aboutBox->show();
+}
+
+@ Similarly, the "License Information" menu item brings up a window with
+appropriate information.
+
+@<Help menu implementation@>=
+void HelpMenu::displayLicenseWindow()
+{
+	LicenseWindow *window = new LicenseWindow;
+	window->show();
 }
 

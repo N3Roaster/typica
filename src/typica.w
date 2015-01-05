@@ -4612,7 +4612,7 @@ while(j < menuItems.count())
 
 @i helpmenu.w
 
-@i feedback.w
+@i licensewindow.w
 
 @ A layout can contain a number of different elements including a variety of
 widget types and other layouts. This function is responsible for applying any

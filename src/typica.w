@@ -35,57 +35,57 @@
 \font\manual=manfnt at 12pt
 \def\danbend{{\manual\char127}}
 \def\datanger{\medbreak\begingroup\clubpenalty=10000
-	\def\par{\endgraf\endgroup\medbreak} \noindent\hang\hangafter=-2
-	\hbox to0pt{\hskip-3.5pc\danbend\hfill}}
+    \def\par{\endgraf\endgroup\medbreak} \noindent\hang\hangafter=-2
+    \hbox to0pt{\hskip-3.5pc\danbend\hfill}}
 \outer\def\danger{\datanger}%
 %
 \def\datangerb{\medbreak\begingroup\clubpenalty=10000
-	\def\par{\endgraf\endgroup\medbreak} \noindent\hang\hangafter=-2
-	\hbox to0pt{\hskip-3.5pc\danbend\hfill}}
+    \def\par{\endgraf\endgroup\medbreak} \noindent\hang\hangafter=-2
+    \hbox to0pt{\hskip-3.5pc\danbend\hfill}}
 \outer\def\dangerb{\datangerb}
 
 \def\endanger{\medskip}
 
 \def\nullsec{\S1}
 \def\lheader{\mainfont\the\pageno\kern1pc(\topsecno)\eightrm
-	\qquad\grouptitle\hfill\title}
+    \qquad\grouptitle\hfill\title}
 \def\rheader{\eightrm\title\hfill\grouptitle\qquad\mainfont
-	(\topsecno)\kern1pc\the\pageno}
+    (\topsecno)\kern1pc\the\pageno}
 \def\botofcontents{\vfill
-	\noindent Copyright \copyright\ \years~Neal Evan Wilson
-	\bigskip\noindent Permission is hereby granted, free of charge, to any
-	person obtaining a copy of this software and associated documentation files
-	(the ``Software''), to deal in the Software without restriction, including
-	without limitation the rights to use, copy, modify, merge, publish,
-	distribute, sublicense, and/or sell copies of the Software, and to permit
-	persons to whom the Software is furnished to do so, subject to the following
-	conditions:\medskip
+    \noindent Copyright \copyright\ \years~Neal Evan Wilson
+    \bigskip\noindent Permission is hereby granted, free of charge, to any
+    person obtaining a copy of this software and associated documentation files
+    (the ``Software''), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to permit
+    persons to whom the Software is furnished to do so, subject to the following
+    conditions:\medskip
 
-	The above copyright notice and this permission notice shall be included in
-	all copies or substantial portions of the Software.\medskip
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.\medskip
 
-	THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-	IN THE SOFTWARE.
+    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+    IN THE SOFTWARE.
 
-	\bigskip\noindent Parts of \pn{} are from QextSerialPort which is used under the
-	MIT license as follows:
+    \bigskip\noindent Parts of \pn{} are from QextSerialPort which is used under the
+    MIT license as follows:
 
-	\bigskip\noindent Copyright \copyright\ 2000--2003 Wayne Roth
+    \bigskip\noindent Copyright \copyright\ 2000--2003 Wayne Roth
 
     \noindent Copyright \copyright\ 2004--2007 Stefan Sander
 
-	\noindent Copyright \copyright\ 2007 Michal Policht
+    \noindent Copyright \copyright\ 2007 Michal Policht
 
-	\noindent Copyright \copyright\ 2008 Brandon Fosdick
+    \noindent Copyright \copyright\ 2008 Brandon Fosdick
 
-	\noindent Copyright \copyright\ 2009--2010 Liam Staskawicz
+    \noindent Copyright \copyright\ 2009--2010 Liam Staskawicz
 
-	\noindent Copyright \copyright\ 2011 Debao Zhang
+    \noindent Copyright \copyright\ 2011 Debao Zhang
 
     \bigskip\noindent Web: http://code.google.com/p/qextserialport/
 
@@ -111,8 +111,8 @@
 
 \let\K=\leftarrow
 \def\CPLUSPLUS/{{%
-	\mc C{\hbox{\kern.5pt\raise1pt\hbox{\sevenrm+\kern-1pt+}\kern.5pt}}
-	\spacefactor1000}}
+    \mc C{\hbox{\kern.5pt\raise1pt\hbox{\sevenrm+\kern-1pt+}\kern.5pt}}
+    \spacefactor1000}}
 \def\PP{\uparrow}
 \def\MM{\downarrow}
 \newbox\DCBox
@@ -139,15 +139,15 @@
 \def\web{\.{WEB}}
 \newcount\footnotenumber
 \def\nfnote{\global\advance\footnotenumber by 1
-	\footnote{$^{\the\footnotenumber}$}}
+    \footnote{$^{\the\footnotenumber}$}}
 
 % Listing macro from The TeXBook. See page 381 for an explaination.
 \def\uncatcodespecials{\def\do##1{\catcode`##1=12 }\dospecials}
 \newcount\lineno
 \def\setupverbatim{\tt \lineno=0
-	\def\par{\leavevmode\endgraf} \catcode`\`=\active
-	\obeylines \uncatcodespecials \obeyspaces
-	\everypar{\advance\lineno by1 \llap{\sevenrm\the\lineno\ \ }}}
+    \def\par{\leavevmode\endgraf} \catcode`\`=\active
+    \obeylines \uncatcodespecials \obeyspaces
+    \everypar{\advance\lineno by1 \llap{\sevenrm\the\lineno\ \ }}}
 {\obeyspaces\global\let =\ }
 \def\listing#1{\par\begingroup\setupverbatim\input#1 \endgroup}
 
@@ -671,48 +671,48 @@ returned.
 @<Functions for scripting@>=
 template<class TYPE> TYPE@, getself(QScriptContext *context)
 {
-	TYPE@, self = qobject_cast<TYPE>(context->thisObject().toQObject());
-	return self;
+    TYPE@, self = qobject_cast<TYPE>(context->thisObject().toQObject());
+    return self;
 }
 
 template<> QTime getself(QScriptContext *context)
 {
-	QTime self = context->thisObject().toVariant().toTime();
-	return self;
+    QTime self = context->thisObject().toVariant().toTime();
+    return self;
 }
 
 template<> QByteArray getself(QScriptContext *context)
 {
-	QByteArray self = context->thisObject().toVariant().toByteArray();
-	return self;
+    QByteArray self = context->thisObject().toVariant().toByteArray();
+    return self;
 }
 
 template<> SqlQueryConnection* getself(QScriptContext *context)
 {
-	SqlQueryConnection *self =@|
-		(SqlQueryConnection *)qscriptvalue_cast<void *>(context->thisObject());
-	return self;
+    SqlQueryConnection *self =@|
+        (SqlQueryConnection *)qscriptvalue_cast<void *>(context->thisObject());
+    return self;
 }
 
 template<> QXmlQuery* getself(QScriptContext *context)
 {
-	QXmlQuery *self =
-		(QXmlQuery *)qscriptvalue_cast<void *>(context->thisObject());
-	return self;
+    QXmlQuery *self =
+        (QXmlQuery *)qscriptvalue_cast<void *>(context->thisObject());
+    return self;
 }
 
 template<> QXmlStreamWriter* getself(QScriptContext *context)
 {
-	QXmlStreamWriter *self = @|
-		(QXmlStreamWriter *)qscriptvalue_cast<void *>(context->thisObject());
-	return self;
+    QXmlStreamWriter *self = @|
+        (QXmlStreamWriter *)qscriptvalue_cast<void *>(context->thisObject());
+    return self;
 }
 
 template<> QXmlStreamReader* getself(QScriptContext *context)
 {
-	QXmlStreamReader *self = @|
-		(QXmlStreamReader *)qscriptvalue_cast<void *>(context->thisObject());
-	return self;
+    QXmlStreamReader *self = @|
+        (QXmlStreamReader *)qscriptvalue_cast<void *>(context->thisObject());
+    return self;
 }
 
 @ Another common task is obtaining the arguments of a method call from the
@@ -722,49 +722,49 @@ again done with templates.
 @<Functions for scripting@>=
 template<class TYPE> TYPE@, argument(int arg, QScriptContext *context)
 {
-	TYPE@, argument = qobject_cast<TYPE>(context->argument(arg).toQObject());
-	return argument;
+    TYPE@, argument = qobject_cast<TYPE>(context->argument(arg).toQObject());
+    return argument;
 }
 
 template<> QString argument(int arg, QScriptContext *context)
 {
-	return context->argument(arg).toString();
+    return context->argument(arg).toString();
 }
 
 template<> QVariant argument(int arg, QScriptContext *context)
 {
-	return context->argument(arg).toVariant();
+    return context->argument(arg).toVariant();
 }
 
 template<> int argument(int arg, QScriptContext *context)
 {
-	return context->argument(arg).toInt32();
+    return context->argument(arg).toInt32();
 }
 
 template<> SqlQueryConnection* argument(int arg, QScriptContext *context)
 {
-	return (SqlQueryConnection *)
-	        qscriptvalue_cast<void *>(context->argument(arg));
+    return (SqlQueryConnection *)
+            qscriptvalue_cast<void *>(context->argument(arg));
 }
 
 template<> QModelIndex argument(int arg, QScriptContext *context)
 {
-	return qscriptvalue_cast<QModelIndex>(context->argument(arg));
+    return qscriptvalue_cast<QModelIndex>(context->argument(arg));
 }
 
 template<> double argument(int arg, QScriptContext *context)
 {
-	return (double)(context->argument(arg).toNumber());
+    return (double)(context->argument(arg).toNumber());
 }
 
 template<> Units::Unit argument(int arg, QScriptContext *context)
 {
-	return (Units::Unit)(context->argument(arg).toInt32());
+    return (Units::Unit)(context->argument(arg).toInt32());
 }
 
 template<> QByteArray argument(int arg, QScriptContext *context)
 {
-	return qscriptvalue_cast<QByteArray>(context->argument(arg));
+    return qscriptvalue_cast<QByteArray>(context->argument(arg));
 }
 
 @ The scripting engine is informed of a number of classes defined elsewhere in
@@ -814,7 +814,7 @@ It will, however, be called by subclasses in case this changes in the future.
 @<Functions for scripting@>=
 void setQObjectProperties(QScriptValue, QScriptEngine *)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @ The same can be done for |QPaintDevice| and |QLayoutItem|.
@@ -828,12 +828,12 @@ void setQLayoutItemProperties(QScriptValue value, QScriptEngine *engine);
 @<Functions for scripting@>=
 void setQPaintDeviceProperties(QScriptValue, QScriptEngine *)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 void setQLayoutItemProperties(QScriptValue, QScriptEngine *)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @* Scripting QWidget.
@@ -867,18 +867,18 @@ subclasses.
 @<Functions for scripting@>=
 QScriptValue constructQWidget(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QWidget);
-	setQWidgetProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QWidget);
+    setQWidgetProperties(object, engine);
+    return object;
 }
 
 void setQWidgetProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	setQPaintDeviceProperties(value, engine);
-	value.setProperty("setLayout", engine->newFunction(QWidget_setLayout));
-	value.setProperty("activateWindow",
-	                  engine->newFunction(QWidget_activateWindow));
+    setQObjectProperties(value, engine);
+    setQPaintDeviceProperties(value, engine);
+    value.setProperty("setLayout", engine->newFunction(QWidget_setLayout));
+    value.setProperty("activateWindow",
+                      engine->newFunction(QWidget_activateWindow));
 }
 
 @ This just leaves the property implementations. |QWidget::setLayout()| takes
@@ -889,36 +889,36 @@ meaningful.
 @<Functions for scripting@>=
 QScriptValue QWidget_setLayout(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QWidget *self = getself<QWidget *>(context);
-		QLayout *layout = argument<QLayout *>(0, context);
-		if(layout)
-		{
-			self->setLayout(layout);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QWidget::setLayout(). This method requires "@|
-								"a QLayout.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QWidget::setLayout(). This method takes one "@|
-							"QLayout as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QWidget *self = getself<QWidget *>(context);
+        QLayout *layout = argument<QLayout *>(0, context);
+        if(layout)
+        {
+            self->setLayout(layout);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QWidget::setLayout(). This method requires "@|
+                                "a QLayout.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QWidget::setLayout(). This method takes one "@|
+                            "QLayout as an argument.");
+    }
+    return QScriptValue();
 }
 
 QScriptValue QWidget_activateWindow(QScriptContext *context,
                                     QScriptEngine *)
 {
-	QWidget *self = getself<QWidget *>(context);
-	self->activateWindow();
-	return QScriptValue();
+    QWidget *self = getself<QWidget *>(context);
+    self->activateWindow();
+    return QScriptValue();
 }
 
 @* Scripting QMainWindow.
@@ -946,80 +946,80 @@ such that an appropriate prompt is provided to confirm or cancel close events.
 @<Class declarations@>=
 class ScriptQMainWindow : public QMainWindow@/
 {@t\1@>@/
-	Q_OBJECT@;@/
-	Q_PROPERTY(QString closePrompt READ closePrompt WRITE setClosePrompt)@;@/
-	public:@/
-		ScriptQMainWindow();
-		QString closePrompt();@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void show();
-		void saveSizeAndPosition(const QString &key);
-		void restoreSizeAndPosition(const QString &key);
-		void displayStatus(const QString &message = QString());
-		void setClosePrompt(QString prompt);@/
-	protected:@/
-		void closeEvent(QCloseEvent *event);
-		void showEvent(QShowEvent *event);@/
-	signals:@/
-		void aboutToClose(void);@/
-	private:@/
-		QString cprompt;@t\2@>@/
+    Q_OBJECT@;@/
+    Q_PROPERTY(QString closePrompt READ closePrompt WRITE setClosePrompt)@;@/
+    public:@/
+        ScriptQMainWindow();
+        QString closePrompt();@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void show();
+        void saveSizeAndPosition(const QString &key);
+        void restoreSizeAndPosition(const QString &key);
+        void displayStatus(const QString &message = QString());
+        void setClosePrompt(QString prompt);@/
+    protected:@/
+        void closeEvent(QCloseEvent *event);
+        void showEvent(QShowEvent *event);@/
+    signals:@/
+        void aboutToClose(void);@/
+    private:@/
+        QString cprompt;@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The implementation of these functions is simple.
 
 @<Functions for scripting@>=
 ScriptQMainWindow::ScriptQMainWindow()@+: QMainWindow(NULL),
-	cprompt(tr("Closing this window may result in loss of data. Continue?"))@/
+    cprompt(tr("Closing this window may result in loss of data. Continue?"))@/
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 void ScriptQMainWindow::saveSizeAndPosition(const QString &key)
 {
-	QSettings settings;
-	settings.beginGroup(key);
-	settings.setValue("pos", pos());
-	settings.setValue("size", size());
-	settings.endGroup();
+    QSettings settings;
+    settings.beginGroup(key);
+    settings.setValue("pos", pos());
+    settings.setValue("size", size());
+    settings.endGroup();
 }
 
 void ScriptQMainWindow::restoreSizeAndPosition(const QString &key)
 {
-	QSettings settings;
-	settings.beginGroup(key);
-	if(settings.contains("size"))
-	{
-		resize(settings.value("size").toSize());
-	}
-	if(settings.contains("pos"))
-	{
-		move(settings.value("pos").toPoint());
-	}
-	settings.endGroup();
+    QSettings settings;
+    settings.beginGroup(key);
+    if(settings.contains("size"))
+    {
+        resize(settings.value("size").toSize());
+    }
+    if(settings.contains("pos"))
+    {
+        move(settings.value("pos").toPoint());
+    }
+    settings.endGroup();
 }
 
 void ScriptQMainWindow::displayStatus(const QString &message)
 {
-	statusBar()->showMessage(message);
+    statusBar()->showMessage(message);
 }
 
 void ScriptQMainWindow::showEvent(QShowEvent *event)
 {
-	if(!event->spontaneous())
-	{
-		@<Restore window geometry@>@;
-		event->accept();
-	}
-	else
-	{
-		event->ignore();
-	}
+    if(!event->spontaneous())
+    {
+        @<Restore window geometry@>@;
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 void ScriptQMainWindow::show()
 {
-	QMainWindow::show();
+    QMainWindow::show();
 }
 
 @ When a close event occurs, we check the |windowModified| property to
@@ -1032,12 +1032,12 @@ close.
 @<Functions for scripting@>=
 void ScriptQMainWindow::closeEvent(QCloseEvent *event)
 {
-	if(isWindowModified()) {
-		@<Allow close event to be cancelled@>@;
-	}
-	emit aboutToClose();
-	@<Save window geometry@>@;
-	event->accept();
+    if(isWindowModified()) {
+        @<Allow close event to be cancelled@>@;
+    }
+    emit aboutToClose();
+    @<Save window geometry@>@;
+    event->accept();
 }
 
 @ The prompt text for our confirmation window is provided through the
@@ -1049,8 +1049,8 @@ result = QMessageBox::warning(this, "Typica", closePrompt(),
                               QMessageBox::Ok | QMessageBox::Cancel);
 if(result == QMessageBox::Cancel)
 {
-	event->ignore();
-	return;
+    event->ignore();
+    return;
 }
 
 @ Implementation of the |closePrompt| property is trivial.
@@ -1058,12 +1058,12 @@ if(result == QMessageBox::Cancel)
 @<Functions for scripting@>=
 QString ScriptQMainWindow::closePrompt()
 {
-	return cprompt;
+    return cprompt;
 }
 
 void ScriptQMainWindow::setClosePrompt(QString prompt)
 {
-	cprompt = prompt;
+    cprompt = prompt;
 }
 
 @ Window geometry management from version 1.4 on makes use of the window ID to
@@ -1083,7 +1083,7 @@ settings.setValue(QString("geometries/%1").arg(objectName()), saveGeometry());
 @<Restore window geometry@>=
 QSettings settings;
 restoreGeometry(settings.value(QString("geometries/%1").arg(objectName())).
-					toByteArray());
+                    toByteArray());
 
 @ Three functions are required to obtain the required functionality from a
 script. A fourth adds properties for the object hierarchy.
@@ -1111,17 +1111,17 @@ newly created value.
 @<Functions for scripting@>=
 QScriptValue constructQMainWindow(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new ScriptQMainWindow);
-	setQMainWindowProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new ScriptQMainWindow);
+    setQMainWindowProperties(object, engine);
+    return object;
 }
 
 void setQMainWindowProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
-	value.setProperty("setCentralWidget",
-	                  engine->newFunction(QMainWindow_setCentralWidget));
-	value.setProperty("menuBar", engine->newFunction(QMainWindow_menuBar));
+    setQWidgetProperties(value, engine);
+    value.setProperty("setCentralWidget",
+                      engine->newFunction(QMainWindow_setCentralWidget));
+    value.setProperty("menuBar", engine->newFunction(QMainWindow_menuBar));
 }
 
 @ The |"setCentralWidget"| property is used for setting a widget in the main
@@ -1132,30 +1132,30 @@ custom widget defined in a local change. This is a simple wrapper around
 
 @<Functions for scripting@>=
 QScriptValue QMainWindow_setCentralWidget(QScriptContext *context,
-											QScriptEngine *)
+                                            QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QMainWindow *self = getself<QMainWindow *>(context);
-		QWidget *widget = argument<QWidget *>(0, context);
-		if(widget)
-		{
-			self->setCentralWidget(widget);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QMainWindow::setCentralWidget(). This "@|
-								"method requires a QWidget.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QMainWindow::setCentralWidget(). This method "@|
-							"takes one QWidget as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QMainWindow *self = getself<QMainWindow *>(context);
+        QWidget *widget = argument<QWidget *>(0, context);
+        if(widget)
+        {
+            self->setCentralWidget(widget);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QMainWindow::setCentralWidget(). This "@|
+                                "method requires a QWidget.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QMainWindow::setCentralWidget(). This method "@|
+                            "takes one QWidget as an argument.");
+    }
+    return QScriptValue();
 }
 
 @ The |"menuBar"| property requires that we expose |QMenuBar| to the scripting
@@ -1167,21 +1167,21 @@ it back.
 @<Functions for scripting@>=
 QScriptValue QMainWindow_menuBar(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 0)
-	{
-		QMainWindow *self = getself<@[QMainWindow *@]>(context);
-		QMenuBar *bar = self->menuBar();
-		object = engine->newQObject(bar);
-		setQMenuBarProperties(object, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QMainWindow::menuBar(). This method takes no "@|
-							"arguments.");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 0)
+    {
+        QMainWindow *self = getself<@[QMainWindow *@]>(context);
+        QMenuBar *bar = self->menuBar();
+        object = engine->newQObject(bar);
+        setQMenuBarProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QMainWindow::menuBar(). This method takes no "@|
+                            "arguments.");
+    }
+    return object;
 }
 
 @ The previous function is the only place a new |QMenuBar| is created through
@@ -1197,8 +1197,8 @@ object.
 @<Functions for scripting@>=
 void setQMenuBarProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
-	value.setProperty("addMenu", engine->newFunction(QMenuBar_addMenu));
+    setQWidgetProperties(value, engine);
+    value.setProperty("addMenu", engine->newFunction(QMenuBar_addMenu));
 }
 
 @ This function can be used to add new menus to a menu bar. In order to do
@@ -1212,21 +1212,21 @@ function wraps |QMenu* QMenuBar::addMenu(const QString &title)|.
 @<Functions for scripting@>=
 QScriptValue QMenuBar_addMenu(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 1)
-	{
-		QMenuBar *self = getself<@[QMenuBar *@]>(context);
-		QString title = argument<QString>(0, context);
-		object = engine->newQObject(self->addMenu(title));
-		setQMenuProperties(object, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QMenuBar::addMenu(). This method takes one "@|
-							"string as an argument.");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 1)
+    {
+        QMenuBar *self = getself<@[QMenuBar *@]>(context);
+        QString title = argument<QString>(0, context);
+        object = engine->newQObject(self->addMenu(title));
+        setQMenuProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QMenuBar::addMenu(). This method takes one "@|
+                            "string as an argument.");
+    }
+    return object;
 }
 
 @ These three functions allow adding items to the menu and adding separators
@@ -1242,9 +1242,9 @@ QScriptValue QMenu_addSeparator(QScriptContext *context, QScriptEngine *engine);
 @<Functions for scripting@>=
 void setQMenuProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
-	value.setProperty("addAction", engine->newFunction(QMenu_addAction));
-	value.setProperty("addSeparator", engine->newFunction(QMenu_addSeparator));
+    setQWidgetProperties(value, engine);
+    value.setProperty("addAction", engine->newFunction(QMenu_addAction));
+    value.setProperty("addSeparator", engine->newFunction(QMenu_addSeparator));
 }
 
 @ These functions are simple wrappers around |QMenu| methods.
@@ -1252,44 +1252,44 @@ void setQMenuProperties(QScriptValue value, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QMenu_addAction(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QMenu *self = getself<@[QMenu *@]>(context);
-		QAction *action = argument<QAction *>(0, context);
-		if(action)
-		{
-			self->addAction(action);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QMenu::addAction(). This method requires a "@|
-								"QAction.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QMenu::addAction(). This method takes one "@|
-							"QAction as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QMenu *self = getself<@[QMenu *@]>(context);
+        QAction *action = argument<QAction *>(0, context);
+        if(action)
+        {
+            self->addAction(action);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QMenu::addAction(). This method requires a "@|
+                                "QAction.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QMenu::addAction(). This method takes one "@|
+                            "QAction as an argument.");
+    }
+    return QScriptValue();
 }
 
 QScriptValue QMenu_addSeparator(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 0)
-	{
-		QMenu *self = getself<@[QMenu *@]>(context);
-		self->addSeparator();
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QMenu::addSeparator(). This method takes no "@|
-							"arguments.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 0)
+    {
+        QMenu *self = getself<@[QMenu *@]>(context);
+        self->addSeparator();
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QMenu::addSeparator(). This method takes no "@|
+                            "arguments.");
+    }
+    return QScriptValue();
 }
 
 @* Scripting QFrame.
@@ -1314,14 +1314,14 @@ engine->globalObject().setProperty("QFrame", value);
 @<Functions for scripting@>=
 QScriptValue constructQFrame(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QFrame);
-	setQFrameProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QFrame);
+    setQFrameProperties(object, engine);
+    return object;
 }
 
 void setQFrameProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
+    setQWidgetProperties(value, engine);
 }
 
 @* Scripting QLabel.
@@ -1348,19 +1348,19 @@ label.
 @<Functions for scripting@>=
 QScriptValue constructQLabel(QScriptContext *context, QScriptEngine *engine)
 {
-	QString text;
-	if(context->argumentCount() == 1)
-	{
-		text = argument<QString>(0, context);
-	}
-	QScriptValue object = engine->newQObject(new QLabel(text));
-	setQLabelProperties(object, engine);
-	return object;
+    QString text;
+    if(context->argumentCount() == 1)
+    {
+        text = argument<QString>(0, context);
+    }
+    QScriptValue object = engine->newQObject(new QLabel(text));
+    setQLabelProperties(object, engine);
+    return object;
 }
 
 void setQLabelProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQFrameProperties(value, engine);
+    setQFrameProperties(value, engine);
 }
 
 @* Scripting QLineEdit.
@@ -1385,9 +1385,9 @@ engine->globalObject().setProperty("QLineEdit", value);
 @<Functions for scripting@>=
 QScriptValue constructQLineEdit(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QLineEdit());
-	setQLineEditProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QLineEdit());
+    setQLineEditProperties(object, engine);
+    return object;
 }
 
 @ At present all of the QLineEdit functionality exposed through this interface
@@ -1396,7 +1396,7 @@ is provided automatically through the meta-object system.
 @<Functions for scripting@>=
 void setQLineEditProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
+    setQWidgetProperties(value, engine);
 }
 
 @* Scripting QSplitter.
@@ -1411,11 +1411,11 @@ as properties of newly created |QSplitter| objects.
 @<Function prototypes for scripting@>=
 QScriptValue constructQSplitter(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QSplitter_addWidget(QScriptContext *context,
-									QScriptEngine *engine);
+                                    QScriptEngine *engine);
 QScriptValue QSplitter_saveState(QScriptContext *context,
-									QScriptEngine *engine);
+                                    QScriptEngine *engine);
 QScriptValue QSplitter_restoreState(QScriptContext *context,
-									QScriptEngine *engine);
+                                    QScriptEngine *engine);
 QScriptValue QSplitter_count(QScriptContext *context,
                              QScriptEngine *engine);
 void setQSplitterProperties(QScriptValue value, QScriptEngine *engine);
@@ -1432,19 +1432,19 @@ engine->globalObject().setProperty("QSplitter", value);
 @<Functions for scripting@>=
 QScriptValue constructQSplitter(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QSplitter);
-	setQSplitterProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QSplitter);
+    setQSplitterProperties(object, engine);
+    return object;
 }
 
 void setQSplitterProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQFrameProperties(value, engine);
-	value.setProperty("addWidget", engine->newFunction(QSplitter_addWidget));
-	value.setProperty("saveState", engine->newFunction(QSplitter_saveState));
-	value.setProperty("restoreState",
-	                  engine->newFunction(QSplitter_restoreState));
-	value.setProperty("count", engine->newFunction(QSplitter_count));
+    setQFrameProperties(value, engine);
+    value.setProperty("addWidget", engine->newFunction(QSplitter_addWidget));
+    value.setProperty("saveState", engine->newFunction(QSplitter_saveState));
+    value.setProperty("restoreState",
+                      engine->newFunction(QSplitter_restoreState));
+    value.setProperty("count", engine->newFunction(QSplitter_count));
 }
 
 @ The |"addWidget"| property is a simple wrapper around
@@ -1453,28 +1453,28 @@ void setQSplitterProperties(QScriptValue value, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QSplitter_addWidget(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QSplitter *self = getself<QSplitter *>(context);
-		QWidget *widget = argument<QWidget *>(0, context);
-		if(widget)
-		{
-			self->addWidget(widget);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QSplitter::addWidget(). This method "@|
-								"requires a QWidget.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QSplitter::addWidget(). This method takes one "@|
-							"QWidget as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QSplitter *self = getself<QSplitter *>(context);
+        QWidget *widget = argument<QWidget *>(0, context);
+        if(widget)
+        {
+            self->addWidget(widget);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QSplitter::addWidget(). This method "@|
+                                "requires a QWidget.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QSplitter::addWidget(). This method takes one "@|
+                            "QWidget as an argument.");
+    }
+    return QScriptValue();
 }
 
 @ The methods for saving and restoring the state of a splitter do not behave
@@ -1490,8 +1490,8 @@ restore the obsolete saved state.
 @<Functions for scripting@>=
 QScriptValue QSplitter_count(QScriptContext *context, QScriptEngine *)
 {
-	QSplitter *self = getself<QSplitter *>(context);
-	return QScriptValue(self->count());
+    QSplitter *self = getself<QSplitter *>(context);
+    return QScriptValue(self->count());
 }
 
 @ When saving and restoring the state of a splitter, we always want to do this
@@ -1503,38 +1503,38 @@ the data being saved.
 @<Functions for scripting@>=
 QScriptValue QSplitter_saveState(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QSplitter *self = getself<QSplitter *>(context);
-		QString key = argument<QString>(0, context);
-		QSettings settings;
-		settings.setValue(key, self->saveState());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QSplitter::saveState(). This method takes one "@|
-							"string as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QSplitter *self = getself<QSplitter *>(context);
+        QString key = argument<QString>(0, context);
+        QSettings settings;
+        settings.setValue(key, self->saveState());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QSplitter::saveState(). This method takes one "@|
+                            "string as an argument.");
+    }
+    return QScriptValue();
 }
 
 QScriptValue QSplitter_restoreState(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QSplitter *self = getself<QSplitter *>(context);
-		QString key = argument<QString>(0, context);
-		QSettings settings;
-		self->restoreState(settings.value(key).toByteArray());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QSplitter::restoreState(). This method takes "@|
-							"one string as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QSplitter *self = getself<QSplitter *>(context);
+        QString key = argument<QString>(0, context);
+        QSettings settings;
+        self->restoreState(settings.value(key).toByteArray());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QSplitter::restoreState(). This method takes "@|
+                            "one string as an argument.");
+    }
+    return QScriptValue();
 }
 
 @* Scripting Layout classes.
@@ -1556,34 +1556,34 @@ QScriptValue QLayout_addWidget(QScriptContext *context, QScriptEngine *engine);
 @<Functions for scripting@>=
 void setQLayoutProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQLayoutItemProperties(value, engine);
-	value.setProperty("addWidget", engine->newFunction(QLayout_addWidget));
+    setQLayoutItemProperties(value, engine);
+    value.setProperty("addWidget", engine->newFunction(QLayout_addWidget));
 }
 
 QScriptValue QLayout_addWidget(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QLayout *self = getself<QLayout *>(context);
-		QWidget *widget = argument<QWidget *>(0, context);
-		if(widget)
-		{
-			self->addWidget(widget);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-		                        "QLayout::addWidget(). This method requires "@|
-				    			"a QWidget.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QLayout::addWidget(). This method takes one "@|
-							"QWidget as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QLayout *self = getself<QLayout *>(context);
+        QWidget *widget = argument<QWidget *>(0, context);
+        if(widget)
+        {
+            self->addWidget(widget);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QLayout::addWidget(). This method requires "@|
+                                "a QWidget.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QLayout::addWidget(). This method takes one "@|
+                            "QWidget as an argument.");
+    }
+    return QScriptValue();
 }
 
 @ |QBoxLayout| is a more interesting layout class. This allows widgets to be
@@ -1623,48 +1623,48 @@ script once the layout is created.
 @<Functions for scripting@>=
 QScriptValue constructQBoxLayout(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object =
-		engine->newQObject(new QBoxLayout(QBoxLayout::LeftToRight));
-	setQBoxLayoutProperties(object, engine);
-	return object;
+    QScriptValue object =
+        engine->newQObject(new QBoxLayout(QBoxLayout::LeftToRight));
+    setQBoxLayoutProperties(object, engine);
+    return object;
 }
 
 void setQBoxLayoutProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQLayoutProperties(value, engine);
-	value.setProperty("addLayout", engine->newFunction(QBoxLayout_addLayout));
-	value.setProperty("addWidget", engine->newFunction(QBoxLayout_addWidget));
+    setQLayoutProperties(value, engine);
+    value.setProperty("addLayout", engine->newFunction(QBoxLayout_addLayout));
+    value.setProperty("addWidget", engine->newFunction(QBoxLayout_addWidget));
 }
 
 QScriptValue QBoxLayout_addLayout(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() > 0 && context->argumentCount() < 3)
-	{
-		QBoxLayout *self = getself<QBoxLayout *>(context);
-		QLayout *layout = argument<QLayout *>(0, context);
-		int stretch = 0;
-		if(context->argumentCount() == 2)
-		{
-			stretch = argument<int>(1, context);
-		}
-		if(layout)
-		{
-			self->addLayout(layout, stretch);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QLayout::addLayout(). This method requires "@|
-								"a QLayout.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QLayout::addLayout(). This method takes one "@|
-							"QLayout as an argument and optionally one integer.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() > 0 && context->argumentCount() < 3)
+    {
+        QBoxLayout *self = getself<QBoxLayout *>(context);
+        QLayout *layout = argument<QLayout *>(0, context);
+        int stretch = 0;
+        if(context->argumentCount() == 2)
+        {
+            stretch = argument<int>(1, context);
+        }
+        if(layout)
+        {
+            self->addLayout(layout, stretch);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QLayout::addLayout(). This method requires "@|
+                                "a QLayout.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QLayout::addLayout(). This method takes one "@|
+                            "QLayout as an argument and optionally one integer.");
+    }
+    return QScriptValue();
 }
 
 @ We override the base class wrapper for |addWidget| to add two optional
@@ -1674,39 +1674,39 @@ specifies the alignment of the widget within the layout.
 @<Functions for scripting@>=
 QScriptValue QBoxLayout_addWidget(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() > 0 && context->argumentCount() < 4)
-	{
-		QBoxLayout *self = getself<QBoxLayout *>(context);
-		QWidget *widget = argument<QWidget *>(0, context);
-		int stretch = 0;
-		Qt::Alignment alignment = 0;
-		if(context->argumentCount() > 1)
-		{
-			stretch = argument<int>(1, context);
-		}
-		if(context->argumentCount() > 2)
-		{
-			alignment = (Qt::Alignment)(argument<int>(2, context));
-		}
-		if(widget)
-		{
-			self->addWidget(widget, stretch, alignment);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QBoxLayout::addWidget(). This method requires "@|
-								"a QWidget.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QBoxLayout::addWidget(). This method takes one "@|
-							"QWidget and optionally up to two integers as "@|
-							"arguments.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() > 0 && context->argumentCount() < 4)
+    {
+        QBoxLayout *self = getself<QBoxLayout *>(context);
+        QWidget *widget = argument<QWidget *>(0, context);
+        int stretch = 0;
+        Qt::Alignment alignment = 0;
+        if(context->argumentCount() > 1)
+        {
+            stretch = argument<int>(1, context);
+        }
+        if(context->argumentCount() > 2)
+        {
+            alignment = (Qt::Alignment)(argument<int>(2, context));
+        }
+        if(widget)
+        {
+            self->addWidget(widget, stretch, alignment);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QBoxLayout::addWidget(). This method requires "@|
+                                "a QWidget.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QBoxLayout::addWidget(). This method takes one "@|
+                            "QWidget and optionally up to two integers as "@|
+                            "arguments.");
+    }
+    return QScriptValue();
 }
 
 @* Scripting QAction.
@@ -1738,31 +1738,31 @@ not work at the time this was written.
 @<Functions for scripting@>=
 QScriptValue constructQAction(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QAction(NULL));
-	setQActionProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QAction(NULL));
+    setQActionProperties(object, engine);
+    return object;
 }
 
 void setQActionProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	value.setProperty("setShortcut", engine->newFunction(QAction_setShortcut));
+    setQObjectProperties(value, engine);
+    value.setProperty("setShortcut", engine->newFunction(QAction_setShortcut));
 }
 
 QScriptValue QAction_setShortcut(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 1)
-	{
-		QAction *self = getself<@[QAction *@]>(context);
-		self->setShortcut(argument<QString>(0, context));
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QAction::setShortcut(). This method takes one "@|
-							"string as an argument.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 1)
+    {
+        QAction *self = getself<@[QAction *@]>(context);
+        self->setShortcut(argument<QString>(0, context));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QAction::setShortcut(). This method takes one "@|
+                            "string as an argument.");
+    }
+    return QScriptValue();
 }
 
 @* Scripting QFileDialog.
@@ -1797,34 +1797,34 @@ the object returned has any properties added to the base class available.
 QScriptValue QFileDialog_getOpenFileName(QScriptContext *context,
                                          QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 3)
-	{
-		QWidget *widget = argument<QWidget *>(0, context);
-		if(widget)
-		{
-			QString caption = argument<QString>(1, context);
-			QString dir = argument<QString>(2, context);
-			retval = QScriptValue(engine,
-			                      QFileDialog::getOpenFileName(widget, caption,
-								                               dir, "", 0, 0));
-			setQFileDialogProperties(retval, engine);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QFileDialog::getOpenFileName(). The first "@|
-								"argument to this method must be a QWidget.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QFileDialog::getOpenFileName(). This method "@|
-							"takes one QWidget followed by two strings for a "@|
-							"total of three arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 3)
+    {
+        QWidget *widget = argument<QWidget *>(0, context);
+        if(widget)
+        {
+            QString caption = argument<QString>(1, context);
+            QString dir = argument<QString>(2, context);
+            retval = QScriptValue(engine,
+                                  QFileDialog::getOpenFileName(widget, caption,
+                                                               dir, "", 0, 0));
+            setQFileDialogProperties(retval, engine);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QFileDialog::getOpenFileName(). The first "@|
+                                "argument to this method must be a QWidget.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QFileDialog::getOpenFileName(). This method "@|
+                            "takes one QWidget followed by two strings for a "@|
+                            "total of three arguments.");
+    }
+    return retval;
 }
 
 @ Similarly, this just wraps |QFileDialog::getSaveFileName()|.
@@ -1833,35 +1833,35 @@ QScriptValue QFileDialog_getOpenFileName(QScriptContext *context,
 QScriptValue QFileDialog_getSaveFileName(QScriptContext *context,
                                          QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 3)
-	{
-		QWidget *widget = argument<QWidget *>(0, context);
-		if(widget)
-		{
-			QString caption = argument<QString>(1, context);
-			QString dir = argument<QString>(2, context);
-			retval = QScriptValue(engine,
-							      QFileDialog::getSaveFileName(widget, caption,
-								                               dir, "", 0, 0));
+    QScriptValue retval;
+    if(context->argumentCount() == 3)
+    {
+        QWidget *widget = argument<QWidget *>(0, context);
+        if(widget)
+        {
+            QString caption = argument<QString>(1, context);
+            QString dir = argument<QString>(2, context);
+            retval = QScriptValue(engine,
+                                  QFileDialog::getSaveFileName(widget, caption,
+                                                               dir, "", 0, 0));
 
-			setQFileDialogProperties(retval, engine);
-		}
-		else
-		{
-			context->throwError("Incorrect argument type passed to "@|
-			                    "QFileDialog::getSaveFileName(). The first "@|
-								"argument to this method must be a QWidget.");
-		}
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QFileDialog::getSaveFileName(). This method "@|
-							"takes one QWidget followed by two strings for a "@|
-							"total of three arguments.");
-	}
-	return retval;
+            setQFileDialogProperties(retval, engine);
+        }
+        else
+        {
+            context->throwError("Incorrect argument type passed to "@|
+                                "QFileDialog::getSaveFileName(). The first "@|
+                                "argument to this method must be a QWidget.");
+        }
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QFileDialog::getSaveFileName(). This method "@|
+                            "takes one QWidget followed by two strings for a "@|
+                            "total of three arguments.");
+    }
+    return retval;
 }
 
 @ Adding object hierarchy properties to the objects created above is simple.
@@ -1869,12 +1869,12 @@ QScriptValue QFileDialog_getSaveFileName(QScriptContext *context,
 @<Functions for scripting@>=
 void setQFileDialogProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQDialogProperties(value, engine);
+    setQDialogProperties(value, engine);
 }
 
 void setQDialogProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
+    setQWidgetProperties(value, engine);
 }
 
 @* Scripting QFile.
@@ -1910,10 +1910,10 @@ engine->globalObject().setProperty("QFile", value);
 @<Functions for scripting@>=
 QScriptValue constructQFile(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue object =
-		engine->newQObject(new QFile(argument<QString>(0, context)));@/
-	setQFileProperties(object, engine);
-	return object;
+    QScriptValue object =
+        engine->newQObject(new QFile(argument<QString>(0, context)));@/
+    setQFileProperties(object, engine);
+    return object;
 }
 
 @ |QFile| gets a wrapper around |remove()| to support deleting temporary files.
@@ -1921,15 +1921,15 @@ QScriptValue constructQFile(QScriptContext *context, QScriptEngine *engine)
 @<Functions for scripting@>=
 void setQFileProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQIODeviceProperties(value, engine);
-	value.setProperty("remove", engine->newFunction(QFile_remove));
+    setQIODeviceProperties(value, engine);
+    value.setProperty("remove", engine->newFunction(QFile_remove));
 }
 
 QScriptValue QFile_remove(QScriptContext *context, QScriptEngine *engine)
 {
-	QFile *self = getself<QFile *>(context);
-	bool retval = self->remove();
-	return QScriptValue(engine, retval);
+    QFile *self = getself<QFile *>(context);
+    bool retval = self->remove();
+    return QScriptValue(engine, retval);
 }
 
 @ Although we aren'@q'@>t going to create any instances of |QIODevice| directly,
@@ -1943,17 +1943,17 @@ returned from the |readAll()| method.
 @<Functions for scripting@>=
 void setQIODeviceProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	value.setProperty("open", engine->newFunction(QIODevice_open));
-	value.setProperty("close", engine->newFunction(QIODevice_close));
-	value.setProperty("readToString",
-	                  engine->newFunction(QIODevice_readToString));
-	value.setProperty("putChar", engine->newFunction(QIODevice_putChar));
-	value.setProperty("writeString", engine->newFunction(QIODevice_writeString));
-	value.setProperty("writeBytes", engine->newFunction(QIODevice_writeBytes));
-	value.setProperty("readBytes", engine->newFunction(QIODevice_readBytes));
-	value.setProperty("peek", engine->newFunction(QIODevice_peek));
-	value.setProperty("read", engine->newFunction(QIODevice_read));
+    setQObjectProperties(value, engine);
+    value.setProperty("open", engine->newFunction(QIODevice_open));
+    value.setProperty("close", engine->newFunction(QIODevice_close));
+    value.setProperty("readToString",
+                      engine->newFunction(QIODevice_readToString));
+    value.setProperty("putChar", engine->newFunction(QIODevice_putChar));
+    value.setProperty("writeString", engine->newFunction(QIODevice_writeString));
+    value.setProperty("writeBytes", engine->newFunction(QIODevice_writeBytes));
+    value.setProperty("readBytes", engine->newFunction(QIODevice_readBytes));
+    value.setProperty("peek", engine->newFunction(QIODevice_peek));
+    value.setProperty("read", engine->newFunction(QIODevice_read));
 }
 
 @ These are simple wrappers. In the case of the |open()| property, one argument
@@ -1964,37 +1964,37 @@ not passed, it is assumed that the user wants read and write access.
 @<Functions for scripting@>=
 QScriptValue QIODevice_open(QScriptContext *context, QScriptEngine *)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	bool retval = false;
-	if(context->argumentCount() == 1)
-	{
-		switch(argument<int>(0, context))
-		{
-			case 1:
-				retval = self->open(QIODevice::ReadOnly);
-				break;
-			case 2:
-				retval = self->open(QIODevice::WriteOnly);
-				break;
-			case 3:
-				retval = self->open(QIODevice::ReadWrite);
-				break;
-			default:
-				break;
-		}
-	}
-	else
-	{
-		retval = self->open(QIODevice::ReadWrite);
-	}
-	return QScriptValue(retval);
+    QIODevice *self = getself<QIODevice *>(context);
+    bool retval = false;
+    if(context->argumentCount() == 1)
+    {
+        switch(argument<int>(0, context))
+        {
+            case 1:
+                retval = self->open(QIODevice::ReadOnly);
+                break;
+            case 2:
+                retval = self->open(QIODevice::WriteOnly);
+                break;
+            case 3:
+                retval = self->open(QIODevice::ReadWrite);
+                break;
+            default:
+                break;
+        }
+    }
+    else
+    {
+        retval = self->open(QIODevice::ReadWrite);
+    }
+    return QScriptValue(retval);
 }
 
 QScriptValue QIODevice_close(QScriptContext *context, QScriptEngine *)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	self->close();
-	return QScriptValue();
+    QIODevice *self = getself<QIODevice *>(context);
+    self->close();
+    return QScriptValue();
 }
 
 @ The |readToString()| method is a simple extension of |QIODevice::readAll()| to
@@ -2004,9 +2004,9 @@ notably, this includes |QWebView|.
 @<Functions for scripting@>=
 QScriptValue QIODevice_readToString(QScriptContext *context, QScriptEngine *)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	self->reset();
-	return QScriptValue(QString(self->readAll()));
+    QIODevice *self = getself<QIODevice *>(context);
+    self->reset();
+    return QScriptValue(QString(self->readAll()));
 }
 
 @ In support of serial port communications, wrappers around two methods for
@@ -2020,14 +2020,14 @@ instead accept a string and only pass along the first character.
 @<Functions for scripting@>=
 QScriptValue QIODevice_putChar(QScriptContext *context, QScriptEngine *)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	if(context->argumentCount() == 1)
-	{
-		return QScriptValue(self->putChar(argument<QString>(0, context).toUtf8().at(0)));
-	}
-	context->throwError("Incorrect number of arguments passed to "@|
-	                    "QIODevice::putChar()");
-	return QScriptValue();
+    QIODevice *self = getself<QIODevice *>(context);
+    if(context->argumentCount() == 1)
+    {
+        return QScriptValue(self->putChar(argument<QString>(0, context).toUtf8().at(0)));
+    }
+    context->throwError("Incorrect number of arguments passed to "@|
+                        "QIODevice::putChar()");
+    return QScriptValue();
 }
 
 @ Two wrappers are provided around |QIODevice::write()| for outputting
@@ -2038,32 +2038,32 @@ are output, the |writeBytes| wrapper is more appropriate.
 @<Functions for scripting@>=
 QScriptValue QIODevice_writeString(QScriptContext *context, QScriptEngine *)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	if(context->argumentCount() == 1)
-	{
-		self->write(argument<QString>(0, context).toUtf8());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-	                        "QIODevice::writeString()");
-	}
-	return QScriptValue();
+    QIODevice *self = getself<QIODevice *>(context);
+    if(context->argumentCount() == 1)
+    {
+        self->write(argument<QString>(0, context).toUtf8());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QIODevice::writeString()");
+    }
+    return QScriptValue();
 }
 
 QScriptValue QIODevice_writeBytes(QScriptContext *context, QScriptEngine *)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	if(context->argumentCount() == 1)
-	{
-		self->write(argument<QByteArray>(0, context));
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-	                        "QIODevice::writeBytes()");
-	}
-	return QScriptValue();
+    QIODevice *self = getself<QIODevice *>(context);
+    if(context->argumentCount() == 1)
+    {
+        self->write(argument<QByteArray>(0, context));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QIODevice::writeBytes()");
+    }
+    return QScriptValue();
 }
 
 @ The readBytes method is an alternate wrapper around |QByteArray::readAll()|
@@ -2072,10 +2072,10 @@ which returns the |QByteArray| instead of converting this to a |QString|.
 @<Functions for scripting@>=
 QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	QScriptValue value = engine->toScriptValue<QByteArray>(self->readAll());
-	setQByteArrayProperties(value, engine);
-	return value;
+    QIODevice *self = getself<QIODevice *>(context);
+    QScriptValue value = engine->toScriptValue<QByteArray>(self->readAll());
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 @ Wrappers around |peek()| and |read()| are also provided.
@@ -2083,20 +2083,20 @@ QScriptValue QIODevice_readBytes(QScriptContext *context, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QIODevice_peek(QScriptContext *context, QScriptEngine *engine)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	QScriptValue value = engine->toScriptValue<QByteArray>(
-		self->peek(argument<int>(0, context)));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QIODevice *self = getself<QIODevice *>(context);
+    QScriptValue value = engine->toScriptValue<QByteArray>(
+        self->peek(argument<int>(0, context)));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 QScriptValue QIODevice_read(QScriptContext *context, QScriptEngine *engine)
 {
-	QIODevice *self = getself<QIODevice *>(context);
-	QScriptValue value = engine->toScriptValue<QByteArray>(
-		self->read(argument<int>(0, context)));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QIODevice *self = getself<QIODevice *>(context);
+    QScriptValue value = engine->toScriptValue<QByteArray>(
+        self->read(argument<int>(0, context)));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 @* Scripting QProcess.
@@ -2128,9 +2128,9 @@ engine->globalObject().setProperty("QProcess", value);
 @<Functions for scripting@>=
 QScriptValue constructQProcess(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QProcess);
-	setQProcessProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QProcess);
+    setQProcessProperties(object, engine);
+    return object;
 }
 
 @ As |QProcess| is a |QIODevice| we inherit some properties from that. We also
@@ -2139,11 +2139,11 @@ expose some details that are specific to |QProcess|.
 @<Functions for scripting@>=
 void setQProcessProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQIODeviceProperties(value, engine);
-	value.setProperty("execute", engine->newFunction(QProcess_execute));
-	value.setProperty("startDetached", engine->newFunction(QProcess_startDetached));
-	value.setProperty("setWorkingDirectory", engine->newFunction(QProcess_setWorkingDirectory));
-	value.setProperty("start", engine->newFunction(QProcess_start));
+    setQIODeviceProperties(value, engine);
+    value.setProperty("execute", engine->newFunction(QProcess_execute));
+    value.setProperty("startDetached", engine->newFunction(QProcess_startDetached));
+    value.setProperty("setWorkingDirectory", engine->newFunction(QProcess_setWorkingDirectory));
+    value.setProperty("start", engine->newFunction(QProcess_start));
 }
 
 @ The |execute()| method comes in two flavors: one with arguments and one without.
@@ -2153,14 +2153,14 @@ arguments are specified.
 @<Functions for scripting@>=
 QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *)
 {
-	QProcess *self = getself<QProcess *>(context);
-	QString program = argument<QString>(0, context);
-	QStringList arguments = QStringList();
-	if(context->argumentCount() > 1) {
-		arguments = argument<QVariant>(1, context).toStringList();
-	}
-	int retval = self->execute(program, arguments);
-	return QScriptValue(retval);
+    QProcess *self = getself<QProcess *>(context);
+    QString program = argument<QString>(0, context);
+    QStringList arguments = QStringList();
+    if(context->argumentCount() > 1) {
+        arguments = argument<QVariant>(1, context).toStringList();
+    }
+    int retval = self->execute(program, arguments);
+    return QScriptValue(retval);
 }
 
 @ Similarly |startDetached()| can be called in a few different ways.
@@ -2168,32 +2168,32 @@ QScriptValue QProcess_execute(QScriptContext *context, QScriptEngine *)
 @<Functions for scripting@>=
 QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *)
 {
-	QProcess *self = getself<QProcess *>(context);
-	QString program = argument<QString>(0, context);
-	QStringList arguments = QStringList();
-	if(context->argumentCount() > 1) {
-		arguments = argument<QVariant>(1, context).toStringList();
-	}
-	QString workingDirectory = "";
-	if(context->argumentCount() > 2) {
-		workingDirectory = argument<QString>(2, context);
-	}
-	bool retval;
-	switch(context->argumentCount())
-	{
-		case 1:
-			retval = self->startDetached(program);
-			break;
-		case 2:
-			retval = self->startDetached(program, arguments);
-			break;
-		case 3:
-			retval = self->startDetached(program, arguments, workingDirectory);
-			break;
-		default:
-			retval = false;
-	}
-	return QScriptValue(retval);
+    QProcess *self = getself<QProcess *>(context);
+    QString program = argument<QString>(0, context);
+    QStringList arguments = QStringList();
+    if(context->argumentCount() > 1) {
+        arguments = argument<QVariant>(1, context).toStringList();
+    }
+    QString workingDirectory = "";
+    if(context->argumentCount() > 2) {
+        workingDirectory = argument<QString>(2, context);
+    }
+    bool retval;
+    switch(context->argumentCount())
+    {
+        case 1:
+            retval = self->startDetached(program);
+            break;
+        case 2:
+            retval = self->startDetached(program, arguments);
+            break;
+        case 3:
+            retval = self->startDetached(program, arguments, workingDirectory);
+            break;
+        default:
+            retval = false;
+    }
+    return QScriptValue(retval);
 }
 
 @ Sometimes we care about the working directory for our program.
@@ -2201,10 +2201,10 @@ QScriptValue QProcess_startDetached(QScriptContext *context, QScriptEngine *)
 @<Functions for scripting@>=
 QScriptValue QProcess_setWorkingDirectory(QScriptContext *context, QScriptEngine *)
 {
-	QProcess *self = getself<QProcess *>(context);
-	QString directory = argument<QString>(0, context);
-	self->setWorkingDirectory(directory);
-	return QScriptValue();
+    QProcess *self = getself<QProcess *>(context);
+    QString directory = argument<QString>(0, context);
+    self->setWorkingDirectory(directory);
+    return QScriptValue();
 }
 
 @ When using the |start()| method we always assume that we want read and write
@@ -2213,14 +2213,14 @@ access.
 @<Functions for scripting@>=
 QScriptValue QProcess_start(QScriptContext *context, QScriptEngine *)
 {
-	QProcess *self = getself<QProcess *>(context);
-	QString program = argument<QString>(0, context);
-	QStringList arguments = QStringList();
-	if(context->argumentCount() > 1) {
-		arguments = argument<QVariant>(1, context).toStringList();
-	}
-	self->start(program, arguments);
-	return QScriptValue();
+    QProcess *self = getself<QProcess *>(context);
+    QString program = argument<QString>(0, context);
+    QStringList arguments = QStringList();
+    if(context->argumentCount() > 1) {
+        arguments = argument<QVariant>(1, context).toStringList();
+    }
+    self->start(program, arguments);
+    return QScriptValue();
 }
 
 @ In order to work with |QByteArray| this should also be exposed to the host
@@ -2254,14 +2254,14 @@ language barrier.
 @<Functions for scripting@>=
 QScriptValue QByteArray_toScriptValue(QScriptEngine *engine, const QByteArray &bytes)
 {
-	QScriptValue object = engine->newVariant(QVariant(bytes));
-	setQByteArrayProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newVariant(QVariant(bytes));
+    setQByteArrayProperties(object, engine);
+    return object;
 }
 
 void QByteArray_fromScriptValue(const QScriptValue &value, QByteArray &bytes)
 {
-	bytes = value.toVariant().toByteArray();
+    bytes = value.toVariant().toByteArray();
 }
 
 @ We register this our conversion functions and allow creation of new arrays
@@ -2277,9 +2277,9 @@ engine->globalObject().setProperty("QByteArray", constructor);
 @<Functions for scripting@>=
 QScriptValue constructQByteArray(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->toScriptValue<QByteArray>(QByteArray());
-	setQByteArrayProperties(object, engine);
-	return object;
+    QScriptValue object = engine->toScriptValue<QByteArray>(QByteArray());
+    setQByteArrayProperties(object, engine);
+    return object;
 }
 
 @ There are many methods which are not automatically available which we may
@@ -2288,22 +2288,22 @@ want to have wrappers around. These should be added as required.
 @<Functions for scripting@>=
 void setQByteArrayProperties(QScriptValue value, QScriptEngine *engine)
 {
-	value.setProperty("fromHex", engine->newFunction(QByteArray_fromHex));
-	value.setProperty("getAt", engine->newFunction(QByteArray_getAt));
-	value.setProperty("setAt", engine->newFunction(QByteArray_setAt));
-	value.setProperty("appendBytes", engine->newFunction(QByteArray_appendBytes));
-	value.setProperty("appendString", engine->newFunction(QByteArray_appendString));
-	value.setProperty("size", engine->newFunction(QByteArray_size));
-	value.setProperty("left", engine->newFunction(QByteArray_left));
-	value.setProperty("right", engine->newFunction(QByteArray_right));
-	value.setProperty("mid", engine->newFunction(QByteArray_mid));
-	value.setProperty("chop", engine->newFunction(QByteArray_chop));
-	value.setProperty("remove", engine->newFunction(QByteArray_remove));
-	value.setProperty("toInt8", engine->newFunction(QByteArray_toInt8));
-	value.setProperty("toInt16", engine->newFunction(QByteArray_toInt16));
-	value.setProperty("toInt32", engine->newFunction(QByteArray_toInt32));
-	value.setProperty("toFloat", engine->newFunction(QByteArray_toFloat));
-	value.setProperty("toDouble", engine->newFunction(QByteArray_toDouble));
+    value.setProperty("fromHex", engine->newFunction(QByteArray_fromHex));
+    value.setProperty("getAt", engine->newFunction(QByteArray_getAt));
+    value.setProperty("setAt", engine->newFunction(QByteArray_setAt));
+    value.setProperty("appendBytes", engine->newFunction(QByteArray_appendBytes));
+    value.setProperty("appendString", engine->newFunction(QByteArray_appendString));
+    value.setProperty("size", engine->newFunction(QByteArray_size));
+    value.setProperty("left", engine->newFunction(QByteArray_left));
+    value.setProperty("right", engine->newFunction(QByteArray_right));
+    value.setProperty("mid", engine->newFunction(QByteArray_mid));
+    value.setProperty("chop", engine->newFunction(QByteArray_chop));
+    value.setProperty("remove", engine->newFunction(QByteArray_remove));
+    value.setProperty("toInt8", engine->newFunction(QByteArray_toInt8));
+    value.setProperty("toInt16", engine->newFunction(QByteArray_toInt16));
+    value.setProperty("toInt32", engine->newFunction(QByteArray_toInt32));
+    value.setProperty("toFloat", engine->newFunction(QByteArray_toFloat));
+    value.setProperty("toDouble", engine->newFunction(QByteArray_toDouble));
 }
 
 @ Perhaps the easiest way to deal with fixed byte strings for serial
@@ -2312,12 +2312,12 @@ communications across script boundaries is to use a hex encoded string.
 @<Functions for scripting@>=
 QScriptValue QByteArray_fromHex(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray self = getself<QByteArray>(context);
-	QByteArray retval;
-	retval = self.fromHex(argument<QString>(0, context).toUtf8());
-	QScriptValue value = engine->toScriptValue<QByteArray>(retval);
-	setQByteArrayProperties(value, engine);
-	return value;
+    QByteArray self = getself<QByteArray>(context);
+    QByteArray retval;
+    retval = self.fromHex(argument<QString>(0, context).toUtf8());
+    QScriptValue value = engine->toScriptValue<QByteArray>(retval);
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 @ A pair of methods is provided for getting and setting values at a particular
@@ -2326,15 +2326,15 @@ byte.
 @<Functions for scripting@>=
 QScriptValue QByteArray_getAt(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	return QScriptValue((int)(self.at(argument<int>(0, context))));
+    QByteArray self = getself<QByteArray>(context);
+    return QScriptValue((int)(self.at(argument<int>(0, context))));
 }
 
 QScriptValue QByteArray_setAt(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	self[argument<int>(0, context)] = (char)(argument<int>(1, context));
-	return QScriptValue();
+    QByteArray self = getself<QByteArray>(context);
+    self[argument<int>(0, context)] = (char)(argument<int>(1, context));
+    return QScriptValue();
 }
 
 @ Methods are provided for appending either another |QByteArray| or a string
@@ -2344,21 +2344,21 @@ argument type.
 @<Functions for scripting@>=
 QScriptValue QByteArray_appendBytes(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray self = getself<QByteArray>(context);
-	QScriptValue value =
-		engine->toScriptValue<QByteArray>(
-			self.append(argument<QByteArray>(0, context)));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QByteArray self = getself<QByteArray>(context);
+    QScriptValue value =
+        engine->toScriptValue<QByteArray>(
+            self.append(argument<QByteArray>(0, context)));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray self = getself<QByteArray>(context);
-	QScriptValue value = engine->toScriptValue<QByteArray>(
-		self.append(argument<QString>(0, context)));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QByteArray self = getself<QByteArray>(context);
+    QScriptValue value = engine->toScriptValue<QByteArray>(
+        self.append(argument<QString>(0, context)));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 @ Checking the size of our byte array frequently a requirement.
@@ -2366,8 +2366,8 @@ QScriptValue QByteArray_appendString(QScriptContext *context, QScriptEngine *eng
 @<Functions for scripting@>=
 QScriptValue QByteArray_size(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	return QScriptValue(self.size());
+    QByteArray self = getself<QByteArray>(context);
+    return QScriptValue(self.size());
 }
 
 @ It is also frequently useful to be able to work with specific parts of a byte
@@ -2376,34 +2376,34 @@ array, so a few methods are provided for carving these up.
 @<Functions for scripting@>=
 QScriptValue QByteArray_left(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray self = getself<QByteArray>(context);
-	QScriptValue value = engine->toScriptValue<QByteArray>(
-		self.left(argument<int>(0, context)));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QByteArray self = getself<QByteArray>(context);
+    QScriptValue value = engine->toScriptValue<QByteArray>(
+        self.left(argument<int>(0, context)));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 QScriptValue QByteArray_right(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray self = getself<QByteArray>(context);
-	QScriptValue value = engine->toScriptValue<QByteArray>(
-		self.right(argument<int>(0, context)));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QByteArray self = getself<QByteArray>(context);
+    QScriptValue value = engine->toScriptValue<QByteArray>(
+        self.right(argument<int>(0, context)));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 QScriptValue QByteArray_mid(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray self = getself<QByteArray>(context);
-	int length = -1;
-	if(context->argumentCount() > 1)
-	{
-		length = argument<int>(1, context);
-	}
-	QScriptValue value = engine->toScriptValue<QByteArray>(
-		self.mid(argument<int>(0, context), length));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QByteArray self = getself<QByteArray>(context);
+    int length = -1;
+    if(context->argumentCount() > 1)
+    {
+        length = argument<int>(1, context);
+    }
+    QScriptValue value = engine->toScriptValue<QByteArray>(
+        self.mid(argument<int>(0, context), length));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 @ We may also want to remove bytes from an array.
@@ -2411,18 +2411,18 @@ QScriptValue QByteArray_mid(QScriptContext *context, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QByteArray_chop(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	self.chop(argument<int>(0, context));
-	return QScriptValue();
+    QByteArray self = getself<QByteArray>(context);
+    self.chop(argument<int>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue QByteArray_remove(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray self = getself<QByteArray>(context);
-	QScriptValue value = engine->toScriptValue<QByteArray>(
-		self.remove(argument<int>(0, context), argument<int>(1, context)));
-	setQByteArrayProperties(value, engine);
-	return value;
+    QByteArray self = getself<QByteArray>(context);
+    QScriptValue value = engine->toScriptValue<QByteArray>(
+        self.remove(argument<int>(0, context), argument<int>(1, context)));
+    setQByteArrayProperties(value, engine);
+    return value;
 }
 
 @ When receiving data in a byte array, bytes are sometimes intended to
@@ -2434,33 +2434,33 @@ useful.
 @<Functions for scripting@>=
 QScriptValue QByteArray_toInt8(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	int value = 0;
-	char *bytes = (char *)&value;
-	bytes[0] = self[0];
-	return QScriptValue(value);
+    QByteArray self = getself<QByteArray>(context);
+    int value = 0;
+    char *bytes = (char *)&value;
+    bytes[0] = self[0];
+    return QScriptValue(value);
 }
 
 QScriptValue QByteArray_toInt16(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	int value = 0;
-	char *bytes = (char *)&value;
-	bytes[0] = self[0];
-	bytes[1] = self[1];
-	return QScriptValue(value);
+    QByteArray self = getself<QByteArray>(context);
+    int value = 0;
+    char *bytes = (char *)&value;
+    bytes[0] = self[0];
+    bytes[1] = self[1];
+    return QScriptValue(value);
 }
 
 QScriptValue QByteArray_toInt32(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	int value = 0;
-	char *bytes = (char *)&value;
-	bytes[0] = self[0];
-	bytes[1] = self[1];
-	bytes[2] = self[2];
-	bytes[3] = self[3];
-	return QScriptValue(value);
+    QByteArray self = getself<QByteArray>(context);
+    int value = 0;
+    char *bytes = (char *)&value;
+    bytes[0] = self[0];
+    bytes[1] = self[1];
+    bytes[2] = self[2];
+    bytes[3] = self[3];
+    return QScriptValue(value);
 }
 
 @ Similar methods are provided for converting bytes to a |float| or |double|.
@@ -2470,30 +2470,30 @@ represented as a |double|.
 @<Functions for scripting@>=
 QScriptValue QByteArray_toFloat(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	float value = 0.0;
-	char *bytes = (char *)&value;
-	bytes[0] = self[0];
-	bytes[1] = self[1];
-	bytes[2] = self[2];
-	bytes[3] = self[3];
-	return QScriptValue(value);
+    QByteArray self = getself<QByteArray>(context);
+    float value = 0.0;
+    char *bytes = (char *)&value;
+    bytes[0] = self[0];
+    bytes[1] = self[1];
+    bytes[2] = self[2];
+    bytes[3] = self[3];
+    return QScriptValue(value);
 }
 
 QScriptValue QByteArray_toDouble(QScriptContext *context, QScriptEngine *)
 {
-	QByteArray self = getself<QByteArray>(context);
-	double value = 0.0;
-	char *bytes = (char *)&value;
-	bytes[0] = self[0];
-	bytes[1] = self[1];
-	bytes[2] = self[2];
-	bytes[3] = self[3];
-	bytes[4] = self[4];
-	bytes[5] = self[5];
-	bytes[6] = self[6];
-	bytes[7] = self[7];
-	return QScriptValue(value);
+    QByteArray self = getself<QByteArray>(context);
+    double value = 0.0;
+    char *bytes = (char *)&value;
+    bytes[0] = self[0];
+    bytes[1] = self[1];
+    bytes[2] = self[2];
+    bytes[3] = self[3];
+    bytes[4] = self[4];
+    bytes[5] = self[5];
+    bytes[6] = self[6];
+    bytes[7] = self[7];
+    return QScriptValue(value);
 }
 
 @ Some protocols require manipulating larger than 8 bit numbers as a sequence
@@ -2525,76 +2525,76 @@ from |double|.
 @<Functions for scripting@>=
 QScriptValue bytesFromInt8(QScriptContext *context, QScriptEngine *engine)
 {
-	qint8 value = (qint8)(argument<int>(0, context));
-	char *bytes = (char *)&value;
-	QByteArray retval;
-	retval.resize(1);
-	retval[0] = bytes[0];
-	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
-	setQByteArrayProperties(v, engine);
-	return v;
+    qint8 value = (qint8)(argument<int>(0, context));
+    char *bytes = (char *)&value;
+    QByteArray retval;
+    retval.resize(1);
+    retval[0] = bytes[0];
+    QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+    setQByteArrayProperties(v, engine);
+    return v;
 }
 
 QScriptValue bytesFromInt16(QScriptContext *context, QScriptEngine *engine)
 {
-	qint16 value = (qint16)(argument<int>(0, context));
-	char *bytes = (char *)&value;
-	QByteArray retval;
-	retval.resize(2);
-	retval[0] = bytes[0];
-	retval[1] = bytes[1];
-	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
-	setQByteArrayProperties(v, engine);
-	return v;
+    qint16 value = (qint16)(argument<int>(0, context));
+    char *bytes = (char *)&value;
+    QByteArray retval;
+    retval.resize(2);
+    retval[0] = bytes[0];
+    retval[1] = bytes[1];
+    QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+    setQByteArrayProperties(v, engine);
+    return v;
 }
 
 QScriptValue bytesFromInt32(QScriptContext *context, QScriptEngine *engine)
 {
-	qint32 value = (qint32)(argument<int>(0, context));
-	char *bytes = (char *)&value;
-	QByteArray retval;
-	retval.resize(4);
-	retval[0] = bytes[0];
-	retval[1] = bytes[1];
-	retval[2] = bytes[2];
-	retval[3] = bytes[3];
-	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
-	setQByteArrayProperties(v, engine);
-	return v;
+    qint32 value = (qint32)(argument<int>(0, context));
+    char *bytes = (char *)&value;
+    QByteArray retval;
+    retval.resize(4);
+    retval[0] = bytes[0];
+    retval[1] = bytes[1];
+    retval[2] = bytes[2];
+    retval[3] = bytes[3];
+    QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+    setQByteArrayProperties(v, engine);
+    return v;
 }
 
 QScriptValue bytesFromFloat(QScriptContext *context, QScriptEngine *engine)
 {
-	float value = (float)(argument<double>(0, context));
-	char *bytes = (char *)&value;
-	QByteArray retval;
-	retval.resize(4);
-	retval[0] = bytes[0];
-	retval[1] = bytes[1];
-	retval[2] = bytes[2];
-	retval[3] = bytes[3];
-	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
-	setQByteArrayProperties(v, engine);
-	return v;
+    float value = (float)(argument<double>(0, context));
+    char *bytes = (char *)&value;
+    QByteArray retval;
+    retval.resize(4);
+    retval[0] = bytes[0];
+    retval[1] = bytes[1];
+    retval[2] = bytes[2];
+    retval[3] = bytes[3];
+    QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+    setQByteArrayProperties(v, engine);
+    return v;
 }
 
 QScriptValue bytesFromDouble(QScriptContext *context, QScriptEngine *engine)
 {
-	double value = (double)(argument<double>(0, context));
-	char *bytes = (char *)&value;
-	QByteArray retval;
-	retval.resize(8);
-	retval[0] = bytes[0];
-	retval[1] = bytes[1];
-	retval[2] = bytes[2];
-	retval[3] = bytes[3];
-	retval[4] = bytes[4];
-	retval[5] = bytes[5];
-	retval[6] = bytes[6];
-	retval[7] = bytes[7];
-	QScriptValue v = engine->toScriptValue<QByteArray>(retval);
-	setQByteArrayProperties(v, engine);
-	return v;
+    double value = (double)(argument<double>(0, context));
+    char *bytes = (char *)&value;
+    QByteArray retval;
+    retval.resize(8);
+    retval[0] = bytes[0];
+    retval[1] = bytes[1];
+    retval[2] = bytes[2];
+    retval[3] = bytes[3];
+    retval[4] = bytes[4];
+    retval[5] = bytes[5];
+    retval[6] = bytes[6];
+    retval[7] = bytes[7];
+    QScriptValue v = engine->toScriptValue<QByteArray>(retval);
+    setQByteArrayProperties(v, engine);
+    return v;
 }
 
 @* Scripting QBuffer.
@@ -2622,23 +2622,23 @@ engine->globalObject().setProperty("QBuffer", value);
 @<Functions for scripting@>=
 QScriptValue constructQBuffer(QScriptContext *context, QScriptEngine *engine)
 {
-	QByteArray *array = new QByteArray(argument<QString>(0, context).toAscii());
-	QScriptValue object = engine->newQObject(new QBuffer(array));
-	setQBufferProperties(object, engine);
-	return object;
+    QByteArray *array = new QByteArray(argument<QString>(0, context).toAscii());
+    QScriptValue object = engine->newQObject(new QBuffer(array));
+    setQBufferProperties(object, engine);
+    return object;
 }
 
 void setQBufferProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQIODeviceProperties(value, engine);
-	value.setProperty("setData", engine->newFunction(QBuffer_setData));
+    setQIODeviceProperties(value, engine);
+    value.setProperty("setData", engine->newFunction(QBuffer_setData));
 }
 
 QScriptValue QBuffer_setData(QScriptContext *context, QScriptEngine *)
 {
-	QBuffer *self = getself<QBuffer *>(context);
-	self->setData(argument<QString>(0, context).toAscii());
-	return QScriptValue();
+    QBuffer *self = getself<QBuffer *>(context);
+    self->setData(argument<QString>(0, context).toAscii());
+    return QScriptValue();
 }
 
 @* Scripting QXmlQuery.
@@ -2671,24 +2671,24 @@ available are applied. A method is also provided to free the |QXmlQuery|.
 @<Functions for scripting@>=
 QScriptValue constructXQuery(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->toScriptValue<void *>(new QXmlQuery);
-	setXQueryProperties(object, engine);
-	return object;
+    QScriptValue object = engine->toScriptValue<void *>(new QXmlQuery);
+    setXQueryProperties(object, engine);
+    return object;
 }
 
 QScriptValue XQuery_invalidate(QScriptContext *context, QScriptEngine *)
 {
-	QXmlQuery *self = getself<QXmlQuery *>(context);
-	delete self;
-	return QScriptValue();
+    QXmlQuery *self = getself<QXmlQuery *>(context);
+    delete self;
+    return QScriptValue();
 }
 
 void setXQueryProperties(QScriptValue value, QScriptEngine *engine)
 {
-	value.setProperty("bind", engine->newFunction(XQuery_bind));
-	value.setProperty("exec", engine->newFunction(XQuery_exec));
-	value.setProperty("setQuery", engine->newFunction(XQuery_setQuery));
-	value.setProperty("invalidate", engine->newFunction(XQuery_invalidate));
+    value.setProperty("bind", engine->newFunction(XQuery_bind));
+    value.setProperty("exec", engine->newFunction(XQuery_exec));
+    value.setProperty("setQuery", engine->newFunction(XQuery_setQuery));
+    value.setProperty("invalidate", engine->newFunction(XQuery_invalidate));
 }
 
 @ The |bind()| property can be used to specify a |QIODevice| to be referenced by
@@ -2697,10 +2697,10 @@ a variable within a query.
 @<Functions for scripting@>=
 QScriptValue XQuery_bind(QScriptContext *context, QScriptEngine *)
 {
-	QXmlQuery *self = getself<QXmlQuery *>(context);
-	QIODevice *buffer = argument<QIODevice *>(1, context);
-	self->bindVariable(argument<QString>(0, context), buffer);
-	return QScriptValue();
+    QXmlQuery *self = getself<QXmlQuery *>(context);
+    QIODevice *buffer = argument<QIODevice *>(1, context);
+    self->bindVariable(argument<QString>(0, context), buffer);
+    return QScriptValue();
 }
 
 @ A method is also required for setting the query we wish to conduct.
@@ -2708,9 +2708,9 @@ QScriptValue XQuery_bind(QScriptContext *context, QScriptEngine *)
 @<Functions for scripting@>=
 QScriptValue XQuery_setQuery(QScriptContext *context, QScriptEngine *)
 {
-	QXmlQuery *self = getself<QXmlQuery *>(context);
-	self->setQuery(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlQuery *self = getself<QXmlQuery *>(context);
+    self->setQuery(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 @ This method runs the previously specified query.
@@ -2718,10 +2718,10 @@ QScriptValue XQuery_setQuery(QScriptContext *context, QScriptEngine *)
 @<Functions for scripting@>=
 QScriptValue XQuery_exec(QScriptContext *context, QScriptEngine *)
 {
-	QXmlQuery *self = getself<QXmlQuery *>(context);
-	QString result;
-	self->evaluateTo(&result);
-	return QScriptValue(result);
+    QXmlQuery *self = getself<QXmlQuery *>(context);
+    QString result;
+    self->evaluateTo(&result);
+    return QScriptValue(result);
 }
 
 @* Scripting QXmlStreamWriter.
@@ -2773,45 +2773,45 @@ specified.
 @<Functions for scripting@>=
 QScriptValue constructXmlWriter(QScriptContext *context, QScriptEngine *engine)
 {
-	QXmlStreamWriter *retval;
-	if(context->argumentCount() == 1)
-	{
-		retval = new QXmlStreamWriter(argument<QIODevice *>(0, context));
-	}
-	else
-	{
-		retval = new QXmlStreamWriter;
-	}
-	QScriptValue object = engine->toScriptValue<void *>(retval);
-	setXmlWriterProperties(object, engine);
-	return object;
+    QXmlStreamWriter *retval;
+    if(context->argumentCount() == 1)
+    {
+        retval = new QXmlStreamWriter(argument<QIODevice *>(0, context));
+    }
+    else
+    {
+        retval = new QXmlStreamWriter;
+    }
+    QScriptValue object = engine->toScriptValue<void *>(retval);
+    setXmlWriterProperties(object, engine);
+    return object;
 }
 
 void setXmlWriterProperties(QScriptValue value, QScriptEngine *engine)
 {
-	value.setProperty("setDevice", engine->newFunction(XmlWriter_setDevice));
-	value.setProperty("writeAttribute",
-	                  engine->newFunction(XmlWriter_writeAttribute));
-	value.setProperty("writeCDATA", engine->newFunction(XmlWriter_writeCDATA));
-	value.setProperty("writeCharacters",
-	                  engine->newFunction(XmlWriter_writeCharacters));
-	value.setProperty("writeDTD", engine->newFunction(XmlWriter_writeDTD));
-	value.setProperty("writeEmptyElement",
-	                  engine->newFunction(XmlWriter_writeEmptyElement));
-	value.setProperty("writeEndDocument",
-	                  engine->newFunction(XmlWriter_writeEndDocument));
-	value.setProperty("writeEndElement",
-	                  engine->newFunction(XmlWriter_writeEndElement));
-	value.setProperty("writeEntityReference",
-	                  engine->newFunction(XmlWriter_writeEntityReference));
-	value.setProperty("writeProcessingInstruction",
-	                  engine->newFunction(XmlWriter_writeProcessingInstruction));
-	value.setProperty("writeStartDocument",
-	                  engine->newFunction(XmlWriter_writeStartDocument));
-	value.setProperty("writeStartElement",
-					  engine->newFunction(XmlWriter_writeStartElement));
-	value.setProperty("writeTextElement",
-					  engine->newFunction(XmlWriter_writeTextElement));
+    value.setProperty("setDevice", engine->newFunction(XmlWriter_setDevice));
+    value.setProperty("writeAttribute",
+                      engine->newFunction(XmlWriter_writeAttribute));
+    value.setProperty("writeCDATA", engine->newFunction(XmlWriter_writeCDATA));
+    value.setProperty("writeCharacters",
+                      engine->newFunction(XmlWriter_writeCharacters));
+    value.setProperty("writeDTD", engine->newFunction(XmlWriter_writeDTD));
+    value.setProperty("writeEmptyElement",
+                      engine->newFunction(XmlWriter_writeEmptyElement));
+    value.setProperty("writeEndDocument",
+                      engine->newFunction(XmlWriter_writeEndDocument));
+    value.setProperty("writeEndElement",
+                      engine->newFunction(XmlWriter_writeEndElement));
+    value.setProperty("writeEntityReference",
+                      engine->newFunction(XmlWriter_writeEntityReference));
+    value.setProperty("writeProcessingInstruction",
+                      engine->newFunction(XmlWriter_writeProcessingInstruction));
+    value.setProperty("writeStartDocument",
+                      engine->newFunction(XmlWriter_writeStartDocument));
+    value.setProperty("writeStartElement",
+                      engine->newFunction(XmlWriter_writeStartElement));
+    value.setProperty("writeTextElement",
+                      engine->newFunction(XmlWriter_writeTextElement));
 }
 
 @ If the output device needs to be changed or if one is not passed to the
@@ -2820,10 +2820,10 @@ constructor, the |setDevice()| method can be used.
 @<Functions for scripting@>=
 QScriptValue XmlWriter_setDevice(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	QIODevice *device = argument<QIODevice *>(0, context);
-	self->setDevice(device);
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    QIODevice *device = argument<QIODevice *>(0, context);
+    self->setDevice(device);
+    return QScriptValue();
 }
 
 @ The remaining functions are simple wrappers used for writing various types of
@@ -2835,17 +2835,17 @@ number. Another function handles writing the end of the document.
 QScriptValue XmlWriter_writeStartDocument(QScriptContext *context,
                                           QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeStartDocument(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeStartDocument(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue XmlWriter_writeEndDocument(QScriptContext *context,
                                         QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeEndDocument();
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeEndDocument();
+    return QScriptValue();
 }
 
 @ After the start of the document, a DTD is commonly needed.
@@ -2853,9 +2853,9 @@ QScriptValue XmlWriter_writeEndDocument(QScriptContext *context,
 @<Functions for scripting@>=
 QScriptValue XmlWriter_writeDTD(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeDTD(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeDTD(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 @ After this, elements need to be written. For this, we write the start
@@ -2865,31 +2865,31 @@ element, any attributes needed, character data, and the end element.
 QScriptValue XmlWriter_writeStartElement(QScriptContext *context,
                                          QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeStartElement(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeStartElement(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue XmlWriter_writeAttribute(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeAttribute(argument<QString>(0, context),
-	                     argument<QString>(1, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeAttribute(argument<QString>(0, context),
+                         argument<QString>(1, context));
+    return QScriptValue();
 }
 
 QScriptValue XmlWriter_writeCharacters(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeCharacters(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeCharacters(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue XmlWriter_writeEndElement(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeEndElement();
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeEndElement();
+    return QScriptValue();
 }
 
 @ For convenience, two other methods are provided for writing elements. Elements
@@ -2901,18 +2901,18 @@ contain text can be created with |writeTextElement()|.
 QScriptValue XmlWriter_writeEmptyElement(QScriptContext *context,
                                          QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeEmptyElement(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeEmptyElement(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue XmlWriter_writeTextElement(QScriptContext *context,
                                         QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeTextElement(argument<QString>(0, context),
-	                       argument<QString>(1, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeTextElement(argument<QString>(0, context),
+                           argument<QString>(1, context));
+    return QScriptValue();
 }
 
 @ Less commonly needed are functions for writing CDATA sections, entity
@@ -2921,26 +2921,26 @@ references, and processing instructions.
 @<Functions for scripting@>=
 QScriptValue XmlWriter_writeCDATA(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeCDATA(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeCDATA(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue XmlWriter_writeEntityReference(QScriptContext *context,
                                             QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeEntityReference(argument<QString>(0, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeEntityReference(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue XmlWriter_writeProcessingInstruction(QScriptContext *context,
                                                   QScriptEngine *)
 {
-	QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
-	self->writeProcessingInstruction(argument<QString>(0, context),
-	                                 argument<QString>(1, context));
-	return QScriptValue();
+    QXmlStreamWriter *self = getself<QXmlStreamWriter *>(context);
+    self->writeProcessingInstruction(argument<QString>(0, context),
+                                     argument<QString>(1, context));
+    return QScriptValue();
 }
 
 @* Scripting QXmlStreamReader.
@@ -2980,28 +2980,28 @@ it as an argument to this function.
 @<Functions for scripting@>=
 QScriptValue constructXmlReader(QScriptContext *context, QScriptEngine *engine)
 {
-	QXmlStreamReader *retval =
-		new QXmlStreamReader(argument<QIODevice *>(0, context));
-	QScriptValue object = engine->toScriptValue<void *>(retval);
-	setXmlReaderProperties(object, engine);
-	return object;
+    QXmlStreamReader *retval =
+        new QXmlStreamReader(argument<QIODevice *>(0, context));
+    QScriptValue object = engine->toScriptValue<void *>(retval);
+    setXmlReaderProperties(object, engine);
+    return object;
 }
 
 void setXmlReaderProperties(QScriptValue value, QScriptEngine *engine)
 {
-	value.setProperty("atEnd", engine->newFunction(XmlReader_atEnd));
-	value.setProperty("attribute", engine->newFunction(XmlReader_attribute));
-	value.setProperty("hasAttribute",
-	                  engine->newFunction(XmlReader_hasAttribute));
-	value.setProperty("isDTD", engine->newFunction(XmlReader_isDTD));
-	value.setProperty("isStartElement",
-	                  engine->newFunction(XmlReader_isStartElement));
-	value.setProperty("name", engine->newFunction(XmlReader_name));
-	value.setProperty("readElementText",
-	                  engine->newFunction(XmlReader_readElementText));
-	value.setProperty("readNext",
-	                  engine->newFunction(XmlReader_readNext));
-	value.setProperty("text", engine->newFunction(XmlReader_text));
+    value.setProperty("atEnd", engine->newFunction(XmlReader_atEnd));
+    value.setProperty("attribute", engine->newFunction(XmlReader_attribute));
+    value.setProperty("hasAttribute",
+                      engine->newFunction(XmlReader_hasAttribute));
+    value.setProperty("isDTD", engine->newFunction(XmlReader_isDTD));
+    value.setProperty("isStartElement",
+                      engine->newFunction(XmlReader_isStartElement));
+    value.setProperty("name", engine->newFunction(XmlReader_name));
+    value.setProperty("readElementText",
+                      engine->newFunction(XmlReader_readElementText));
+    value.setProperty("readNext",
+                      engine->newFunction(XmlReader_readNext));
+    value.setProperty("text", engine->newFunction(XmlReader_text));
 }
 
 @ Most of the functions are simple member function wrappers. Two of these
@@ -3010,18 +3010,18 @@ properties are not. These are the |attribute()| and |hasAttribute()| properties.
 @<Functions for scripting@>=
 QScriptValue XmlReader_attribute(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	QString retval =
-		self->attributes().value(argument<QString>(0, context)).toString();
-	return QScriptValue(retval);
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    QString retval =
+        self->attributes().value(argument<QString>(0, context)).toString();
+    return QScriptValue(retval);
 }
 
 QScriptValue XmlReader_hasAttribute(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	bool retval =
-		self->attributes().hasAttribute(argument<QString>(0, context));
-	return QScriptValue(retval);
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    bool retval =
+        self->attributes().hasAttribute(argument<QString>(0, context));
+    return QScriptValue(retval);
 }
 
 @ Other properties can be used for determining how to proceed with the
@@ -3030,20 +3030,20 @@ processing.
 @<Functions for scripting@>=
 QScriptValue XmlReader_atEnd(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	return QScriptValue(self->atEnd());
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    return QScriptValue(self->atEnd());
 }
 
 QScriptValue XmlReader_isDTD(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	return QScriptValue(self->isDTD());
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    return QScriptValue(self->isDTD());
 }
 
 QScriptValue XmlReader_isStartElement(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	return QScriptValue(self->isStartElement());
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    return QScriptValue(self->isStartElement());
 }
 
 @ We move from one element to the next with the |readNext()| property.
@@ -3051,9 +3051,9 @@ QScriptValue XmlReader_isStartElement(QScriptContext *context, QScriptEngine *)
 @<Functions for scripting@>=
 QScriptValue XmlReader_readNext(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	self->readNext();
-	return QScriptValue();
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    self->readNext();
+    return QScriptValue();
 }
 
 @ The remaining properties return the element name and text.
@@ -3061,20 +3061,20 @@ QScriptValue XmlReader_readNext(QScriptContext *context, QScriptEngine *)
 @<Functions for scripting@>=
 QScriptValue XmlReader_name(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	return QScriptValue(self->name().toString());
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    return QScriptValue(self->name().toString());
 }
 
 QScriptValue XmlReader_readElementText(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	return QScriptValue(self->readElementText());
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    return QScriptValue(self->readElementText());
 }
 
 QScriptValue XmlReader_text(QScriptContext *context, QScriptEngine *)
 {
-	QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
-	return QScriptValue(self->text().toString());
+    QXmlStreamReader *self = getself<QXmlStreamReader *>(context);
+    return QScriptValue(self->text().toString());
 }
 
 @* Scripting QSettings.
@@ -3103,9 +3103,9 @@ engine->globalObject().setProperty("QSettings", value);
 @<Functions for scripting@>=
 void setQSettingsProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	value.setProperty("value", engine->newFunction(QSettings_value));
-	value.setProperty("setValue", engine->newFunction(QSettings_setValue));
+    setQObjectProperties(value, engine);
+    value.setProperty("value", engine->newFunction(QSettings_value));
+    value.setProperty("setValue", engine->newFunction(QSettings_setValue));
 }
 
 @ When getting a value from saved settings, there is the possibility that there
@@ -3115,50 +3115,50 @@ be used to supply a default value.
 @<Functions for scripting@>=
 QScriptValue QSettings_value(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 1 || context->argumentCount() == 2)
-	{
-		QSettings settings;
-		QString key = argument<QString>(0, context);
-		QVariant value;
-		QVariant retval;
-		if(context->argumentCount() > 1)
-		{
-			value = argument<QVariant>(1, context);
-			retval = settings.value(key, value);
-		}
-		else
-		{
-			retval = settings.value(key);
-		}
-		object = engine->newVariant(retval);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QSettings::value(). This method takes one "@|
-							"string and one optional variant type.");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 1 || context->argumentCount() == 2)
+    {
+        QSettings settings;
+        QString key = argument<QString>(0, context);
+        QVariant value;
+        QVariant retval;
+        if(context->argumentCount() > 1)
+        {
+            value = argument<QVariant>(1, context);
+            retval = settings.value(key, value);
+        }
+        else
+        {
+            retval = settings.value(key);
+        }
+        object = engine->newVariant(retval);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QSettings::value(). This method takes one "@|
+                            "string and one optional variant type.");
+    }
+    return object;
 }
 
 QScriptValue QSettings_setValue(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 2)
-	{
-		QSettings settings;
-		QString key = argument<QString>(0, context);
-		QVariant value = argument<QVariant>(1, context);
-		settings.setValue(key, value);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QSettings::setValue(). This method takes one "@|
-							"string and one variant type for a total of two "@|
-							"arguments.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 2)
+    {
+        QSettings settings;
+        QString key = argument<QString>(0, context);
+        QVariant value = argument<QVariant>(1, context);
+        settings.setValue(key, value);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QSettings::setValue(). This method takes one "@|
+                            "string and one variant type for a total of two "@|
+                            "arguments.");
+    }
+    return QScriptValue();
 }
 
 @* Scripting QLCDNumber.
@@ -3184,14 +3184,14 @@ engine->globalObject().setProperty("QLCDNumber", value);
 @<Functions for scripting@>=
 QScriptValue constructQLCDNumber(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QLCDNumber());
-	setQLCDNumberProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QLCDNumber());
+    setQLCDNumberProperties(object, engine);
+    return object;
 }
 
 void setQLCDNumberProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQFrameProperties(value, engine);
+    setQFrameProperties(value, engine);
 }
 
 @* Scripting QTime.
@@ -3243,44 +3243,44 @@ intended.
 QScriptValue constructQTime(QScriptContext *context,
                             QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 0 ||
-	   (context->argumentCount() >= 2 && context->argumentCount() <= 4))@/
-	{
-		int arg1 = 0;
-		int arg2 = 0;
-		int arg3 = 0;
-		int arg4 = 0;
-		switch(context->argumentCount())
-		{@t\1@>@/
-			case 4:@/
-				arg4 = argument<int>(3, context);
-			case 3:@/
-				arg3 = argument<int>(2, context);
-			case 2:@/
-				arg2 = argument<int>(1, context);
-				arg1 = argument<int>(0, context);
-			default:@/
-				break;@t\2@>@/
-		}
-		if(context->argumentCount())
-		{
-			object = engine->toScriptValue<QTime>(QTime(arg1, arg2, arg3,
-			                                            arg4));
-		}
-		else
-		{
-			object = engine->toScriptValue<QTime>(QTime());
-		}
-		setQTimeProperties(object, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::QTime(). This method takes zero, two, "@|
-							"three, or four integer arguments.");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 0 ||
+       (context->argumentCount() >= 2 && context->argumentCount() <= 4))@/
+    {
+        int arg1 = 0;
+        int arg2 = 0;
+        int arg3 = 0;
+        int arg4 = 0;
+        switch(context->argumentCount())
+        {@t\1@>@/
+            case 4:@/
+                arg4 = argument<int>(3, context);
+            case 3:@/
+                arg3 = argument<int>(2, context);
+            case 2:@/
+                arg2 = argument<int>(1, context);
+                arg1 = argument<int>(0, context);
+            default:@/
+                break;@t\2@>@/
+        }
+        if(context->argumentCount())
+        {
+            object = engine->toScriptValue<QTime>(QTime(arg1, arg2, arg3,
+                                                        arg4));
+        }
+        else
+        {
+            object = engine->toScriptValue<QTime>(QTime());
+        }
+        setQTimeProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::QTime(). This method takes zero, two, "@|
+                            "three, or four integer arguments.");
+    }
+    return object;
 }
 
 @ In order to use the various |QTime| methods, we must add wrapper functions as
@@ -3290,24 +3290,24 @@ be callable without starting from an existing |QTime|.
 @<Functions for scripting@>=
 void setQTimeProperties(QScriptValue value, QScriptEngine *engine)
 {
-	value.setProperty("addMSecs", engine->newFunction(QTime_addMSecs));
-	value.setProperty("addSecs", engine->newFunction(QTime_addSecs));
-	value.setProperty("elapsed", engine->newFunction(QTime_elapsed));
-	value.setProperty("hour", engine->newFunction(QTime_hour));
-	value.setProperty("isNull", engine->newFunction(QTime_isNull));
-	value.setProperty("isValid", engine->newFunction(QTime_isValid));
-	value.setProperty("minute", engine->newFunction(QTime_minute));
-	value.setProperty("msec", engine->newFunction(QTime_msec));
-	value.setProperty("msecsTo", engine->newFunction(QTime_msecsTo));
-	value.setProperty("restart", engine->newFunction(QTime_restart));
-	value.setProperty("second", engine->newFunction(QTime_second));
-	value.setProperty("secsTo", engine->newFunction(QTime_secsTo));
-	value.setProperty("setHMS", engine->newFunction(QTime_setHMS));
-	value.setProperty("start", engine->newFunction(QTime_start));
-	value.setProperty("toString", engine->newFunction(QTime_toString));
-	value.setProperty("currentTime", engine->newFunction(QTime_currentTime));
-	value.setProperty("fromString", engine->newFunction(QTime_fromString));
-	value.setProperty("valueOf", engine->newFunction(QTime_valueOf));
+    value.setProperty("addMSecs", engine->newFunction(QTime_addMSecs));
+    value.setProperty("addSecs", engine->newFunction(QTime_addSecs));
+    value.setProperty("elapsed", engine->newFunction(QTime_elapsed));
+    value.setProperty("hour", engine->newFunction(QTime_hour));
+    value.setProperty("isNull", engine->newFunction(QTime_isNull));
+    value.setProperty("isValid", engine->newFunction(QTime_isValid));
+    value.setProperty("minute", engine->newFunction(QTime_minute));
+    value.setProperty("msec", engine->newFunction(QTime_msec));
+    value.setProperty("msecsTo", engine->newFunction(QTime_msecsTo));
+    value.setProperty("restart", engine->newFunction(QTime_restart));
+    value.setProperty("second", engine->newFunction(QTime_second));
+    value.setProperty("secsTo", engine->newFunction(QTime_secsTo));
+    value.setProperty("setHMS", engine->newFunction(QTime_setHMS));
+    value.setProperty("start", engine->newFunction(QTime_start));
+    value.setProperty("toString", engine->newFunction(QTime_toString));
+    value.setProperty("currentTime", engine->newFunction(QTime_currentTime));
+    value.setProperty("fromString", engine->newFunction(QTime_fromString));
+    value.setProperty("valueOf", engine->newFunction(QTime_valueOf));
 }
 
 @ The |valueOf()| method exposes a numeric representation of the time
@@ -3319,10 +3319,10 @@ similar comparative operations.
 @<Functions for scripting@>=
 QScriptValue QTime_valueOf(QScriptContext *context, QScriptEngine *)
 {
-	QTime self = getself<QTime>(context);
-	int retval = (self.hour() * 60 * 60 * 1000) + (self.minute() * 60 * 1000) +
-	             (self.second() * 1000) + self.msec();
-	return QScriptValue(retval);
+    QTime self = getself<QTime>(context);
+    int retval = (self.hour() * 60 * 60 * 1000) + (self.minute() * 60 * 1000) +
+                 (self.second() * 1000) + self.msec();
+    return QScriptValue(retval);
 }
 
 @ These functions are effectively wrapper functions around existing |QTime|
@@ -3333,42 +3333,42 @@ The |addMSecs()| and |addSecs()| methods return a new |QTime| object.
 @<Functions for scripting@>=
 QScriptValue QTime_addMSecs(QScriptContext *context, QScriptEngine *engine)
 {
-	QTime time;
-	QScriptValue retval;
-	if(context->argumentCount() == 1)
-	{
-		QTime self = getself<QTime>(context);
-		time = self.addMSecs(argument<int>(0, context));
-		retval = engine->toScriptValue<QTime>(time);
-		setQTimeProperties(retval, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::addMSecs(). This method takes one "@|
-							"integer as an argument.");
-	}
-	return retval;
+    QTime time;
+    QScriptValue retval;
+    if(context->argumentCount() == 1)
+    {
+        QTime self = getself<QTime>(context);
+        time = self.addMSecs(argument<int>(0, context));
+        retval = engine->toScriptValue<QTime>(time);
+        setQTimeProperties(retval, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::addMSecs(). This method takes one "@|
+                            "integer as an argument.");
+    }
+    return retval;
 }
 
 QScriptValue QTime_addSecs(QScriptContext *context, QScriptEngine *engine)
 {
-	QTime time;
-	QScriptValue retval;
-	if(context->argumentCount() == 1)
-	{
-		QTime self = getself<QTime>(context);
-		time = self.addSecs(argument<int>(0, context));
-		retval = engine->toScriptValue<QTime>(time);
-		setQTimeProperties(retval, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::addSecs(). This method takes one "@|
-							"integer as an argument.");
-	}
-	return retval;
+    QTime time;
+    QScriptValue retval;
+    if(context->argumentCount() == 1)
+    {
+        QTime self = getself<QTime>(context);
+        time = self.addSecs(argument<int>(0, context));
+        retval = engine->toScriptValue<QTime>(time);
+        setQTimeProperties(retval, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::addSecs(). This method takes one "@|
+                            "integer as an argument.");
+    }
+    return retval;
 }
 
 @ The |elapsed()| method returns an integer value.
@@ -3376,19 +3376,19 @@ QScriptValue QTime_addSecs(QScriptContext *context, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QTime_elapsed(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.elapsed());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::elapsed(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.elapsed());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::elapsed(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 @ The |hour()|, |minute()|, |second()| and |msec()| methods return an integer
@@ -3397,19 +3397,19 @@ with various parts of the time. The |hour()| method is typical of these methods.
 @<Functions for scripting@>=
 QScriptValue QTime_hour(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.hour());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::hour(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.hour());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::hour(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 @ The |minute()|, |second()|, and |msec()| methods are implemented similarly.
@@ -3417,53 +3417,53 @@ QScriptValue QTime_hour(QScriptContext *context, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QTime_minute(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.minute());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-							"QTime::minute(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.minute());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::minute(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 QScriptValue QTime_second(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.second());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::second(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.second());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::second(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 QScriptValue QTime_msec(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.msec());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::msec(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.msec());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::msec(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 @ The |isNull()| and |isValid()| methods return a boolean value. A |QTime| is
@@ -3473,36 +3473,36 @@ considered invalid if it is null or if part of the time is out of range.
 @<Functions for scripting@>=
 QScriptValue QTime_isNull(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.isNull());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::isNull(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.isNull());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::isNull(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 QScriptValue QTime_isValid(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.isValid());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::isValid(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.isValid());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::isValid(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 @ The |secsTo()| and |msecsTo()| methods return an integer value indicating the
@@ -3511,36 +3511,36 @@ number of seconds or milliseconds until a |QTime| argument.
 @<Functions for scripting@>=
 QScriptValue QTime_msecsTo(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 1)
-	{
-		QTime self = getself<QTime>(context);
-		QTime arg = argument<QVariant>(0, context).toTime();
-		retval = QScriptValue(engine, self.msecsTo(arg));
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::msecsTo(). This method takes one QTime.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 1)
+    {
+        QTime self = getself<QTime>(context);
+        QTime arg = argument<QVariant>(0, context).toTime();
+        retval = QScriptValue(engine, self.msecsTo(arg));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::msecsTo(). This method takes one QTime.");
+    }
+    return retval;
 }
 
 QScriptValue QTime_secsTo(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 1)
-	{
-		QTime self = getself<QTime>(context);
-		QTime arg = argument<QVariant>(0, context).toTime();
-		retval = QScriptValue(engine, self.secsTo(arg));
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::secsTo(). This method takes one QTime.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 1)
+    {
+        QTime self = getself<QTime>(context);
+        QTime arg = argument<QVariant>(0, context).toTime();
+        retval = QScriptValue(engine, self.secsTo(arg));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::secsTo(). This method takes one QTime.");
+    }
+    return retval;
 }
 
 @ The |start()| and |restart()| methods each set the value of the |QTime()| to
@@ -3550,34 +3550,34 @@ the |elapsed()| method.
 @<Functions for scripting@>=
 QScriptValue QTime_restart(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.restart());
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::restart(). This method takes no "@|
-							"arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.restart());
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::restart(). This method takes no "@|
+                            "arguments.");
+    }
+    return retval;
 }
 
 QScriptValue QTime_start(QScriptContext *context, QScriptEngine *)
 {
-	if(context->argumentCount() == 0)
-	{
-		QTime self = getself<QTime>(context);
-		self.start();
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::start(). This method takes no arguments.");
-	}
-	return QScriptValue();
+    if(context->argumentCount() == 0)
+    {
+        QTime self = getself<QTime>(context);
+        self.start();
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::start(). This method takes no arguments.");
+    }
+    return QScriptValue();
 }
 
 @ The slightly inappropriately named |setHMS()| method changes the current value
@@ -3586,34 +3586,34 @@ of the time and returns a boolean to indicate if the new time value is valid.
 @<Functions for scripting@>=
 QScriptValue QTime_setHMS(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 3 || context->argumentCount() == 4)
-	{
-		QTime self = getself<QTime>(context);
-		int arg1 = 0;
-		int arg2 = 0;
-		int arg3 = 0;
-		int arg4 = 0;
-		switch(context->argumentCount())@/
-		{@t\1@>@/
-			case 4:@/
-				arg4 = argument<int>(3, context);
-			case 3:@/
-				arg3 = argument<int>(2, context);
-				arg2 = argument<int>(1, context);
-				arg1 = argument<int>(0, context);
-			default:@/
-				break;@t\2@>@/
-		}
-		retval = QScriptValue(engine, self.setHMS(arg1, arg2, arg3, arg4));
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::setHMS(). This method takes three or "@|
-							"four integer arguments.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 3 || context->argumentCount() == 4)
+    {
+        QTime self = getself<QTime>(context);
+        int arg1 = 0;
+        int arg2 = 0;
+        int arg3 = 0;
+        int arg4 = 0;
+        switch(context->argumentCount())@/
+        {@t\1@>@/
+            case 4:@/
+                arg4 = argument<int>(3, context);
+            case 3:@/
+                arg3 = argument<int>(2, context);
+                arg2 = argument<int>(1, context);
+                arg1 = argument<int>(0, context);
+            default:@/
+                break;@t\2@>@/
+        }
+        retval = QScriptValue(engine, self.setHMS(arg1, arg2, arg3, arg4));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::setHMS(). This method takes three or "@|
+                            "four integer arguments.");
+    }
+    return retval;
 }
 
 @ The |toString()| method returns a string representation of the time. See the
@@ -3622,19 +3622,19 @@ Qt documentation for instructions on creating a valid format string.
 @<Functions for scripting@>=
 QScriptValue QTime_toString(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue retval;
-	if(context->argumentCount() == 1)
-	{
-		QTime self = getself<QTime>(context);
-		retval = QScriptValue(engine, self.toString(argument<QString>(0, context)));
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::toString(). This method takes one QString "@|
-							"as an argument.");
-	}
-	return retval;
+    QScriptValue retval;
+    if(context->argumentCount() == 1)
+    {
+        QTime self = getself<QTime>(context);
+        retval = QScriptValue(engine, self.toString(argument<QString>(0, context)));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::toString(). This method takes one QString "@|
+                            "as an argument.");
+    }
+    return retval;
 }
 
 @ The |currentTime()| and |fromString()| methods return a new |QTime| object.
@@ -3643,29 +3643,29 @@ These methods make no reference to the any other existing |QTime|.
 @<Functions for scripting@>=
 QScriptValue QTime_currentTime(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object;
-	object = engine->toScriptValue<QTime>(QTime::currentTime());
-	setQTimeProperties(object, engine);
-	return object;
+    QScriptValue object;
+    object = engine->toScriptValue<QTime>(QTime::currentTime());
+    setQTimeProperties(object, engine);
+    return object;
 }
 
 QScriptValue QTime_fromString(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 2)
-	{
-		QString time = argument<QString>(0, context);
-		QString format = argument<QString>(1, context);
-		object = engine->toScriptValue<QTime>(QTime::fromString(time, format));
-		setQTimeProperties(object, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-		                    "QTime::fromString(). This method takes two "@|
-							"string arguments.");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 2)
+    {
+        QString time = argument<QString>(0, context);
+        QString format = argument<QString>(1, context);
+        object = engine->toScriptValue<QTime>(QTime::fromString(time, format));
+        setQTimeProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QTime::fromString(). This method takes two "@|
+                            "string arguments.");
+    }
+    return object;
 }
 
 @ In order to pass |QTime| objects back from a script, we also need to overload
@@ -3674,7 +3674,7 @@ QScriptValue QTime_fromString(QScriptContext *context, QScriptEngine *engine)
 @<Functions for scripting@>=
 template<> QTime argument(int arg, QScriptContext *context)
 {
-	return qscriptvalue_cast<QTime>(context->argument(arg));
+    return qscriptvalue_cast<QTime>(context->argument(arg));
 }
 
 @* Scripting Item View Classes.
@@ -3692,7 +3692,7 @@ void setQAbstractScrollAreaProperties(QScriptValue value,
 @<Functions for scripting@>=
 void setQAbstractScrollAreaProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQFrameProperties(value, engine);
+    setQFrameProperties(value, engine);
 }
 
 @ This class is used by the |QAbstractItemView| class. This is another class
@@ -3706,7 +3706,7 @@ void setQAbstractItemViewProperties(QScriptValue value, QScriptEngine *engine);
 @<Functions for scripting@>=
 void setQAbstractItemViewProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractScrollAreaProperties(value, engine);
+    setQAbstractScrollAreaProperties(value, engine);
 }
 
 @ The |QGraphicsView| and |QTableView| classes form the base of \pn{} classes.
@@ -3720,12 +3720,12 @@ void setQTableViewProperties(QScriptValue value, QScriptEngine *engine);
 @<Functions for scripting@>=
 void setQGraphicsViewProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractScrollAreaProperties(value, engine);
+    setQAbstractScrollAreaProperties(value, engine);
 }
 
 void setQTableViewProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractItemViewProperties(value, engine);
+    setQAbstractItemViewProperties(value, engine);
 }
 
 @* Scripting Button Classes.
@@ -3753,19 +3753,19 @@ engine->globalObject().setProperty("QPushButton", value);
 @<Functions for scripting@>=
 QScriptValue constructQPushButton(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new QPushButton());
-	setQPushButtonProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new QPushButton());
+    setQPushButtonProperties(object, engine);
+    return object;
 }
 
 void setQPushButtonProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractButtonProperties(value, engine);
+    setQAbstractButtonProperties(value, engine);
 }
 
 void setQAbstractButtonProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
+    setQWidgetProperties(value, engine);
 }
 
 @* Scripting QSqlQuery.
@@ -3783,13 +3783,13 @@ when the query object is destroyed.
 @<Class declarations@>=
 class SqlQueryConnection : public QSqlQuery@/
 {
-	public:@/
-		SqlQueryConnection(const QString &query = QString());
-		~SqlQueryConnection();
-		QSqlQuery* operator->() const;
-	private:@/
-		QString connection;
-		QSqlQuery *q;
+    public:@/
+        SqlQueryConnection(const QString &query = QString());
+        ~SqlQueryConnection();
+        QSqlQuery* operator->() const;
+    private:@/
+        QString connection;
+        QSqlQuery *q;
 };
 
 @ The constructor can be somewhat simplified from the four forms of |QSqlQuery|.
@@ -3801,10 +3801,10 @@ initialize a real |QSqlQuery| object.
 @<SqlQueryConnection implementation@>=
 SqlQueryConnection::SqlQueryConnection(const QString &query)
 {
-	QSqlDatabase database = AppInstance->database();
-	database.open();
-	q = new QSqlQuery(query, database);
-	connection = database.connectionName();
+    QSqlDatabase database = AppInstance->database();
+    database.open();
+    q = new QSqlQuery(query, database);
+    connection = database.connectionName();
 }
 
 @ The destructor handles removing the |QSqlQuery| and the database connection
@@ -3814,12 +3814,12 @@ associated with it. The extra brackets introduce a new scope for the
 @<SqlQueryConnection implementation@>=
 SqlQueryConnection::~SqlQueryConnection()
 {
-	delete q;
-	{
-		QSqlDatabase database = QSqlDatabase::database(connection);
-		database.close();
-	}
-	QSqlDatabase::removeDatabase(connection);
+    delete q;
+    {
+        QSqlDatabase database = QSqlDatabase::database(connection);
+        database.close();
+    }
+    QSqlDatabase::removeDatabase(connection);
 }
 
 @ For all other functionality, we simply forward the request to our |QSqlQuery|
@@ -3828,7 +3828,7 @@ object.
 @<SqlQueryConnection implementation@>=
 QSqlQuery* SqlQueryConnection::operator->() const
 {
-	return q;
+    return q;
 }
 
 @ In order to use this new class in the host environment, a number of functions
@@ -3865,11 +3865,11 @@ value.
 @<Functions for scripting@>=
 QScriptValue constructQSqlQuery(QScriptContext *, QScriptEngine *engine)
 {
-	SqlQueryConnection *obj = new SqlQueryConnection();
-	QScriptValue object =
-	     engine->toScriptValue<void *>(obj);
-	setQSqlQueryProperties(object, engine);
-	return object;
+    SqlQueryConnection *obj = new SqlQueryConnection();
+    QScriptValue object =
+         engine->toScriptValue<void *>(obj);
+    setQSqlQueryProperties(object, engine);
+    return object;
 }
 
 @ As this class does not derive from |QObject|, we must wrap all of the methods
@@ -3878,17 +3878,17 @@ we might want to use.
 @<Functions for scripting@>=
 void setQSqlQueryProperties(QScriptValue value, QScriptEngine *engine)
 {
-	value.setProperty("bind", engine->newFunction(QSqlQuery_bind));
-	value.setProperty("bindFileData",
-	                  engine->newFunction(QSqlQuery_bindFileData));
-	value.setProperty("bindDeviceData",
-	                  engine->newFunction(QSqlQuery_bindDeviceData));
-	value.setProperty("exec", engine->newFunction(QSqlQuery_exec));
-	value.setProperty("executedQuery", engine->newFunction(QSqlQuery_executedQuery));
-	value.setProperty("invalidate", engine->newFunction(QSqlQuery_invalidate));
-	value.setProperty("next", engine->newFunction(QSqlQuery_next));
-	value.setProperty("prepare", engine->newFunction(QSqlQuery_prepare));
-	value.setProperty("value", engine->newFunction(QSqlQuery_value));
+    value.setProperty("bind", engine->newFunction(QSqlQuery_bind));
+    value.setProperty("bindFileData",
+                      engine->newFunction(QSqlQuery_bindFileData));
+    value.setProperty("bindDeviceData",
+                      engine->newFunction(QSqlQuery_bindDeviceData));
+    value.setProperty("exec", engine->newFunction(QSqlQuery_exec));
+    value.setProperty("executedQuery", engine->newFunction(QSqlQuery_executedQuery));
+    value.setProperty("invalidate", engine->newFunction(QSqlQuery_invalidate));
+    value.setProperty("next", engine->newFunction(QSqlQuery_next));
+    value.setProperty("prepare", engine->newFunction(QSqlQuery_prepare));
+    value.setProperty("value", engine->newFunction(QSqlQuery_value));
 }
 
 @ Most of these properties are wrappers around existing |QSqlQuery| functions.
@@ -3896,42 +3896,42 @@ void setQSqlQueryProperties(QScriptValue value, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue QSqlQuery_exec(QScriptContext *context, QScriptEngine *engine)
 {
-	QSqlQuery *q = getself<SqlQueryConnection *>(context)->operator->();
-	QScriptValue retval;
-	if(context->argumentCount() == 1)
-	{
-		retval = QScriptValue(engine,
-		                      q->exec(argument<QString>(0, context)));
-	}
-	else
-	{
-		retval = QScriptValue(engine, q->exec());
-	}
-	if(q->lastError().isValid())
-	{
-		qDebug() << q->lastQuery();
-		qDebug() << q->lastError().text();
-	}
-	return retval;
+    QSqlQuery *q = getself<SqlQueryConnection *>(context)->operator->();
+    QScriptValue retval;
+    if(context->argumentCount() == 1)
+    {
+        retval = QScriptValue(engine,
+                              q->exec(argument<QString>(0, context)));
+    }
+    else
+    {
+        retval = QScriptValue(engine, q->exec());
+    }
+    if(q->lastError().isValid())
+    {
+        qDebug() << q->lastQuery();
+        qDebug() << q->lastError().text();
+    }
+    return retval;
 }
 
 QScriptValue QSqlQuery_executedQuery(QScriptContext *context, QScriptEngine *)
 {
-	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
-	return QScriptValue(query->lastQuery());
+    QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
+    return QScriptValue(query->lastQuery());
 }
 
 QScriptValue QSqlQuery_next(QScriptContext *context, QScriptEngine *engine)
 {
-	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
-	return QScriptValue(engine, query->next());
+    QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
+    return QScriptValue(engine, query->next());
 }
 
 QScriptValue QSqlQuery_value(QScriptContext *context, QScriptEngine *engine)
 {
-	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
-	return QScriptValue(engine,
-	                    query->value(argument<int>(0, context)).toString());
+    QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
+    return QScriptValue(engine,
+                        query->value(argument<int>(0, context)).toString());
 }
 
 @ For prepared queries, we support binding variables available to the script,
@@ -3940,46 +3940,46 @@ data available in a named file, or data from any open |QIODevice|.
 @<Functions for scripting@>=
 QScriptValue QSqlQuery_prepare(QScriptContext *context, QScriptEngine *engine)
 {
-	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
-	return QScriptValue(engine, query->prepare(argument<QString>(0, context)));
+    QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
+    return QScriptValue(engine, query->prepare(argument<QString>(0, context)));
 }
 
 QScriptValue QSqlQuery_bind(QScriptContext *context, QScriptEngine *)
 {
-	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
-	query->bindValue(argument<QString>(0, context),
-	                 argument<QVariant>(1, context));
-	return QScriptValue();
+    QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
+    query->bindValue(argument<QString>(0, context),
+                     argument<QVariant>(1, context));
+    return QScriptValue();
 }
 
 QScriptValue QSqlQuery_bindFileData(QScriptContext *context,
                                     QScriptEngine *)
 {
-	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
-	QString placeholder = argument<QString>(0, context);
-	QString filename = argument<QString>(1, context);
-	QFile file(filename);
-	QByteArray data;
-	if(file.open(QIODevice::ReadOnly))
-	{
-		data = file.readAll();
-		file.close();
-	}
-	query->bindValue(placeholder, data);
-	return QScriptValue();
+    QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
+    QString placeholder = argument<QString>(0, context);
+    QString filename = argument<QString>(1, context);
+    QFile file(filename);
+    QByteArray data;
+    if(file.open(QIODevice::ReadOnly))
+    {
+        data = file.readAll();
+        file.close();
+    }
+    query->bindValue(placeholder, data);
+    return QScriptValue();
 }
 
 QScriptValue QSqlQuery_bindDeviceData(QScriptContext *context,
                                       QScriptEngine *)
 {
-	QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
-	QString placeholder = argument<QString>(0, context);
-	QIODevice *device = argument<QIODevice *>(1, context);
-	device->reset();
-	QByteArray data;
-	data = device->readAll();
-	query->bindValue(placeholder, data);
-	return QScriptValue();
+    QSqlQuery *query = getself<SqlQueryConnection *>(context)->operator->();
+    QString placeholder = argument<QString>(0, context);
+    QIODevice *device = argument<QIODevice *>(1, context);
+    device->reset();
+    QByteArray data;
+    data = device->readAll();
+    query->bindValue(placeholder, data);
+    return QScriptValue();
 }
 
 @ To avoid leaking database connections, we add the |invalidate()| property
@@ -3992,9 +3992,9 @@ the following example:
 @<Functions for scripting@>=
 QScriptValue QSqlQuery_invalidate(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
-	delete query;
-	return QScriptValue::UndefinedValue;
+    SqlQueryConnection *query = getself<SqlQueryConnection *>(context);
+    delete query;
+    return QScriptValue::UndefinedValue;
 }
 
 @* Other scripting functions.
@@ -4037,17 +4037,17 @@ the path and extension or the path of the directory containing the file.
 @<Functions for scripting@>=
 QScriptValue baseName(QScriptContext *context, QScriptEngine *engine)
 {
-	QFileInfo info(argument<QString>(0, context));
-	QScriptValue retval(engine, info.baseName());
-	return retval;
+    QFileInfo info(argument<QString>(0, context));
+    QScriptValue retval(engine, info.baseName());
+    return retval;
 }
 
 QScriptValue dir(QScriptContext *context, QScriptEngine *engine)
 {
-	QFileInfo info(argument<QString>(0, context));
-	QDir dir = info.dir();
-	QScriptValue retval(engine, dir.path());
-	return retval;
+    QFileInfo info(argument<QString>(0, context));
+    QDir dir = info.dir();
+    QScriptValue retval(engine, dir.path());
+    return retval;
 }
 
 @ This function takes a file ID and a file name and copies file data stored in
@@ -4056,19 +4056,19 @@ the database out to the file system.
 @<Functions for scripting@>=
 QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection h;
-	QSqlQuery *query = h.operator->();
-	QString q = "SELECT file FROM files WHERE id = :file";
-	query->prepare(q);
-	query->bindValue(":file", argument<int>(0, context));
-	query->exec();
-	query->next();
-	QByteArray array = query->value(0).toByteArray();
-	QFile file(argument<QString>(1, context));
-	file.open(QIODevice::WriteOnly);
-	file.write(array);
-	file.close();
-	return QScriptValue();
+    SqlQueryConnection h;
+    QSqlQuery *query = h.operator->();
+    QString q = "SELECT file FROM files WHERE id = :file";
+    query->prepare(q);
+    query->bindValue(":file", argument<int>(0, context));
+    query->exec();
+    query->next();
+    QByteArray array = query->value(0).toByteArray();
+    QFile file(argument<QString>(1, context));
+    file.open(QIODevice::WriteOnly);
+    file.write(array);
+    file.close();
+    return QScriptValue();
 }
 
 @ This function takes a string representing a SQL array and returns an array
@@ -4077,24 +4077,24 @@ value.
 @<Functions for scripting@>=
 QScriptValue sqlToArray(QScriptContext *context, QScriptEngine *engine)
 {
-	QString source = argument<QString>(0, context);
-	source.remove(0, 1);
-	source.chop(1);
-	QStringList elements = source.split(",");
-	QString element;
-	QScriptValue dest = engine->newArray(elements.size());
-	int i = 0;
-	foreach(element, elements)
-	{
-		if(element.startsWith("\"") && element.endsWith("\""))
-		{
-			element.chop(1);
-			element = element.remove(0, 1);
-		}
-		dest.setProperty(i, QScriptValue(engine, element));
-		i++;
-	}
-	return dest;
+    QString source = argument<QString>(0, context);
+    source.remove(0, 1);
+    source.chop(1);
+    QStringList elements = source.split(",");
+    QString element;
+    QScriptValue dest = engine->newArray(elements.size());
+    int i = 0;
+    foreach(element, elements)
+    {
+        if(element.startsWith("\"") && element.endsWith("\""))
+        {
+            element.chop(1);
+            element = element.remove(0, 1);
+        }
+        dest.setProperty(i, QScriptValue(engine, element));
+        i++;
+    }
+    return dest;
 }
 
 @ This function can be used to set the default font for the application or on
@@ -4103,18 +4103,18 @@ a per-class hierarchy basis.
 @<Functions for scripting@>=
 QScriptValue setFont(QScriptContext *context, QScriptEngine *)
 {
-	QString font = argument<QString>(0, context);
-	QString classname;
-	if(context->argumentCount() > 1)
-	{
-		classname = argument<QString>(1, context);
-		QApplication::setFont(QFont(font), classname.toLatin1().constData());
-	}
-	else
-	{
-		QApplication::setFont(QFont(font));
-	}
-	return QScriptValue();
+    QString font = argument<QString>(0, context);
+    QString classname;
+    if(context->argumentCount() > 1)
+    {
+        classname = argument<QString>(1, context);
+        QApplication::setFont(QFont(font), classname.toLatin1().constData());
+    }
+    else
+    {
+        QApplication::setFont(QFont(font));
+    }
+    return QScriptValue();
 }
 
 @ This function was briefly used prior to adding support for |QXmlQuery| in the
@@ -4123,24 +4123,24 @@ host environment. The function is now depreciated and should not be used.
 @<Functions for scripting@>=
 QScriptValue annotationFromRecord(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryConnection h;
-	QSqlQuery *query = h.operator->();
-	QString q = "SELECT file FROM files WHERE id = :file";
-	query->prepare(q);
-	query->bindValue(":file", argument<int>(0, context));
-	query->exec();
-	query->next();
-	QByteArray array = query->value(0).toByteArray();
-	QBuffer buffer(&array);
-	buffer.open(QIODevice::ReadOnly);
-	QXmlQuery xquery;
-	xquery.bindVariable("profile", &buffer);
-	QString xq;
-	xq = "for $b in doc($profile) //tuple where exists($b/annotation) return $b";
-	xquery.setQuery(xq);
-	QString result;
-	xquery.evaluateTo(&result);
-	return QScriptValue(result);
+    SqlQueryConnection h;
+    QSqlQuery *query = h.operator->();
+    QString q = "SELECT file FROM files WHERE id = :file";
+    query->prepare(q);
+    query->bindValue(":file", argument<int>(0, context));
+    query->exec();
+    query->next();
+    QByteArray array = query->value(0).toByteArray();
+    QBuffer buffer(&array);
+    buffer.open(QIODevice::ReadOnly);
+    QXmlQuery xquery;
+    xquery.bindVariable("profile", &buffer);
+    QString xq;
+    xq = "for $b in doc($profile) //tuple where exists($b/annotation) return $b";
+    xquery.setQuery(xq);
+    QString result;
+    xquery.evaluateTo(&result);
+    return QScriptValue(result);
 }
 
 @ This function can be used to change the tab order for controls in Typica.
@@ -4150,9 +4150,9 @@ of tab controls in the logging window unacceptable.
 @<Functions for scripting@>=
 QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *)
 {
-	QWidget::setTabOrder(argument<QWidget*>(0, context),
-	                     argument<QWidget*>(1, context));
-	return QScriptValue();
+    QWidget::setTabOrder(argument<QWidget*>(0, context),
+                         argument<QWidget*>(1, context));
+    return QScriptValue();
 }
 
 @** Application Configuration.
@@ -4187,27 +4187,27 @@ int position = arguments.indexOf("-c");
 QString filename = QString();
 if(position != -1)
 {
-	if(arguments.size() >= position + 1)
-	{
-		filename = arguments.at(position + 1);
-	}
+    if(arguments.size() >= position + 1)
+    {
+        filename = arguments.at(position + 1);
+    }
 }
 if(filename.isEmpty())
 {
-	filename = QFileDialog::getOpenFileName(NULL, "Open Configuration File",
-					settings.value("config", "").toString());
+    filename = QFileDialog::getOpenFileName(NULL, "Open Configuration File",
+                    settings.value("config", "").toString());
 }
 QDir directory;
 if(!filename.isEmpty())
 {
-	QFile file(filename);
-	QFileInfo info(filename);
-	directory = info.dir();
-	settings.setValue("config", directory.path());
-	if(file.open(QIODevice::ReadOnly))
-	{
-		app.configuration()->setContent(&file, true);
-	}
+    QFile file(filename);
+    QFileInfo info(filename);
+    directory = info.dir();
+    settings.setValue("config", directory.path());
+    if(file.open(QIODevice::ReadOnly))
+    {
+        app.configuration()->setContent(&file, true);
+    }
 }
 @<Substitute included fragments@>@;
 
@@ -4223,27 +4223,27 @@ QDomDocument includedDoc;
 QDomDocumentFragment fragment;
 for(int i = 0; i < children.size(); i++)
 {
-	QDomNode currentNode = children.at(i);
-	QDomElement currentElement;
-	if(currentNode.nodeName() == "include")
-	{
-		currentElement = currentNode.toElement();
-		if(currentElement.hasAttribute("src"))
-		{
-			replacementDoc = directory.path();
-			replacementDoc.append('/');
-			replacementDoc.append(currentElement.attribute("src"));
-			QFile doc(replacementDoc);
-			if(doc.open(QIODevice::ReadOnly))
-			{
-				includedDoc.setContent(&doc, true);
-				fragment = includedDoc.createDocumentFragment();
-				fragment.appendChild(includedDoc.documentElement());
-				root.replaceChild(fragment, currentNode);
-				doc.close();
-			}
-		}
-	}
+    QDomNode currentNode = children.at(i);
+    QDomElement currentElement;
+    if(currentNode.nodeName() == "include")
+    {
+        currentElement = currentNode.toElement();
+        if(currentElement.hasAttribute("src"))
+        {
+            replacementDoc = directory.path();
+            replacementDoc.append('/');
+            replacementDoc.append(currentElement.attribute("src"));
+            QFile doc(replacementDoc);
+            if(doc.open(QIODevice::ReadOnly))
+            {
+                includedDoc.setContent(&doc, true);
+                fragment = includedDoc.createDocumentFragment();
+                fragment.appendChild(includedDoc.documentElement());
+                root.replaceChild(fragment, currentNode);
+                doc.close();
+            }
+        }
+    }
 }
 
 @ Simply loading the configuration document does not display a user interface or
@@ -4269,17 +4269,17 @@ QString programText;
 QDomElement currentElement;
 for(int i = 0; i < children.size(); i++)
 {
-	QDomNode currentNode = children.at(i);
-	if(currentNode.nodeName() == "style")
-	{
-		currentElement = currentNode.toElement();
-		styleText.append(currentElement.text());
-	}
-	else if(currentNode.nodeName() == "program")
-	{
-		currentElement = currentNode.toElement();
-		programText.append(currentElement.text());
-	}
+    QDomNode currentNode = children.at(i);
+    if(currentNode.nodeName() == "style")
+    {
+        currentElement = currentNode.toElement();
+        styleText.append(currentElement.text());
+    }
+    else if(currentNode.nodeName() == "program")
+    {
+        currentElement = currentNode.toElement();
+        programText.append(currentElement.text());
+    }
 }
 app.setStyleSheet(styleText);
 QScriptValue result = engine->evaluate(programText);
@@ -4291,14 +4291,14 @@ the execution of that script. If this occurs, we want to report that.
 @<Report scripting errors@>=
 if(engine->hasUncaughtException())
 {
-	int line = engine->uncaughtExceptionLineNumber();
-	qDebug() << "Uncaught excpetion at line " << line << " : " <<
-		result.toString();
-	QString trace;
-	foreach(trace, engine->uncaughtExceptionBacktrace())
-	{
-		qDebug() << trace;
-	}
+    int line = engine->uncaughtExceptionLineNumber();
+    qDebug() << "Uncaught excpetion at line " << line << " : " <<
+        result.toString();
+    QString trace;
+    foreach(trace, engine->uncaughtExceptionBacktrace())
+    {
+        qDebug() << trace;
+    }
 }
 
 @* Creating a window.
@@ -4333,26 +4333,26 @@ void populateGridLayout(QDomElement element, QStack<QWidget *> *widgetStack,
 void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                        QStack<QLayout *> *layoutStack);
 void populateSplitter(QDomElement element, QStack<QWidget *> *widgetStack,@|
-					  QStack<QLayout *> *layoutStack);
+                      QStack<QLayout *> *layoutStack);
 void populateWidget(QDomElement element, QStack<QWidget *> *widgetStack,@|
                     QStack<QLayout *> *layoutStack);
 void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                            QStack<QLayout *> *layoutStack);
 void addTemperatureDisplayToSplitter(QDomElement element,@|
                                      QStack<QWidget *> *widgetStack,
-									 QStack<QLayout *> *layoutStack);
+                                     QStack<QLayout *> *layoutStack);
 void addTemperatureDisplayToLayout(QDomElement element,@|
                                    QStack<QWidget *> *widgetStack,
-								   QStack<QLayout *> *layoutStack);
+                                   QStack<QLayout *> *layoutStack);
 void addTimerDisplayToSplitter(QDomElement element,@|
                                QStack<QWidget *> *widgetStack,
-							   QStack<QLayout *> *layoutStack);
+                               QStack<QLayout *> *layoutStack);
 void addTimerDisplayToLayout(QDomElement element,@|
                              QStack<QWidget *> *widgetStack,
-							 QStack<QLayout *> *layoutStack);
+                             QStack<QLayout *> *layoutStack);
 void addDecorationToSplitter(QDomElement element,@|
                              QStack<QWidget *> *widgetStack,
-							 QStack<QLayout *> *layoutStack);
+                             QStack<QLayout *> *layoutStack);
 void addDecorationToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                            QStack<QLayout *> *layoutStack);
 void addWidgetToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
@@ -4373,7 +4373,7 @@ void addTextToLayout(QDomElement element, QStack<QWidget *> *widgetStack,@|
                      QStack<QLayout *> *layoutStack);
 void addSqlQueryViewToLayout(QDomElement element,
                              QStack<QWidget *> *widgetStack,
-							 QStack<QLayout *> *layoutStack);
+                             QStack<QLayout *> *layoutStack);
 void addCalendarToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                          QStack<QLayout *> *layoutStack);
 void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
@@ -4395,15 +4395,15 @@ multitude of objects, all of which must be passed to the scripting engine.
 @<Functions for scripting@>=
 QScriptValue createWindow(QScriptContext *context, QScriptEngine *engine)@/
 {
-	QString targetID = argument<QString>(0, context);
-	QDomNode element;
-	QScriptValue object;
-	@<Find the window element@>@;
-	if(!element.isNull())
-	{
-		@<Display the window@>@;
-	}
-	return object;
+    QString targetID = argument<QString>(0, context);
+    QDomNode element;
+    QScriptValue object;
+    @<Find the window element@>@;
+    if(!element.isNull())
+    {
+        @<Display the window@>@;
+    }
+    return object;
 }
 
 @ Report files are not part of the configuration document and must be created
@@ -4415,21 +4415,21 @@ window with a reports menu has been created.
 @<Functions for scripting@>=
 QScriptValue createReport(QScriptContext *context, QScriptEngine *engine)
 {
-	QString targetID = argument<QString>(0, context);
-	QFile file(QString("reports:%1").arg(targetID));
-	QScriptValue object;
-	if(file.open(QIODevice::ReadOnly))
-	{
-		QDomDocument document;
-		document.setContent(&file, true);
-		QDomElement element = document.documentElement();
-		if(!element.isNull())
-		{
-			@<Display the window@>@;
-		}
-		file.close();
-	}
-	return object;
+    QString targetID = argument<QString>(0, context);
+    QFile file(QString("reports:%1").arg(targetID));
+    QScriptValue object;
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QDomDocument document;
+        document.setContent(&file, true);
+        QDomElement element = document.documentElement();
+        if(!element.isNull())
+        {
+            @<Display the window@>@;
+        }
+        file.close();
+    }
+    return object;
 }
 
 @ First we must locate the {\tt <window>} element. The most sensible way to do
@@ -4441,23 +4441,23 @@ the resulting list to find the element with the appropriate ID.
 
 @<Find the window element@>=
 QDomNodeList windows =
-	AppInstance->configuration()->documentElement().elementsByTagName("window");
+    AppInstance->configuration()->documentElement().elementsByTagName("window");
 QDomNode nullNode;
 int i = 0;
 element = nullNode;
 while(i < windows.count())
 {
-	element = windows.at(i);
-	QDomNamedNodeMap attributes = element.attributes();
-	if(attributes.contains("id"))
-	{
-		if(attributes.namedItem("id").toAttr().value() == targetID)
-		{
-			break;
-		}
-	}
-	element = nullNode;
-	i++;
+    element = windows.at(i);
+    QDomNamedNodeMap attributes = element.attributes();
+    if(attributes.contains("id"))
+    {
+        if(attributes.namedItem("id").toAttr().value() == targetID)
+        {
+            break;
+        }
+    }
+    element = nullNode;
+    i++;
 }
 
 @ In order to display a window, we start by creating a new |ScriptQMainWindow|
@@ -4482,7 +4482,7 @@ central->setObjectName("centralWidget");
 window->setCentralWidget(central);
 if(element.hasChildNodes())
 {
-	@<Process window children@>@;
+    @<Process window children@>@;
 }
 @<Insert help menu@>@;
 window->show();
@@ -4515,26 +4515,26 @@ QDomNodeList windowChildren = element.childNodes();
 int i = 0;
 while(i < windowChildren.count())
 {
-	QDomNode current;
-	QDomElement element;
-	current = windowChildren.at(i);
-	if(current.isElement())
-	{
-		element = current.toElement();
-		if(element.tagName() == "program")
-		{
-			windowScript.append(element.text());
-		}
-		else if(element.tagName() == "layout")
-		{
-			addLayoutToWidget(element, &widgetStack, &layoutStack);
-		}
-		else if(element.tagName() == "menu")
-		{
-			@<Process menus@>@;
-		}
-	}
-	i++;
+    QDomNode current;
+    QDomElement element;
+    current = windowChildren.at(i);
+    if(current.isElement())
+    {
+        element = current.toElement();
+        if(element.tagName() == "program")
+        {
+            windowScript.append(element.text());
+        }
+        else if(element.tagName() == "layout")
+        {
+            addLayoutToWidget(element, &widgetStack, &layoutStack);
+        }
+        else if(element.tagName() == "menu")
+        {
+            @<Process menus@>@;
+        }
+    }
+    i++;
 }
 QScriptValue oldThis = context->thisObject();
 context->setThisObject(object);
@@ -4559,22 +4559,22 @@ bar->setParent(window);
 bar->setObjectName("menuBar");
 if(element.hasAttribute("name"))
 {
-	QMenu *menu = bar->addMenu(element.attribute("name"));
-	menu->setParent(bar);
-	if(element.hasAttribute("type"))
-	{
-		if(element.attribute("type") == "reports")
-		{
-			if(element.hasAttribute("src"))
-			{
-				@<Populate reports menu@>@;
-			}
-		}
-	}
-	if(element.hasChildNodes())
-	{
-		@<Process menu items@>@;
-	}
+    QMenu *menu = bar->addMenu(element.attribute("name"));
+    menu->setParent(bar);
+    if(element.hasAttribute("type"))
+    {
+        if(element.attribute("type") == "reports")
+        {
+            if(element.hasAttribute("src"))
+            {
+                @<Populate reports menu@>@;
+            }
+        }
+    }
+    if(element.hasChildNodes())
+    {
+        @<Process menu items@>@;
+    }
 }
 
 @ To add items to a menu, we check for {\tt <item>} elements under the
@@ -4585,29 +4585,29 @@ QDomNodeList menuItems = element.childNodes();
 int j = 0;
 while(j < menuItems.count())
 {
-	QDomNode item = menuItems.at(j);
-	if(item.isElement())
-	{
-		QDomElement itemElement = item.toElement();
-		if(itemElement.tagName() == "item")
-		{
-			QAction *itemAction = new QAction(itemElement.text(), menu);
-			if(itemElement.hasAttribute("id"))
-			{
-				itemAction->setObjectName(itemElement.attribute("id"));
-			}
-			if(itemElement.hasAttribute("shortcut"))
-			{
-				itemAction->setShortcut(itemElement.attribute("shortcut"));
-			}
-			menu->addAction(itemAction);
-		}
-		else if(itemElement.tagName() == "separator")
-		{
-			menu->addSeparator();
-		}
-	}
-	j++;
+    QDomNode item = menuItems.at(j);
+    if(item.isElement())
+    {
+        QDomElement itemElement = item.toElement();
+        if(itemElement.tagName() == "item")
+        {
+            QAction *itemAction = new QAction(itemElement.text(), menu);
+            if(itemElement.hasAttribute("id"))
+            {
+                itemAction->setObjectName(itemElement.attribute("id"));
+            }
+            if(itemElement.hasAttribute("shortcut"))
+            {
+                itemAction->setShortcut(itemElement.attribute("shortcut"));
+            }
+            menu->addAction(itemAction);
+        }
+        else if(itemElement.tagName() == "separator")
+        {
+            menu->addSeparator();
+        }
+    }
+    j++;
 }
 
 @i helpmenu.w
@@ -4628,16 +4628,16 @@ resolves to a |QGridLayout|, and {\tt stack} resolves to a |QStackedLayout|.
 void addLayoutToWidget(QDomElement element, QStack<QWidget*> *widgetStack,
                        QStack<QLayout*> *layoutStack)
 {
-	if(element.hasAttribute("type"))
-	{
-		@<Create and populate layout@>@;
-		QWidget *widget = widgetStack->top();
-		if(layout)
-		{
-			widget->setLayout(layout);
-		}
-		layoutStack->pop();
-	}
+    if(element.hasAttribute("type"))
+    {
+        @<Create and populate layout@>@;
+        QWidget *widget = widgetStack->top();
+        if(layout)
+        {
+            widget->setLayout(layout);
+        }
+        layoutStack->pop();
+    }
 }
 
 @ As there are multiple places where a {\tt <layout>} element is parsed with
@@ -4650,40 +4650,40 @@ QLayout *layout;
 QString layoutType = element.attribute("type");
 if(layoutType == "horizontal")
 {
-	layout = new QHBoxLayout;
-	layoutStack->push(layout);
-	populateBoxLayout(element, widgetStack, layoutStack);
+    layout = new QHBoxLayout;
+    layoutStack->push(layout);
+    populateBoxLayout(element, widgetStack, layoutStack);
 }
 else if(layoutType == "vertical")
 {
-	layout = new QVBoxLayout;
-	layoutStack->push(layout);
-	populateBoxLayout(element, widgetStack, layoutStack);
+    layout = new QVBoxLayout;
+    layoutStack->push(layout);
+    populateBoxLayout(element, widgetStack, layoutStack);
 }
 else if(layoutType == "grid")
 {
-	layout = new QGridLayout;
-	layoutStack->push(layout);
-	populateGridLayout(element, widgetStack, layoutStack);
+    layout = new QGridLayout;
+    layoutStack->push(layout);
+    populateGridLayout(element, widgetStack, layoutStack);
 }
 else if(layoutType == "stack")
 {
-	layout = new QStackedLayout;
-	layoutStack->push(layout);
-	populateStackedLayout(element, widgetStack, layoutStack);
+    layout = new QStackedLayout;
+    layoutStack->push(layout);
+    populateStackedLayout(element, widgetStack, layoutStack);
 }
 if(element.hasAttribute("id"))
 {
-	layout->setObjectName(element.attribute("id"));
+    layout->setObjectName(element.attribute("id"));
 }
 if(element.hasAttribute("spacing"))
 {
-	layout->setSpacing(element.attribute("spacing").toInt());
+    layout->setSpacing(element.attribute("spacing").toInt());
 }
 if(element.hasAttribute("margin"))
 {
-	int m = element.attribute("margin").toInt();
-	layout->setContentsMargins(m, m, m, m);
+    int m = element.attribute("margin").toInt();
+    layout->setContentsMargins(m, m, m, m);
 }
 
 @ Stacked layouts are a bit different from the other types. A stacked layout has
@@ -4696,26 +4696,26 @@ to set the currently visible page provided that an ID is set for the layout.
 void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                            QStack<QLayout *> *layoutStack)
 {
-	QDomNodeList children = element.childNodes();
-	QStackedLayout *layout = qobject_cast<QStackedLayout *>(layoutStack->top());
-	for(int i = 0; i < children.count(); i++)
-	{
-		QDomNode current;
-		QDomElement currentElement;
-		current = children.at(i);
-		if(current.isElement())
-		{
-			currentElement = current.toElement();
-			if(currentElement.tagName() == "page")
-			{
-				QWidget *widget = new QWidget;
-				layout->addWidget(widget);
-				widgetStack->push(widget);
-				populateWidget(currentElement, widgetStack, layoutStack);
-				widgetStack->pop();
-			}
-		}
-	}
+    QDomNodeList children = element.childNodes();
+    QStackedLayout *layout = qobject_cast<QStackedLayout *>(layoutStack->top());
+    for(int i = 0; i < children.count(); i++)
+    {
+        QDomNode current;
+        QDomElement currentElement;
+        current = children.at(i);
+        if(current.isElement())
+        {
+            currentElement = current.toElement();
+            if(currentElement.tagName() == "page")
+            {
+                QWidget *widget = new QWidget;
+                layout->addWidget(widget);
+                widgetStack->push(widget);
+                populateWidget(currentElement, widgetStack, layoutStack);
+                widgetStack->pop();
+            }
+        }
+    }
 }
 
 @ Using a grid layout is a bit different from using a box layout. Child elements
@@ -4728,34 +4728,34 @@ that row.
 void populateGridLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                         QStack<QLayout *> *layoutStack)
 {
-	QDomNodeList children = element.childNodes();
-	int row = -1;
-	QGridLayout *layout = qobject_cast<QGridLayout *>(layoutStack->top());
-	for(int i = 0; i < children.count(); i++)
-	{
-		QDomNode current;
-		QDomElement currentElement;
-		current = children.at(i);
-		if(current.isElement())
-		{
-			currentElement = current.toElement();
-			if(currentElement.tagName() == "row")
-			{
-				row++;
-				if(currentElement.hasAttribute("height"))
-				{
-					layout->setRowMinimumHeight(row,
-									currentElement.attribute("height").toInt());
-				}
-				if(currentElement.hasAttribute("stretch"))
-				{
-					layout->setRowStretch(row,
-					               currentElement.attribute("stretch").toInt());
-				}
-				@<Populate grid layout row@>@;
-			}
-		}
-	}
+    QDomNodeList children = element.childNodes();
+    int row = -1;
+    QGridLayout *layout = qobject_cast<QGridLayout *>(layoutStack->top());
+    for(int i = 0; i < children.count(); i++)
+    {
+        QDomNode current;
+        QDomElement currentElement;
+        current = children.at(i);
+        if(current.isElement())
+        {
+            currentElement = current.toElement();
+            if(currentElement.tagName() == "row")
+            {
+                row++;
+                if(currentElement.hasAttribute("height"))
+                {
+                    layout->setRowMinimumHeight(row,
+                                    currentElement.attribute("height").toInt());
+                }
+                if(currentElement.hasAttribute("stretch"))
+                {
+                    layout->setRowStretch(row,
+                                   currentElement.attribute("stretch").toInt());
+                }
+                @<Populate grid layout row@>@;
+            }
+        }
+    }
 }
 
 @ Each {\tt <row>} may have arbitrarily many {\tt <column>} children. A row with
@@ -4785,46 +4785,46 @@ int column = -1;
 QDomNodeList rowChildren = currentElement.childNodes();
 for(int j = 0; j < rowChildren.count(); j++)
 {
-	QDomNode columnNode;
-	QDomElement columnElement;
-	columnNode = rowChildren.at(j);
-	if(columnNode.isElement())
-	{
-		columnElement = columnNode.toElement();
-		if(columnElement.tagName() == "column")
-		{
-			column++;
-			if(columnElement.hasAttribute("column"))
-			{
-				column = columnElement.attribute("column").toInt();
-			}
-			if(columnElement.hasAttribute("width"))
-			{
-				layout->setColumnMinimumWidth(column,
-				                      columnElement.attribute("width").toInt());
-			}
-			if(columnElement.hasAttribute("stretch"))
-			{
-				layout->setColumnStretch(column,
-				                    columnElement.attribute("stretch").toInt());
-			}
-			int hspan = 1;
-			int vspan = 1;
-			if(columnElement.hasAttribute("rowspan"))
-			{
-				vspan = columnElement.attribute("rowspan").toInt();
-			}
-			if(columnElement.hasAttribute("colspan"))
-			{
-				hspan = columnElement.attribute("colspan").toInt();
-			}
-			QHBoxLayout *cell = new QHBoxLayout;
-			layout->addLayout(cell, row, column, vspan, hspan);
-			layoutStack->push(cell);
-			populateBoxLayout(columnElement, widgetStack, layoutStack);
-			layoutStack->pop();
-		}
-	}
+    QDomNode columnNode;
+    QDomElement columnElement;
+    columnNode = rowChildren.at(j);
+    if(columnNode.isElement())
+    {
+        columnElement = columnNode.toElement();
+        if(columnElement.tagName() == "column")
+        {
+            column++;
+            if(columnElement.hasAttribute("column"))
+            {
+                column = columnElement.attribute("column").toInt();
+            }
+            if(columnElement.hasAttribute("width"))
+            {
+                layout->setColumnMinimumWidth(column,
+                                      columnElement.attribute("width").toInt());
+            }
+            if(columnElement.hasAttribute("stretch"))
+            {
+                layout->setColumnStretch(column,
+                                    columnElement.attribute("stretch").toInt());
+            }
+            int hspan = 1;
+            int vspan = 1;
+            if(columnElement.hasAttribute("rowspan"))
+            {
+                vspan = columnElement.attribute("rowspan").toInt();
+            }
+            if(columnElement.hasAttribute("colspan"))
+            {
+                hspan = columnElement.attribute("colspan").toInt();
+            }
+            QHBoxLayout *cell = new QHBoxLayout;
+            layout->addLayout(cell, row, column, vspan, hspan);
+            layoutStack->push(cell);
+            populateBoxLayout(columnElement, widgetStack, layoutStack);
+            layoutStack->pop();
+        }
+    }
 }
 
 @ Box layouts are populated by checking for child elements representing
@@ -4834,108 +4834,108 @@ supported widget types and layouts and adding these to the current layout.
 void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                        QStack<QLayout *> *layoutStack)
 {
-	QDomNodeList children = element.childNodes();
-	for(int i = 0; i < children.count(); i++)
-	{
-		QDomNode current;
-		QDomElement currentElement;
-		current = children.at(i);
-		if(current.isElement())
-		{
-			currentElement = current.toElement();
-			if(currentElement.tagName() == "button")
-			{
-				addButtonToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "calendar")
-			{
-				addCalendarToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "decoration")
-			{
-				addDecorationToLayout(currentElement, widgetStack,
-				                      layoutStack);
-			}
-			else if(currentElement.tagName() == "layout")
-			{
-				addLayoutToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "splitter")
-			{
-				addSplitterToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "label")
-			{
-				QBoxLayout *layout =
-					qobject_cast<QBoxLayout *>(layoutStack->top());
-				QLabel *label = new QLabel(currentElement.text());
-				layout->addWidget(label);
-			}
-			else if(currentElement.tagName() == "lcdtemperature")
-			{
-				addTemperatureDisplayToLayout(currentElement, widgetStack,
-				                              layoutStack);
-			}
-			else if(currentElement.tagName() == "lcdtimer")
-			{
-				addTimerDisplayToLayout(currentElement, widgetStack,
-				                        layoutStack);
-			}
-			else if(currentElement.tagName() == "line")
-			{
-				addLineToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "report")
-			{
-				addReportToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "sqldrop")
-			{
-				addSqlDropToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "sqltablearray")
-			{
-				addSaltToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "sqlview")
-			{
-				addSqlQueryViewToLayout(currentElement, widgetStack,
-											 layoutStack);
-			}
-			else if(currentElement.tagName() == "textarea")
-			{
-				addTextToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "spinbox")
-			{
-				addSpinBoxToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "formarray")
-			{
-				addFormArrayToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() =="hscale")
-			{
-				addScaleControlToLayout(currentElement, widgetStack,
-				                        layoutStack);
-			}
-			else if(currentElement.tagName() == "vscale")
-			{
-				addIntensityControlToLayout(currentElement, widgetStack,
-				                            layoutStack);
-			}
-			else if(currentElement.tagName() == "webview")
-			{
-				addWebViewToLayout(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "stretch")
-			{
-				QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-				layout->addStretch();
-			}
-			@<Additional box layout elements@>@;
-		}
-	}
+    QDomNodeList children = element.childNodes();
+    for(int i = 0; i < children.count(); i++)
+    {
+        QDomNode current;
+        QDomElement currentElement;
+        current = children.at(i);
+        if(current.isElement())
+        {
+            currentElement = current.toElement();
+            if(currentElement.tagName() == "button")
+            {
+                addButtonToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "calendar")
+            {
+                addCalendarToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "decoration")
+            {
+                addDecorationToLayout(currentElement, widgetStack,
+                                      layoutStack);
+            }
+            else if(currentElement.tagName() == "layout")
+            {
+                addLayoutToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "splitter")
+            {
+                addSplitterToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "label")
+            {
+                QBoxLayout *layout =
+                    qobject_cast<QBoxLayout *>(layoutStack->top());
+                QLabel *label = new QLabel(currentElement.text());
+                layout->addWidget(label);
+            }
+            else if(currentElement.tagName() == "lcdtemperature")
+            {
+                addTemperatureDisplayToLayout(currentElement, widgetStack,
+                                              layoutStack);
+            }
+            else if(currentElement.tagName() == "lcdtimer")
+            {
+                addTimerDisplayToLayout(currentElement, widgetStack,
+                                        layoutStack);
+            }
+            else if(currentElement.tagName() == "line")
+            {
+                addLineToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "report")
+            {
+                addReportToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "sqldrop")
+            {
+                addSqlDropToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "sqltablearray")
+            {
+                addSaltToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "sqlview")
+            {
+                addSqlQueryViewToLayout(currentElement, widgetStack,
+                                             layoutStack);
+            }
+            else if(currentElement.tagName() == "textarea")
+            {
+                addTextToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "spinbox")
+            {
+                addSpinBoxToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "formarray")
+            {
+                addFormArrayToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() =="hscale")
+            {
+                addScaleControlToLayout(currentElement, widgetStack,
+                                        layoutStack);
+            }
+            else if(currentElement.tagName() == "vscale")
+            {
+                addIntensityControlToLayout(currentElement, widgetStack,
+                                            layoutStack);
+            }
+            else if(currentElement.tagName() == "webview")
+            {
+                addWebViewToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "stretch")
+            {
+                QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+                layout->addStretch();
+            }
+            @<Additional box layout elements@>@;
+        }
+    }
 }
 
 @ Box layouts support adding additional layouts to the layout. The form of the
@@ -4945,15 +4945,15 @@ function is very similar to |addLayoutToWidget()|.
 void addLayoutToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                        QStack<QLayout *> *layoutStack)
 {
-	QLayout *targetLayout = layoutStack->pop();
-	QBoxLayout *boxLayout = qobject_cast<QBoxLayout *>(targetLayout);
-	if(element.hasAttribute("type"))
-	{
-		@<Create and populate layout@>@;
-		boxLayout->addLayout(layout);
-		layoutStack->pop();
-	}
-	layoutStack->push(targetLayout);
+    QLayout *targetLayout = layoutStack->pop();
+    QBoxLayout *boxLayout = qobject_cast<QBoxLayout *>(targetLayout);
+    if(element.hasAttribute("type"))
+    {
+        @<Create and populate layout@>@;
+        boxLayout->addLayout(layout);
+        layoutStack->pop();
+    }
+    layoutStack->push(targetLayout);
 }
 
 @ A splitter is similar to a layout in that it manages the size and position of
@@ -4964,10 +4964,10 @@ handled separately.
 void addSplitterToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                          QStack<QLayout *> *layoutStack)
 {
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	QSplitter *splitter = new(QSplitter);
-	layout->addWidget(splitter);
-	@<Set up splitter@>@;
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    QSplitter *splitter = new(QSplitter);
+    layout->addWidget(splitter);
+    @<Set up splitter@>@;
 }
 
 @ As there are multiple places where a splitter element must be examined, the
@@ -4977,22 +4977,22 @@ common code is set aside.
 QString orientation = element.attribute("type");
 if(orientation == "horizontal")
 {
-	splitter->setOrientation(Qt::Horizontal);
+    splitter->setOrientation(Qt::Horizontal);
 }
 else if(orientation == "vertical")
 {
-	splitter->setOrientation(Qt::Vertical);
+    splitter->setOrientation(Qt::Vertical);
 }
 QString id = element.attribute("id");
 if(!id.isEmpty())
 {
-	splitter->setObjectName(id);
+    splitter->setObjectName(id);
 }
 if(element.hasChildNodes())
 {
-	widgetStack->push(splitter);
-	populateSplitter(element, widgetStack, layoutStack);
-	widgetStack->pop();
+    widgetStack->push(splitter);
+    populateSplitter(element, widgetStack, layoutStack);
+    widgetStack->pop();
 }
 
 @ When populating a splitter, it is important to note that only widgets can be
@@ -5003,48 +5003,48 @@ applying the layout to that widget.
 void populateSplitter(QDomElement element, QStack<QWidget *> *widgetStack,@|
                       QStack<QLayout *> *layoutStack)
 {
-	QDomNodeList children = element.childNodes();
-	for(int i = 0; i < children.count(); i++)
-	{
-		QDomNode current;
-		QDomElement currentElement;
-		current = children.at(i);
-		if(current.isElement())
-		{
-			currentElement = current.toElement();
-			if(currentElement.tagName() == "decoration")
-			{
-				addDecorationToSplitter(currentElement, widgetStack,
-				                        layoutStack);
-			}
-			else if(currentElement.tagName() == "graph")
-			{
-				addGraphToSplitter(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "splitter")
-			{
-				addSplitterToSplitter(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "lcdtemperature")
-			{
-				addTemperatureDisplayToSplitter(currentElement, widgetStack,
-				                                layoutStack);
-			}
-			else if(currentElement.tagName() == "lcdtimer")
-			{
-				addTimerDisplayToSplitter(currentElement, widgetStack,
-				                          layoutStack);
-			}
-			else if(currentElement.tagName() == "measurementtable")
-			{
-				addZoomLogToSplitter(currentElement, widgetStack, layoutStack);
-			}
-			else if(currentElement.tagName() == "widget")
-			{
-				addWidgetToSplitter(currentElement, widgetStack, layoutStack);
-			}
-		}
-	}
+    QDomNodeList children = element.childNodes();
+    for(int i = 0; i < children.count(); i++)
+    {
+        QDomNode current;
+        QDomElement currentElement;
+        current = children.at(i);
+        if(current.isElement())
+        {
+            currentElement = current.toElement();
+            if(currentElement.tagName() == "decoration")
+            {
+                addDecorationToSplitter(currentElement, widgetStack,
+                                        layoutStack);
+            }
+            else if(currentElement.tagName() == "graph")
+            {
+                addGraphToSplitter(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "splitter")
+            {
+                addSplitterToSplitter(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "lcdtemperature")
+            {
+                addTemperatureDisplayToSplitter(currentElement, widgetStack,
+                                                layoutStack);
+            }
+            else if(currentElement.tagName() == "lcdtimer")
+            {
+                addTimerDisplayToSplitter(currentElement, widgetStack,
+                                          layoutStack);
+            }
+            else if(currentElement.tagName() == "measurementtable")
+            {
+                addZoomLogToSplitter(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "widget")
+            {
+                addWidgetToSplitter(currentElement, widgetStack, layoutStack);
+            }
+        }
+    }
 }
 
 @ Adding a splitter to a splitter is similar to adding it to a layout.
@@ -5053,11 +5053,11 @@ void populateSplitter(QDomElement element, QStack<QWidget *> *widgetStack,@|
 void addSplitterToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                            QStack<QLayout *> *layoutStack)
 {
-	QSplitter *parent = qobject_cast<QSplitter *>(widgetStack->top());
-	QSplitter *splitter = new(QSplitter);
-	splitter->setParent(parent);
-	parent->addWidget(splitter);
-	@<Set up splitter@>@;
+    QSplitter *parent = qobject_cast<QSplitter *>(widgetStack->top());
+    QSplitter *splitter = new(QSplitter);
+    splitter->setParent(parent);
+    parent->addWidget(splitter);
+    @<Set up splitter@>@;
 }
 
 @ Temperature displays are useful to have in an application such as this. At
@@ -5068,29 +5068,29 @@ changes there.
 
 @<Functions for scripting@>=
 void addTemperatureDisplayToSplitter(QDomElement element,@|
-		                             QStack<QWidget *> *widgetStack,
-									 QStack<QLayout *> *)
+                                     QStack<QWidget *> *widgetStack,
+                                     QStack<QLayout *> *)
 {
-	TemperatureDisplay *display = new(TemperatureDisplay);
-	if(element.hasAttribute("id"))
-	{
-		display->setObjectName(element.attribute("id"));
-	}
-	QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
-	splitter->addWidget(display);
+    TemperatureDisplay *display = new(TemperatureDisplay);
+    if(element.hasAttribute("id"))
+    {
+        display->setObjectName(element.attribute("id"));
+    }
+    QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
+    splitter->addWidget(display);
 }
 
 void addTemperatureDisplayToLayout(QDomElement element,@|
-								   QStack<QWidget *> *,
-								   QStack<QLayout *> *layoutStack)
+                                   QStack<QWidget *> *,
+                                   QStack<QLayout *> *layoutStack)
 {
-	TemperatureDisplay *display = new(TemperatureDisplay);
-	if(element.hasAttribute("id"))
-	{
-		display->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(display);
+    TemperatureDisplay *display = new(TemperatureDisplay);
+    if(element.hasAttribute("id"))
+    {
+        display->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(display);
 }
 
 @ Timer displays are similarly useful to have. The default format for a timer
@@ -5100,36 +5100,36 @@ attribute of an {\tt <lcdtimer>} element.
 @<Functions for scripting@>=
 void addTimerDisplayToSplitter(QDomElement element,@|
                                QStack<QWidget *> *widgetStack,
-							   QStack<QLayout *> *)
+                               QStack<QLayout *> *)
 {
-	TimerDisplay *display = new(TimerDisplay);
-	if(element.hasAttribute("id"))
-	{
-		display->setObjectName(element.attribute("id"));
-	}
-	if(element.hasAttribute("format"))
-	{
-		display->setDisplayFormat(element.attribute("format"));
-	}
-	QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
-	splitter->addWidget(display);
+    TimerDisplay *display = new(TimerDisplay);
+    if(element.hasAttribute("id"))
+    {
+        display->setObjectName(element.attribute("id"));
+    }
+    if(element.hasAttribute("format"))
+    {
+        display->setDisplayFormat(element.attribute("format"));
+    }
+    QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
+    splitter->addWidget(display);
 }
 
 void addTimerDisplayToLayout(QDomElement element,@|
                              QStack<QWidget *> *,
-							 QStack<QLayout *> *layoutStack)
+                             QStack<QLayout *> *layoutStack)
 {
-	TimerDisplay *display = new(TimerDisplay);
-	if(element.hasAttribute("id"))
-	{
-		display->setObjectName(element.attribute("id"));
-	}
-	if(element.hasAttribute("format"))
-	{
-		display->setDisplayFormat(element.attribute("format"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(display);
+    TimerDisplay *display = new(TimerDisplay);
+    if(element.hasAttribute("id"))
+    {
+        display->setObjectName(element.attribute("id"));
+    }
+    if(element.hasAttribute("format"))
+    {
+        display->setDisplayFormat(element.attribute("format"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(display);
 }
 
 @ When multiple timer or temperature displays are required, it can be useful to
@@ -5139,18 +5139,18 @@ provide a label to indicate just what is being measured.
 void addDecorationToLayout(QDomElement element, QStack<QWidget *> *,@|
                            QStack<QLayout *> *layoutStack)
 {
-	@<Set up decoration@>@;
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(decoration);
+    @<Set up decoration@>@;
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(decoration);
 }
 
 void addDecorationToSplitter(QDomElement element,
                              QStack<QWidget *> *widgetStack,
-							 QStack<QLayout *> *)
+                             QStack<QLayout *> *)
 {
-	@<Set up decoration@>@;
-	QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
-	splitter->addWidget(decoration);
+    @<Set up decoration@>@;
+    QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
+    splitter->addWidget(decoration);
 }
 
 @ The decoration needs a label text, an orientation, and the widget to be
@@ -5161,21 +5161,21 @@ QString labelText = element.attribute("name");
 Qt::Orientations@, orientation = Qt::Horizontal;
 if(element.hasAttribute("type"))
 {
-	if(element.attribute("type") == "horizontal")
-	{
-		orientation = Qt::Horizontal;
-	}
-	else if(element.attribute("type") == "vertical")
-	{
-		orientation = Qt::Vertical;
-	}
+    if(element.attribute("type") == "horizontal")
+    {
+        orientation = Qt::Horizontal;
+    }
+    else if(element.attribute("type") == "vertical")
+    {
+        orientation = Qt::Vertical;
+    }
 }
 @<Find widget to decorate@>@;
 WidgetDecorator *decoration = new WidgetDecorator(theWidget, labelText,
-												  orientation);
+                                                  orientation);
 if(element.hasAttribute("id"))
 {
-	decoration->setObjectName(element.attribute("id"));
+    decoration->setObjectName(element.attribute("id"));
 }
 
 @ The widget to decorate should be found as a child of the {\tt <decoration>}
@@ -5186,33 +5186,33 @@ QWidget *theWidget = NULL;
 QDomNodeList children = element.childNodes();
 for(int i = 0; i < children.count(); i++)
 {
-	QDomNode item = children.at(i);
-	if(item.isElement())
-	{
-		QDomElement itemElement = item.toElement();
-		if(itemElement.tagName() == "lcdtemperature")
-		{
-			TemperatureDisplay *display = new TemperatureDisplay;
-			if(itemElement.hasAttribute("id"))
-			{
-				display->setObjectName(itemElement.attribute("id"));
-			}
-			theWidget = display;
-		}
-		else if(itemElement.tagName() == "lcdtimer")
-		{
-			TimerDisplay *display = new TimerDisplay;
-			if(itemElement.hasAttribute("id"))
-			{
-				display->setObjectName(itemElement.attribute("id"));
-			}
-			if(itemElement.hasAttribute("format"))
-			{
-				display->setDisplayFormat(itemElement.attribute("format"));
-			}
-			theWidget = display;
-		}
-	}
+    QDomNode item = children.at(i);
+    if(item.isElement())
+    {
+        QDomElement itemElement = item.toElement();
+        if(itemElement.tagName() == "lcdtemperature")
+        {
+            TemperatureDisplay *display = new TemperatureDisplay;
+            if(itemElement.hasAttribute("id"))
+            {
+                display->setObjectName(itemElement.attribute("id"));
+            }
+            theWidget = display;
+        }
+        else if(itemElement.tagName() == "lcdtimer")
+        {
+            TimerDisplay *display = new TimerDisplay;
+            if(itemElement.hasAttribute("id"))
+            {
+                display->setObjectName(itemElement.attribute("id"));
+            }
+            if(itemElement.hasAttribute("format"))
+            {
+                display->setDisplayFormat(itemElement.attribute("format"));
+            }
+            theWidget = display;
+        }
+    }
 }
 
 @ As splitters cannot contain layouts directly, there is a need to allow
@@ -5224,39 +5224,39 @@ is an example of such a layout.
 void addWidgetToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                          QStack<QLayout *> *layoutStack)
 {
-	QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
-	QWidget *widget = new QWidget;
-	if(element.hasAttribute("id"))
-	{
-		widget->setObjectName(element.attribute("id"));
-	}
-	splitter->addWidget(widget);
-	if(element.hasChildNodes())
-	{
-		widgetStack->push(widget);
-		populateWidget(element, widgetStack, layoutStack);
-		widgetStack->pop();
-	}
+    QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
+    QWidget *widget = new QWidget;
+    if(element.hasAttribute("id"))
+    {
+        widget->setObjectName(element.attribute("id"));
+    }
+    splitter->addWidget(widget);
+    if(element.hasChildNodes())
+    {
+        widgetStack->push(widget);
+        populateWidget(element, widgetStack, layoutStack);
+        widgetStack->pop();
+    }
 }
 
 void populateWidget(QDomElement element, QStack<QWidget *> *widgetStack,@|
                     QStack<QLayout *> *layoutStack)
 {
-	QDomNodeList children = element.childNodes();
-	for(int i = 0; i < children.count(); i++)
-	{
-		QDomNode current;
-		QDomElement currentElement;
-		current = children.at(i);
-		if(current.isElement())
-		{
-			currentElement = current.toElement();
-			if(currentElement.tagName() == "layout")
-			{
-				addLayoutToWidget(currentElement, widgetStack, layoutStack);
-			}
-		}
-	}
+    QDomNodeList children = element.childNodes();
+    for(int i = 0; i < children.count(); i++)
+    {
+        QDomNode current;
+        QDomElement currentElement;
+        current = children.at(i);
+        if(current.isElement())
+        {
+            currentElement = current.toElement();
+            if(currentElement.tagName() == "layout")
+            {
+                addLayoutToWidget(currentElement, widgetStack, layoutStack);
+            }
+        }
+    }
 }
 
 @ There are two types of buttons that can be added to a layout. There are normal
@@ -5267,45 +5267,45 @@ in the future.
 void addButtonToLayout(QDomElement element, QStack<QWidget *> *,@|
                        QStack<QLayout *> *layoutStack)
 {
-	QAbstractButton *button = NULL;
-	QString text = element.attribute("name");
-	if(element.hasAttribute("type"))
-	{
-		QString type = element.attribute("type");
-		if(type == "annotation")
-		{
-			AnnotationButton *abutton = new AnnotationButton(text);
-			if(element.hasAttribute("annotation"))
-			{
-				abutton->setAnnotation(element.attribute("annotation"));
-			}
-			if(element.hasAttribute("series"))
-			{
-				abutton->setTemperatureColumn(element.attribute("series").
-				                              toInt());
-			}
-			if(element.hasAttribute("column"))
-			{
-				abutton->setAnnotationColumn(element.attribute("column").
-				                             toInt());
-			}
-			button = abutton;
-		}
-		else if(type == "check")
-		{
-			button = new QCheckBox(text);
-		}
-		else if(type == "push")
-		{
-			button = new QPushButton(text);
-		}
-	}
-	if(element.hasAttribute("id"))
-	{
-		button->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(button);
+    QAbstractButton *button = NULL;
+    QString text = element.attribute("name");
+    if(element.hasAttribute("type"))
+    {
+        QString type = element.attribute("type");
+        if(type == "annotation")
+        {
+            AnnotationButton *abutton = new AnnotationButton(text);
+            if(element.hasAttribute("annotation"))
+            {
+                abutton->setAnnotation(element.attribute("annotation"));
+            }
+            if(element.hasAttribute("series"))
+            {
+                abutton->setTemperatureColumn(element.attribute("series").
+                                              toInt());
+            }
+            if(element.hasAttribute("column"))
+            {
+                abutton->setAnnotationColumn(element.attribute("column").
+                                             toInt());
+            }
+            button = abutton;
+        }
+        else if(type == "check")
+        {
+            button = new QCheckBox(text);
+        }
+        else if(type == "push")
+        {
+            button = new QPushButton(text);
+        }
+    }
+    if(element.hasAttribute("id"))
+    {
+        button->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(button);
 }
 
 @ While annotation buttons are useful for many batch notes, a spin box is
@@ -5319,45 +5319,45 @@ amount by which increment and decrement operations change the value.
 void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *,@|
                         QStack<QLayout *> *layoutStack)
 {
-	AnnotationSpinBox *box = new AnnotationSpinBox("", "", NULL);
-	if(element.hasAttribute("pretext"))
-	{
-		box->setPretext(element.attribute("pretext"));
-	}
-	if(element.hasAttribute("posttext"))
-	{
-		box->setPosttext(element.attribute("posttext"));
-	}
-	if(element.hasAttribute("series"))
-	{
-		box->setTemperatureColumn(element.attribute("series").toInt());
-	}
-	if(element.hasAttribute("column"))
-	{
-		box->setAnnotationColumn(element.attribute("column").toInt());
-	}
-	if(element.hasAttribute("min"))
-	{
-		box->setMinimum(element.attribute("min").toDouble());
-	}
-	if(element.hasAttribute("max"))
-	{
-		box->setMaximum(element.attribute("max").toDouble());
-	}
-	if(element.hasAttribute("decimals"))
-	{
-		box->setDecimals(element.attribute("decimals").toInt());
-	}
-	if(element.hasAttribute("step"))
-	{
-		box->setSingleStep(element.attribute("step").toDouble());
-	}
-	if(element.hasAttribute("id"))
-	{
-		box->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(box);
+    AnnotationSpinBox *box = new AnnotationSpinBox("", "", NULL);
+    if(element.hasAttribute("pretext"))
+    {
+        box->setPretext(element.attribute("pretext"));
+    }
+    if(element.hasAttribute("posttext"))
+    {
+        box->setPosttext(element.attribute("posttext"));
+    }
+    if(element.hasAttribute("series"))
+    {
+        box->setTemperatureColumn(element.attribute("series").toInt());
+    }
+    if(element.hasAttribute("column"))
+    {
+        box->setAnnotationColumn(element.attribute("column").toInt());
+    }
+    if(element.hasAttribute("min"))
+    {
+        box->setMinimum(element.attribute("min").toDouble());
+    }
+    if(element.hasAttribute("max"))
+    {
+        box->setMaximum(element.attribute("max").toDouble());
+    }
+    if(element.hasAttribute("decimals"))
+    {
+        box->setDecimals(element.attribute("decimals").toInt());
+    }
+    if(element.hasAttribute("step"))
+    {
+        box->setSingleStep(element.attribute("step").toDouble());
+    }
+    if(element.hasAttribute("id"))
+    {
+        box->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(box);
 }
 
 @ Previously, in order to change a |ZoomLog| from the default set of columns,
@@ -5375,45 +5375,45 @@ which specify the names of the columns.
 void addZoomLogToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                           QStack<QLayout *> *)
 {
-	ZoomLog *widget = new ZoomLog;
-	if(!widget)
-	{
-		qDebug() << "Error constructing widget!";
-	}
-	if(element.hasAttribute("id"))
-	{
-		widget->setObjectName(element.attribute("id"));
-	}
-	if(element.hasChildNodes())
-	{
-		QDomNodeList children = element.childNodes();
-		int column = 0;
-		for(int i = 0; i < children.count(); i++)
-		{
-			QDomNode current;
-			QDomElement currentElement;
-			current = children.at(i);
-			if(current.isElement())
-			{
-				currentElement = current.toElement();
-				if(currentElement.tagName() == "column")
-				{
-					QString text = currentElement.text();
-					widget->setHeaderData(column, text);
-					column++;
-				}
-			}
-		}
-	}
-	QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
-	if(splitter)
-	{
-		splitter->addWidget(widget);
-	}
-	else
-	{
-		qDebug() << "Splitter not found at top of widget stack!";
-	}
+    ZoomLog *widget = new ZoomLog;
+    if(!widget)
+    {
+        qDebug() << "Error constructing widget!";
+    }
+    if(element.hasAttribute("id"))
+    {
+        widget->setObjectName(element.attribute("id"));
+    }
+    if(element.hasChildNodes())
+    {
+        QDomNodeList children = element.childNodes();
+        int column = 0;
+        for(int i = 0; i < children.count(); i++)
+        {
+            QDomNode current;
+            QDomElement currentElement;
+            current = children.at(i);
+            if(current.isElement())
+            {
+                currentElement = current.toElement();
+                if(currentElement.tagName() == "column")
+                {
+                    QString text = currentElement.text();
+                    widget->setHeaderData(column, text);
+                    column++;
+                }
+            }
+        }
+    }
+    QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
+    if(splitter)
+    {
+        splitter->addWidget(widget);
+    }
+    else
+    {
+        qDebug() << "Splitter not found at top of widget stack!";
+    }
 }
 
 @ The last of the widgets needed to duplicate the window provided in previous
@@ -5423,13 +5423,13 @@ versions of \pn{} is the |GraphView|.
 void addGraphToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                         QStack<QLayout *> *)
 {
-	GraphView *view = new GraphView;
-	if(element.hasAttribute("id"))
-	{
-		view->setObjectName(element.attribute("id"));
-	}
-	QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
-	splitter->addWidget(view);
+    GraphView *view = new GraphView;
+    if(element.hasAttribute("id"))
+    {
+        view->setObjectName(element.attribute("id"));
+    }
+    QSplitter *splitter = qobject_cast<QSplitter *>(widgetStack->top());
+    splitter->addWidget(view);
 }
 
 @ When interacting with a database, it can be useful to provide a combo box
@@ -5440,57 +5440,57 @@ populated by the results of a database query. One way to do this is through a
 void addSqlDropToLayout(QDomElement element, QStack<QWidget *> *,@|
                         QStack<QLayout *> *layoutStack)
 {
-	SqlComboBox *box = new SqlComboBox();
-	if(element.hasAttribute("data"))
-	{
-		box->setDataColumn(element.attribute("data").toInt());
-	}
-	if(element.hasAttribute("display"))
-	{
-		box->setDisplayColumn(element.attribute("display").toInt());
-	}
-	if(element.hasAttribute("showdata"))
-	{
-		if(element.attribute("showdata") == "true")
-		{
-			box->showData(true);
-		}
-	}
-	if(element.hasAttribute("editable"))
-	{
-		if(element.attribute("editable") == "true")
-		{
-			box->setEditable(true);
-		}
-	}
-	if(element.hasChildNodes())
-	{
-		QDomNodeList children = element.childNodes();
-		for(int i = 0; i < children.count(); i++)
-		{
-			QDomNode current;
-			QDomElement currentElement;
-			current = children.at(i);
-			if(current.isElement())
-			{
-				currentElement = current.toElement();
-				if(currentElement.tagName() == "null")
-				{
-					box->addNullOption();
-				}
-				else if(currentElement.tagName() == "query")
-				{
-					box->addSqlOptions(currentElement.text());
-				}
-			}
-		}
-	}
-	if(element.hasAttribute("id"))
-	{
-		box->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(box);
+    SqlComboBox *box = new SqlComboBox();
+    if(element.hasAttribute("data"))
+    {
+        box->setDataColumn(element.attribute("data").toInt());
+    }
+    if(element.hasAttribute("display"))
+    {
+        box->setDisplayColumn(element.attribute("display").toInt());
+    }
+    if(element.hasAttribute("showdata"))
+    {
+        if(element.attribute("showdata") == "true")
+        {
+            box->showData(true);
+        }
+    }
+    if(element.hasAttribute("editable"))
+    {
+        if(element.attribute("editable") == "true")
+        {
+            box->setEditable(true);
+        }
+    }
+    if(element.hasChildNodes())
+    {
+        QDomNodeList children = element.childNodes();
+        for(int i = 0; i < children.count(); i++)
+        {
+            QDomNode current;
+            QDomElement currentElement;
+            current = children.at(i);
+            if(current.isElement())
+            {
+                currentElement = current.toElement();
+                if(currentElement.tagName() == "null")
+                {
+                    box->addNullOption();
+                }
+                else if(currentElement.tagName() == "query")
+                {
+                    box->addSqlOptions(currentElement.text());
+                }
+            }
+        }
+    }
+    if(element.hasAttribute("id"))
+    {
+        box->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(box);
 }
 
 @ The next database aware widget that can be useful to have in \pn{} is a
@@ -5519,44 +5519,44 @@ the view to identify the type of table in the absense of a unique class name.
 void addSaltToLayout(QDomElement element, QStack<QWidget *> *,@|
                      QStack<QLayout *> *layoutStack)
 {
-	QTableView *view = new QTableView;
-	view->setProperty("tabletype", QVariant(QString("SaltTable")));
-	SaltModel *model = new SaltModel(element.childNodes().count());
-	if(element.hasAttribute("id"))
-	{
-		view->setObjectName(element.attribute("id"));
-	}
-	if(element.hasChildNodes())
-	{
-		QDomNodeList children = element.childNodes();
-		int currentColumn = 0;
-		for(int i = 0; i < children.count(); i++)
-		{
-			QDomNode current;
-			QDomElement currentElement;
-			current = children.at(i);
-			if(current.isElement())
-			{
-				currentElement = current.toElement();
-				if(currentElement.tagName() == "column")
-				{
-					if(currentElement.hasAttribute("name"))
-					{
-						model->setHeaderData(currentColumn, Qt::Horizontal,
-						                     currentElement.attribute("name"));
-					}
-					if(currentElement.hasAttribute("delegate"))
-					{
-						@<Set column delegate from XML attribute@>@;
-					}
-					currentColumn++;
-				}
-			}
-		}
-	}
-	view->setModel(model);
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(view);
+    QTableView *view = new QTableView;
+    view->setProperty("tabletype", QVariant(QString("SaltTable")));
+    SaltModel *model = new SaltModel(element.childNodes().count());
+    if(element.hasAttribute("id"))
+    {
+        view->setObjectName(element.attribute("id"));
+    }
+    if(element.hasChildNodes())
+    {
+        QDomNodeList children = element.childNodes();
+        int currentColumn = 0;
+        for(int i = 0; i < children.count(); i++)
+        {
+            QDomNode current;
+            QDomElement currentElement;
+            current = children.at(i);
+            if(current.isElement())
+            {
+                currentElement = current.toElement();
+                if(currentElement.tagName() == "column")
+                {
+                    if(currentElement.hasAttribute("name"))
+                    {
+                        model->setHeaderData(currentColumn, Qt::Horizontal,
+                                             currentElement.attribute("name"));
+                    }
+                    if(currentElement.hasAttribute("delegate"))
+                    {
+                        @<Set column delegate from XML attribute@>@;
+                    }
+                    currentColumn++;
+                }
+            }
+        }
+    }
+    view->setModel(model);
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(view);
 }
 
 @ It is often desirable to restrict the allowed values in an entry to either a
@@ -5566,11 +5566,11 @@ on a column to enforce such restrictions.
 @<Set column delegate from XML attribute@>=
 if(currentElement.attribute("delegate") == "sql")
 {
-	@<Assign column delegate from SQL@>@;
+    @<Assign column delegate from SQL@>@;
 }
 else if(currentElement.attribute("delegate") == "numeric")
 {
-	@<Assign numeric column delegate@>@;
+    @<Assign numeric column delegate@>@;
 }
 
 @ When using a |SaltModel|, there are times where the array values being
@@ -5584,33 +5584,33 @@ SqlComboBoxDelegate *delegate = new SqlComboBoxDelegate;
 SqlComboBox *widget = new SqlComboBox();
 if(currentElement.hasAttribute("nulltext"))
 {
-	widget->setNullText(currentElement.attribute("nulltext"));
+    widget->setNullText(currentElement.attribute("nulltext"));
 }
 if(currentElement.hasAttribute("nulldata"))
 {
-	widget->setNullData(QVariant(currentElement.attribute("nulldata")));
+    widget->setNullData(QVariant(currentElement.attribute("nulldata")));
 }
 if(currentElement.hasAttribute("null"))
 {
-	if(currentElement.attribute("null") == "true")
-	{
-		widget->addNullOption();
-	}
+    if(currentElement.attribute("null") == "true")
+    {
+        widget->addNullOption();
+    }
 }
 if(currentElement.hasAttribute("showdata"))
 {
-	if(currentElement.attribute("showdata") == "true")
-	{
-		widget->showData(true);
-	}
+    if(currentElement.attribute("showdata") == "true")
+    {
+        widget->showData(true);
+    }
 }
 if(currentElement.hasAttribute("data"))
 {
-	widget->setDataColumn(currentElement.attribute("data").toInt());
+    widget->setDataColumn(currentElement.attribute("data").toInt());
 }
 if(currentElement.hasAttribute("display"))
 {
-	widget->setDisplayColumn(currentElement.attribute("display").toInt());
+    widget->setDisplayColumn(currentElement.attribute("display").toInt());
 }
 widget->addSqlOptions(currentElement.text());
 delegate->setWidget(widget);
@@ -5632,27 +5632,27 @@ of the expression ($18.32$) appearing in the table.
 @<Class declarations@>=
 class NumericDelegate : public QItemDelegate@/
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		NumericDelegate(QObject *parent = NULL);
-		QWidget *createEditor(QWidget *parent,
-		                      const QStyleOptionViewItem &option,@|
-							  const QModelIndex &index) const;
-		void setEditorData(QWidget *editor, const QModelIndex &index) const;
-		void setModelData(QWidget *editor, QAbstractItemModel *model,@|
-		                  const QModelIndex &index) const;
-		void updateEditorGeometry(QWidget *editor,
-		                          const QStyleOptionViewItem &option,@|
-								  const QModelIndex &index) const;
+    @[Q_OBJECT@]@;
+    public:@/
+        NumericDelegate(QObject *parent = NULL);
+        QWidget *createEditor(QWidget *parent,
+                              const QStyleOptionViewItem &option,@|
+                              const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model,@|
+                          const QModelIndex &index) const;
+        void updateEditorGeometry(QWidget *editor,
+                                  const QStyleOptionViewItem &option,@|
+                                  const QModelIndex &index) const;
 };
 
 @ There is nothing special about the constructor.
 
 @<NumericDelegate implementation@>=
 NumericDelegate::NumericDelegate(QObject *parent) :
-	QItemDelegate(parent)
+    QItemDelegate(parent)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @ Two roles are used by this delegate. The edit role should contain whatever
@@ -5664,9 +5664,9 @@ first of these.
 void NumericDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
-	QString value = index.model()->data(index, Qt::EditRole).toString();
-	QLineEdit *line = static_cast<QLineEdit*>(editor);
-	line->setText(value);
+    QString value = index.model()->data(index, Qt::EditRole).toString();
+    QLineEdit *line = static_cast<QLineEdit*>(editor);
+    line->setText(value);
 }
 
 @ When editing is finished, the expression text must be saved back to the
@@ -5679,21 +5679,21 @@ numeric.
 void NumericDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
-	QLineEdit *line = static_cast<QLineEdit*>(editor);
-	model->setData(index, line->text(), Qt::EditRole);
-	QScriptEngine *engine = AppInstance->engine;
-	engine->pushContext();
-	QString script = QString("Number(%1)").arg(line->text());
-	QScriptValue result = engine->evaluate(line->text());
-	if(result.isNumber())
-	{
-		model->setData(index, result.toVariant(), Qt::DisplayRole);
-	}
-	else
-	{
-		model->setData(index, QVariant(), Qt::DisplayRole);
-	}
-	engine->popContext();
+    QLineEdit *line = static_cast<QLineEdit*>(editor);
+    model->setData(index, line->text(), Qt::EditRole);
+    QScriptEngine *engine = AppInstance->engine;
+    engine->pushContext();
+    QString script = QString("Number(%1)").arg(line->text());
+    QScriptValue result = engine->evaluate(line->text());
+    if(result.isNumber())
+    {
+        model->setData(index, result.toVariant(), Qt::DisplayRole);
+    }
+    else
+    {
+        model->setData(index, QVariant(), Qt::DisplayRole);
+    }
+    engine->popContext();
 }
 
 @ There is nothing special about the line edit used for this.
@@ -5701,9 +5701,9 @@ void NumericDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 @<NumericDelegate implementation@>=
 QWidget* NumericDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &,
-									   const QModelIndex &) const
+                                       const QModelIndex &) const
 {
-	return (new QLineEdit(parent));
+    return (new QLineEdit(parent));
 }
 
 @ To ensure that the editor is displayed appropriately, we must pass the
@@ -5712,9 +5712,9 @@ geometry data to our editor.
 @<NumericDelegate implementation@>=
 void NumericDelegate::updateEditorGeometry(QWidget *editor,
                                            const QStyleOptionViewItem &option,
-										   const QModelIndex &) const
+                                           const QModelIndex &) const
 {
-	editor->setGeometry(option.rect);
+    editor->setGeometry(option.rect);
 }
 
 @ Line edits are useful when the user is expected to enter text without a
@@ -5734,38 +5734,38 @@ of the {\tt expression} attribute.
 void addLineToLayout(QDomElement element, QStack<QWidget *> *,@|
                      QStack<QLayout *> *layoutStack)
 {
-	QLineEdit *widget = new QLineEdit(element.text());
-	if(element.hasAttribute("id"))
-	{
-		widget->setObjectName(element.attribute("id"));
-	}
-	if(element.hasAttribute("writable"))
-	{
-		if(element.attribute("writable") == "false")
-		{
-			widget->setReadOnly(true);
-		}
-	}
-	if(element.hasAttribute("validator"))
-	{
-		if(element.attribute("validator") == "numeric")
-		{
-			widget->setValidator(new QDoubleValidator(NULL));
-		}
-		else if(element.attribute("validator") == "integer")
-		{
-			widget->setValidator(new QIntValidator(NULL));
-		}
-		else if(element.attribute("validator") == "expression" &&
-		        element.hasAttribute("expression"))
-		{
-			widget->setValidator(new QRegExpValidator(
-			                         QRegExp(element.attribute("expression")),
-									                  NULL));
-		}
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(widget);
+    QLineEdit *widget = new QLineEdit(element.text());
+    if(element.hasAttribute("id"))
+    {
+        widget->setObjectName(element.attribute("id"));
+    }
+    if(element.hasAttribute("writable"))
+    {
+        if(element.attribute("writable") == "false")
+        {
+            widget->setReadOnly(true);
+        }
+    }
+    if(element.hasAttribute("validator"))
+    {
+        if(element.attribute("validator") == "numeric")
+        {
+            widget->setValidator(new QDoubleValidator(NULL));
+        }
+        else if(element.attribute("validator") == "integer")
+        {
+            widget->setValidator(new QIntValidator(NULL));
+        }
+        else if(element.attribute("validator") == "expression" &&
+                element.hasAttribute("expression"))
+        {
+            widget->setValidator(new QRegExpValidator(
+                                     QRegExp(element.attribute("expression")),
+                                                      NULL));
+        }
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(widget);
 }
 
 @ It is natural for certain database fields to enter potentially large amounts
@@ -5775,13 +5775,13 @@ of free form text, for example, notes and annotations.
 void addTextToLayout(QDomElement element, QStack<QWidget *> *,@|
                      QStack<QLayout *> *layoutStack)
 {
-	QTextEdit *widget = new QTextEdit;
-	if(element.hasAttribute("id"))
-	{
-		widget->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(widget);
+    QTextEdit *widget = new QTextEdit;
+    if(element.hasAttribute("id"))
+    {
+        widget->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(widget);
 }
 
 @ The common use of |SqlQueryView| calls for the possibility of changing the
@@ -5791,15 +5791,15 @@ than an id for obtaining the view in a script.
 @<Functions for scripting@>=
 void addSqlQueryViewToLayout(QDomElement element,
                              QStack<QWidget *> *,@|
-							 QStack<QLayout *> *layoutStack)
+                             QStack<QLayout *> *layoutStack)
 {
-	SqlQueryView *view = new SqlQueryView;
-	if(element.hasAttribute("id"))
-	{
-		view->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(view);
+    SqlQueryView *view = new SqlQueryView;
+    if(element.hasAttribute("id"))
+    {
+        view->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(view);
 }
 
 @ When the user is expected to enter a date, it is appropriate to use a date
@@ -5809,40 +5809,40 @@ editor. This one provides a calendar.
 void addCalendarToLayout(QDomElement element, QStack<QWidget *> *,@|
                          QStack<QLayout *> *layoutStack)
 {
-	QWidget *widget;
-	if(element.hasAttribute("time"))
-	{
-		if(element.attribute("time") == "true")
-		{
-			QDateTimeEdit *edit = new QDateTimeEdit;
-			edit->setDateTime(QDateTime::currentDateTime());
-			edit->setCalendarPopup(true);
-			edit->setDisplayFormat("yyyy-MM-dd hh:mm:ss");
-			widget = qobject_cast<QWidget *>(edit);
-		}
-		else
-		{
-			QDateEdit *edit = new QDateEdit;
-			edit->setDate(QDate::currentDate());
-			edit->setCalendarPopup(true);
-			edit->setDisplayFormat("yyyy-MM-dd");
-			widget = qobject_cast<QWidget *>(edit);
-		}
-	}
-	else
-	{
-		QDateEdit *edit = new QDateEdit;
-		edit->setDate(QDate::currentDate());
-		edit->setCalendarPopup(true);
-		edit->setDisplayFormat("yyyy-MM-dd");
-		widget = qobject_cast<QWidget *>(edit);
-	}
-	if(element.hasAttribute("id"))
-	{
-		widget->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(widget);
+    QWidget *widget;
+    if(element.hasAttribute("time"))
+    {
+        if(element.attribute("time") == "true")
+        {
+            QDateTimeEdit *edit = new QDateTimeEdit;
+            edit->setDateTime(QDateTime::currentDateTime());
+            edit->setCalendarPopup(true);
+            edit->setDisplayFormat("yyyy-MM-dd hh:mm:ss");
+            widget = qobject_cast<QWidget *>(edit);
+        }
+        else
+        {
+            QDateEdit *edit = new QDateEdit;
+            edit->setDate(QDate::currentDate());
+            edit->setCalendarPopup(true);
+            edit->setDisplayFormat("yyyy-MM-dd");
+            widget = qobject_cast<QWidget *>(edit);
+        }
+    }
+    else
+    {
+        QDateEdit *edit = new QDateEdit;
+        edit->setDate(QDate::currentDate());
+        edit->setCalendarPopup(true);
+        edit->setDisplayFormat("yyyy-MM-dd");
+        widget = qobject_cast<QWidget *>(edit);
+    }
+    if(element.hasAttribute("id"))
+    {
+        widget->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(widget);
 }
 
 @ Some additional properties are added to this object when it is retrieved by
@@ -5851,16 +5851,16 @@ the host environment.
 @<Functions for scripting@>=
 void setQDateEditProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQDateTimeEditProperties(value, engine);
+    setQDateTimeEditProperties(value, engine);
 }
 
 void setQDateTimeEditProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractSpinBoxProperties(value, engine);
-	value.setProperty("setDate", engine->newFunction(QDateTimeEdit_setDate));
-	value.setProperty("day", engine->newFunction(QDateTimeEdit_day));
-	value.setProperty("month", engine->newFunction(QDateTimeEdit_month));
-	value.setProperty("year", engine->newFunction(QDateTimeEdit_year));
+    setQAbstractSpinBoxProperties(value, engine);
+    value.setProperty("setDate", engine->newFunction(QDateTimeEdit_setDate));
+    value.setProperty("day", engine->newFunction(QDateTimeEdit_day));
+    value.setProperty("month", engine->newFunction(QDateTimeEdit_month));
+    value.setProperty("year", engine->newFunction(QDateTimeEdit_year));
 }
 
 @ Certain operations on a |QDateEdit| are easier with a few convenience
@@ -5871,38 +5871,38 @@ obtain the year and set the date without directly using a |QDate| object.
 @<Functions for scripting@>=
 QScriptValue QDateTimeEdit_setDate(QScriptContext *context, QScriptEngine *)
 {
-	QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
-	if(context->argumentCount() == 3)
-	{
-		self->setDate(QDate(argument<int>(0, context),
-		                    argument<int>(1, context),
-							argument<int>(2, context)));
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "
-		"QDateTimeEdit::setDate(). This method takes three integer arguments "
-		"specifying the year, month, and day.");
-	}
-	return QScriptValue();
+    QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
+    if(context->argumentCount() == 3)
+    {
+        self->setDate(QDate(argument<int>(0, context),
+                            argument<int>(1, context),
+                            argument<int>(2, context)));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "
+        "QDateTimeEdit::setDate(). This method takes three integer arguments "
+        "specifying the year, month, and day.");
+    }
+    return QScriptValue();
 }
 
 QScriptValue QDateTimeEdit_day(QScriptContext *context, QScriptEngine *)
 {
-	QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
-	return QScriptValue(self->date().day());
+    QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
+    return QScriptValue(self->date().day());
 }
 
 QScriptValue QDateTimeEdit_month(QScriptContext *context, QScriptEngine *)
 {
-	QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
-	return QScriptValue(self->date().month());
+    QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
+    return QScriptValue(self->date().month());
 }
 
 QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *)
 {
-	QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
-	return QScriptValue(self->date().year());
+    QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
+    return QScriptValue(self->date().year());
 }
 
 @ A few function prototypes are needed for this.
@@ -5929,7 +5929,7 @@ QScriptValue findChildObject(QScriptContext *context, QScriptEngine *engine);
 
 @<Set up the scripting engine@>=
 engine->globalObject().setProperty("findChildObject",
-								   engine->newFunction(findChildObject));
+                                   engine->newFunction(findChildObject));
 
 @ This function takes a script value representing some object which may have
 been created from an XML description and a string containing the name of the
@@ -5938,17 +5938,17 @@ requested child element.
 @<Functions for scripting@>=
 QScriptValue findChildObject(QScriptContext *context, QScriptEngine *engine)
 {
-	QObject *parent = argument<QObject *>(0, context);
-	QString name = argument<QString>(1, context);
-	QObject *object = parent->findChild<QObject *>(name);
-	QScriptValue value;
-	if(object)
-	{
-		value = engine->newQObject(object);
-		QString className = object->metaObject()->className();
-		@<Set object properties based on class name@>@;
-	}
-	return value;
+    QObject *parent = argument<QObject *>(0, context);
+    QString name = argument<QString>(1, context);
+    QObject *object = parent->findChild<QObject *>(name);
+    QScriptValue value;
+    if(object)
+    {
+        value = engine->newQObject(object);
+        QString className = object->metaObject()->className();
+        @<Set object properties based on class name@>@;
+    }
+    return value;
 }
 
 @ Properties are added for a large number of class types.
@@ -5956,101 +5956,101 @@ QScriptValue findChildObject(QScriptContext *context, QScriptEngine *engine)
 @<Set object properties based on class name@>=
 if(className == "TemperatureDisplay")
 {
-	setTemperatureDisplayProperties(value, engine);
+    setTemperatureDisplayProperties(value, engine);
 }
 else if(className == "TimerDisplay")
 {
-	setTimerDisplayProperties(value, engine);
+    setTimerDisplayProperties(value, engine);
 }
 else if(className == "QAction")
 {
-	setQActionProperties(value, engine);
+    setQActionProperties(value, engine);
 }
 else if(className == "QBoxLayout")
 {
-	setQBoxLayoutProperties(value, engine);
+    setQBoxLayoutProperties(value, engine);
 }
 else if(className == "QDateEdit")
 {
-	setQDateEditProperties(value, engine);
+    setQDateEditProperties(value, engine);
 }
 else if(className == "QDateTimeEdit")
 {
-	setQDateTimeEditProperties(value, engine);
+    setQDateTimeEditProperties(value, engine);
 }
 else if(className == "QFrame")
 {
-	setQFrameProperties(value, engine);
+    setQFrameProperties(value, engine);
 }
 else if(className == "QHBoxLayout")
 {
-	setQBoxLayoutProperties(value, engine);
+    setQBoxLayoutProperties(value, engine);
 }
 else if(className == "QLCDNumber")
 {
-	setQLCDNumberProperties(value, engine);
+    setQLCDNumberProperties(value, engine);
 }
 else if(className == "QMenu")
 {
-	setQMenuProperties(value, engine);
+    setQMenuProperties(value, engine);
 }
 else if(className == "QMenuBar")
 {
-	setQMenuBarProperties(value, engine);
+    setQMenuBarProperties(value, engine);
 }
 else if(className == "QPushButton")
 {
-	setQPushButtonProperties(value, engine);
+    setQPushButtonProperties(value, engine);
 }
 else if(className == "QSplitter")
 {
-	setQSplitterProperties(value, engine);
+    setQSplitterProperties(value, engine);
 }
 else if(className == "QTableView")
 {
-	if(object->property("tabletype").isValid())
-	{
-		if(object->property("tabletype").toString() == "SaltTable")
-		{
-			setSaltTableProperties(value, engine);
-		}
-	}
+    if(object->property("tabletype").isValid())
+    {
+        if(object->property("tabletype").toString() == "SaltTable")
+        {
+            setSaltTableProperties(value, engine);
+        }
+    }
 }
 else if(className == "QVBoxLayout")
 {
-	setQBoxLayoutProperties(value, engine);
+    setQBoxLayoutProperties(value, engine);
 }
 else if(className == "QWidget")
 {
-	setQWidgetProperties(value, engine);
+    setQWidgetProperties(value, engine);
 }
 else if(className == "ScriptQMainWindow")
 {
-	setQMainWindowProperties(value, engine);
+    setQMainWindowProperties(value, engine);
 }
 else if(className == "SqlComboBox")
 {
-	setSqlComboBoxProperties(value, engine);
+    setSqlComboBoxProperties(value, engine);
 }
 else if(className == "SqlQueryView")
 {
-	setSqlQueryViewProperties(value, engine);
+    setSqlQueryViewProperties(value, engine);
 }
 else if(className == "ZoomLog")
 {
-	setZoomLogProperties(value, engine);
+    setZoomLogProperties(value, engine);
 }
 else if(className == "QTextEdit")
 {
-	setQTextEditProperties(value, engine);
+    setQTextEditProperties(value, engine);
 }
 else if(className == "QWebView")
 {
-	setQWebViewProperties(value, engine);
+    setQWebViewProperties(value, engine);
 }
 else if(className == "QLineEdit")
 {
-	setQLineEditProperties(value, engine);
+    setQLineEditProperties(value, engine);
 }
 
 @ In the list of classes, the SaltTable entry is for a class which does not
@@ -6085,21 +6085,21 @@ measuring batches or entering data.
 @<Functions for scripting@>=
 QScriptValue SaltTable_columnSum(QScriptContext *context, QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	QString datum;
-	double total = 0.0;
-	int column = argument<int>(0, context);
-	int role = argument<int>(1, context);
-	for(int i = 0; i < model->rowCount(); i++)
-	{
-		datum = model->data(model->index(i, column), role).toString();
-		if(!datum.isEmpty())
-		{
-			total += datum.toDouble();
-		}
-	}
-	return QScriptValue(engine, total);
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    QString datum;
+    double total = 0.0;
+    int column = argument<int>(0, context);
+    int role = argument<int>(1, context);
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        datum = model->data(model->index(i, column), role).toString();
+        if(!datum.isEmpty())
+        {
+            total += datum.toDouble();
+        }
+    }
+    return QScriptValue(engine, total);
 }
 
 @ Another common use of the SaltTable is producing the text for an array literal
@@ -6110,49 +6110,49 @@ There are four functions for this functionality for different use cases.
 QScriptValue SaltTable_columnArray(QScriptContext *context,
                                    QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	int column = argument<int>(0, context);
-	int role = argument<int>(1, context);
-	QString literal = model->arrayLiteral(column, role);
-	return QScriptValue(engine, literal);
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    int column = argument<int>(0, context);
+    int role = argument<int>(1, context);
+    QString literal = model->arrayLiteral(column, role);
+    return QScriptValue(engine, literal);
 }
 
 QScriptValue SaltTable_quotedColumnArray(QScriptContext *context,
                                          QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	int column = argument<int>(0, context);
-	int role = argument<int>(1, context);
-	QString literal = model->quotedArrayLiteral(column, role);
-	return QScriptValue(engine, literal);
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    int column = argument<int>(0, context);
+    int role = argument<int>(1, context);
+    QString literal = model->quotedArrayLiteral(column, role);
+    return QScriptValue(engine, literal);
 }
 
 QScriptValue SaltTable_bindableColumnArray(QScriptContext *context,
                                            QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	int column = argument<int>(0, context);
-	int role = argument<int>(1, context);
-	QString literal = model->arrayLiteral(column, role);
-	literal.chop(1);
-	literal = literal.remove(0, 1);
-	return QScriptValue(engine, literal);
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    int column = argument<int>(0, context);
+    int role = argument<int>(1, context);
+    QString literal = model->arrayLiteral(column, role);
+    literal.chop(1);
+    literal = literal.remove(0, 1);
+    return QScriptValue(engine, literal);
 }
 
 QScriptValue SaltTable_bindableQuotedColumnArray(QScriptContext *context,
                                                  QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	int column = argument<int>(0, context);
-	int role = argument<int>(1, context);
-	QString literal = model->quotedArrayLiteral(column, role);
-	literal.chop(1);
-	literal = literal.remove(0, 1);
-	return QScriptValue(engine, literal);
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    int column = argument<int>(0, context);
+    int role = argument<int>(1, context);
+    QString literal = model->quotedArrayLiteral(column, role);
+    literal.chop(1);
+    literal = literal.remove(0, 1);
+    return QScriptValue(engine, literal);
 }
 
 @ In order to obtain signals related to changes in the model, we need a way to
@@ -6161,9 +6161,9 @@ get to the model from the host environment.
 @<Functions for scripting@>=
 QScriptValue SaltTable_model(QScriptContext *context, QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	QScriptValue value = engine->newQObject(self->model());
-	return value;
+    QTableView *self = getself<QTableView *>(context);
+    QScriptValue value = engine->newQObject(self->model());
+    return value;
 }
 
 @ While this table was originally intended strictly for user input, there are a
@@ -6175,16 +6175,16 @@ data being set.
 @<Functions for scripting@>=
 QScriptValue SaltTable_setData(QScriptContext *context, QScriptEngine *)
 {
-	QTableView *self = getself<QTableView *>(context);
-	int row = argument<int>(0, context);
-	int column = argument<int>(1, context);
-	QVariant value = argument<QVariant>(2, context);
-	int role = argument<int>(3, context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	QModelIndex cell = model->index(row, column);
-	model->setData(cell, value, role);
-	self->update(cell);
-	return QScriptValue();
+    QTableView *self = getself<QTableView *>(context);
+    int row = argument<int>(0, context);
+    int column = argument<int>(1, context);
+    QVariant value = argument<QVariant>(2, context);
+    int role = argument<int>(3, context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    QModelIndex cell = model->index(row, column);
+    model->setData(cell, value, role);
+    self->update(cell);
+    return QScriptValue();
 }
 
 @ It is sometimes useful to obtain the data from a single cell of the table.
@@ -6193,16 +6193,16 @@ This can be done with the |data()| property.
 @<Functions for scripting@>=
 QScriptValue SaltTable_data(QScriptContext *context, QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	int row = argument<int>(0, context);
-	int column = argument<int>(1, context);
-	int role = argument<int>(2, context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	QModelIndex cell = model->index(row, column);
-	QVariant value = model->data(cell, role);
-	QScriptValue retval = engine->newVariant(value);
-	retval.setProperty("value", QScriptValue(value.toString()));
-	return retval;
+    QTableView *self = getself<QTableView *>(context);
+    int row = argument<int>(0, context);
+    int column = argument<int>(1, context);
+    int role = argument<int>(2, context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    QModelIndex cell = model->index(row, column);
+    QVariant value = model->data(cell, role);
+    QScriptValue retval = engine->newVariant(value);
+    retval.setProperty("value", QScriptValue(value.toString()));
+    return retval;
 }
 
 @ There are times when it is useful to clear the content of a table. This is
@@ -6213,10 +6213,10 @@ was a pre-roast blend.
 @<Functions for scripting@>=
 QScriptValue SaltTable_clear(QScriptContext *context, QScriptEngine *)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	model->clear();
-	return QScriptValue();
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    model->clear();
+    return QScriptValue();
 }
 
 @ It is sometimes useful to remove a row from a table. This is done in the new
@@ -6225,10 +6225,10 @@ batch window when the coffee for a row is set to a NULL item.
 @<Functions for scripting@>=
 QScriptValue SaltTable_removeRow(QScriptContext *context, QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	int row = argument<int>(0, context);
-	return engine->newVariant(model->removeRow(row));
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    int row = argument<int>(0, context);
+    return engine->newVariant(model->removeRow(row));
 }
 
 @ To remove the correct row, it is sometimes useful to query the table for
@@ -6238,11 +6238,11 @@ model.
 @<Functions for scripting@>=
 QScriptValue SaltTable_findData(QScriptContext *context, QScriptEngine *engine)
 {
-	QTableView *self = getself<QTableView *>(context);
-	SaltModel *model = qobject_cast<SaltModel *>(self->model());
-	QVariant value = argument<QVariant>(0, context);
-	int column = argument<int>(1, context);
-	return engine->newVariant(model->findData(value, column));
+    QTableView *self = getself<QTableView *>(context);
+    SaltModel *model = qobject_cast<SaltModel *>(self->model());
+    QVariant value = argument<QVariant>(0, context);
+    int column = argument<int>(1, context);
+    return engine->newVariant(model->findData(value, column));
 }
 
 @ These functions need to be added as properties of the table when it is passed
@@ -6251,22 +6251,22 @@ to the host environment.
 @<Functions for scripting@>=
 void setSaltTableProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
-	value.setProperty("columnArray",
-	                  engine->newFunction(SaltTable_columnArray));
-	value.setProperty("quotedColumnArray",
-	                  engine->newFunction(SaltTable_quotedColumnArray));
-	value.setProperty("bindableColumnArray",
-	                  engine->newFunction(SaltTable_bindableColumnArray));
-	value.setProperty("bindableQuotedColumnArray",
-	                  engine->newFunction(SaltTable_bindableQuotedColumnArray));
-	value.setProperty("columnSum", engine->newFunction(SaltTable_columnSum));
-	value.setProperty("data", engine->newFunction(SaltTable_data));
-	value.setProperty("model", engine->newFunction(SaltTable_model));
-	value.setProperty("setData", engine->newFunction(SaltTable_setData));
-	value.setProperty("clear", engine->newFunction(SaltTable_clear));
-	value.setProperty("removeRow", engine->newFunction(SaltTable_removeRow));
-	value.setProperty("findData", engine->newFunction(SaltTable_findData));
+    setQWidgetProperties(value, engine);
+    value.setProperty("columnArray",
+                      engine->newFunction(SaltTable_columnArray));
+    value.setProperty("quotedColumnArray",
+                      engine->newFunction(SaltTable_quotedColumnArray));
+    value.setProperty("bindableColumnArray",
+                      engine->newFunction(SaltTable_bindableColumnArray));
+    value.setProperty("bindableQuotedColumnArray",
+                      engine->newFunction(SaltTable_bindableQuotedColumnArray));
+    value.setProperty("columnSum", engine->newFunction(SaltTable_columnSum));
+    value.setProperty("data", engine->newFunction(SaltTable_data));
+    value.setProperty("model", engine->newFunction(SaltTable_model));
+    value.setProperty("setData", engine->newFunction(SaltTable_setData));
+    value.setProperty("clear", engine->newFunction(SaltTable_clear));
+    value.setProperty("removeRow", engine->newFunction(SaltTable_removeRow));
+    value.setProperty("findData", engine->newFunction(SaltTable_findData));
 }
 
 @ The |SqlComboBox| is another class that is not constructed from scripts but is
@@ -6288,52 +6288,52 @@ QScriptValue QComboBox_findData(QScriptContext *context, QScriptEngine *engine);
 @<Functions for scripting@>=
 void setSqlComboBoxProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQComboBoxProperties(value, engine);
+    setQComboBoxProperties(value, engine);
 }
 
 void setQComboBoxProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
-	value.setProperty("currentData",
-	                  engine->newFunction(QComboBox_currentData));
-	value.setProperty("addItem", engine->newFunction(QComboBox_addItem));
-	value.setProperty("setModel", engine->newFunction(QComboBox_setModel));
-	value.setProperty("findText", engine->newFunction(QComboBox_findText));
-	value.setProperty("findData", engine->newFunction(QComboBox_findData));
+    setQWidgetProperties(value, engine);
+    value.setProperty("currentData",
+                      engine->newFunction(QComboBox_currentData));
+    value.setProperty("addItem", engine->newFunction(QComboBox_addItem));
+    value.setProperty("setModel", engine->newFunction(QComboBox_setModel));
+    value.setProperty("findText", engine->newFunction(QComboBox_findText));
+    value.setProperty("findData", engine->newFunction(QComboBox_findData));
 }
 
 QScriptValue QComboBox_currentData(QScriptContext *context,
                                    QScriptEngine *engine)
 {
-	QComboBox *self = getself<QComboBox *>(context);
-	return QScriptValue(engine,
-	                    self->itemData(self->currentIndex()).toString());
+    QComboBox *self = getself<QComboBox *>(context);
+    return QScriptValue(engine,
+                        self->itemData(self->currentIndex()).toString());
 }
 
 QScriptValue QComboBox_addItem(QScriptContext *context, QScriptEngine *)
 {
-	QComboBox *self = getself<QComboBox *>(context);
-	self->addItem(argument<QString>(0, context));
-	return QScriptValue();
+    QComboBox *self = getself<QComboBox *>(context);
+    self->addItem(argument<QString>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue QComboBox_setModel(QScriptContext *context, QScriptEngine *)
 {
-	QComboBox *self = getself<QComboBox *>(context);
-	self->setModel(argument<QAbstractItemModel *>(0, context));
-	return QScriptValue();
+    QComboBox *self = getself<QComboBox *>(context);
+    self->setModel(argument<QAbstractItemModel *>(0, context));
+    return QScriptValue();
 }
 
 QScriptValue QComboBox_findText(QScriptContext *context, QScriptEngine *engine)
 {
-	QComboBox *self = getself<QComboBox *>(context);
-	return QScriptValue(engine, self->findText(argument<QString>(0, context)));
+    QComboBox *self = getself<QComboBox *>(context);
+    return QScriptValue(engine, self->findText(argument<QString>(0, context)));
 }
 
 QScriptValue QComboBox_findData(QScriptContext *context, QScriptEngine *engine)
 {
-	QComboBox *self = getself<QComboBox *>(context);
-	return QScriptValue(engine, self->findData(argument<QVariant>(0, context)));
+    QComboBox *self = getself<QComboBox *>(context);
+    return QScriptValue(engine, self->findData(argument<QVariant>(0, context)));
 }
 
 @i abouttypica.w
@@ -6420,29 +6420,29 @@ class DAQImplementation;@/
 
 class DAQ : public QObject@;@/
 {@t\1@>@/
-	Q_OBJECT@/
-	Q_ENUMS(ThermocoupleType)@;@/
-	DAQImplementation *imp;@/
-	@t\4@>private slots@t\kern-3pt@>:@/
-		void threadFinished();
-	public:@;
-		DAQ(QString device, const QString &driver = QString("nidaqmxbase"));
-		~DAQ();@/
-		Channel* newChannel(int units, int thermocouple);@/
-		@[Q_INVOKABLE@,@, void@]@, setClockRate(double Hz);@t\2\2@>@/
-		@[Q_INVOKABLE@,@, void@]@, start();@t\2\2@>@/
-		@[Q_INVOKABLE@,@, void@]@, stop();@t\2\2@>@/
-		enum ThermocoupleType@/
-		{
-			@!TypeJ = 10072,
-			@!TypeK = 10073,
-			@!TypeN = 10077,
-			@!TypeR = 10082,
-			@!TypeS = 10085,
-			@!TypeT = 10086,
-			@!TypeB = 10047,
-			@!TypeE = 10055
-		};@t\2@>@/
+    Q_OBJECT@/
+    Q_ENUMS(ThermocoupleType)@;@/
+    DAQImplementation *imp;@/
+    @t\4@>private slots@t\kern-3pt@>:@/
+        void threadFinished();
+    public:@;
+        DAQ(QString device, const QString &driver = QString("nidaqmxbase"));
+        ~DAQ();@/
+        Channel* newChannel(int units, int thermocouple);@/
+        @[Q_INVOKABLE@,@, void@]@, setClockRate(double Hz);@t\2\2@>@/
+        @[Q_INVOKABLE@,@, void@]@, start();@t\2\2@>@/
+        @[Q_INVOKABLE@,@, void@]@, stop();@t\2\2@>@/
+        enum ThermocoupleType@/
+        {
+            @!TypeJ = 10072,
+            @!TypeK = 10073,
+            @!TypeN = 10077,
+            @!TypeR = 10082,
+            @!TypeS = 10085,
+            @!TypeT = 10086,
+            @!TypeB = 10047,
+            @!TypeE = 10055
+        };@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The |DAQ| class has as a private member an instance of a class called
@@ -6455,14 +6455,14 @@ interested object.
 @<Class declarations@>=
 class DAQImplementation : public QThread@;@/
 {@;
-	Q_OBJECT@;@/
-	public:@;
-		DAQImplementation(const QString &driverinfo);
-		~DAQImplementation();
-		void run();
-		void measure();
-		@<Library function pointers@>@;
-		@<DAQImplementation member data@>@;
+    Q_OBJECT@;@/
+    public:@;
+        DAQImplementation(const QString &driverinfo);
+        ~DAQImplementation();
+        void run();
+        void measure();
+        @<Library function pointers@>@;
+        @<DAQImplementation member data@>@;
 }@+@t\kern-3pt@>;
 
 @ In order to solve some minor problems, NI-DAQmxBase is no longer linked at
@@ -6516,31 +6516,31 @@ simultaneously obtained measurements have the same time stamp.
 @<DAQ Implementation@>=
 void DAQImplementation::measure()@t\2@>@/
 @t\4@>{@/
-	int samplesRead = 0;
-	double buffer[channels];
-	error = read((unsigned int)(handle), (signed long)(1), (double)(10.0),@|
+    int samplesRead = 0;
+    double buffer[channels];
+    error = read((unsigned int)(handle), (signed long)(1), (double)(10.0),@|
                  (unsigned long)(0), buffer, (unsigned long)(channels),@|
-			     &samplesRead, (signed long)(0));@/
-	if(error)@/
-	@t\1@>{@/
-		ready = false;@t\2@>@/
-	}
-	else@/
-	{
-		if(samplesRead)@/
-		{
-			QTime time = QTime::currentTime();@/
-			for(int i = 0; i < samplesRead; i++)@/
-			{
-				for(int j = 0; j < channels; j++)@/
-				{
-					Measurement measure(buffer[@,j+(i*channels)], time,
-									    unitMap[j]);
-					channelMap[@,j]->input(measure);
-				}
-			}
-		}
-	}
+                 &samplesRead, (signed long)(0));@/
+    if(error)@/
+    @t\1@>{@/
+        ready = false;@t\2@>@/
+    }
+    else@/
+    {
+        if(samplesRead)@/
+        {
+            QTime time = QTime::currentTime();@/
+            for(int i = 0; i < samplesRead; i++)@/
+            {
+                for(int j = 0; j < channels; j++)@/
+                {
+                    Measurement measure(buffer[@,j+(i*channels)], time,
+                                        unitMap[j]);
+                    channelMap[@,j]->input(measure);
+                }
+            }
+        }
+    }
 @t\4@>}
 
 @ It was noted that |DAQmxBaseReadAnalogF64()| blocks until it is able to fill
@@ -6558,11 +6558,11 @@ could also be set to |false| when the |DAQ| is reconfigured.
 @<DAQ Implementation@>=
 void DAQImplementation::run()
 {
-	setPriority(QThread::TimeCriticalPriority);
-	while(ready)
-	{
-		measure();
-	}
+    setPriority(QThread::TimeCriticalPriority);
+    while(ready)
+    {
+        measure();
+    }
 }
 
 @ When this loop exits, |DAQImplementation| emits a finished signal to indicate
@@ -6574,10 +6574,10 @@ reports them if needed.
 @<DAQ Implementation@>=
 void DAQ::threadFinished()
 {
-	if(imp->error)
-	{
-		@<Display DAQ Error@>@;
-	}
+    if(imp->error)
+    {
+        @<Display DAQ Error@>@;
+    }
 }
 
 @ Errors are displayed with a |QMessageBox|. NIDAQmxBase provides the message
@@ -6650,43 +6650,43 @@ time to exit the program.
 @<DAQ Implementation@>=
 void DAQ::start()
 {
-	if(imp->ready)
-	{
-		imp->error = imp->startTask(imp->handle);
-		if(imp->error)
-		{
-			@<Display DAQ Error@>@;
-		}
-		else
-		{
-			connect(imp, SIGNAL(finished()), this, SLOT(threadFinished()));
-			imp->start();
-		}
-	}
+    if(imp->ready)
+    {
+        imp->error = imp->startTask(imp->handle);
+        if(imp->error)
+        {
+            @<Display DAQ Error@>@;
+        }
+        else
+        {
+            connect(imp, SIGNAL(finished()), this, SLOT(threadFinished()));
+            imp->start();
+        }
+    }
 }
 
 void DAQ::stop()
 {
-	if(imp->useBase)
-	{
-		imp->ready = @[false@];
-		imp->wait(ULONG_MAX);
-		imp->stopTask(imp->handle);
-	}
-	else
-	{
-		imp->ready = @[false@];
-		imp->error = imp->stopTask(imp->handle);
-		if(imp->error)
-		{
-			@<Display DAQ Error@>@;
-		}
-		imp->error = imp->clearTask(imp->handle);
-		if(imp->error)
-		{
-			@<Display DAQ Error@>@;
-		}
-	}
+    if(imp->useBase)
+    {
+        imp->ready = @[false@];
+        imp->wait(ULONG_MAX);
+        imp->stopTask(imp->handle);
+    }
+    else
+    {
+        imp->ready = @[false@];
+        imp->error = imp->stopTask(imp->handle);
+        if(imp->error)
+        {
+            @<Display DAQ Error@>@;
+        }
+        imp->error = imp->clearTask(imp->handle);
+        if(imp->error)
+        {
+            @<Display DAQ Error@>@;
+        }
+    }
 }
 
 @ Setting up the DAQ begins by constructing a new |DAQ| object. The constructor
@@ -6697,16 +6697,16 @@ for the setup that follows once a new |DAQ| is created.
 @<DAQ Implementation@>=
 DAQ::DAQ(QString device, const QString &driver) : imp(new DAQImplementation(driver))@/
 @t\4\4@>{@/
-	imp->device = device;
-	imp->error = imp->createTask(device.toAscii().data(), &(imp->handle));
-	if(imp->error)@/
-	{
-		@<Display DAQ Error@>@;
-	}
-	else@/
-	@t\1@>{@/
-		imp->ready = true;@t\2@>@/
-	}@/
+    imp->device = device;
+    imp->error = imp->createTask(device.toAscii().data(), &(imp->handle));
+    if(imp->error)@/
+    {
+        @<Display DAQ Error@>@;
+    }
+    else@/
+    @t\1@>{@/
+        imp->ready = true;@t\2@>@/
+    }@/
 @t\4\4@>}
 
 @ Once the |DAQ| is created, one or more channels can be added to that |DAQ|.
@@ -6718,42 +6718,42 @@ other classes to connect to the channel. Measurements cannot be read from the
 @<DAQ Implementation@>=
 Channel* DAQ::newChannel(int units, int thermocouple)
 {
-	Channel *retval = new Channel();
-	imp->channelMap[imp->channels] = retval;
-	imp->unitMap[imp->channels] = (Units::Unit)units;
-	imp->channels++;
-	if(imp->ready)
-	{
-		if(imp->useBase)
-		{
-			imp->error = imp->createChannel(imp->handle,
-		                                QString("%1/ai%2").arg(imp->device).
-										                   arg(imp->channels - 1).
-										                   toAscii().data(),
-										"", (double)(-1.0), (double)(100.0),
-										(signed long)(units),
-										(signed long)(thermocouple),
-										(signed long)(10200), (double)(0),
-										"");
-		}
-		else
-		{
-			imp->error = imp->createChannel(imp->handle,
-			                            QString("%1/ai%2").arg(imp->device).
-										                   arg(imp->channels - 1).
-														   toAscii().data(),
-										"", (double)(50.0), (double)(500.0),
-										(signed long)(units),
-										(signed long)(thermocouple),
-										(signed long)(10200), (double)(0),
-										"");
-		}
-		if(imp->error)
-		{
-			@<Display DAQ Error@>@;
-		}
-	}
-	return retval;
+    Channel *retval = new Channel();
+    imp->channelMap[imp->channels] = retval;
+    imp->unitMap[imp->channels] = (Units::Unit)units;
+    imp->channels++;
+    if(imp->ready)
+    {
+        if(imp->useBase)
+        {
+            imp->error = imp->createChannel(imp->handle,
+                                        QString("%1/ai%2").arg(imp->device).
+                                                           arg(imp->channels - 1).
+                                                           toAscii().data(),
+                                        "", (double)(-1.0), (double)(100.0),
+                                        (signed long)(units),
+                                        (signed long)(thermocouple),
+                                        (signed long)(10200), (double)(0),
+                                        "");
+        }
+        else
+        {
+            imp->error = imp->createChannel(imp->handle,
+                                        QString("%1/ai%2").arg(imp->device).
+                                                           arg(imp->channels - 1).
+                                                           toAscii().data(),
+                                        "", (double)(50.0), (double)(500.0),
+                                        (signed long)(units),
+                                        (signed long)(thermocouple),
+                                        (signed long)(10200), (double)(0),
+                                        "");
+        }
+        if(imp->error)
+        {
+            @<Display DAQ Error@>@;
+        }
+    }
+    return retval;
 }
 
 @ Once the channels are created, it is necessary to set the clock rate of the
@@ -6767,16 +6767,16 @@ every 251$\pm$1ms with 80\% of measurements spaced 251ms apart.
 @<DAQ Implementation@>=
 void DAQ::setClockRate(double Hz)
 {
-	if(imp->ready)
-	{
-		imp->error = imp->setClock(imp->handle, "OnboardClock", Hz,
-		                           (signed long)(10280), (signed long)(10123),
-								   (unsigned long long)(1));
-		if(imp->error)
-		{
-			@<Display DAQ Error@>@;
-		}
-	}
+    if(imp->ready)
+    {
+        imp->error = imp->setClock(imp->handle, "OnboardClock", Hz,
+                                   (signed long)(10280), (signed long)(10123),
+                                   (unsigned long long)(1));
+        if(imp->error)
+        {
+            @<Display DAQ Error@>@;
+        }
+    }
 }
 
 @ Before the program exits, the |DAQ| should be deleted. The destructor
@@ -6787,23 +6787,23 @@ attempted to use the device.
 @<DAQ Implementation@>=
 DAQ::~DAQ()@/
 {
-	if(imp->useBase)
-	{
-		imp->resetDevice(imp->device.toAscii().data());
-		imp->clearTask(imp->handle);
-	}
-	else
-	{
-		if(imp->ready)
-		{
-			imp->ready = @[false@];
-			imp->wait(ULONG_MAX);
-			imp->stopTask(imp->handle);
-			imp->resetDevice(imp->device.toAscii().data());
-			imp->clearTask(imp->handle);
-		}
-	}
-	delete imp;
+    if(imp->useBase)
+    {
+        imp->resetDevice(imp->device.toAscii().data());
+        imp->clearTask(imp->handle);
+    }
+    else
+    {
+        if(imp->ready)
+        {
+            imp->ready = @[false@];
+            imp->wait(ULONG_MAX);
+            imp->stopTask(imp->handle);
+            imp->resetDevice(imp->device.toAscii().data());
+            imp->clearTask(imp->handle);
+        }
+    }
+    delete imp;
 }
 
 @ This just leaves the constructor and destructor for |DAQImplementation|. The
@@ -6818,86 +6818,86 @@ the symbols used in \pn{}.
 @<DAQ Implementation@>=
 DAQImplementation::DAQImplementation(const QString &driverinfo)
 : QThread(NULL), channelMap(4), handle(0), error(0), channels(0), ready(false),
-	unitMap(4)@/
+    unitMap(4)@/
 {
-	if(driverinfo == "nidaqmxbase")
-	{
-		useBase = true;
-	}
-	else
-	{
-		useBase = false;
-	}
-	if(useBase)
-	{
-		driver.setFileName("nidaqmxbase.framework/nidaqmxbase");
-		if(!driver.load())
-		{
-			driver.setFileName("nidaqmxbase");
-			if(!driver.load())
-			{
-				QMessageBox::critical(NULL, tr("Typica: Driver not found"),
-					tr("Failed to find nidaqmxbase. Please install it."));
-				QApplication::quit();
-			}
-		}
-	}
-	else
-	{
-		driver.setFileName("nicaiu");
-		if(!driver.load())
-		{
-			QMessageBox::critical(NULL, tr("Typica: Driver not found"),
-					tr("Failed to find nidaqmx. Please install it."));
-			QApplication::quit();
-		}
-	}
-	if(useBase)
-	{
-		if((createTask = (daqfp) driver.resolve("DAQmxBaseCreateTask")) == 0 || @|
-		(startTask = (daqfp) driver.resolve("DAQmxBaseStartTask")) == 0 || @|
-		(stopTask = (daqfp) driver.resolve("DAQmxBaseStopTask")) == 0 || @|
-		(clearTask = (daqfp) driver.resolve("DAQmxBaseClearTask")) == 0 || @|
-		(createChannel = (daqfp) driver.resolve("DAQmxBaseCreateAIThrmcplChan"))
-			== 0 || @|
-		(setClock = (daqfp) driver.resolve("DAQmxBaseCfgSampClkTiming")) ==
-			0 || @|
-		(read = (daqfp) driver.resolve("DAQmxBaseReadAnalogF64")) == 0 || @|
-		(errorInfo = (daqfp) driver.resolve("DAQmxBaseGetExtendedErrorInfo")) ==
-			0 || @|
-		(resetDevice = (daqfp) driver.resolve("DAQmxBaseResetDevice")) == 0)@/
-		{
-			waitForMeasurement = NULL;
-			QMessageBox::critical(NULL, tr("Typica: Link error"),
-			tr("Failed to link a required symbol in NI-DAQmxBase."));
-			QApplication::quit();
-		}
-	}
-	else
-	{
-		if((createTask = (daqfp)driver.resolve("DAQmxCreateTask")) == 0 || @|
-		(startTask = (daqfp)driver.resolve("DAQmxStartTask")) == 0 || @|
-		(stopTask = (daqfp)driver.resolve("DAQmxStopTask")) == 0 || @|
-		(clearTask = (daqfp)driver.resolve("DAQmxClearTask")) == 0 || @|
-		(createChannel = (daqfp)driver.resolve("DAQmxCreateAIThrmcplChan"))
-			== 0 || @|
-		(setClock = (daqfp)driver.resolve("DAQmxCfgSampClkTiming")) == 0 || @|
-		(read = (daqfp)driver.resolve("DAQmxReadAnalogF64")) == 0 || @|
-		(errorInfo = (daqfp)driver.resolve("DAQmxGetExtendedErrorInfo")) ==
-			0 || @|
-		(resetDevice = (daqfp)driver.resolve("DAQmxResetDevice")) == 0 ||
-		(waitForMeasurement = (daqfp)driver.resolve("DAQmxWaitUntilTaskDone")) == 0)
-		{
-			QMessageBox::critical(NULL, tr("Typica: Link error"),
-			tr("Failed to link a required symbol in NI-DAQmx."));
-			QApplication::quit();
-		}
-	}
+    if(driverinfo == "nidaqmxbase")
+    {
+        useBase = true;
+    }
+    else
+    {
+        useBase = false;
+    }
+    if(useBase)
+    {
+        driver.setFileName("nidaqmxbase.framework/nidaqmxbase");
+        if(!driver.load())
+        {
+            driver.setFileName("nidaqmxbase");
+            if(!driver.load())
+            {
+                QMessageBox::critical(NULL, tr("Typica: Driver not found"),
+                    tr("Failed to find nidaqmxbase. Please install it."));
+                QApplication::quit();
+            }
+        }
+    }
+    else
+    {
+        driver.setFileName("nicaiu");
+        if(!driver.load())
+        {
+            QMessageBox::critical(NULL, tr("Typica: Driver not found"),
+                    tr("Failed to find nidaqmx. Please install it."));
+            QApplication::quit();
+        }
+    }
+    if(useBase)
+    {
+        if((createTask = (daqfp) driver.resolve("DAQmxBaseCreateTask")) == 0 || @|
+        (startTask = (daqfp) driver.resolve("DAQmxBaseStartTask")) == 0 || @|
+        (stopTask = (daqfp) driver.resolve("DAQmxBaseStopTask")) == 0 || @|
+        (clearTask = (daqfp) driver.resolve("DAQmxBaseClearTask")) == 0 || @|
+        (createChannel = (daqfp) driver.resolve("DAQmxBaseCreateAIThrmcplChan"))
+            == 0 || @|
+        (setClock = (daqfp) driver.resolve("DAQmxBaseCfgSampClkTiming")) ==
+            0 || @|
+        (read = (daqfp) driver.resolve("DAQmxBaseReadAnalogF64")) == 0 || @|
+        (errorInfo = (daqfp) driver.resolve("DAQmxBaseGetExtendedErrorInfo")) ==
+            0 || @|
+        (resetDevice = (daqfp) driver.resolve("DAQmxBaseResetDevice")) == 0)@/
+        {
+            waitForMeasurement = NULL;
+            QMessageBox::critical(NULL, tr("Typica: Link error"),
+            tr("Failed to link a required symbol in NI-DAQmxBase."));
+            QApplication::quit();
+        }
+    }
+    else
+    {
+        if((createTask = (daqfp)driver.resolve("DAQmxCreateTask")) == 0 || @|
+        (startTask = (daqfp)driver.resolve("DAQmxStartTask")) == 0 || @|
+        (stopTask = (daqfp)driver.resolve("DAQmxStopTask")) == 0 || @|
+        (clearTask = (daqfp)driver.resolve("DAQmxClearTask")) == 0 || @|
+        (createChannel = (daqfp)driver.resolve("DAQmxCreateAIThrmcplChan"))
+            == 0 || @|
+        (setClock = (daqfp)driver.resolve("DAQmxCfgSampClkTiming")) == 0 || @|
+        (read = (daqfp)driver.resolve("DAQmxReadAnalogF64")) == 0 || @|
+        (errorInfo = (daqfp)driver.resolve("DAQmxGetExtendedErrorInfo")) ==
+            0 || @|
+        (resetDevice = (daqfp)driver.resolve("DAQmxResetDevice")) == 0 ||
+        (waitForMeasurement = (daqfp)driver.resolve("DAQmxWaitUntilTaskDone")) == 0)
+        {
+            QMessageBox::critical(NULL, tr("Typica: Link error"),
+            tr("Failed to link a required symbol in NI-DAQmx."));
+            QApplication::quit();
+        }
+    }
 }
 
 DAQImplementation::~DAQImplementation()
 {
-	driver.unload();
+    driver.unload();
 }
 
 @ When exposing the |DAQ| class to the scripting engine, we need to provide a
@@ -6934,28 +6934,28 @@ constructor available from a script also requires this argument.
 @<Functions for scripting@>=
 QScriptValue constructDAQ(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 1)
-	{
-		object = engine->newQObject(new DAQ(argument<QString>(0, context)),
-									QScriptEngine::ScriptOwnership);
-		setDAQProperties(object, engine);
-	}
-	else if(context->argumentCount() == 2)
-	{
-		object = engine->newQObject(new DAQ(argument<QString>(0, context),
-		                                    argument<QString>(1, context)),
-									QScriptEngine::ScriptOwnership);
-		setDAQProperties(object, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to DAQ"@|
-							"constructor. The DAQ constructor takes one"@|
-							"string as an argument specifying a device name."@|
-							"Example: Dev1");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 1)
+    {
+        object = engine->newQObject(new DAQ(argument<QString>(0, context)),
+                                    QScriptEngine::ScriptOwnership);
+        setDAQProperties(object, engine);
+    }
+    else if(context->argumentCount() == 2)
+    {
+        object = engine->newQObject(new DAQ(argument<QString>(0, context),
+                                            argument<QString>(1, context)),
+                                    QScriptEngine::ScriptOwnership);
+        setDAQProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to DAQ"@|
+                            "constructor. The DAQ constructor takes one"@|
+                            "string as an argument specifying a device name."@|
+                            "Example: Dev1");
+    }
+    return object;
 }
 
 @ As |DAQ| inherits |QObject|, we add the |newChannel()| property after adding
@@ -6964,8 +6964,8 @@ any |QObject| properties.
 @<Functions for scripting@>=
 void setDAQProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	value.setProperty("newChannel", engine->newFunction(DAQ_newChannel));
+    setQObjectProperties(value, engine);
+    value.setProperty("newChannel", engine->newFunction(DAQ_newChannel));
 }
 
 @ The |newChannel()| method method also requires that two arguments are provided
@@ -6974,16 +6974,16 @@ by the script.
 @<Functions for scripting@>=
 QScriptValue DAQ_newChannel(QScriptContext *context, QScriptEngine *engine)
 {
-	DAQ *self = getself<@[DAQ *@]>(context);
-	QScriptValue object;
-	if(self)
-	{
-		object =
-			engine->newQObject(self->newChannel(argument<int>(0, context),@|
-												argument<int>(1, context)));
-		setChannelProperties(object, engine);
-	}
-	return object;
+    DAQ *self = getself<@[DAQ *@]>(context);
+    QScriptValue object;
+    if(self)
+    {
+        object =
+            engine->newQObject(self->newChannel(argument<int>(0, context),@|
+                                                argument<int>(1, context)));
+        setChannelProperties(object, engine);
+    }
+    return object;
 }
 
 @ Sometimes it can be useful to test other parts of the program (for example,
@@ -6995,28 +6995,28 @@ program.
 @<Class declarations@>=
 class FakeDAQImplementation : public QThread@/
 {@/
-	Q_OBJECT@;
-	public:@/
-		FakeDAQImplementation();
-		~FakeDAQImplementation();
-		void run();
-		void measure();
-		QVector<Channel *> channelMap;
-		int channels;
-		bool ready;
-		double clockRate;
+    Q_OBJECT@;
+    public:@/
+        FakeDAQImplementation();
+        ~FakeDAQImplementation();
+        void run();
+        void measure();
+        QVector<Channel *> channelMap;
+        int channels;
+        bool ready;
+        double clockRate;
 };@/
 
 class FakeDAQ : public QObject@/
 {@/
-	Q_OBJECT@;
-	FakeDAQImplementation *imp;
-	public:@/
-		FakeDAQ(QString device);
-		~FakeDAQ();
-		Channel *newChannel(int units, int thermocouple);@/
-		@[Q_INVOKABLE@,@, void@]@, setClockRate(double Hz);@t\2\2@>@/
-		@[Q_INVOKABLE@,@, void@]@, start();@t\2\2@>@/
+    Q_OBJECT@;
+    FakeDAQImplementation *imp;
+    public:@/
+        FakeDAQ(QString device);
+        ~FakeDAQ();
+        Channel *newChannel(int units, int thermocouple);@/
+        @[Q_INVOKABLE@,@, void@]@, setClockRate(double Hz);@t\2\2@>@/
+        @[Q_INVOKABLE@,@, void@]@, start();@t\2\2@>@/
 };
 
 @ Just as in the |DAQ| class, most of the interesting stuff happens in
@@ -7027,13 +7027,13 @@ based on the clock rate then create a |Measurement| object at random for each
 @<FakeDAQ Implementation@>=
 void FakeDAQImplementation::measure()
 {
-	msleep((int)(1000/clockRate));
-	QTime time = QTime::currentTime();
-	for(int i = 0; i < channels; i++)
-	{
-		Measurement measure(qrand() % 500, time);
-		channelMap[i]->input(measure);
-	}
+    msleep((int)(1000/clockRate));
+    QTime time = QTime::currentTime();
+    for(int i = 0; i < channels; i++)
+    {
+        Measurement measure(qrand() % 500, time);
+        channelMap[i]->input(measure);
+    }
 }
 
 @ To call |measure|, we need to flesh out the rest of |FakeDAQImplementation|.
@@ -7041,22 +7041,22 @@ void FakeDAQImplementation::measure()
 @<FakeDAQ Implementation@>=
 void FakeDAQImplementation::run()
 {
-	setPriority(QThread::TimeCriticalPriority);
-	while(ready)
-	{
-		measure();
-	}
+    setPriority(QThread::TimeCriticalPriority);
+    while(ready)
+    {
+        measure();
+    }
 }
 
 FakeDAQImplementation::FakeDAQImplementation() : QThread(NULL), channelMap(4),
-	channels(0), ready(false), clockRate(1)@/
+    channels(0), ready(false), clockRate(1)@/
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 FakeDAQImplementation::~FakeDAQImplementation()
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 @ Next we need an implementation for the |FakeDAQ| class. This is simplified by
@@ -7066,46 +7066,46 @@ measurements rather than special hardware for obtaining measurements.
 @<FakeDAQ Implementation@>=
 void FakeDAQ::start()
 {
-	if(imp->ready)
-	{
-		imp->start();
-	}
+    if(imp->ready)
+    {
+        imp->start();
+    }
 }@#
 
 FakeDAQ::FakeDAQ(QString) : imp(new FakeDAQImplementation())@t\2\2@>@/
 {@t\1@>@/
-	imp->ready = true;@t\2@>@/
+    imp->ready = true;@t\2@>@/
 }@#
 
 Channel* FakeDAQ::newChannel(int, int)
 {
-	Channel *retval;
-	if(imp->ready)
-	{
-		retval = new Channel();
-		imp->channelMap[imp->channels] = retval;
-		imp->channels++;
-	}
-	else
-	{
-		return NULL;
-	}
-	return retval;
+    Channel *retval;
+    if(imp->ready)
+    {
+        retval = new Channel();
+        imp->channelMap[imp->channels] = retval;
+        imp->channels++;
+    }
+    else
+    {
+        return NULL;
+    }
+    return retval;
 }
 
 void FakeDAQ::setClockRate(double Hz)
 {
-	if(imp->ready)
-	{
-		imp->clockRate = Hz;
-	}
+    if(imp->ready)
+    {
+        imp->clockRate = Hz;
+    }
 }@#
 
 FakeDAQ::~FakeDAQ()@t\2\2@>@/
 {@t\1@>@/
-	imp->ready = false;
-	imp->wait(ULONG_MAX);
-	delete imp;@t\2@>@/
+    imp->ready = false;
+    imp->wait(ULONG_MAX);
+    delete imp;@t\2@>@/
 }
 
 @ As the entire purpose of the |FakeDAQ| class is for testing purposes from
@@ -7129,44 +7129,44 @@ created from a script.
 
 @<Functions for scripting@>=
 QScriptValue constructFakeDAQ(QScriptContext *context,
-									QScriptEngine *engine)
+                                    QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 1)
-	{
-		object =
-			engine->newQObject(new FakeDAQ(argument<QString>(0, context)),
-									QScriptEngine::ScriptOwnership);
-		setFakeDAQProperties(object, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to DAQ"@|
-							"constructor. The DAQ constructor takes one"@|
-							"string as an argument specifying a device name."@|
-							"Example: Dev1");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 1)
+    {
+        object =
+            engine->newQObject(new FakeDAQ(argument<QString>(0, context)),
+                                    QScriptEngine::ScriptOwnership);
+        setFakeDAQProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to DAQ"@|
+                            "constructor. The DAQ constructor takes one"@|
+                            "string as an argument specifying a device name."@|
+                            "Example: Dev1");
+    }
+    return object;
 }
 
 void setFakeDAQProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	value.setProperty("newChannel", engine->newFunction(FakeDAQ_newChannel));
+    setQObjectProperties(value, engine);
+    value.setProperty("newChannel", engine->newFunction(FakeDAQ_newChannel));
 }
 
 QScriptValue FakeDAQ_newChannel(QScriptContext *context, QScriptEngine *engine)
 {
-	FakeDAQ *self = getself<@[FakeDAQ *@]>(context);
-	QScriptValue object;
-	if(self)
-	{
-		object =
-			engine->newQObject(self->newChannel(argument<int>(0, context),@|
-			                                    argument<int>(1, context)));
-		setChannelProperties(object, engine);
-	}
-	return object;
+    FakeDAQ *self = getself<@[FakeDAQ *@]>(context);
+    QScriptValue object;
+    if(self)
+    {
+        object =
+            engine->newQObject(self->newChannel(argument<int>(0, context),@|
+                                                argument<int>(1, context)));
+        setChannelProperties(object, engine);
+    }
+    return object;
 }
 
 @* The Channel class.
@@ -7182,14 +7182,14 @@ copy of the measurement.
 @<Class declarations@>=
 class Channel : public QObject@;@/
 {@t\1@>@/
-	Q_OBJECT@/
-	public:@;
-		Channel();
-		~Channel();@/
-	@t\4@>public slots@t\kern-3pt@>:@;
-		void input(Measurement measurement);@/
-	signals:@;
-		void newData(Measurement);@t\2@>@/
+    Q_OBJECT@/
+    public:@;
+        Channel();
+        ~Channel();@/
+    @t\4@>public slots@t\kern-3pt@>:@;
+        void input(Measurement measurement);@/
+    signals:@;
+        void newData(Measurement);@t\2@>@/
 };
 
 @ The implementation of this class is trivial.
@@ -7197,17 +7197,17 @@ class Channel : public QObject@;@/
 @<Channel Implementation@>=
 Channel::Channel() : QObject(NULL)@/
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 Channel::~Channel()
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 void Channel::input(Measurement measurement)
 {
-	emit newData(measurement);
+    emit newData(measurement);
 }
 
 @ A function is provided for use when a channel is created by a DAQ from a
@@ -7221,7 +7221,7 @@ void setChannelProperties(QScriptValue value, QScriptEngine *engine);
 @<Functions for scripting@>=
 void setChannelProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
+    setQObjectProperties(value, engine);
 }
 
 @* Calibration and Unit Conversion.
@@ -7249,41 +7249,41 @@ Starting in \pn{} 1.6 this class has both the |measurement| and the
 @<Class declarations@>=
 class LinearCalibrator : public QObject@/
 {@/
-	@[Q_OBJECT@]@;
-	@[Q_PROPERTY(double measuredLower READ measuredLower
-	           WRITE setMeasuredLower)@]@;
-	@[Q_PROPERTY(double measuredUpper READ measuredUpper
-	           WRITE setMeasuredUpper)@]@;
-	@[Q_PROPERTY(double mappedLower READ mappedLower WRITE setMappedLower)@]@;
-	@[Q_PROPERTY(double mappedUpper READ mappedUpper WRITE setMappedUpper)@]@;
-	@[Q_PROPERTY(bool closedRange READ isClosedRange WRITE setClosedRange)@]@;
-	@[Q_PROPERTY(double sensitivity READ sensitivity WRITE setSensitivity)@]@;
-	public:@/
-		LinearCalibrator(QObject *parent = NULL);
-		double measuredLower();
-		double measuredUpper();
-		double mappedLower();
-		double mappedUpper();
-		bool isClosedRange();
-		double sensitivity();
-	@t\4@>@[public slots@t\kern-3pt@>:@]@;
-		void setMeasuredLower(double lower);
-		void setMeasuredUpper(double upper);
-		void setMappedLower(double lower);
-		void setMappedUpper(double upper);
-		void setClosedRange(bool closed);
-		void setSensitivity(double sensitivity);
-		Measurement newMeasurement(Measurement measure);
-	@t\4@>@[signals:@]@;
-		void measurement(Measurement measure);
-		void newData(Measurement measure);
-	private:@/
-		double Lo1;
-		double Lo2;
-		double Up1;
-		double Up2;
-		double sensitivitySetting;
-		bool clamp;
+    @[Q_OBJECT@]@;
+    @[Q_PROPERTY(double measuredLower READ measuredLower
+               WRITE setMeasuredLower)@]@;
+    @[Q_PROPERTY(double measuredUpper READ measuredUpper
+               WRITE setMeasuredUpper)@]@;
+    @[Q_PROPERTY(double mappedLower READ mappedLower WRITE setMappedLower)@]@;
+    @[Q_PROPERTY(double mappedUpper READ mappedUpper WRITE setMappedUpper)@]@;
+    @[Q_PROPERTY(bool closedRange READ isClosedRange WRITE setClosedRange)@]@;
+    @[Q_PROPERTY(double sensitivity READ sensitivity WRITE setSensitivity)@]@;
+    public:@/
+        LinearCalibrator(QObject *parent = NULL);
+        double measuredLower();
+        double measuredUpper();
+        double mappedLower();
+        double mappedUpper();
+        bool isClosedRange();
+        double sensitivity();
+    @t\4@>@[public slots@t\kern-3pt@>:@]@;
+        void setMeasuredLower(double lower);
+        void setMeasuredUpper(double upper);
+        void setMappedLower(double lower);
+        void setMappedUpper(double upper);
+        void setClosedRange(bool closed);
+        void setSensitivity(double sensitivity);
+        Measurement newMeasurement(Measurement measure);
+    @t\4@>@[signals:@]@;
+        void measurement(Measurement measure);
+        void newData(Measurement measure);
+    private:@/
+        double Lo1;
+        double Lo2;
+        double Up1;
+        double Up2;
+        double sensitivitySetting;
+        bool clamp;
 };
 
 @ When the measured range and the mapped range are identical and the range is
@@ -7292,9 +7292,9 @@ constructed |LinearCalibrator| which should quickly be changed.
 
 @<LinearCalibrator Implementation@>=
 LinearCalibrator::LinearCalibrator(QObject *parent) :
-	QObject(parent), Lo1(0), Lo2(0), Up1(1), Up2(1), sensitivitySetting(0.0), clamp(false)@/
+    QObject(parent), Lo1(0), Lo2(0), Up1(1), Up2(1), sensitivitySetting(0.0), clamp(false)@/
 {
-	connect(this, SIGNAL(measurement(Measurement)), this, SIGNAL(newData(Measurement)));
+    connect(this, SIGNAL(measurement(Measurement)), this, SIGNAL(newData(Measurement)));
 }
 
 @ The functional portion of the class is in the |newMeasurement()| slot. This
@@ -7307,26 +7307,26 @@ This method also handles any rounding needed if there has been a call to
 @<LinearCalibrator Implementation@>=
 Measurement LinearCalibrator::newMeasurement(Measurement measure)
 {
-	double outval = Lo1 + (measure.temperature() - Lo2) * (Up1 - Lo1)/(Up2 - Lo2);
-	if(clamp)
-	{
-		if(outval < Lo1)
-		{
-			outval = Lo1;
-		}
-		else if(outval > Up1)
-		{
-			outval = Up1;
-		}
-	}
-	if(sensitivitySetting >= 0.05)
-	{
-		int temp = qRound(outval/sensitivitySetting);
-		outval = temp * sensitivitySetting;
-	}
-	Measurement adjusted(outval, measure.time(), measure.scale());
-	emit measurement(adjusted);
-	return adjusted;
+    double outval = Lo1 + (measure.temperature() - Lo2) * (Up1 - Lo1)/(Up2 - Lo2);
+    if(clamp)
+    {
+        if(outval < Lo1)
+        {
+            outval = Lo1;
+        }
+        else if(outval > Up1)
+        {
+            outval = Up1;
+        }
+    }
+    if(sensitivitySetting >= 0.05)
+    {
+        int temp = qRound(outval/sensitivitySetting);
+        outval = temp * sensitivitySetting;
+    }
+    Measurement adjusted(outval, measure.time(), measure.scale());
+    emit measurement(adjusted);
+    return adjusted;
 }
 
 @ The rest of the class consists of trivial accessor methods.
@@ -7334,62 +7334,62 @@ Measurement LinearCalibrator::newMeasurement(Measurement measure)
 @<LinearCalibrator Implementation@>=
 double LinearCalibrator::measuredLower()
 {
-	return Lo2;
+    return Lo2;
 }
 
 double LinearCalibrator::measuredUpper()
 {
-	return Up2;
+    return Up2;
 }
 
 double LinearCalibrator::mappedLower()
 {
-	return Lo1;
+    return Lo1;
 }
 
 double LinearCalibrator::mappedUpper()
 {
-	return Up1;
+    return Up1;
 }
 
 bool LinearCalibrator::isClosedRange()
 {
-	return clamp;
+    return clamp;
 }
 
 void LinearCalibrator::setMeasuredLower(double lower)
 {
-	Lo2 = lower;
+    Lo2 = lower;
 }
 
 void LinearCalibrator::setMeasuredUpper(double upper)
 {
-	Up2 = upper;
+    Up2 = upper;
 }
 
 void LinearCalibrator::setMappedLower(double lower)
 {
-	Lo1 = lower;
+    Lo1 = lower;
 }
 
 void LinearCalibrator::setMappedUpper(double upper)
 {
-	Up1 = upper;
+    Up1 = upper;
 }
 
 void LinearCalibrator::setClosedRange(bool closed)
 {
-	clamp = closed;
+    clamp = closed;
 }
 
 void LinearCalibrator::setSensitivity(double sensitivity)
 {
-	sensitivitySetting = sensitivity;
+    sensitivitySetting = sensitivity;
 }
 
 double LinearCalibrator::sensitivity()
 {
-	return sensitivitySetting;
+    return sensitivitySetting;
 }
 
 @ Finally, we make this class available to the scripting engine. Two functions
@@ -7413,14 +7413,14 @@ engine->globalObject().setProperty("LinearCalibrator", value);
 @<Functions for scripting@>=
 QScriptValue constructLinearCalibrator(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new LinearCalibrator(NULL));
-	setLinearCalibratorProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new LinearCalibrator(NULL));
+    setLinearCalibratorProperties(object, engine);
+    return object;
 }
 
 void setLinearCalibratorProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
+    setQObjectProperties(value, engine);
 }
 
 @* Linear Spline Interpolation.
@@ -7445,18 +7445,18 @@ priority.
 @<Class declarations@>=
 class LinearSplineInterpolator : public QObject@/
 {@/
-	@[Q_OBJECT@]@;@/
-	public:@/
-		LinearSplineInterpolator(QObject *parent = NULL);
-		@[Q_INVOKABLE@,@, void@]@, add_pair(double source, double destination);@t\2\2@>@/
-	@[public slots@]:@/
-		Measurement newMeasurement(Measurement measure);
-	@[signals@]:@/
-		void newData(Measurement measure);
-	private:@/
-		void make_interpolators();
-		QMap<double, double> *pairs;
-		QList<LinearCalibrator *> *interpolators;@/
+    @[Q_OBJECT@]@;@/
+    public:@/
+        LinearSplineInterpolator(QObject *parent = NULL);
+        @[Q_INVOKABLE@,@, void@]@, add_pair(double source, double destination);@t\2\2@>@/
+    @[public slots@]:@/
+        Measurement newMeasurement(Measurement measure);
+    @[signals@]:@/
+        void newData(Measurement measure);
+    private:@/
+        void make_interpolators();
+        QMap<double, double> *pairs;
+        QList<LinearCalibrator *> *interpolators;@/
 };
 
 @ We take advantage of the fact that iterating over a QMap always returns
@@ -7467,70 +7467,70 @@ improvement.
 @<LinearSplineInterpolator Implementation@>=
 void LinearSplineInterpolator::add_pair(double source, double destination)
 {
-	pairs->insert(source, destination);
-	make_interpolators();
+    pairs->insert(source, destination);
+    make_interpolators();
 }
 
 void LinearSplineInterpolator::make_interpolators()
 {
-	if(pairs->size() > 1)
-	{
-		while(interpolators->size() > 0)
-		{
-			LinearCalibrator *removed = interpolators->takeFirst();
-			removed->deleteLater();
-		}
-		QMap<double, double>::const_iterator i = pairs->constBegin();
-		QMap<double, double>::const_iterator j = i + 1;
-		while(j != pairs->constEnd())
-		{
-			LinearCalibrator *segment = new LinearCalibrator();
-			segment->setMeasuredLower(i.key());
-			segment->setMappedLower(i.value());
-			segment->setMeasuredUpper(j.key());
-			segment->setMappedUpper(j.value());
-			segment->setClosedRange(false);
-			interpolators->append(segment);
-			connect(segment, SIGNAL(measurement(Measurement)), this, SIGNAL(newData(Measurement)));
-			i++;
-			j++;
-		}
-	}
+    if(pairs->size() > 1)
+    {
+        while(interpolators->size() > 0)
+        {
+            LinearCalibrator *removed = interpolators->takeFirst();
+            removed->deleteLater();
+        }
+        QMap<double, double>::const_iterator i = pairs->constBegin();
+        QMap<double, double>::const_iterator j = i + 1;
+        while(j != pairs->constEnd())
+        {
+            LinearCalibrator *segment = new LinearCalibrator();
+            segment->setMeasuredLower(i.key());
+            segment->setMappedLower(i.value());
+            segment->setMeasuredUpper(j.key());
+            segment->setMappedUpper(j.value());
+            segment->setClosedRange(false);
+            interpolators->append(segment);
+            connect(segment, SIGNAL(measurement(Measurement)), this, SIGNAL(newData(Measurement)));
+            i++;
+            j++;
+        }
+    }
 }
 
 LinearSplineInterpolator::LinearSplineInterpolator(QObject *parent) :
-	QObject(parent), pairs(new QMap<double, double>),
-	interpolators(new QList<LinearCalibrator *>)
+    QObject(parent), pairs(new QMap<double, double>),
+    interpolators(new QList<LinearCalibrator *>)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 Measurement LinearSplineInterpolator::newMeasurement(Measurement measure)
 {
-	QMap<double, double>::const_iterator i = pairs->constBegin();
-	int index = -1;
-	while(i != pairs->constEnd())
-	{
-		if(measure.temperature() <= i.key())
-		{
-			break;
-		}
-		i++;
-		index++;
-	}
-	if(index < 0)
-	{
-		index = 0;
-	}
-	if(index >= interpolators->size())
-	{
-		index = interpolators->size() - 1;
-	}
-	if(interpolators->at(index) != NULL)
-	{
-		return interpolators->at(index)->newMeasurement(measure);
-	}
-	return Measurement();
+    QMap<double, double>::const_iterator i = pairs->constBegin();
+    int index = -1;
+    while(i != pairs->constEnd())
+    {
+        if(measure.temperature() <= i.key())
+        {
+            break;
+        }
+        i++;
+        index++;
+    }
+    if(index < 0)
+    {
+        index = 0;
+    }
+    if(index >= interpolators->size())
+    {
+        index = interpolators->size() - 1;
+    }
+    if(interpolators->at(index) != NULL)
+    {
+        return interpolators->at(index)->newMeasurement(measure);
+    }
+    return Measurement();
 }
 
 @ This is exposed to the scripting environment as usual.
@@ -7551,14 +7551,14 @@ engine->globalObject().setProperty("LinearSplineInterpolator", value);
 @<Functions for scripting@>=
 QScriptValue constructLinearSplineInterpolator(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new LinearSplineInterpolator(NULL));
-	setLinearSplineInterpolatorProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new LinearSplineInterpolator(NULL));
+    setLinearSplineInterpolatorProperties(object, engine);
+    return object;
 }
 
 void setLinearSplineInterpolatorProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
+    setQObjectProperties(value, engine);
 }
 
 
@@ -7581,17 +7581,17 @@ This is a specialization of |QLCDNumber|.
 @<Class declarations@>=
 class TemperatureDisplay : public QLCDNumber@/
 {@t\1@>@/
-	Q_OBJECT@;
-	int unit;
-	bool r;
-	public:@/
-		TemperatureDisplay(QWidget *parent = NULL);
-		~TemperatureDisplay();@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void setValue(Measurement temperature);
-		void invalidate();
-		void setDisplayUnits(Units::Unit scale);
-		void setRelativeMode(bool relative);@t\2@>@/
+    Q_OBJECT@;
+    int unit;
+    bool r;
+    public:@/
+        TemperatureDisplay(QWidget *parent = NULL);
+        ~TemperatureDisplay();@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void setValue(Measurement temperature);
+        void invalidate();
+        void setDisplayUnits(Units::Unit scale);
+        void setRelativeMode(bool relative);@t\2@>@/
 };
 
 @ Starting in version 1.6 this widget is also used for displaying a relative
@@ -7602,7 +7602,7 @@ conversions for absolute measures.
 @<TemperatureDisplay Implementation@>=
 void TemperatureDisplay::setRelativeMode(bool relative)
 {
-	r = relative;
+    r = relative;
 }
 
 @ Displaying a temperature is a simple matter of taking the temperature
@@ -7619,67 +7619,67 @@ class should be mofified to allow a user specified precision.
 @<TemperatureDisplay Implementation@>=
 void TemperatureDisplay::setValue(Measurement temperature)
 {
-	QString number;
-	switch(unit)
-	{
-		case Units::Fahrenheit:
-			display(QString("%1'F").
-				arg(number.setNum(temperature.toFahrenheit().temperature(), 'f',
-				                  2)));
-			break;
-		case Units::Celsius:
-			if(!r) {
-				display(QString("%1'C").
-					arg(number.setNum(temperature.toCelsius().temperature(), 'f',
-									2)));
-			} else {
-				number.setNum(temperature.temperature() * (5.0/9.0), 'f', 2);
-				display(QString("%1'C").arg(number));
-			}
-			break;
-		case Units::Kelvin:
-			if(!r) {
-				display(QString("%1").
-					arg(number.setNum(temperature.toKelvin().temperature(), 'f',
-									2)));
-			} else {
-				number.setNum(temperature.temperature() * (5.0/9.0), 'f', 2);
-				display(QString("%1").arg(number));
-			}
-			break;
-		case Units::Rankine:
-			display(QString("%1'r").
-				arg(number.setNum(temperature.toRankine().temperature(), 'f',
-				                  2)));
-			break;
-		case Units::Unitless:
-			display(QString("%1").arg(number.setNum(temperature.temperature(), 'f', 0)));
-			break;
-		default:
-			switch(temperature.scale())
-			{
-				case Units::Fahrenheit:
-					display(QString("%1'F").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-				case Units::Celsius:
-					display(QString("%1'C").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-				case Units::Kelvin:
-					display(QString("%1").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-				case Units::Rankine:
-					display(QString("%1'r").
-						arg(number.setNum(temperature.temperature(), 'f', 2)));
-					break;
-				case Units::Unitless:
-					display(QString("%1").arg(number.setNum(temperature.temperature(), 'f', 0)));
-					break;
-			}
-			break;
-	}
+    QString number;
+    switch(unit)
+    {
+        case Units::Fahrenheit:
+            display(QString("%1'F").
+                arg(number.setNum(temperature.toFahrenheit().temperature(), 'f',
+                                  2)));
+            break;
+        case Units::Celsius:
+            if(!r) {
+                display(QString("%1'C").
+                    arg(number.setNum(temperature.toCelsius().temperature(), 'f',
+                                    2)));
+            } else {
+                number.setNum(temperature.temperature() * (5.0/9.0), 'f', 2);
+                display(QString("%1'C").arg(number));
+            }
+            break;
+        case Units::Kelvin:
+            if(!r) {
+                display(QString("%1").
+                    arg(number.setNum(temperature.toKelvin().temperature(), 'f',
+                                    2)));
+            } else {
+                number.setNum(temperature.temperature() * (5.0/9.0), 'f', 2);
+                display(QString("%1").arg(number));
+            }
+            break;
+        case Units::Rankine:
+            display(QString("%1'r").
+                arg(number.setNum(temperature.toRankine().temperature(), 'f',
+                                  2)));
+            break;
+        case Units::Unitless:
+            display(QString("%1").arg(number.setNum(temperature.temperature(), 'f', 0)));
+            break;
+        default:
+            switch(temperature.scale())
+            {
+                case Units::Fahrenheit:
+                    display(QString("%1'F").
+                        arg(number.setNum(temperature.temperature(), 'f', 2)));
+                    break;
+                case Units::Celsius:
+                    display(QString("%1'C").
+                        arg(number.setNum(temperature.temperature(), 'f', 2)));
+                    break;
+                case Units::Kelvin:
+                    display(QString("%1").
+                        arg(number.setNum(temperature.temperature(), 'f', 2)));
+                    break;
+                case Units::Rankine:
+                    display(QString("%1'r").
+                        arg(number.setNum(temperature.temperature(), 'f', 2)));
+                    break;
+                case Units::Unitless:
+                    display(QString("%1").arg(number.setNum(temperature.temperature(), 'f', 0)));
+                    break;
+            }
+            break;
+    }
 }
 
 @ Before measurements are displayed, we set a more sensible default display
@@ -7694,10 +7694,10 @@ the usual |QLCDNumber| methods.
 
 @<TemperatureDisplay Implementation@>=
 TemperatureDisplay::TemperatureDisplay(QWidget *parent) :
-	QLCDNumber(8, parent), unit(Units::Fahrenheit), r(false)@/
+    QLCDNumber(8, parent), unit(Units::Fahrenheit), r(false)@/
 {
-	setSegmentStyle(Filled);
-	display("---.--'F");
+    setSegmentStyle(Filled);
+    display("---.--'F");
 }
 
 @ While it is not currently used, it would be good to allow an error state to
@@ -7711,7 +7711,7 @@ temperature is unknown.
 @<TemperatureDisplay Implementation@>=
 void TemperatureDisplay::invalidate()
 {
-	display("---.--'F");
+    display("---.--'F");
 }
 
 @ \pn{} supports the display of multiple types of unit. Typically, we use the
@@ -7723,7 +7723,7 @@ prior to display.
 @<TemperatureDisplay Implementation@>=
 void TemperatureDisplay::setDisplayUnits(Units::Unit scale)
 {
-	unit = scale;
+    unit = scale;
 }
 
 @ All that is left to deal with is the empty destructor.
@@ -7731,7 +7731,7 @@ void TemperatureDisplay::setDisplayUnits(Units::Unit scale)
 @<TemperatureDisplay Implementation@>=
 TemperatureDisplay::~TemperatureDisplay()
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 @ To use a |TemperatureDisplay| from a script, we need a function to pass a new
@@ -7756,18 +7756,18 @@ engine->globalObject().setProperty("TemperatureDisplay", value);
 
 @<Functions for scripting@>=
 QScriptValue constructTemperatureDisplay(QScriptContext *,
-											QScriptEngine *engine)
+                                            QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new TemperatureDisplay);
-	setTemperatureDisplayProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new TemperatureDisplay);
+    setTemperatureDisplayProperties(object, engine);
+    return object;
 }
 
 void setTemperatureDisplayProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQLCDNumberProperties(value, engine);
-	value.setProperty("setDisplayUnits",
-	                  engine->newFunction(TemperatureDisplay_setDisplayUnits));
+    setQLCDNumberProperties(value, engine);
+    value.setProperty("setDisplayUnits",
+                      engine->newFunction(TemperatureDisplay_setDisplayUnits));
 }
 
 @ There seems to be a bad interaction when enumerated value types as used as
@@ -7781,9 +7781,9 @@ the argument value to the enumerated type. This looks stupid but it works.
 @<Functions for scripting@>=
 QScriptValue TemperatureDisplay_setDisplayUnits(QScriptContext *context, QScriptEngine *)
 {
-	TemperatureDisplay *self = getself<@[TemperatureDisplay *@]>(context);
-	self->setDisplayUnits((Units::Unit)argument<int>(0, context));
-	return QScriptValue();
+    TemperatureDisplay *self = getself<@[TemperatureDisplay *@]>(context);
+    self->setDisplayUnits((Units::Unit)argument<int>(0, context));
+    return QScriptValue();
 }
 
 @* The MeasurementTimeOffset class.
@@ -7797,18 +7797,18 @@ with a relative time.
 @<Class declarations@>=
 class MeasurementTimeOffset : public QObject@/
 {@t\1@>@/
-	Q_OBJECT@;
-	QTime epoch;
-	QTime previous;
-	bool hasPrevious;@/
-	public:@;
-		MeasurementTimeOffset(QTime zero);
-		QTime zeroTime();@/
-	@t\4@>public slots@t\kern-3pt@>:@;
-		void newMeasurement(Measurement measure);
-		void setZeroTime(QTime zero);
-	signals:@;
-		void measurement(Measurement measure);@t\2@>@/
+    Q_OBJECT@;
+    QTime epoch;
+    QTime previous;
+    bool hasPrevious;@/
+    public:@;
+        MeasurementTimeOffset(QTime zero);
+        QTime zeroTime();@/
+    @t\4@>public slots@t\kern-3pt@>:@;
+        void newMeasurement(Measurement measure);
+        void setZeroTime(QTime zero);
+    signals:@;
+        void measurement(Measurement measure);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The interesting part of this class is the function which takes a measurement
@@ -7831,31 +7831,31 @@ measurement and verifying that the new measurement comes after it is sufficient.
 @<MeasurementTimeOffset Implementation@>=
 void MeasurementTimeOffset::newMeasurement(Measurement measure)@t\2\2@>@/
 {@t\1@>@/
-	if(measure.time() < epoch)@/
-	{
-		if(hasPrevious)@/
-		{
-			QTime jitBase(epoch.hour() - 1, epoch.minute(), epoch.second(),
-						  epoch.msec());
-			QTime jitComp(epoch.hour(), measure.time().minute(),
-						  measure.time().second(), measure.time().msec());
-			int relTime = jitBase.msecsTo(jitComp);
-			@<Produce and emit relative time@>@;
-		}
-		else@/
-		{
-			Measurement rel = measure;
-			rel.setTime(QTime(0, 0, 0, 0));
-			emit measurement(rel);
-		}
-	}
-	else@/
-	{
-		int relTime = epoch.msecsTo(measure.time());
-		@<Produce and emit relative time@>@;
-	}
-	hasPrevious = true;
-	previous = measure.time();@t\2@>@/
+    if(measure.time() < epoch)@/
+    {
+        if(hasPrevious)@/
+        {
+            QTime jitBase(epoch.hour() - 1, epoch.minute(), epoch.second(),
+                          epoch.msec());
+            QTime jitComp(epoch.hour(), measure.time().minute(),
+                          measure.time().second(), measure.time().msec());
+            int relTime = jitBase.msecsTo(jitComp);
+            @<Produce and emit relative time@>@;
+        }
+        else@/
+        {
+            Measurement rel = measure;
+            rel.setTime(QTime(0, 0, 0, 0));
+            emit measurement(rel);
+        }
+    }
+    else@/
+    {
+        int relTime = epoch.msecsTo(measure.time());
+        @<Produce and emit relative time@>@;
+    }
+    hasPrevious = true;
+    previous = measure.time();@t\2@>@/
 }
 
 @ The measurement emitted has a time with the number of minutes, seconds, and
@@ -7867,7 +7867,7 @@ QTime newTime(0, 0, 0, 0);
 newTime = newTime.addMSecs(relTime);
 if(newTime.hour() > 0)
 {
-	newTime.setHMS(0, newTime.minute(), newTime.second(), newTime.msec());
+    newTime.setHMS(0, newTime.minute(), newTime.second(), newTime.msec());
 }
 Measurement rel = measure;
 rel.setTime(newTime);
@@ -7877,20 +7877,20 @@ emit measurement(rel);
 
 @<MeasurementTimeOffset Implementation@>=
 MeasurementTimeOffset::MeasurementTimeOffset(QTime zero) : epoch(zero),
-	previous(0, 0, 0, 0), hasPrevious(false)
+    previous(0, 0, 0, 0), hasPrevious(false)
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 QTime MeasurementTimeOffset::zeroTime()
 {
-	return epoch;
+    return epoch;
 }
 
 void MeasurementTimeOffset::setZeroTime(QTime zero)
 {
-	epoch = zero;
-	hasPrevious = false;
+    epoch = zero;
+    hasPrevious = false;
 }
 
 @ Two functions are required to make this class available to the scripting
@@ -7919,16 +7919,16 @@ that change was made.
 QScriptValue constructMeasurementTimeOffset(QScriptContext *,
                                             QScriptEngine *engine)
 {
-	QScriptValue object =@|
-		engine->newQObject(new MeasurementTimeOffset(QTime::currentTime()));
-	setMeasurementTimeOffsetProperties(object, engine);
-	return object;
+    QScriptValue object =@|
+        engine->newQObject(new MeasurementTimeOffset(QTime::currentTime()));
+    setMeasurementTimeOffsetProperties(object, engine);
+    return object;
 }
 
 void setMeasurementTimeOffsetProperties(QScriptValue value,
                                         QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
+    setQObjectProperties(value, engine);
 }
 
 @* Measured value threshold detection.
@@ -7949,23 +7949,23 @@ allow for sane behavior in the face of hysteresis.
 @<Class declarations@>=
 class ThresholdDetector : public QObject@/
 {
-	@[Q_OBJECT@]@;
-	@[Q_ENUMS(EdgeDirection)@]@;
-	public:@/
-		enum EdgeDirection {
-			Ascending, Descending
-		};
-		ThresholdDetector(double value);
-	@[public slots@]:@/
-		void newMeasurement(Measurement measure);
-		void setThreshold(double value);
-		void setEdgeDirection(EdgeDirection direction);
-	signals:@/
-		void timeForValue(double);
-	private:@/
-		double previousValue;
-		double threshold;
-		EdgeDirection currentDirection;
+    @[Q_OBJECT@]@;
+    @[Q_ENUMS(EdgeDirection)@]@;
+    public:@/
+        enum EdgeDirection {
+            Ascending, Descending
+        };
+        ThresholdDetector(double value);
+    @[public slots@]:@/
+        void newMeasurement(Measurement measure);
+        void setThreshold(double value);
+        void setEdgeDirection(EdgeDirection direction);
+    signals:@/
+        void timeForValue(double);
+    private:@/
+        double previousValue;
+        double threshold;
+        EdgeDirection currentDirection;
 };
 
 @ This class emits the time in seconds when a given measurement crosses the
@@ -7974,37 +7974,37 @@ threshold value in the appropriate direction.
 @<ThresholdDetector Implementation@>=
 void ThresholdDetector::newMeasurement(Measurement measure)
 {
-	if((currentDirection == Ascending && previousValue < threshold &&
-	   previousValue >= 0) || (currentDirection == Descending &&
-	   previousValue > threshold && previousValue >= 0))
-	{
-		if((currentDirection == Ascending && measure.temperature() >= threshold) ||
-		   (currentDirection == Descending && measure.temperature() <= threshold))
-		{
-			double offset = measure.time().hour() * 60 * 60;
-			offset += measure.time().minute() * 60;
-			offset += measure.time().second();
-			offset += measure.time().msec()/1000;
-			emit timeForValue(offset);
-		}
-	}
-	previousValue = measure.temperature();
+    if((currentDirection == Ascending && previousValue < threshold &&
+       previousValue >= 0) || (currentDirection == Descending &&
+       previousValue > threshold && previousValue >= 0))
+    {
+        if((currentDirection == Ascending && measure.temperature() >= threshold) ||
+           (currentDirection == Descending && measure.temperature() <= threshold))
+        {
+            double offset = measure.time().hour() * 60 * 60;
+            offset += measure.time().minute() * 60;
+            offset += measure.time().second();
+            offset += measure.time().msec()/1000;
+            emit timeForValue(offset);
+        }
+    }
+    previousValue = measure.temperature();
 }
 
 ThresholdDetector::ThresholdDetector(double value) : QObject(NULL),
-	previousValue(-1), threshold(value), currentDirection(Ascending)
+    previousValue(-1), threshold(value), currentDirection(Ascending)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 void ThresholdDetector::setThreshold(double value)
 {
-	threshold = value;
+    threshold = value;
 }
 
 void ThresholdDetector::setEdgeDirection(EdgeDirection direction)
 {
-	currentDirection = direction;
+    currentDirection = direction;
 }
 
 @ This is exposed to the host environment.
@@ -8027,13 +8027,13 @@ to restore adjustability.
 @<Functions for scripting@>=
 QScriptValue constructThresholdDetector(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new ThresholdDetector(300));
-	return object;
+    QScriptValue object = engine->newQObject(new ThresholdDetector(300));
+    return object;
 }
 
 void setThresholdDetectorProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
+    setQObjectProperties(value, engine);
 }
 
 @* The ZeroEmitter class.
@@ -8055,20 +8055,20 @@ of data.
 @<Class declarations@>=
 class ZeroEmitter : public QObject@/
 {@t\1@>@/
-	@[Q_OBJECT@]@;
-	@[Q_PROPERTY(int column READ column WRITE setColumn)@]@;
-	Measurement cache;
-	int col;
-	public:@/
-		ZeroEmitter(int tempcolumn = 1);
-		int column();
-		double lastTemperature();@/
-	@t\4@>public slots@t\kern-3pt@>:@;
-		void newMeasurement(Measurement measure);
-		void setColumn(int column);
-		void emitZero();
-	signals:@;
-		void measurement(Measurement measure, int tempcolumn);@t\2@>@/
+    @[Q_OBJECT@]@;
+    @[Q_PROPERTY(int column READ column WRITE setColumn)@]@;
+    Measurement cache;
+    int col;
+    public:@/
+        ZeroEmitter(int tempcolumn = 1);
+        int column();
+        double lastTemperature();@/
+    @t\4@>public slots@t\kern-3pt@>:@;
+        void newMeasurement(Measurement measure);
+        void setColumn(int column);
+        void emitZero();
+    signals:@;
+        void measurement(Measurement measure, int tempcolumn);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The implementation of the class is trivial.
@@ -8076,33 +8076,33 @@ class ZeroEmitter : public QObject@/
 @<ZeroEmitter Implementation@>=
 ZeroEmitter::ZeroEmitter(int tempcolumn) : QObject(NULL), col(tempcolumn)@;
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 int ZeroEmitter::column()
 {
-	return col;
+    return col;
 }
 
 double ZeroEmitter::lastTemperature()
 {
-	return cache.temperature();
+    return cache.temperature();
 }
 
 void ZeroEmitter::newMeasurement(Measurement measure)
 {
-	cache = measure;
+    cache = measure;
 }
 
 void ZeroEmitter::setColumn(int column)
 {
-	col = column;
+    col = column;
 }
 
 void ZeroEmitter::emitZero()
 {
-	cache.setTime(QTime(0, 0, 0, 0));
-	emit measurement(cache, col);
+    cache.setTime(QTime(0, 0, 0, 0));
+    emit measurement(cache, col);
 }
 
 @ Making this class available to scripts requires only two functions.
@@ -8125,15 +8125,15 @@ engine->globalObject().setProperty("ZeroEmitter", value);
 QScriptValue constructZeroEmitter(QScriptContext *context,
                                   QScriptEngine *engine)
 {
-	QScriptValue object =
-		engine->newQObject(new ZeroEmitter(argument<int>(0, context)));
-	setZeroEmitterProperties(object, engine);
-	return object;
+    QScriptValue object =
+        engine->newQObject(new ZeroEmitter(argument<int>(0, context)));
+    setZeroEmitterProperties(object, engine);
+    return object;
 }
 
 void setZeroEmitterProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
+    setQObjectProperties(value, engine);
 }
 
 @* The MeasurementAdapter class.
@@ -8149,16 +8149,16 @@ identifier into the measurement class.
 @<Class declarations@>=
 class MeasurementAdapter : public QObject@/
 {@t\1@>@/
-	Q_OBJECT@;
-	int col;
-	public:@/
-		MeasurementAdapter(int tempcolumn);
-		int column();@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void newMeasurement(Measurement measure);
-		void setColumn(int column);
-	signals:@/
-		void measurement(Measurement measure, int tempcolumn);@t\2@>@/
+    Q_OBJECT@;
+    int col;
+    public:@/
+        MeasurementAdapter(int tempcolumn);
+        int column();@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void newMeasurement(Measurement measure);
+        void setColumn(int column);
+    signals:@/
+        void measurement(Measurement measure, int tempcolumn);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The implementation of this filter class is trivial.
@@ -8166,22 +8166,22 @@ class MeasurementAdapter : public QObject@/
 @<MeasurementAdapter Implementation@>=
 MeasurementAdapter::MeasurementAdapter(int tempcolumn) : col(tempcolumn)@;
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 int MeasurementAdapter::column()
 {
-	return col;
+    return col;
 }
 
 void MeasurementAdapter::newMeasurement(Measurement measure)
 {
-	emit measurement(measure, col);
+    emit measurement(measure, col);
 }
 
 void MeasurementAdapter::setColumn(int column)
 {
-	col = column;
+    col = column;
 }
 
 @ This filter class is also available from the host environment.
@@ -8205,15 +8205,15 @@ engine->globalObject().setProperty("MeasurementAdapter", value);
 QScriptValue constructMeasurementAdapter(QScriptContext *context,
                                          QScriptEngine *engine)
 {
-	QScriptValue object =
-		engine->newQObject(new MeasurementAdapter(argument<int>(0, context)));
-	setMeasurementAdapterProperties(object, engine);
-	return object;
+    QScriptValue object =
+        engine->newQObject(new MeasurementAdapter(argument<int>(0, context)));
+    setMeasurementAdapterProperties(object, engine);
+    return object;
 }
 
 void setMeasurementAdapterProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
+    setQObjectProperties(value, engine);
 }
 
 @* A graph of temperature over time.
@@ -8238,30 +8238,30 @@ This class assumes that temperature data will be passed in the correct order.
 @<Class declarations@>=
 class GraphView : public QGraphicsView@/
 {@t\1@>@/
-	Q_OBJECT@;
-	QGraphicsScene *theScene;@/
-	QMap<int, QList<QGraphicsLineItem * > * > *graphLines;@/
-	QMap<int, QPointF> *prevPoints;
-	QMap<int, double> *translations;
-	QList<QGraphicsItem *> *gridLinesF;
-	QList<QGraphicsItem *> *gridLinesC;
-	QList<QGraphicsItem *> *relativeGridLines;
-	bool relativeEnabled;
-	bool timeIndicatorEnabled;
-	QGraphicsLineItem *timeLine;
-	LinearSplineInterpolator *relativeAdjuster;@/
-	public:@/
-		GraphView(QWidget *parent = NULL);
-		void removeSeries(int column);@/
-	protected:@/
-		void resizeEvent(QResizeEvent *event);@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void newMeasurement(Measurement measure, int tempcolumn);
-		void setSeriesTranslation(int column, double offset);
-		void setTimeIndicatorEnabled(bool enabled);
-		void clear();
-		void showF();
-		void showC();@t\2@>@/
+    Q_OBJECT@;
+    QGraphicsScene *theScene;@/
+    QMap<int, QList<QGraphicsLineItem * > * > *graphLines;@/
+    QMap<int, QPointF> *prevPoints;
+    QMap<int, double> *translations;
+    QList<QGraphicsItem *> *gridLinesF;
+    QList<QGraphicsItem *> *gridLinesC;
+    QList<QGraphicsItem *> *relativeGridLines;
+    bool relativeEnabled;
+    bool timeIndicatorEnabled;
+    QGraphicsLineItem *timeLine;
+    LinearSplineInterpolator *relativeAdjuster;@/
+    public:@/
+        GraphView(QWidget *parent = NULL);
+        void removeSeries(int column);@/
+    protected:@/
+        void resizeEvent(QResizeEvent *event);@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void newMeasurement(Measurement measure, int tempcolumn);
+        void setSeriesTranslation(int column, double offset);
+        void setTimeIndicatorEnabled(bool enabled);
+        void clear();
+        void showF();
+        void showC();@t\2@>@/
 }@t\kern-3pt@>;
 
 @ I decided that it would probably be best to keep the graph area the same even
@@ -8287,32 +8287,32 @@ configurable for those with particularly small displays.
 
 @<GraphView Implementation@>=
 GraphView::GraphView(QWidget *parent) : QGraphicsView(parent),
-	theScene(new QGraphicsScene),@/
-	graphLines(new QMap<int, QList<QGraphicsLineItem *> *>),@/
-	prevPoints(new QMap<int, QPointF>),
-	translations(new QMap<int, double>),
-	gridLinesF(new QList<QGraphicsItem *>),
-	gridLinesC(new QList<QGraphicsItem *>),
-	relativeGridLines(new QList<QGraphicsItem *>),
-	relativeEnabled(false),
-	timeIndicatorEnabled(false),
-	timeLine(new QGraphicsLineItem),
-	relativeAdjuster(new LinearSplineInterpolator)@/
+    theScene(new QGraphicsScene),@/
+    graphLines(new QMap<int, QList<QGraphicsLineItem *> *>),@/
+    prevPoints(new QMap<int, QPointF>),
+    translations(new QMap<int, double>),
+    gridLinesF(new QList<QGraphicsItem *>),
+    gridLinesC(new QList<QGraphicsItem *>),
+    relativeGridLines(new QList<QGraphicsItem *>),
+    relativeEnabled(false),
+    timeIndicatorEnabled(false),
+    timeLine(new QGraphicsLineItem),
+    relativeAdjuster(new LinearSplineInterpolator)@/
 {
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setScene(theScene);
-	setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-	QPen timePen;
-	timePen.setColor(QColor(160, 160, 164, 127)); //gray, half opacity
-	timeLine->setPen(timePen);
-	timeLine->setLine(0, 0, 0, -500);
-	timeLine->hide();
-	theScene->addItem(timeLine);
-	@<Draw temperature axis and grid lines@>;
-	@<Draw secondary axes@>@;
-	@<Draw time axis and ticks@>;
-	fitInView(theScene->sceneRect().adjusted(-50,-50,50,50));
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setScene(theScene);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    QPen timePen;
+    timePen.setColor(QColor(160, 160, 164, 127)); //gray, half opacity
+    timeLine->setPen(timePen);
+    timeLine->setLine(0, 0, 0, -500);
+    timeLine->hide();
+    theScene->addItem(timeLine);
+    @<Draw temperature axis and grid lines@>;
+    @<Draw secondary axes@>@;
+    @<Draw time axis and ticks@>;
+    fitInView(theScene->sceneRect().adjusted(-50,-50,50,50));
 }
 
 @ Grid lines are drawn every 100 degrees. These lines are labeled with
@@ -8333,30 +8333,30 @@ QGraphicsLineItem *gridLine;
 QGraphicsTextItem *label;
 for(int y = -100; y > -600; y -= 100)@/
 {@/
-	gridLine = new QGraphicsLineItem;
-	gridLine->setLine(0, y, 1200, y);
-	theScene->addItem(gridLine);
-	label = new QGraphicsTextItem;
-	label->setHtml(QString("%1&deg;F").arg(-y));
-	label->setPos(-55, y - (label->boundingRect().height() / 2));
-	theScene->addItem(label);
-	gridLinesF->append(gridLine);
-	gridLinesF->append(label);
+    gridLine = new QGraphicsLineItem;
+    gridLine->setLine(0, y, 1200, y);
+    theScene->addItem(gridLine);
+    label = new QGraphicsTextItem;
+    label->setHtml(QString("%1&deg;F").arg(-y));
+    label->setPos(-55, y - (label->boundingRect().height() / 2));
+    theScene->addItem(label);
+    gridLinesF->append(gridLine);
+    gridLinesF->append(label);
 }
 for(int degC = 50; degC <= 250; degC += 50)
 {
-	gridLine = new QGraphicsLineItem;
-	int y = -(degC * (9.0/5.0) + 32);
-	gridLine->setLine(0, y, 1200, y);
-	gridLine->hide();
-	theScene->addItem(gridLine);
-	gridLinesC->append(gridLine);
-	label = new QGraphicsTextItem;
-	label->setHtml(QString("%1&deg;C").arg(degC));
-	label->setPos(-55, y - (label->boundingRect().height() / 2));
-	label->hide();
-	theScene->addItem(label);
-	gridLinesC->append(label);
+    gridLine = new QGraphicsLineItem;
+    int y = -(degC * (9.0/5.0) + 32);
+    gridLine->setLine(0, y, 1200, y);
+    gridLine->hide();
+    theScene->addItem(gridLine);
+    gridLinesC->append(gridLine);
+    label = new QGraphicsTextItem;
+    label->setHtml(QString("%1&deg;C").arg(degC));
+    label->setPos(-55, y - (label->boundingRect().height() / 2));
+    label->hide();
+    theScene->addItem(label);
+    gridLinesC->append(label);
 }
 
 @ If we are going to plot relative temperature measurements, we must obtain
@@ -8370,45 +8370,45 @@ used to transform incoming measurements to our coordinate system.
 QSettings settings;
 if(settings.contains("settings/graph/relative/enable"))
 {
-	if(settings.value("settings/graph/relative/enable").toBool())
-	{
-		relativeEnabled = @[true@];
-		QColor relativeColor = QColor(settings.value("settings/graph/relative/color").toString());
-		QString unit = QString(settings.value(@|"settings/graph/relative/unit").toInt() == 0 ? "F" : "C");
-		QMap<double, QString> relativeAxisPairs;
-		QStringList relativeAxisLabels = settings.value(@|"settings/graph/relative/grid").toString().split(QRegExp("[\\s,]+"), QString::SkipEmptyParts);
-		foreach(QString item, relativeAxisLabels)
-		{
-			relativeAxisPairs.insert(item.toDouble(), item);
-		}
-		if(relativeAxisPairs.size() > 1)
-		{
-			double skip = 500.0 / (relativeAxisPairs.size() - 1);
-			double y = 0;
-			foreach(double key, relativeAxisPairs.keys())
-			{
-				gridLine = new QGraphicsLineItem;
-				gridLine->setLine(0, y, 1205, y);
-				gridLine->setPen(QPen(relativeColor));
-				theScene->addItem(gridLine);
-				relativeGridLines->append(gridLine);
-				label = new QGraphicsTextItem;
-				label->setHtml(QString("%1&deg;%2").arg(relativeAxisPairs.value(key)).arg(unit));
-				label->setPos(1210, y - (label->boundingRect().height() / 2));
-				theScene->addItem(label);
-				relativeGridLines->append(label);
-				if(unit == "F")
-				{
-					relativeAdjuster->add_pair(key, -y);
-				}
-				else
-				{
-					relativeAdjuster->add_pair(key * (9.0/5.0), -y);
-				}
-				y -= skip;
-			}
-		}
-	}
+    if(settings.value("settings/graph/relative/enable").toBool())
+    {
+        relativeEnabled = @[true@];
+        QColor relativeColor = QColor(settings.value("settings/graph/relative/color").toString());
+        QString unit = QString(settings.value(@|"settings/graph/relative/unit").toInt() == 0 ? "F" : "C");
+        QMap<double, QString> relativeAxisPairs;
+        QStringList relativeAxisLabels = settings.value(@|"settings/graph/relative/grid").toString().split(QRegExp("[\\s,]+"), QString::SkipEmptyParts);
+        foreach(QString item, relativeAxisLabels)
+        {
+            relativeAxisPairs.insert(item.toDouble(), item);
+        }
+        if(relativeAxisPairs.size() > 1)
+        {
+            double skip = 500.0 / (relativeAxisPairs.size() - 1);
+            double y = 0;
+            foreach(double key, relativeAxisPairs.keys())
+            {
+                gridLine = new QGraphicsLineItem;
+                gridLine->setLine(0, y, 1205, y);
+                gridLine->setPen(QPen(relativeColor));
+                theScene->addItem(gridLine);
+                relativeGridLines->append(gridLine);
+                label = new QGraphicsTextItem;
+                label->setHtml(QString("%1&deg;%2").arg(relativeAxisPairs.value(key)).arg(unit));
+                label->setPos(1210, y - (label->boundingRect().height() / 2));
+                theScene->addItem(label);
+                relativeGridLines->append(label);
+                if(unit == "F")
+                {
+                    relativeAdjuster->add_pair(key, -y);
+                }
+                else
+                {
+                    relativeAdjuster->add_pair(key * (9.0/5.0), -y);
+                }
+                y -= skip;
+            }
+        }
+    }
 }
 
 @ Two slots are used to switch between the different sets of grid lines.
@@ -8416,26 +8416,26 @@ if(settings.contains("settings/graph/relative/enable"))
 @<GraphView Implementation@>=
 void GraphView::showF()
 {
-	for(int i = 0; i < gridLinesF->size(); i++)
-	{
-		gridLinesF->at(i)->show();
-	}
-	for(int i = 0; i < gridLinesC->size(); i++)
-	{
-		gridLinesC->at(i)->hide();
-	}
+    for(int i = 0; i < gridLinesF->size(); i++)
+    {
+        gridLinesF->at(i)->show();
+    }
+    for(int i = 0; i < gridLinesC->size(); i++)
+    {
+        gridLinesC->at(i)->hide();
+    }
 }
 
 void GraphView::showC()
 {
-	for(int i = 0; i < gridLinesF->size(); i++)
-	{
-		gridLinesF->at(i)->hide();
-	}
-	for(int i = 0; i < gridLinesC->size(); i++)
-	{
-		gridLinesC->at(i)->show();
-	}
+    for(int i = 0; i < gridLinesF->size(); i++)
+    {
+        gridLinesF->at(i)->hide();
+    }
+    for(int i = 0; i < gridLinesC->size(); i++)
+    {
+        gridLinesC->at(i)->show();
+    }
 }
 
 @ The time axis has a tick every two minutes. The use of the |?| tertiary
@@ -8449,13 +8449,13 @@ timeaxis->setLine(0, 10, 1200, 10);
 theScene->addItem(timeaxis);
 for(int x = 0; x < 1201; x += 120)@/
 {@/
-	QGraphicsLineItem *tick = new QGraphicsLineItem;
-	tick->setLine(x, 0, x, 20);
-	theScene->addItem(tick);
-	QGraphicsTextItem *label = new QGraphicsTextItem;
-	label->setPlainText(QString("%1").arg(x/60));
-	label->setPos(x - (label->boundingRect().width() / 2), 20);
-	theScene->addItem(label);
+    QGraphicsLineItem *tick = new QGraphicsLineItem;
+    tick->setLine(x, 0, x, 20);
+    theScene->addItem(tick);
+    QGraphicsTextItem *label = new QGraphicsTextItem;
+    label->setPlainText(QString("%1").arg(x/60));
+    label->setPos(x - (label->boundingRect().width() / 2), 20);
+    theScene->addItem(label);
 }
 
 @ Typically, the user will be able to resize the graph. When the widget is
@@ -8465,7 +8465,7 @@ do as we have already turned off the scroll bars.
 @<GraphView Implementation@>=
 void GraphView::resizeEvent(QResizeEvent *)
 {
-	fitInView(theScene->sceneRect().adjusted(-50,-50,50,50));
+    fitInView(theScene->sceneRect().adjusted(-50,-50,50,50));
 }
 
 @ When adding a new measurement, there are three cases that should be
@@ -8481,46 +8481,46 @@ appropriate secondary axis.
 
 void GraphView::newMeasurement(Measurement measure, int tempcolumn)@/
 {@/
-	double offset = 0;
-	if(measure.contains("relative"))
-	{
-		if(measure.value("relative").toBool())
-		{
-			if(relativeEnabled)
-			{
-				measure.setTemperature(relativeAdjuster->newMeasurement(measure).temperature());
-			}
-			else
-			{
-				return;
-			}
-		}
-	}
-	if(translations->contains(tempcolumn))
-	{
-		offset = translations->value(tempcolumn);
-	}
-	if(prevPoints->contains(tempcolumn))@/
-	@t\1@>{@/
-		@<At least one measurement exists@>@;
-		if(graphLines->contains(tempcolumn))@/
-		{@t\1@>
-			/* More than one measurement existed. */
-			graphLines->value(tempcolumn)->append(segment);@t\2@>@/
-		}@/
-		else@/
-		{@/
-			/* This is the second measurement. */
-			QList<QGraphicsLineItem *> *newLine =
-				new QList<QGraphicsLineItem *>;@/
-			newLine->append(segment);
-			graphLines->insert(tempcolumn, newLine);
-		}@t\2@>@/
-	}@/
-	else@/
-	{@/
-		@<Handle the first measurement@>@;
-	}
+    double offset = 0;
+    if(measure.contains("relative"))
+    {
+        if(measure.value("relative").toBool())
+        {
+            if(relativeEnabled)
+            {
+                measure.setTemperature(relativeAdjuster->newMeasurement(measure).temperature());
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+    if(translations->contains(tempcolumn))
+    {
+        offset = translations->value(tempcolumn);
+    }
+    if(prevPoints->contains(tempcolumn))@/
+    @t\1@>{@/
+        @<At least one measurement exists@>@;
+        if(graphLines->contains(tempcolumn))@/
+        {@t\1@>
+            /* More than one measurement existed. */
+            graphLines->value(tempcolumn)->append(segment);@t\2@>@/
+        }@/
+        else@/
+        {@/
+            /* This is the second measurement. */
+            QList<QGraphicsLineItem *> *newLine =
+                new QList<QGraphicsLineItem *>;@/
+            newLine->append(segment);
+            graphLines->insert(tempcolumn, newLine);
+        }@t\2@>@/
+    }@/
+    else@/
+    {@/
+        @<Handle the first measurement@>@;
+    }
 }
 
 @ There are some parts of the code that are correct, but seem somewhat goofy.
@@ -8543,7 +8543,7 @@ int x = FULLTIMETOINT(measure.time())/1000;
 prevPoints->insert(tempcolumn, QPointF(x, measure.temperature()));
 if(timeIndicatorEnabled)
 {
-	timeLine->setLine(x, 0, x, -500);
+    timeLine->setLine(x, 0, x, -500);
 }
 
 @ When at least one measurement already exists, we need to handle drawing the
@@ -8557,18 +8557,18 @@ view for a specified series rather than have this hard coded. \endanger
 QGraphicsLineItem *segment = new QGraphicsLineItem;
 QPointF nextPoint(FULLTIMETOINT(measure.time())/1000, measure.temperature());
 segment->setLine(prevPoints->value(tempcolumn).x() + offset,
-					-(prevPoints->value(tempcolumn).y()),
-					nextPoint.x() + offset, -(nextPoint.y()));
+                    -(prevPoints->value(tempcolumn).y()),
+                    nextPoint.x() + offset, -(nextPoint.y()));
 static QColor p[12] = {Qt::yellow, Qt::blue, Qt::cyan, Qt::red, Qt::magenta,
-						Qt::green, Qt::darkGreen, Qt::darkMagenta,
-						Qt::darkRed, Qt::darkCyan, Qt::darkBlue,
-						Qt::darkYellow};
+                        Qt::green, Qt::darkGreen, Qt::darkMagenta,
+                        Qt::darkRed, Qt::darkCyan, Qt::darkBlue,
+                        Qt::darkYellow};
 segment->setPen(p[tempcolumn % 12]);
 theScene->addItem(segment);
 prevPoints->insert(tempcolumn, nextPoint);
 if(timeIndicatorEnabled)
 {
-	timeLine->setLine(nextPoint.x() + offset, 0, nextPoint.x() + offset, -500);
+    timeLine->setLine(nextPoint.x() + offset, 0, nextPoint.x() + offset, -500);
 }
 
 @ In addition to adding data to the view, we also sometimes want to clear the
@@ -8577,12 +8577,12 @@ view of data.
 @<GraphView Implementation@>=
 void GraphView::clear()
 {
-	int i;
-	foreach(i, prevPoints->keys())
-	{
-		removeSeries(i);
-	}
-	translations->clear();
+    int i;
+    foreach(i, prevPoints->keys())
+    {
+        removeSeries(i);
+    }
+    translations->clear();
 }
 
 @ Removing a set of data from the view involves removing the lines from the
@@ -8591,18 +8591,18 @@ scene and removing the column from a couple data structures.
 @<GraphView Implementation@>=
 void GraphView::removeSeries(int column)
 {
-	if(graphLines->contains(column))
-	{
-		QList<QGraphicsLineItem *> *series = graphLines->value(column);
-		QGraphicsLineItem *segment;
-		foreach(segment, *series)
-		{
-			theScene->removeItem(segment);
-		}
-		qDeleteAll(*series);
-	}
-	graphLines->remove(column);
-	prevPoints->remove(column);
+    if(graphLines->contains(column))
+    {
+        QList<QGraphicsLineItem *> *series = graphLines->value(column);
+        QGraphicsLineItem *segment;
+        foreach(segment, *series)
+        {
+            theScene->removeItem(segment);
+        }
+        qDeleteAll(*series);
+    }
+    graphLines->remove(column);
+    prevPoints->remove(column);
 }
 
 @ Second prototype for data series translation.
@@ -8610,23 +8610,23 @@ void GraphView::removeSeries(int column)
 @<GraphView Implementation@>=
 void GraphView::setSeriesTranslation(int column, double offset)
 {
-	if(graphLines->contains(column))
-	{
-		QList<QGraphicsLineItem *> *series = graphLines->value(column);
-		QGraphicsLineItem *segment;
-		foreach(segment, *series)
-		{
-			segment->setPos(segment->pos().x()+offset, segment->pos().y());
-		}
-	}
-	if(translations->contains(column))
-	{
-		translations->insert(column, offset + translations->value(column));
-	}
-	else
-	{
-		translations->insert(column, offset);
-	}
+    if(graphLines->contains(column))
+    {
+        QList<QGraphicsLineItem *> *series = graphLines->value(column);
+        QGraphicsLineItem *segment;
+        foreach(segment, *series)
+        {
+            segment->setPos(segment->pos().x()+offset, segment->pos().y());
+        }
+    }
+    if(translations->contains(column))
+    {
+        translations->insert(column, offset + translations->value(column));
+    }
+    else
+    {
+        translations->insert(column, offset);
+    }
 }
 
 @ Starting in \pn{} 1.6 it is possible to add a vertical line indicating the
@@ -8637,15 +8637,15 @@ this.
 @<GraphView Implementation@>=
 void GraphView::setTimeIndicatorEnabled(bool enabled)
 {
-	timeIndicatorEnabled = enabled;
-	if(enabled)
-	{
-		timeLine->show();
-	}
-	else
-	{
-		timeLine->hide();
-	}
+    timeIndicatorEnabled = enabled;
+    if(enabled)
+    {
+        timeLine->show();
+    }
+    else
+    {
+        timeLine->hide();
+    }
 }
 
 @ These functions are required to create a |GraphView| object from a script.
@@ -8666,14 +8666,14 @@ engine->globalObject().setProperty("GraphView", value);
 @<Functions for scripting@>=
 QScriptValue constructGraphView(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new GraphView);
-	setGraphViewProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new GraphView);
+    setGraphViewProperties(object, engine);
+    return object;
 }
 
 void setGraphViewProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQGraphicsViewProperties(value, engine);
+    setQGraphicsViewProperties(value, engine);
 }
 
 @* A table of roasting data.
@@ -8704,44 +8704,44 @@ same method as described in the section on |SqlQueryView|.
 class MeasurementModel;@/
 class ZoomLog : public QTableView@/
 {@/
-	@[Q_OBJECT@]@;
-	@<ZoomLog private member data@>@;
-	void switchLOD(MeasurementModel *m);@/
-	@[private slots@]:@/
-		void centerOn(int row);
-		void persistColumnResize(int column, int oldsize, int newsize);
-		void restoreColumnWidths();
-	public:@/
-		ZoomLog();
-		QVariant data(int row, int column) const;
-		int rowCount();
-		bool saveXML(QIODevice *device);
-		bool saveCSV(QIODevice *device);
-		QString lastTime(int series);
-		@[Q_INVOKABLE@,@, Units::Unit displayUnits()@];@t\2\2@>@/
-	@[public slots@]:@/
-		void setVisible(bool visibility);
-		void setHeaderData(int section, QString text);
-		void LOD_ms();
-		void LOD_1s();
-		void LOD_5s();
-		void LOD_10s();
-		void LOD_15s();
-		void LOD_30s();
-		void LOD_1m();
-		void newMeasurement(Measurement measure, int tempcolumn);
-		void newAnnotation(QString annotation, int tempcolumn,
-							int annotationcolumn);
-		void clear();
-		void addOutputTemperatureColumn(int column);
-		void addOutputControlColumn(int column);
-		void addOutputAnnotationColumn(int column);
-		void clearOutputColumns();
-		void setDisplayUnits(Units::Unit scale);
-		void addToCurrentColumnSet(int column);
-		void clearCurrentColumnSet();@/
-	protected:@/
-		virtual void showEvent(QShowEvent *event);
+    @[Q_OBJECT@]@;
+    @<ZoomLog private member data@>@;
+    void switchLOD(MeasurementModel *m);@/
+    @[private slots@]:@/
+        void centerOn(int row);
+        void persistColumnResize(int column, int oldsize, int newsize);
+        void restoreColumnWidths();
+    public:@/
+        ZoomLog();
+        QVariant data(int row, int column) const;
+        int rowCount();
+        bool saveXML(QIODevice *device);
+        bool saveCSV(QIODevice *device);
+        QString lastTime(int series);
+        @[Q_INVOKABLE@,@, Units::Unit displayUnits()@];@t\2\2@>@/
+    @[public slots@]:@/
+        void setVisible(bool visibility);
+        void setHeaderData(int section, QString text);
+        void LOD_ms();
+        void LOD_1s();
+        void LOD_5s();
+        void LOD_10s();
+        void LOD_15s();
+        void LOD_30s();
+        void LOD_1m();
+        void newMeasurement(Measurement measure, int tempcolumn);
+        void newAnnotation(QString annotation, int tempcolumn,
+                            int annotationcolumn);
+        void clear();
+        void addOutputTemperatureColumn(int column);
+        void addOutputControlColumn(int column);
+        void addOutputAnnotationColumn(int column);
+        void clearOutputColumns();
+        void setDisplayUnits(Units::Unit scale);
+        void addToCurrentColumnSet(int column);
+        void clearCurrentColumnSet();@/
+    protected:@/
+        virtual void showEvent(QShowEvent *event);
 };
 
 @ This class uses a different model for each level of detail and provides logic
@@ -8781,48 +8781,48 @@ The first measurement is always added to each model.
 @<ZoomLog Implementation@>=
 void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
 {
-	if(measure.time() != QTime(0, 0, 0, 0))
-	{
-		@<Synthesize measurements for slow hardware@>@;
-	}
-	model_ms->newMeasurement(measure, tempcolumn);
-	if(lastMeasurement.contains(tempcolumn))
-	{
-		if(measure.time().second() !=
-			lastMeasurement.value(tempcolumn).time().second())
-		{
-			Measurement adjusted = measure;
-			QTime adjtime(0, measure.time().minute(), measure.time().second(), 0);
-			adjusted.setTime(adjtime);
-			model_1s->newMeasurement(adjusted, tempcolumn);
-			if(adjusted.time().second() % 5 == 0)
-			{
-				model_5s->newMeasurement(adjusted, tempcolumn);
-				if(adjusted.time().second() % 10 == 0)
-				{
-					model_10s->newMeasurement(adjusted, tempcolumn);
-				}
-				if(adjusted.time().second() % 15 == 0)
-				{
-					model_15s->newMeasurement(adjusted, tempcolumn);
-					if(adjusted.time().second() % 30 == 0)
-					{
-						model_30s->newMeasurement(adjusted, tempcolumn);
-						if(adjusted.time().second() == 0)
-						{
-							model_1m->newMeasurement(adjusted, tempcolumn);
-						}
-					}
-				}
-			}
-		}
-		@<Synthesize measurements for columns in set@>@;
-	}
-	else
-	{
-		@<Add the first measurement to every model@>@;
-	}
-	lastMeasurement.insert(tempcolumn, measure);
+    if(measure.time() != QTime(0, 0, 0, 0))
+    {
+        @<Synthesize measurements for slow hardware@>@;
+    }
+    model_ms->newMeasurement(measure, tempcolumn);
+    if(lastMeasurement.contains(tempcolumn))
+    {
+        if(measure.time().second() !=
+            lastMeasurement.value(tempcolumn).time().second())
+        {
+            Measurement adjusted = measure;
+            QTime adjtime(0, measure.time().minute(), measure.time().second(), 0);
+            adjusted.setTime(adjtime);
+            model_1s->newMeasurement(adjusted, tempcolumn);
+            if(adjusted.time().second() % 5 == 0)
+            {
+                model_5s->newMeasurement(adjusted, tempcolumn);
+                if(adjusted.time().second() % 10 == 0)
+                {
+                    model_10s->newMeasurement(adjusted, tempcolumn);
+                }
+                if(adjusted.time().second() % 15 == 0)
+                {
+                    model_15s->newMeasurement(adjusted, tempcolumn);
+                    if(adjusted.time().second() % 30 == 0)
+                    {
+                        model_30s->newMeasurement(adjusted, tempcolumn);
+                        if(adjusted.time().second() == 0)
+                        {
+                            model_1m->newMeasurement(adjusted, tempcolumn);
+                        }
+                    }
+                }
+            }
+        }
+        @<Synthesize measurements for columns in set@>@;
+    }
+    else
+    {
+        @<Add the first measurement to every model@>@;
+    }
+    lastMeasurement.insert(tempcolumn, measure);
 }
 
 @ The first measurement in a series should be the epoch measurement. This
@@ -8832,7 +8832,7 @@ should exist in every level of detail.
 MeasurementModel *m;
 foreach(m, modelSet)
 {
-	m->newMeasurement(measure, tempcolumn);
+    m->newMeasurement(measure, tempcolumn);
 }
 
 @ Some measurement hardware in use cannot guarantee delivery of at least one
@@ -8855,20 +8855,20 @@ reviewing the batch.
 @<Synthesize measurements for slow hardware@>=
 if(lastMeasurement.contains(tempcolumn))
 {
-	if(lastMeasurement[tempcolumn].time() < measure.time())
-	{
-		QList<QTime> timelist;
-		for(QTime i = lastMeasurement.value(tempcolumn).time().addSecs(1); i < measure.time(); i = i.addSecs(1))
-		{
-			timelist.append(i);
-		}
-		for(int i = 0; i < timelist.size(); i++)
-		{
-			Measurement synthesized = measure;
-			synthesized.setTime(timelist[i]);
-			newMeasurement(synthesized, tempcolumn);
-		}
-	}
+    if(lastMeasurement[tempcolumn].time() < measure.time())
+    {
+        QList<QTime> timelist;
+        for(QTime i = lastMeasurement.value(tempcolumn).time().addSecs(1); i < measure.time(); i = i.addSecs(1))
+        {
+            timelist.append(i);
+        }
+        for(int i = 0; i < timelist.size(); i++)
+        {
+            Measurement synthesized = measure;
+            synthesized.setTime(timelist[i]);
+            newMeasurement(synthesized, tempcolumn);
+        }
+    }
 }
 
 @ New to \pn{} 1.4 is the concept of a current column set. This was added to
@@ -8885,12 +8885,12 @@ removes all columns from the set.
 @<ZoomLog Implementation@>=
 void ZoomLog::addToCurrentColumnSet(int column)
 {
-	currentColumnSet.append(column);
+    currentColumnSet.append(column);
 }
 
 void ZoomLog::clearCurrentColumnSet()
 {
-	currentColumnSet.clear();
+    currentColumnSet.clear();
 }
 
 @ Replicating the measurements occurs as measurements are delivered. Note
@@ -8899,49 +8899,49 @@ that this code will not be called for the first measurement in each column.
 @<Synthesize measurements for columns in set@>=
 if(currentColumnSet.contains(tempcolumn))
 {
-	int replicationcolumn;
-	foreach(replicationcolumn, currentColumnSet)
-	{
-		if(replicationcolumn != tempcolumn)
-		{
-			if(lastMeasurement.contains(replicationcolumn))
-			{
-				if(measure.time() > lastMeasurement.value(replicationcolumn).time())
-				{
-					Measurement synthetic = lastMeasurement.value(replicationcolumn);
-					synthetic.setTime(measure.time());
-					model_ms->newMeasurement(synthetic, replicationcolumn);
-					if(synthetic.time().second() != lastMeasurement.value(replicationcolumn).time().second())@/
-					{
-						Measurement adjusted = synthetic;
-						adjusted.setTime(QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));
-						model_1s->newMeasurement(adjusted, replicationcolumn);
-						if(adjusted.time().second() % 5 == 0)
-						{
-							model_5s->newMeasurement(adjusted, replicationcolumn);
-							if(adjusted.time().second() % 10 == 0)
-							{
-								model_10s->newMeasurement(adjusted, replicationcolumn);
-							}
-							if(adjusted.time().second() % 15 == 0)
-							{
-								model_15s->newMeasurement(adjusted, replicationcolumn);
-								if(adjusted.time().second() % 30 == 0)
-								{
-									model_30s->newMeasurement(adjusted, replicationcolumn);
-									if(adjusted.time().second() == 0)
-									{
-										model_1m->newMeasurement(adjusted, replicationcolumn);
-									}
-								}
-							}
-						}
-					}
-					lastMeasurement[replicationcolumn] = synthetic;
-				}
-			}
-		}
-	}
+    int replicationcolumn;
+    foreach(replicationcolumn, currentColumnSet)
+    {
+        if(replicationcolumn != tempcolumn)
+        {
+            if(lastMeasurement.contains(replicationcolumn))
+            {
+                if(measure.time() > lastMeasurement.value(replicationcolumn).time())
+                {
+                    Measurement synthetic = lastMeasurement.value(replicationcolumn);
+                    synthetic.setTime(measure.time());
+                    model_ms->newMeasurement(synthetic, replicationcolumn);
+                    if(synthetic.time().second() != lastMeasurement.value(replicationcolumn).time().second())@/
+                    {
+                        Measurement adjusted = synthetic;
+                        adjusted.setTime(QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));
+                        model_1s->newMeasurement(adjusted, replicationcolumn);
+                        if(adjusted.time().second() % 5 == 0)
+                        {
+                            model_5s->newMeasurement(adjusted, replicationcolumn);
+                            if(adjusted.time().second() % 10 == 0)
+                            {
+                                model_10s->newMeasurement(adjusted, replicationcolumn);
+                            }
+                            if(adjusted.time().second() % 15 == 0)
+                            {
+                                model_15s->newMeasurement(adjusted, replicationcolumn);
+                                if(adjusted.time().second() % 30 == 0)
+                                {
+                                    model_30s->newMeasurement(adjusted, replicationcolumn);
+                                    if(adjusted.time().second() == 0)
+                                    {
+                                        model_1m->newMeasurement(adjusted, replicationcolumn);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    lastMeasurement[replicationcolumn] = synthetic;
+                }
+            }
+        }
+    }
 }
 
 @ Just as the first measurement should exist at every level of detail, so should
@@ -8968,21 +8968,21 @@ true measurements distinct from estimations.
 
 @<ZoomLog Implementation@>=
 void ZoomLog::newAnnotation(QString annotation, int tempcolumn,
-							int annotationcolumn)
+                            int annotationcolumn)
 {
-	model_ms->newAnnotation(annotation, tempcolumn, annotationcolumn);
-	MeasurementModel *m;
-	if(lastMeasurement.contains(tempcolumn))
-	{
-		foreach(m, modelSet)
-		{
-			m->newMeasurement(lastMeasurement.value(tempcolumn), tempcolumn);
-		}
-	}
-	foreach(m, modelSet)
-	{
-		m->newAnnotation(annotation, tempcolumn, annotationcolumn);
-	}
+    model_ms->newAnnotation(annotation, tempcolumn, annotationcolumn);
+    MeasurementModel *m;
+    if(lastMeasurement.contains(tempcolumn))
+    {
+        foreach(m, modelSet)
+        {
+            m->newMeasurement(lastMeasurement.value(tempcolumn), tempcolumn);
+        }
+    }
+    foreach(m, modelSet)
+    {
+        m->newAnnotation(annotation, tempcolumn, annotationcolumn);
+    }
 }
 
 @ As measurements are added to the model, the model will emit rowChanged
@@ -8993,7 +8993,7 @@ view.
 @<ZoomLog Implementation@>=
 void ZoomLog::centerOn(int row)
 {
-	scrollTo(currentModel->index(row, 0), QAbstractItemView::PositionAtCenter);
+    scrollTo(currentModel->index(row, 0), QAbstractItemView::PositionAtCenter);
 }
 
 @ Once we are done with the data in the table, we want to clear it to prepare
@@ -9003,15 +9003,15 @@ saving data.
 @<ZoomLog Implementation@>=
 void ZoomLog::clear()
 {
-	MeasurementModel *m;
-	foreach(m, modelSet)
-	{
-		m->clear();
-	}
-	lastMeasurement.clear();
-	saveTempCols.clear();
-	saveControlCols.clear();
-	saveNoteCols.clear();
+    MeasurementModel *m;
+    foreach(m, modelSet)
+    {
+        m->clear();
+    }
+    lastMeasurement.clear();
+    saveTempCols.clear();
+    saveControlCols.clear();
+    saveNoteCols.clear();
 }
 
 @ These are depreciated methods originally written to assist in serializing
@@ -9021,13 +9021,13 @@ likely to be removed in a future version of the program.
 @<ZoomLog Implementation@>=
 QVariant ZoomLog::data(int row, int column) const
 {
-	return model_ms->data(model_ms->index(row, column, QModelIndex()),
-							Qt::DisplayRole);
+    return model_ms->data(model_ms->index(row, column, QModelIndex()),
+                            Qt::DisplayRole);
 }
 
 int ZoomLog::rowCount()
 {
-	return model_ms->rowCount();
+    return model_ms->rowCount();
 }
 
 @ This method initializes an |XMLOutput| instance, passes the columns that we
@@ -9044,34 +9044,34 @@ users will never notice this.
 @<ZoomLog Implementation@>=
 bool ZoomLog::saveXML(QIODevice *device)
 {
-	Units::Unit prevUnits = model_ms->displayUnits();
-	if(prevUnits != Units::Fahrenheit)
-	{
-		model_ms->setDisplayUnits(Units::Fahrenheit);
-	}
-	XMLOutput writer(model_ms, device, 0);
-	int c;
-	foreach(c, saveTempCols)
-	{
-		writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
-		                                      toString(), c);
-	}
-	foreach(c, saveControlCols)
-	{
-		writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
-		                                  toString(), c);
-	}
-	foreach(c, saveNoteCols)
-	{
-		writer.addAnnotationColumn(model_ms->headerData(c, Qt::Horizontal).
-		                                     toString(), c);
-	}
-	bool retval = writer.output();
-	if(prevUnits != Units::Fahrenheit)
-	{
-		model_ms->setDisplayUnits(prevUnits);
-	}
-	return retval;
+    Units::Unit prevUnits = model_ms->displayUnits();
+    if(prevUnits != Units::Fahrenheit)
+    {
+        model_ms->setDisplayUnits(Units::Fahrenheit);
+    }
+    XMLOutput writer(model_ms, device, 0);
+    int c;
+    foreach(c, saveTempCols)
+    {
+        writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
+                                              toString(), c);
+    }
+    foreach(c, saveControlCols)
+    {
+        writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
+                                          toString(), c);
+    }
+    foreach(c, saveNoteCols)
+    {
+        writer.addAnnotationColumn(model_ms->headerData(c, Qt::Horizontal).
+                                             toString(), c);
+    }
+    bool retval = writer.output();
+    if(prevUnits != Units::Fahrenheit)
+    {
+        model_ms->setDisplayUnits(prevUnits);
+    }
+    return retval;
 }
 
 @ This method is similar to |saveXML()|. The main difference is that CSV data is
@@ -9080,24 +9080,24 @@ exported instead of XML.
 @<ZoomLog Implementation@>=
 bool ZoomLog::saveCSV(QIODevice *device)
 {
-	CSVOutput writer(currentModel, device, 0);
-	int c;
-	foreach(c, saveTempCols)
-	{
-		writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
-		                                                 toString(), c);
-	}
-	foreach(c, saveControlCols)
-	{
-		writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
-		                                             toString(), c);
-	}
-	foreach(c, saveNoteCols)
-	{
-		writer.addAnnotationColumn(model_ms->headerData(c, Qt::Horizontal).
-		                                     toString(), c);
-	}
-	return writer.output();
+    CSVOutput writer(currentModel, device, 0);
+    int c;
+    foreach(c, saveTempCols)
+    {
+        writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
+                                                         toString(), c);
+    }
+    foreach(c, saveControlCols)
+    {
+        writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
+                                                     toString(), c);
+    }
+    foreach(c, saveNoteCols)
+    {
+        writer.addAnnotationColumn(model_ms->headerData(c, Qt::Horizontal).
+                                             toString(), c);
+    }
+    return writer.output();
 }
 
 @ Several little functions, all alike\nfnote{If you get the reference, you may
@@ -9109,45 +9109,45 @@ switch the view from one level of detail to another.
 @<ZoomLog Implementation@>=
 void ZoomLog::switchLOD(MeasurementModel *m)
 {
-	disconnect(currentModel, SIGNAL(rowChanged(int)), this, 0);
-	setModel(m);
-	currentModel = m;
-	connect(currentModel, SIGNAL(rowChanged(int)), this, SLOT(centerOn(int)));
+    disconnect(currentModel, SIGNAL(rowChanged(int)), this, 0);
+    setModel(m);
+    currentModel = m;
+    connect(currentModel, SIGNAL(rowChanged(int)), this, SLOT(centerOn(int)));
 }
 
 void ZoomLog::LOD_ms()
 {
-	switchLOD(model_ms);
+    switchLOD(model_ms);
 }
 
 void ZoomLog::LOD_1s()
 {
-	switchLOD(model_1s);
+    switchLOD(model_1s);
 }
 
 void ZoomLog::LOD_5s()
 {
-	switchLOD(model_5s);
+    switchLOD(model_5s);
 }
 
 void ZoomLog::LOD_10s()
 {
-	switchLOD(model_10s);
+    switchLOD(model_10s);
 }
 
 void ZoomLog::LOD_15s()
 {
-	switchLOD(model_15s);
+    switchLOD(model_15s);
 }
 
 void ZoomLog::LOD_30s()
 {
-	switchLOD(model_30s);
+    switchLOD(model_30s);
 }
 
 void ZoomLog::LOD_1m()
 {
-	switchLOD(model_1m);
+    switchLOD(model_1m);
 }
 
 @ It can be useful to display temperature measurements in various units. To do
@@ -9157,18 +9157,18 @@ possible to obtain the currently selected unit.
 @<ZoomLog Implementation@>=
 void ZoomLog::setDisplayUnits(Units::Unit scale)
 {
-	model_ms->setDisplayUnits(scale);
-	model_1s->setDisplayUnits(scale);
-	model_5s->setDisplayUnits(scale);
-	model_10s->setDisplayUnits(scale);
-	model_15s->setDisplayUnits(scale);
-	model_30s->setDisplayUnits(scale);
-	model_1m->setDisplayUnits(scale);
+    model_ms->setDisplayUnits(scale);
+    model_1s->setDisplayUnits(scale);
+    model_5s->setDisplayUnits(scale);
+    model_10s->setDisplayUnits(scale);
+    model_15s->setDisplayUnits(scale);
+    model_30s->setDisplayUnits(scale);
+    model_1m->setDisplayUnits(scale);
 }
 
 Units::Unit ZoomLog::displayUnits()
 {
-	return model_ms->displayUnits();
+    return model_ms->displayUnits();
 }
 
 @ For convenience, a method is provided for returning a string containing the
@@ -9177,30 +9177,30 @@ time of the last inserted measurement in a given data series.
 @<ZoomLog Implementation@>=
 QString ZoomLog::lastTime(int series)
 {
-	Measurement measure = lastMeasurement.value(series);
-	QTime time = measure.time();
-	return time.toString("h:mm:ss.zzz");
+    Measurement measure = lastMeasurement.value(series);
+    QTime time = measure.time();
+    return time.toString("h:mm:ss.zzz");
 }
 
 @ This just leaves the initial table setup.
 
 @<ZoomLog Implementation@>=
 ZoomLog::ZoomLog() : QTableView(NULL), model_ms(new MeasurementModel(this)),
-	model_1s(new MeasurementModel(this)),@/ model_5s(new MeasurementModel(this)),
-	model_10s(new MeasurementModel(this)),@/ model_15s(new MeasurementModel(this)),
-	model_30s(new MeasurementModel(this)),@/ model_1m(new MeasurementModel(this))@/
+    model_1s(new MeasurementModel(this)),@/ model_5s(new MeasurementModel(this)),
+    model_10s(new MeasurementModel(this)),@/ model_15s(new MeasurementModel(this)),
+    model_30s(new MeasurementModel(this)),@/ model_1m(new MeasurementModel(this))@/
 {@/
-	setEditTriggers(QAbstractItemView::NoEditTriggers);
-	setSelectionMode(QAbstractItemView::NoSelection);
-	modelSet << model_ms << model_1s << model_5s << model_10s << model_15s <<
-		model_30s << model_1m;
-	currentModel = model_30s;
-	setModel(currentModel);
-	connect(currentModel, SIGNAL(rowChanged(int)), this, SLOT(centerOn(int)));
-	connect(horizontalHeader(), SIGNAL(sectionResized(int, int, int)),
-	        this, SLOT(persistColumnResize(int, int, int)));
-	connect(horizontalHeader(), SIGNAL(sectionCountChanged(int, int)),
-	        this, SLOT(restoreColumnWidths()));
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
+    setSelectionMode(QAbstractItemView::NoSelection);
+    modelSet << model_ms << model_1s << model_5s << model_10s << model_15s <<
+        model_30s << model_1m;
+    currentModel = model_30s;
+    setModel(currentModel);
+    connect(currentModel, SIGNAL(rowChanged(int)), this, SLOT(centerOn(int)));
+    connect(horizontalHeader(), SIGNAL(sectionResized(int, int, int)),
+            this, SLOT(persistColumnResize(int, int, int)));
+    connect(horizontalHeader(), SIGNAL(sectionCountChanged(int, int)),
+            this, SLOT(restoreColumnWidths()));
 }
 
 @ A new method was added to this class for version 1.0.7. This allows header
@@ -9210,11 +9210,11 @@ term plan involves removing the hard coding of some of the header data.
 @<ZoomLog Implementation@>=
 void ZoomLog::setHeaderData(int section, QString text)
 {
-	MeasurementModel *m;
-	foreach(m, modelSet)
-	{
-		m->setHeaderData(section, Qt::Horizontal, QVariant(text));
-	}
+    MeasurementModel *m;
+    foreach(m, modelSet)
+    {
+        m->setHeaderData(section, Qt::Horizontal, QVariant(text));
+    }
 }
 
 @ As of version 1.2.3, these methods replace similar methods added for version
@@ -9228,24 +9228,24 @@ unit.
 @<ZoomLog Implementation@>=
 void ZoomLog::addOutputTemperatureColumn(int column)
 {
-	saveTempCols.append(column);
+    saveTempCols.append(column);
 }
 
 void ZoomLog::addOutputControlColumn(int column)
 {
-	saveControlCols.append(column);
+    saveControlCols.append(column);
 }
 
 void ZoomLog::addOutputAnnotationColumn(int column)
 {
-	saveNoteCols.append(column);
+    saveNoteCols.append(column);
 }
 
 void ZoomLog::clearOutputColumns()
 {
-	saveTempCols.clear();
-	saveControlCols.clear();
-	saveNoteCols.clear();
+    saveTempCols.clear();
+    saveControlCols.clear();
+    saveNoteCols.clear();
 }
 
 @ Starting in version 1.4 two methods have been introduced which are used to
@@ -9254,22 +9254,22 @@ save and restore column widths.
 @<ZoomLog Implementation@>=
 void ZoomLog::persistColumnResize(int column, int, int newsize)
 {
-	@<Save updated column size@>@;
+    @<Save updated column size@>@;
 }
 
 void ZoomLog::restoreColumnWidths()
 {
-	@<Restore table column widths@>@;
+    @<Restore table column widths@>@;
 }
 
 void ZoomLog::setVisible(bool visibility)
 {
-	QTableView::setVisible(visibility);
+    QTableView::setVisible(visibility);
 }
 
 void ZoomLog::showEvent(QShowEvent *)
 {
-	@<Restore table column widths@>@;
+    @<Restore table column widths@>@;
 }
 
 @ The |ZoomLog| class is one of the more complicated classes to expose to the
@@ -9304,23 +9304,23 @@ the other functions to be called.
 @<Functions for scripting@>=
 QScriptValue constructZoomLog(QScriptContext *, QScriptEngine *engine)@/
 {@/
-	QScriptValue object = engine->newQObject(new ZoomLog);
-	setZoomLogProperties(object, engine);
-	return object;@/
+    QScriptValue object = engine->newQObject(new ZoomLog);
+    setZoomLogProperties(object, engine);
+    return object;@/
 }
 
 void setZoomLogProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQTableViewProperties(value, engine);
-	value.setProperty("saveXML", engine->newFunction(ZoomLog_saveXML));
-	value.setProperty("saveCSV", engine->newFunction(ZoomLog_saveCSV));
-	value.setProperty("saveState", engine->newFunction(ZoomLog_saveState));
-	value.setProperty("restoreState",
-					  engine->newFunction(ZoomLog_restoreState));
-	value.setProperty("lastTime", engine->newFunction(ZoomLog_lastTime));
-	value.setProperty("saveTemporary",
-	                  engine->newFunction(ZoomLog_saveTemporary));
-	value.setProperty("setDisplayUnits", engine->newFunction(ZoomLog_setDisplayUnits));
+    setQTableViewProperties(value, engine);
+    value.setProperty("saveXML", engine->newFunction(ZoomLog_saveXML));
+    value.setProperty("saveCSV", engine->newFunction(ZoomLog_saveCSV));
+    value.setProperty("saveState", engine->newFunction(ZoomLog_saveState));
+    value.setProperty("restoreState",
+                      engine->newFunction(ZoomLog_restoreState));
+    value.setProperty("lastTime", engine->newFunction(ZoomLog_lastTime));
+    value.setProperty("saveTemporary",
+                      engine->newFunction(ZoomLog_saveTemporary));
+    value.setProperty("setDisplayUnits", engine->newFunction(ZoomLog_setDisplayUnits));
 }
 
 @ The functions for saving data are simple wrappers around the corresponding
@@ -9331,31 +9331,31 @@ to a database entry.
 @<Functions for scripting@>=
 QScriptValue ZoomLog_saveXML(QScriptContext *context, QScriptEngine *engine)
 {
-	ZoomLog *self = getself<ZoomLog *>(context);
-	bool retval = self->saveXML(argument<QIODevice *>(0, context));
-	return QScriptValue(engine, retval);
+    ZoomLog *self = getself<ZoomLog *>(context);
+    bool retval = self->saveXML(argument<QIODevice *>(0, context));
+    return QScriptValue(engine, retval);
 }
 
 QScriptValue ZoomLog_saveCSV(QScriptContext *context, QScriptEngine *engine)
 {
-	ZoomLog *self = getself<ZoomLog *>(context);
-	bool retval = self->saveCSV(argument<QIODevice *>(0, context));
-	return QScriptValue(engine, retval);
+    ZoomLog *self = getself<ZoomLog *>(context);
+    bool retval = self->saveCSV(argument<QIODevice *>(0, context));
+    return QScriptValue(engine, retval);
 }
 
 QScriptValue ZoomLog_saveTemporary(QScriptContext *context,
                                    QScriptEngine *engine)
 {
-	ZoomLog *self = getself<ZoomLog *>(context);
-	QString filename = QDir::tempPath();
-	filename.append("/");
-	filename.append(QUuid::createUuid().toString());
-	filename.append(".xml");
-	QFile *file = new QFile(filename);
-	self->saveXML(file);
-	file->close();
-	delete file;
-	return QScriptValue(engine, filename);
+    ZoomLog *self = getself<ZoomLog *>(context);
+    QString filename = QDir::tempPath();
+    filename.append("/");
+    filename.append(QUuid::createUuid().toString());
+    filename.append(".xml");
+    QFile *file = new QFile(filename);
+    self->saveXML(file);
+    file->close();
+    delete file;
+    return QScriptValue(engine, filename);
 }
 
 @ The remaining functions are convenience functions for use with the scripting
@@ -9379,46 +9379,46 @@ encountered.
 @<Functions for scripting@>=
 QScriptValue ZoomLog_saveState(QScriptContext *context, QScriptEngine *)
 {
-	ZoomLog *self = getself<@[ZoomLog *@]>(context);
-	QString key = argument<QString>(0, context);
-	int columns = argument<int>(1, context);
-	QSettings settings;
-	for(int i = 0; i < columns; i++)
-	{
-		if(self->columnWidth(i))
-		{
-			settings.beginGroup(key);
-			settings.setValue(QString("%1").arg(i), self->columnWidth(i));
-			settings.endGroup();
-		}
-	}
-	return QScriptValue();
+    ZoomLog *self = getself<@[ZoomLog *@]>(context);
+    QString key = argument<QString>(0, context);
+    int columns = argument<int>(1, context);
+    QSettings settings;
+    for(int i = 0; i < columns; i++)
+    {
+        if(self->columnWidth(i))
+        {
+            settings.beginGroup(key);
+            settings.setValue(QString("%1").arg(i), self->columnWidth(i));
+            settings.endGroup();
+        }
+    }
+    return QScriptValue();
 }
 
 QScriptValue ZoomLog_restoreState(QScriptContext *context, QScriptEngine *)
 {
-	ZoomLog *self = getself<@[ZoomLog *@]>(context);
-	QString key = argument<QString>(0, context);
-	int columns = argument<int>(1, context);
-	QSettings settings;
-	for(int i = 0; i < columns; i++)
-	{
-		settings.beginGroup(key);
-		self->setColumnWidth(i,
-			settings.value(QString("%1").arg(i), 80).toInt());
-		if(settings.value(QString("%1").arg(i), 80).toInt() == 0)
-		{
-			self->setColumnWidth(i, 80);
-		}
-		settings.endGroup();
-	}
-	return QScriptValue();
+    ZoomLog *self = getself<@[ZoomLog *@]>(context);
+    QString key = argument<QString>(0, context);
+    int columns = argument<int>(1, context);
+    QSettings settings;
+    for(int i = 0; i < columns; i++)
+    {
+        settings.beginGroup(key);
+        self->setColumnWidth(i,
+            settings.value(QString("%1").arg(i), 80).toInt());
+        if(settings.value(QString("%1").arg(i), 80).toInt() == 0)
+        {
+            self->setColumnWidth(i, 80);
+        }
+        settings.endGroup();
+    }
+    return QScriptValue();
 }
 
 QScriptValue ZoomLog_lastTime(QScriptContext *context, QScriptEngine *engine)
 {
-	ZoomLog *self = getself<@[ZoomLog *@]>(context);
-	return QScriptValue(engine, self->lastTime(argument<int>(0, context)));
+    ZoomLog *self = getself<@[ZoomLog *@]>(context);
+    return QScriptValue(engine, self->lastTime(argument<int>(0, context)));
 }
 
 @ There seems to be a bad interaction when enumerated value types as used as
@@ -9432,9 +9432,9 @@ the argument value to the enumerated type. This looks stupid but it works.
 @<Functions for scripting@>=
 QScriptValue ZoomLog_setDisplayUnits(QScriptContext *context, QScriptEngine *)
 {
-	ZoomLog *self = getself<@[ZoomLog *@]>(context);
-	self->setDisplayUnits((Units::Unit)argument<int>(0, context));
-	return QScriptValue();
+    ZoomLog *self = getself<@[ZoomLog *@]>(context);
+    self->setDisplayUnits((Units::Unit)argument<int>(0, context));
+    return QScriptValue();
 }
 
 @* A model for roasting data.
@@ -9449,39 +9449,39 @@ of |QAbstractItemModel| for use in this architecture.
 class MeasurementList;@/
 class MeasurementModel : public QAbstractItemModel@/
 {@t\1@>@/
-	Q_OBJECT@;
-	Units::Unit unit;
-	QList<MeasurementList *> *entries;
-	QStringList *hData;
-	int colcount;
-	QHash<int, int> *lastTemperature;
-	QList<MeasurementList *>::iterator@, lastInsertion;
-	QHash<int, bool> *controlColumns;
-	public:@/
-		MeasurementModel(QObject *parent = NULL);
-		~MeasurementModel();
-		int rowCount(const QModelIndex &parent = QModelIndex()) const;
-		int columnCount(const QModelIndex &parent = QModelIndex()) const;
-		bool setHeaderData(int section, Qt::Orientation orientation,
-							const QVariant &value,@|int role = Qt::DisplayRole);
-		QVariant data(const QModelIndex &index, int role) const;
-		bool setData(const QModelIndex &index, const QVariant &value,
-						int role = Qt::EditRole);
-		Qt::ItemFlags flags(const QModelIndex &index) const;
-		QVariant headerData(int section, Qt::Orientation orientation,
-							int role = Qt::DisplayRole) const;
-		QModelIndex index(int row, int column,
-							const QModelIndex &parent = QModelIndex()) const;
-		QModelIndex parent(const QModelIndex &index) const;
-		Units::Unit displayUnits();@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void newMeasurement(Measurement measure, int tempcolumn);
-		void newAnnotation(QString annotation, int tempcolumn,
-							int annotationColumn);
-		void clear();
-		void setDisplayUnits(Units::Unit scale);
-	signals:@/
-		void rowChanged(int);@t\2@>@/
+    Q_OBJECT@;
+    Units::Unit unit;
+    QList<MeasurementList *> *entries;
+    QStringList *hData;
+    int colcount;
+    QHash<int, int> *lastTemperature;
+    QList<MeasurementList *>::iterator@, lastInsertion;
+    QHash<int, bool> *controlColumns;
+    public:@/
+        MeasurementModel(QObject *parent = NULL);
+        ~MeasurementModel();
+        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        bool setHeaderData(int section, Qt::Orientation orientation,
+                            const QVariant &value,@|int role = Qt::DisplayRole);
+        QVariant data(const QModelIndex &index, int role) const;
+        bool setData(const QModelIndex &index, const QVariant &value,
+                        int role = Qt::EditRole);
+        Qt::ItemFlags flags(const QModelIndex &index) const;
+        QVariant headerData(int section, Qt::Orientation orientation,
+                            int role = Qt::DisplayRole) const;
+        QModelIndex index(int row, int column,
+                            const QModelIndex &parent = QModelIndex()) const;
+        QModelIndex parent(const QModelIndex &index) const;
+        Units::Unit displayUnits();@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void newMeasurement(Measurement measure, int tempcolumn);
+        void newAnnotation(QString annotation, int tempcolumn,
+                            int annotationColumn);
+        void clear();
+        void setDisplayUnits(Units::Unit scale);
+    signals:@/
+        void rowChanged(int);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The measurement model stores its data in a list of measurement lists. This
@@ -9492,9 +9492,9 @@ comparison functions.
 @<Class declarations@>=
 class MeasurementList : public QVariantList@/
 {@t\1@>@/
-	@t\4@>public:@/
-		bool operator<(const MeasurementList &other) const;
-		bool operator==(const MeasurementList &other) const;@t\2@>@/
+    @t\4@>public:@/
+        bool operator<(const MeasurementList &other) const;
+        bool operator==(const MeasurementList &other) const;@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The overload of |<| checks if the time in one list (always stored in the first
@@ -9505,12 +9505,12 @@ insertion.
 @<MeasurementModel Implementation@>=
 bool MeasurementList::operator<(const MeasurementList &other) const
 {
-	return this->first().toTime() < other.first().toTime();
+    return this->first().toTime() < other.first().toTime();
 }
 
 bool MeasurementList::operator==(const MeasurementList &other) const
 {
-	return this->first().toTime() == other.first().toTime();
+    return this->first().toTime() == other.first().toTime();
 }
 
 @ The |MeasurementModel| class extends the |QAbstractItemModel| class to work
@@ -9521,7 +9521,7 @@ parent function which is never used directly:
 @<MeasurementModel Implementation@>=
 QModelIndex MeasurementModel::parent(const QModelIndex&) const
 {
-	return QModelIndex();
+    return QModelIndex();
 }
 
 @ Perhaps the most complicated part of this class is the code for dealing with a
@@ -9531,42 +9531,42 @@ while keeping the model sorted by time.
 @<MeasurementModel Implementation@>=
 void MeasurementModel::newMeasurement(Measurement measure, int tempcolumn)
 {
-	if(measure.scale() == Units::Unitless)
-	{
-		controlColumns->insert(tempcolumn, true);
-	}
-	else
-	{
-		controlColumns->insert(tempcolumn, false);
-	}
-	MeasurementList *temp;
-	temp = new MeasurementList;
-	temp->append(QVariant(measure.time()));
-	@<Find the insertion point@>@;
-	MeasurementList *newEntry;
-	int insertion;
-	if(i != entries->end())
-	{
-		insertion = entries->indexOf(*i);
-		if((*i)->first().toTime() == measure.time())
-		{
-			@<Insert a new measurement at an existing time@>@;
-		}
-		else
-		{
-			@<Insert a new measurement somewhere else@>@;
-		}
-	}
-	else
-	{
-		@<Append a measurement@>@;
-	}
-	if(tempcolumn >= colcount)
-	{
-		colcount = tempcolumn + 1;
-	}
-	emit rowChanged(insertion);
-	delete temp;
+    if(measure.scale() == Units::Unitless)
+    {
+        controlColumns->insert(tempcolumn, true);
+    }
+    else
+    {
+        controlColumns->insert(tempcolumn, false);
+    }
+    MeasurementList *temp;
+    temp = new MeasurementList;
+    temp->append(QVariant(measure.time()));
+    @<Find the insertion point@>@;
+    MeasurementList *newEntry;
+    int insertion;
+    if(i != entries->end())
+    {
+        insertion = entries->indexOf(*i);
+        if((*i)->first().toTime() == measure.time())
+        {
+            @<Insert a new measurement at an existing time@>@;
+        }
+        else
+        {
+            @<Insert a new measurement somewhere else@>@;
+        }
+    }
+    else
+    {
+        @<Append a measurement@>@;
+    }
+    if(tempcolumn >= colcount)
+    {
+        colcount = tempcolumn + 1;
+    }
+    emit rowChanged(insertion);
+    delete temp;
 }
 
 @ To find the insertion point for new measurements we use a binary search of the
@@ -9591,25 +9591,25 @@ point.
 @<Scan from most recent insertion@>@;
 if(quickscan == false)
 {
-	i = entries->begin();
-	QList<MeasurementList *>::iterator@, u = entries->end();
-	QList<MeasurementList *>::iterator@, midpoint;
-	int n = u - i;
-	int rA;
-	while(n > 0)@/
-	{
-		rA = n>>1; /* |rA = |~$\bigl\lfloor{n\over2}\bigr\rfloor$ */
-		midpoint = i + rA;
-		if(**midpoint < *temp)@/
-		{
-			i = midpoint + 1;
-			n -= rA + 1;
-		}
-		else@/
-		{
-			n = rA;
-		}
-	}
+    i = entries->begin();
+    QList<MeasurementList *>::iterator@, u = entries->end();
+    QList<MeasurementList *>::iterator@, midpoint;
+    int n = u - i;
+    int rA;
+    while(n > 0)@/
+    {
+        rA = n>>1; /* |rA = |~$\bigl\lfloor{n\over2}\bigr\rfloor$ */
+        midpoint = i + rA;
+        if(**midpoint < *temp)@/
+        {
+            i = midpoint + 1;
+            n -= rA + 1;
+        }
+        else@/
+        {
+            n = rA;
+        }
+    }
 }
 
 @ The binary search, while correct, is not a particularly optimal choice for
@@ -9637,37 +9637,37 @@ shows that this provides a huge performance boost.
 bool quickscan = false;@/
 if(entries->size() > 5)@/
 {@t\1@>@/
-	if(**i < *temp)@/
-	{@t\1@>@/
-		i += 1;@/
-		for(int j = 10; j > 0; j--)@/
-		{@t\1@>@/
-			if(i != entries->end())@/
-			{@t\1@>@/
-				if(**i < *temp)@/
-				{
-					i += 1;
-				}@/
-				else@/
-				{@t\1@>@/
-					quickscan = true;
-					break;@t\2@>@/
-				}@t\2@>@/
-			}@/
-			else@/
-			{@t\1@>@/
-				quickscan = true;
-				break;@t\2@>@/
-			}@t\2@>@/
-		}@t\2@>@/
-	}@/
-	else@/
-	{@t\1@>@/
-		if(**i == *temp)@/
-		{@t\1@>@/
-			quickscan = true;@t\2@>@/
-		}@t\2@>@/
-	}@t\2@>@/
+    if(**i < *temp)@/
+    {@t\1@>@/
+        i += 1;@/
+        for(int j = 10; j > 0; j--)@/
+        {@t\1@>@/
+            if(i != entries->end())@/
+            {@t\1@>@/
+                if(**i < *temp)@/
+                {
+                    i += 1;
+                }@/
+                else@/
+                {@t\1@>@/
+                    quickscan = true;
+                    break;@t\2@>@/
+                }@t\2@>@/
+            }@/
+            else@/
+            {@t\1@>@/
+                quickscan = true;
+                break;@t\2@>@/
+            }@t\2@>@/
+        }@t\2@>@/
+    }@/
+    else@/
+    {@t\1@>@/
+        if(**i == *temp)@/
+        {@t\1@>@/
+            quickscan = true;@t\2@>@/
+        }@t\2@>@/
+    }@t\2@>@/
 }
 
 @ If the chosen insertion point is at an existing time, we don'@q'@>t need to
@@ -9677,15 +9677,15 @@ measurement list to accept an entry in a new data series.
 @<Insert a new measurement at an existing time@>=
 if((*i)->size() < tempcolumn + 1)
 {
-	for(int j = (*i)->size() - 1; j < tempcolumn + 1; j++)
-	{
-		(*i)->append(QVariant());
-	}
+    for(int j = (*i)->size() - 1; j < tempcolumn + 1; j++)
+    {
+        (*i)->append(QVariant());
+    }
 }
 (*i)->replace(tempcolumn, measure);
 lastInsertion = i;
 emit dataChanged(createIndex(insertion, tempcolumn),
-					createIndex(insertion, tempcolumn));
+                    createIndex(insertion, tempcolumn));
 lastTemperature->insert(tempcolumn, insertion);
 
 @ If the measurement is not past the end of the existing data and the insertion
@@ -9698,7 +9698,7 @@ newEntry = new MeasurementList;
 newEntry->append(QVariant(measure.time()));
 for(int j = 0; j < tempcolumn + 1; j++)
 {
-	newEntry->append(QVariant());
+    newEntry->append(QVariant());
 }
 newEntry->replace(tempcolumn, measure);
 lastInsertion = entries->insert(i, newEntry);
@@ -9724,37 +9724,37 @@ starting the batch.
 
 @<MeasurementModel Implementation@>=
 void MeasurementModel::newAnnotation(QString annotation, int tempcolumn,@|
-										int annotationColumn)
+                                        int annotationColumn)
 {
-	int r;
-	if(lastTemperature->contains(tempcolumn))
-	{
-		r = lastTemperature->value(tempcolumn);
-	}
-	else
-	{
-		r = 0;
-	}
-	if(r == 0 && entries->size() == 0)
-	{
-		@<Create the first row@>@;
-	}
-	MeasurementList *row = entries->at(r);
-	if(row->size() <= annotationColumn)
-	{
-		for(int i = row->size() - 1; i < annotationColumn + 1; i++)
-		{
-			row->append(QVariant());
-		}
-	}
-	row->replace(annotationColumn, annotation);
-	emit dataChanged(createIndex(r, annotationColumn),
-						createIndex(r, annotationColumn));
-	emit rowChanged(r);
-	if(annotationColumn > colcount - 1)
-	{
-		colcount = annotationColumn + 1;
-	}
+    int r;
+    if(lastTemperature->contains(tempcolumn))
+    {
+        r = lastTemperature->value(tempcolumn);
+    }
+    else
+    {
+        r = 0;
+    }
+    if(r == 0 && entries->size() == 0)
+    {
+        @<Create the first row@>@;
+    }
+    MeasurementList *row = entries->at(r);
+    if(row->size() <= annotationColumn)
+    {
+        for(int i = row->size() - 1; i < annotationColumn + 1; i++)
+        {
+            row->append(QVariant());
+        }
+    }
+    row->replace(annotationColumn, annotation);
+    emit dataChanged(createIndex(r, annotationColumn),
+                        createIndex(r, annotationColumn));
+    emit rowChanged(r);
+    if(annotationColumn > colcount - 1)
+    {
+        colcount = annotationColumn + 1;
+    }
 }
 
 @ There is no need to further complicate the function by adding the annotation
@@ -9774,16 +9774,16 @@ of columns.
 @<MeasurementModel Implementation@>=
 void MeasurementModel::clear()
 {
-	beginRemoveRows(QModelIndex(), 0, entries->size());
-	while(entries->size() != 0)
-	{
-		MeasurementList *row = entries->takeFirst();
-		delete row;
-	}
-	endRemoveRows();
-	colcount = hData->size();
-	lastTemperature->clear();
-	reset();
+    beginRemoveRows(QModelIndex(), 0, entries->size());
+    while(entries->size() != 0)
+    {
+        MeasurementList *row = entries->takeFirst();
+        delete row;
+    }
+    endRemoveRows();
+    colcount = hData->size();
+    lastTemperature->clear();
+    reset();
 }
 
 @ While these methods for adding measurements and annotations are fine when
@@ -9806,31 +9806,31 @@ editing the data easier and less error prone.
 
 @<MeasurementModel Implementation@>=
 bool MeasurementModel::setData(const QModelIndex &index,
-								const QVariant &value, int role)@t\2\2@>@/
+                                const QVariant &value, int role)@t\2\2@>@/
 {@t\1@>@/
-	if(role != Qt::EditRole && role != Qt::DisplayRole)@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@/
-	@<Check that the index is valid@>@;
-	if(!valid)@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@/
-	MeasurementList *row = entries->at(index.row());
-	if(index.column() >= row->size())
-	{
-		@<Expand the row to prepare for new data@>@;
-	}
-	if(index.column() == 0)
-	{
-		@<Edit data in the time column@>@;
-	}
-	else
-	{
-		@<Edit data in other columns@>@;
-	}
-	return true;@t\2@>@/
+    if(role != Qt::EditRole && role != Qt::DisplayRole)@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@/
+    @<Check that the index is valid@>@;
+    if(!valid)@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@/
+    MeasurementList *row = entries->at(index.row());
+    if(index.column() >= row->size())
+    {
+        @<Expand the row to prepare for new data@>@;
+    }
+    if(index.column() == 0)
+    {
+        @<Edit data in the time column@>@;
+    }
+    else
+    {
+        @<Edit data in other columns@>@;
+    }
+    return true;@t\2@>@/
 }
 
 @ There is no sense in attempting to edit the data if there isn'@q'@>t any data
@@ -9840,13 +9840,13 @@ available to edit. This check is also used when retrieving data from the model.
 bool valid = false;
 if(index.isValid())@/
 {@t\1@>@/
-	if(index.row() < entries->size())@/
-	{@t\1@>@/
-		if(index.column() < colcount)@/
-		{@t\1@>@/
-			valid = true;@t\2@>@/
-		}@t\2@>@/
-	}@t\2@>@/
+    if(index.row() < entries->size())@/
+    {@t\1@>@/
+        if(index.column() < colcount)@/
+        {@t\1@>@/
+            valid = true;@t\2@>@/
+        }@t\2@>@/
+    }@t\2@>@/
 }
 
 @ When editing data, there might not be anything where we want to add the data.
@@ -9856,7 +9856,7 @@ is fine, but we need to expand the row instead of inserting data out of bounds.
 @<Expand the row to prepare for new data@>=
 for(int i = row->size() - 1; i < index.column(); i++)
 {
-	row->append(QVariant());
+    row->append(QVariant());
 }
 
 @ Changing time data must be considered separately from other data. As the model
@@ -9872,10 +9872,10 @@ we give up and leave the data as we found it.
 QTime time;@/
 if(!(time = QTime::fromString(value.toString(), "m:s.z")).isValid())@/
 {@t\1@>@/
-	if(!(time = QTime::fromString(value.toString(), "m:s")).isValid())@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@t\2@>@/
+    if(!(time = QTime::fromString(value.toString(), "m:s")).isValid())@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@t\2@>@/
 }@/
 row = entries->takeAt(index.row());
 row->replace(index.column(), QVariant(time));
@@ -9885,11 +9885,11 @@ entries->insert(i, row);
 int newRow = entries->indexOf(*i);
 if(newRow < index.row())@/
 {
-	emit dataChanged(createIndex(newRow, index.column()), index);
+    emit dataChanged(createIndex(newRow, index.column()), index);
 }
 else@/
 {
-	emit dataChanged(index, createIndex(newRow, index.column()));
+    emit dataChanged(index, createIndex(newRow, index.column()));
 }
 
 @ Data in other columns is a little easier to handle.
@@ -9904,14 +9904,14 @@ constructor.
 
 @<MeasurementModel Implementation@>=
 MeasurementModel::MeasurementModel(QObject *parent) : QAbstractItemModel(parent),
-	unit(Units::Fahrenheit), hData(new QStringList),
-	lastTemperature(new QHash<int, int>),
-	controlColumns(new QHash<int, bool>)@/
+    unit(Units::Fahrenheit), hData(new QStringList),
+    lastTemperature(new QHash<int, int>),
+    controlColumns(new QHash<int, bool>)@/
 {
-	colcount = 1;
-	entries = new QList<MeasurementList *>;
-	lastInsertion = entries->begin();
-	hData->append(tr("Time"));
+    colcount = 1;
+    entries = new QList<MeasurementList *>;
+    lastInsertion = entries->begin();
+    hData->append(tr("Time"));
 }
 
 @ In the destructor we need to remember to clean up after ourselves.
@@ -9919,9 +9919,9 @@ MeasurementModel::MeasurementModel(QObject *parent) : QAbstractItemModel(parent)
 @<MeasurementModel Implementation@>=
 MeasurementModel::~MeasurementModel()
 {
-	clear();
-	delete entries;
-	delete hData;
+    clear();
+    delete entries;
+    delete hData;
 }
 
 @ A pair of functions are used to determine the number of rows and columns the
@@ -9931,20 +9931,20 @@ always be the invisible root object. If it isn'@q'@>t, we should return 0.
 @<MeasurementModel Implementation@>=
 int MeasurementModel::rowCount(const QModelIndex &parent) const
 {
-	if(parent == QModelIndex())
-	{
-		return entries->size();
-	}
-	return 0;
+    if(parent == QModelIndex())
+    {
+        return entries->size();
+    }
+    return 0;
 }
 
 int MeasurementModel::columnCount(const QModelIndex &parent) const
 {
-	if(parent == QModelIndex())
-	{
-		return colcount;
-	}
-	return 0;
+    if(parent == QModelIndex())
+    {
+        return colcount;
+    }
+    return 0;
 }
 
 @ The model maintains a set of header data. At present, it only supports header
@@ -9957,34 +9957,34 @@ header data. At present, this model ignores the role when setting header data.
 
 @<MeasurementModel Implementation@>=
 bool MeasurementModel::setHeaderData(int section, Qt::Orientation orientation,@|
-										const QVariant &value, int)@t\2@>@/
+                                        const QVariant &value, int)@t\2@>@/
 @t\4@>{@/
-	if(orientation == Qt::Horizontal)@/
-	{@t\1@>@/
-		if(hData->size() < section + 1)@/
-		{@/
-			for(int i = hData->size(); i < section + 1; i++)@/
-			{@/
-				if(colcount < i)@/
-				{@/
-					beginInsertColumns(QModelIndex(), i, i);
-				}
-				hData->append(QString());
-				if(colcount < i)@/
-				{@/
-					endInsertColumns();
-				}
-			}
-		}
-		hData->replace(section, value.toString());
-		emit headerDataChanged(orientation, section, section);
-		if(colcount < section + 1)@/
-		{@/
-			colcount = section + 1;
-		}@/
-		return true;@t\2@>@/
-	}@/
-	return false;@/
+    if(orientation == Qt::Horizontal)@/
+    {@t\1@>@/
+        if(hData->size() < section + 1)@/
+        {@/
+            for(int i = hData->size(); i < section + 1; i++)@/
+            {@/
+                if(colcount < i)@/
+                {@/
+                    beginInsertColumns(QModelIndex(), i, i);
+                }
+                hData->append(QString());
+                if(colcount < i)@/
+                {@/
+                    endInsertColumns();
+                }
+            }
+        }
+        hData->replace(section, value.toString());
+        emit headerDataChanged(orientation, section, section);
+        if(colcount < section + 1)@/
+        {@/
+            colcount = section + 1;
+        }@/
+        return true;@t\2@>@/
+    }@/
+    return false;@/
 @t\4@>}
 
 @ While the current implementation always receives measurements in degrees
@@ -9998,14 +9998,14 @@ available to request a number identifyin the currently displayed units.
 @<MeasurementModel Implementation@>=
 void MeasurementModel::setDisplayUnits(Units::Unit scale)
 {
-	beginResetModel();
-	unit = scale;
-	endResetModel();
+    beginResetModel();
+    unit = scale;
+    endResetModel();
 }
 
 Units::Unit MeasurementModel::displayUnits()
 {
-	return unit;
+    return unit;
 }
 
 @ A model is generally quite useless if the data the model contains cannot be
@@ -10024,77 +10024,77 @@ As of version 1.6, |Qt::UserRole| allows retrieval of raw measurement data.
 @<MeasurementModel Implementation@>=
 QVariant MeasurementModel::data(const QModelIndex &index, int role) const@/
 {@/
-	@<Check that the index is valid@>@;
-	if(!valid)
-	{
-		return QVariant();
-	}
-	MeasurementList *row = entries->at(index.row());
-	if(role == Qt::UserRole)
-	{
-		return QVariant(row->at(index.column()));
-	}
-	if(role == Qt::DisplayRole || role == Qt::EditRole)
-	{
-		if(index.column() > row->size())
-		{
-			return QVariant();
-		}
-		else
-		{
-			if(index.column() == 0)
-			{
-				return QVariant(row->at(0).toTime().toString("mm:ss.zzz"));
-			}
-			else if(lastTemperature->contains(index.column()))
-			{
-				QVariantMap v = row->at(index.column()).toMap();
-				if(!v.contains("measurement"))
-				{
-					return QVariant();
-				}
-				if((Units::Unit)(v.value("unit").toInt()) == Units::Unitless)
-				{
-					return v.value("measurement");
-				}
-				else
-				{
-					if(v.contains("relative"))
-					{
-						if(v.value("relative").toBool())
-						{
-							return QVariant(QString("%1").@|arg(Units::convertRelativeTemperature(v.value("measurement").
-							toDouble(),@| (Units::Unit)(v.value("unit").toInt()), unit)));
-						}
-					}
-					return QVariant(QString("%1").@|
-					arg(Units::convertTemperature(v.value("measurement").toDouble(),@|
-					(Units::Unit)(v.value("unit").toInt()), unit)));
-				}
-			}
-			return QVariant(row->at(index.column()).toString());
-		}
-	}
-	return QVariant();@/
+    @<Check that the index is valid@>@;
+    if(!valid)
+    {
+        return QVariant();
+    }
+    MeasurementList *row = entries->at(index.row());
+    if(role == Qt::UserRole)
+    {
+        return QVariant(row->at(index.column()));
+    }
+    if(role == Qt::DisplayRole || role == Qt::EditRole)
+    {
+        if(index.column() > row->size())
+        {
+            return QVariant();
+        }
+        else
+        {
+            if(index.column() == 0)
+            {
+                return QVariant(row->at(0).toTime().toString("mm:ss.zzz"));
+            }
+            else if(lastTemperature->contains(index.column()))
+            {
+                QVariantMap v = row->at(index.column()).toMap();
+                if(!v.contains("measurement"))
+                {
+                    return QVariant();
+                }
+                if((Units::Unit)(v.value("unit").toInt()) == Units::Unitless)
+                {
+                    return v.value("measurement");
+                }
+                else
+                {
+                    if(v.contains("relative"))
+                    {
+                        if(v.value("relative").toBool())
+                        {
+                            return QVariant(QString("%1").@|arg(Units::convertRelativeTemperature(v.value("measurement").
+                            toDouble(),@| (Units::Unit)(v.value("unit").toInt()), unit)));
+                        }
+                    }
+                    return QVariant(QString("%1").@|
+                    arg(Units::convertTemperature(v.value("measurement").toDouble(),@|
+                    (Units::Unit)(v.value("unit").toInt()), unit)));
+                }
+            }
+            return QVariant(row->at(index.column()).toString());
+        }
+    }
+    return QVariant();@/
 }
 
 @ Views also must be able to retrieve the header data.
 
 @<MeasurementModel Implementation@>=
 QVariant MeasurementModel::headerData(int section, Qt::Orientation orientation,
-										int role ) const
+                                        int role ) const
 {
-	if(orientation == Qt::Horizontal)
-	{
-		if(role == Qt::DisplayRole)
-		{
-			if(section < hData->size())
-			{
-				return QVariant(hData->at(section));
-			}
-		}
-	}
-	return QVariant();
+    if(orientation == Qt::Horizontal)
+    {
+        if(role == Qt::DisplayRole)
+        {
+            if(section < hData->size())
+            {
+                return QVariant(hData->at(section));
+            }
+        }
+    }
+    return QVariant();
 }
 
 @ Views will sometimes request information about the interactions available for
@@ -10110,12 +10110,12 @@ the model could be provided and a flag would be checked here.
 @<MeasurementModel Implementation@>=
 Qt::ItemFlags MeasurementModel::flags(const QModelIndex &index) const@/
 {@/
-	@<Check that the index is valid@>@;
-	if(valid)
-	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
-	}
-	return 0;
+    @<Check that the index is valid@>@;
+    if(valid)
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    }
+    return 0;
 }
 
 @ Much of the way models are interacted with in Qt'@q'@>s model view architecture is
@@ -10124,19 +10124,19 @@ row column pairs.
 
 @<MeasurementModel Implementation@>=
 QModelIndex MeasurementModel::index(int row, int column,
-									const QModelIndex &parent) const@t\2\2@>@/
+                                    const QModelIndex &parent) const@t\2\2@>@/
 {@t\1@>@/
-	if(parent == QModelIndex())@/
-	{@t\1@>@/
-		if(row < entries->size() && entries->isEmpty() == false)@/
-		{@/
-			if(column < entries->at(row)->size())@/
-			{@/
-				return createIndex(row, column);@/
-			}@/
-		}@t\2@>@/
-	}@/
-	return QModelIndex();@/
+    if(parent == QModelIndex())@/
+    {@t\1@>@/
+        if(row < entries->size() && entries->isEmpty() == false)@/
+        {@/
+            if(column < entries->at(row)->size())@/
+            {@/
+                return createIndex(row, column);@/
+            }@/
+        }@t\2@>@/
+    }@/
+    return QModelIndex();@/
 @t\4@>}
 
 @** Annotating roast data.
@@ -10150,22 +10150,22 @@ be applied to the roasting log quickly. This is the purpose of the
 @<Class declarations@>=
 class AnnotationButton : public QPushButton@/
 {@t\1@>@/
-	Q_OBJECT@;
-	QString note;
-	int tc;
-	int ac;
-	int count;
-	public:@/
-		AnnotationButton(const QString &text, QWidget *parent = NULL);@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void setAnnotation(const QString &annotation);
-		void setTemperatureColumn(int tempcolumn);
-		void setAnnotationColumn(int annotationcolumn);
-		void annotate();
-		void resetCount();
-	signals:@/
-		void annotation(QString annotation, int tempcolumn,
-						int notecolumn);@t\2@>@/
+    Q_OBJECT@;
+    QString note;
+    int tc;
+    int ac;
+    int count;
+    public:@/
+        AnnotationButton(const QString &text, QWidget *parent = NULL);@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void setAnnotation(const QString &annotation);
+        void setTemperatureColumn(int tempcolumn);
+        void setAnnotationColumn(int annotationcolumn);
+        void annotate();
+        void resetCount();
+    signals:@/
+        void annotation(QString annotation, int tempcolumn,
+                        int notecolumn);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ Setting up a new annotation button begins with the constructor. This takes a
@@ -10175,9 +10175,9 @@ button should exhibit when clicked.
 
 @<AnnotationButton Implementation@>=
 AnnotationButton::AnnotationButton(const QString &text, QWidget *parent) :
-	QPushButton(text, parent), note(""), tc(0), ac(0), count(0)@/
+    QPushButton(text, parent), note(""), tc(0), ac(0), count(0)@/
 {
-	connect(this, SIGNAL(clicked()), this, SLOT(annotate()));
+    connect(this, SIGNAL(clicked()), this, SLOT(annotate()));
 }
 
 @ The slot that is called when the button is clicked needs to be able to handle
@@ -10191,15 +10191,15 @@ will be the replacement value.
 @<AnnotationButton Implementation@>=
 void AnnotationButton::annotate()
 {
-	if(note.contains("%1"))
-	{
-		count++;
-		emit annotation(note.arg(count), tc, ac);
-	}
-	else
-	{
-		emit annotation(note, tc, ac);
-	}
+    if(note.contains("%1"))
+    {
+        count++;
+        emit annotation(note.arg(count), tc, ac);
+    }
+    else
+    {
+        emit annotation(note, tc, ac);
+    }
 }
 
 @ A few methods are available to indicate which temperature series the
@@ -10209,17 +10209,17 @@ should be entered in, and what text should be in the annotation.
 @<AnnotationButton Implementation@>=
 void AnnotationButton::setTemperatureColumn(int tempcolumn)
 {
-	tc = tempcolumn;
+    tc = tempcolumn;
 }
 
 void AnnotationButton::setAnnotationColumn(int annotationcolumn)
 {
-	ac = annotationcolumn;
+    ac = annotationcolumn;
 }
 
 void AnnotationButton::setAnnotation(const QString &annotation)
 {
-	note = annotation;
+    note = annotation;
 }
 
 @ Finally, in the case of counting annotations, there should be a way to reset
@@ -10228,7 +10228,7 @@ the number used in the annotation.
 @<AnnotationButton Implementation@>=
 void AnnotationButton::resetCount()
 {
-	count = 0;
+    count = 0;
 }
 
 @ A script constructor is needed to allow an |AnnotationButton| to be created
@@ -10253,15 +10253,15 @@ engine->globalObject().setProperty("AnnotationButton", value);
 QScriptValue constructAnnotationButton(QScriptContext *context,
                                        QScriptEngine *engine)
 {
-	QScriptValue object =
-		engine->newQObject(new AnnotationButton(argument<QString>(0, context)));
-	setAnnotationButtonProperties(object, engine);
-	return object;
+    QScriptValue object =
+        engine->newQObject(new AnnotationButton(argument<QString>(0, context)));
+    setAnnotationButtonProperties(object, engine);
+    return object;
 }
 
 void setAnnotationButtonProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQPushButtonProperties(value, engine);
+    setQPushButtonProperties(value, engine);
 }
 
 @* A spin box for annotations.
@@ -10275,25 +10275,25 @@ be useful.
 @<Class declarations@>=
 class AnnotationSpinBox : public QDoubleSpinBox@/
 {@t\1@>@/
-	Q_OBJECT@;
-	QString pretext;
-	QString posttext;
-	int tc;
-	int ac;
-	bool change;
-	public:
-		AnnotationSpinBox(const QString &pret, const QString &postt,
-		                  QWidget *parent = NULL);@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void setPretext(const QString &pret);
-		void setPosttext(const QString &postt);
-		void setTemperatureColumn(int tempcolumn);
-		void setAnnotationColumn(int annotationcolumn);
-		void annotate();
-		void resetChange();
-	signals:@/
-		void annotation(QString annotation, int tempcolumn,
-		                int notecolumn);@t\2@>@/
+    Q_OBJECT@;
+    QString pretext;
+    QString posttext;
+    int tc;
+    int ac;
+    bool change;
+    public:
+        AnnotationSpinBox(const QString &pret, const QString &postt,
+                          QWidget *parent = NULL);@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void setPretext(const QString &pret);
+        void setPosttext(const QString &postt);
+        void setTemperatureColumn(int tempcolumn);
+        void setAnnotationColumn(int annotationcolumn);
+        void annotate();
+        void resetChange();
+    signals:@/
+        void annotation(QString annotation, int tempcolumn,
+                        int notecolumn);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ Setting up a new annotation spin box begins with the constructor. This takes
@@ -10312,11 +10312,11 @@ not been changed since the previous annotation event.
 AnnotationSpinBox::AnnotationSpinBox(const QString &pret,
                                      const QString &postt,@|
                                      QWidget *parent)
-	: QDoubleSpinBox(parent), pretext(pret), posttext(postt)@/
+    : QDoubleSpinBox(parent), pretext(pret), posttext(postt)@/
 {
-	resetChange();
-	connect(this, SIGNAL(editingFinished()), this, SLOT(annotate()));
-	connect(this, SIGNAL(valueChanged(double)), this, SLOT(resetChange()));
+    resetChange();
+    connect(this, SIGNAL(editingFinished()), this, SLOT(annotate()));
+    connect(this, SIGNAL(valueChanged(double)), this, SLOT(resetChange()));
 }
 
 @ The |resetChange()| signal just sets a boolean which is checked prior to
@@ -10328,7 +10328,7 @@ the previous batch.
 @<AnnotationSpinBox Implementation@>=
 void AnnotationSpinBox::resetChange()@t\2\2@>@/
 {@t\1@>@/
-	change = true;@t\2@>@/
+    change = true;@t\2@>@/
 }
 
 @ The annotation slot is responsible for determining if an annotation should be
@@ -10339,12 +10339,12 @@ to other signals.
 @<AnnotationSpinBox Implementation@>=
 void AnnotationSpinBox::annotate()@t\2\2@>@/
 {@t\1@>@/
-	if(change)@/
-	{@t\1@>@/
-		change = false;@/
-		emit annotation(QString("%1%2%3").arg(pretext).
-		                     arg(value()).arg(posttext), tc, ac);@t\2@>@/
-	}@t\2@>@/
+    if(change)@/
+    {@t\1@>@/
+        change = false;@/
+        emit annotation(QString("%1%2%3").arg(pretext).
+                             arg(value()).arg(posttext), tc, ac);@t\2@>@/
+    }@t\2@>@/
 }
 
 @ These methods set various properties of the annotation.
@@ -10352,22 +10352,22 @@ void AnnotationSpinBox::annotate()@t\2\2@>@/
 @<AnnotationSpinBox Implementation@>=
 void AnnotationSpinBox::setTemperatureColumn(int tempcolumn)
 {
-	tc = tempcolumn;
+    tc = tempcolumn;
 }
 
 void AnnotationSpinBox::setAnnotationColumn(int annotationcolumn)
 {
-	ac = annotationcolumn;
+    ac = annotationcolumn;
 }
 
 void AnnotationSpinBox::setPretext(const QString &pret)
 {
-	pretext = pret;
+    pretext = pret;
 }
 
 void AnnotationSpinBox::setPosttext(const QString &postt)
 {
-	posttext = postt;
+    posttext = postt;
 }
 
 @ Two functions are needed to interface |AnnotationSpinBox| with the host
@@ -10396,25 +10396,25 @@ is responsible for setting up properties in the inheritance chain.
 QScriptValue constructAnnotationSpinBox(QScriptContext *context,
                                         QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new AnnotationSpinBox(
-	     argument<QString>(0, context), argument<QString>(1, context)));
-	setAnnotationSpinBoxProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new AnnotationSpinBox(
+         argument<QString>(0, context), argument<QString>(1, context)));
+    setAnnotationSpinBoxProperties(object, engine);
+    return object;
 }
 
 void setAnnotationSpinBoxProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQDoubleSpinBoxProperties(value, engine);
+    setQDoubleSpinBoxProperties(value, engine);
 }
 
 void setQDoubleSpinBoxProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractSpinBoxProperties(value, engine);
+    setQAbstractSpinBoxProperties(value, engine);
 }
 
 void setQAbstractSpinBoxProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
+    setQWidgetProperties(value, engine);
 }
 
 @** A digital timer.
@@ -10434,45 +10434,45 @@ supported by Qt.
 @<Class declarations@>=
 class TimerDisplay : public QLCDNumber@/
 {@t\1@>@/
-	Q_OBJECT@/
-	@<TimerDisplay Properties@>@;
-	@t\4@>private slots@t\kern-3pt@>:@/
-		void updateTime();
-		void setCountUpMode();
-		void setCountDownMode();
-		void setClockMode();
-	public:@/
-		TimerDisplay(QWidget *parent = NULL);
-		~TimerDisplay();
-		enum TimerMode
-		{
-			CountUp,
-			CountDown,
-			Clock
-		};
-		QString value();
-		QTime seconds();
-		TimerMode mode();
-		bool isRunning();
-		QTime resetValue();
-		QString displayFormat();
-		bool autoReset();@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void setTimer(QTime value = QTime(0, 0, 0));
-		void setMode(TimerMode mode);
-		void startTimer();
-		void stopTimer();
-		void copyTimer();
-		void setResetValue(QTime value = QTime(0, 0, 0));
-		void reset();
-		void setDisplayFormat(QString format);
-		void setAutoReset(bool reset);
-		void updateDisplay();
-	signals:@/
-		void valueChanged(QTime);
-		void runStateChanged(bool);@/
-	private:@/
-		@<TimerDisplay Private Variables@>@;@t\2@>@/
+    Q_OBJECT@/
+    @<TimerDisplay Properties@>@;
+    @t\4@>private slots@t\kern-3pt@>:@/
+        void updateTime();
+        void setCountUpMode();
+        void setCountDownMode();
+        void setClockMode();
+    public:@/
+        TimerDisplay(QWidget *parent = NULL);
+        ~TimerDisplay();
+        enum TimerMode
+        {
+            CountUp,
+            CountDown,
+            Clock
+        };
+        QString value();
+        QTime seconds();
+        TimerMode mode();
+        bool isRunning();
+        QTime resetValue();
+        QString displayFormat();
+        bool autoReset();@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void setTimer(QTime value = QTime(0, 0, 0));
+        void setMode(TimerMode mode);
+        void startTimer();
+        void stopTimer();
+        void copyTimer();
+        void setResetValue(QTime value = QTime(0, 0, 0));
+        void reset();
+        void setDisplayFormat(QString format);
+        void setAutoReset(bool reset);
+        void updateDisplay();
+    signals:@/
+        void valueChanged(QTime);
+        void runStateChanged(bool);@/
+    private:@/
+        @<TimerDisplay Private Variables@>@;@t\2@>@/
 }@t\kern-3pt@>;
 
 @ Qt provides a property system based on its meta-object system. This allows for
@@ -10519,20 +10519,20 @@ also changed to a sensible default, but this can be changed with the usual
 
 @<TimerDisplay Implementation@>=
 TimerDisplay::TimerDisplay(QWidget *parent) : QLCDNumber(8, parent),
-	s(QTime(0, 0, 0)), r(QTime(0, 0, 0)), clock(NULL),@/ m(TimerDisplay::CountUp),
-	running(false), ar(false), startAction(new QAction(tr("Start"), NULL)),@/
-	stopAction(new QAction(tr("Stop"), NULL)),
-	resetAction(new QAction(tr("Reset"), NULL)),@/ f(QString("hh:mm:ss")),
-	relative(QTime::currentTime()), base(QTime(0, 0, 0))@/
+    s(QTime(0, 0, 0)), r(QTime(0, 0, 0)), clock(NULL),@/ m(TimerDisplay::CountUp),
+    running(false), ar(false), startAction(new QAction(tr("Start"), NULL)),@/
+    stopAction(new QAction(tr("Stop"), NULL)),
+    resetAction(new QAction(tr("Reset"), NULL)),@/ f(QString("hh:mm:ss")),
+    relative(QTime::currentTime()), base(QTime(0, 0, 0))@/
 {
-	connect(startAction, SIGNAL(triggered(bool)), this, SLOT(startTimer()));
-	connect(stopAction, SIGNAL(triggered(bool)), this, SLOT(stopTimer()));
-	connect(resetAction, SIGNAL(triggered(bool)), this, SLOT(reset()));
-	clock.setInterval(500);
-	clock.setSingleShot(false);
-	connect(&clock, SIGNAL(timeout()), this, SLOT(updateTime()));
-	setSegmentStyle(Filled);
-	updateDisplay();
+    connect(startAction, SIGNAL(triggered(bool)), this, SLOT(startTimer()));
+    connect(stopAction, SIGNAL(triggered(bool)), this, SLOT(stopTimer()));
+    connect(resetAction, SIGNAL(triggered(bool)), this, SLOT(reset()));
+    clock.setInterval(500);
+    clock.setSingleShot(false);
+    connect(&clock, SIGNAL(timeout()), this, SLOT(updateTime()));
+    setSegmentStyle(Filled);
+    updateDisplay();
 }
 
 @ The complicated bits are all in the |updateTime()| method. The behavior of
@@ -10541,29 +10541,29 @@ this function depends on the current |TimerMode| of the display.
 @<TimerDisplay Implementation@>=
 void TimerDisplay::updateTime()
 {
-	QTime time;
-	int cseconds = 0;
-	int oseconds = 0;
-	int r = 0;
-	QTime nt = QTime(0, 0, 0);
-	int n = 0;
-	int bseconds = 0;
-	switch(m)@/
-	{@t\1@>@/
-		case TimerDisplay::CountUp:@/
-			@<Check for Timer Increment@>;
-			break;
-		case TimerDisplay::CountDown:@/
-			@<Check for Timer Decrement@>;
-			break;
-		case TimerDisplay::Clock:@/
-			@<Check for Clock Change@>;
-			break;
-		default:@/
-			Q_ASSERT_X(false, "updateTime", "invalid timer mode");
-			break;@t\2@>@/
-	}
-	updateDisplay();
+    QTime time;
+    int cseconds = 0;
+    int oseconds = 0;
+    int r = 0;
+    QTime nt = QTime(0, 0, 0);
+    int n = 0;
+    int bseconds = 0;
+    switch(m)@/
+    {@t\1@>@/
+        case TimerDisplay::CountUp:@/
+            @<Check for Timer Increment@>;
+            break;
+        case TimerDisplay::CountDown:@/
+            @<Check for Timer Decrement@>;
+            break;
+        case TimerDisplay::Clock:@/
+            @<Check for Clock Change@>;
+            break;
+        default:@/
+            Q_ASSERT_X(false, "updateTime", "invalid timer mode");
+            break;@t\2@>@/
+    }
+    updateDisplay();
 }
 
 @ To have the timer count up, we calculate the value that the timer should
@@ -10575,8 +10575,8 @@ update the time to the new value and send emit a signal.
 nt = nt.addSecs(r);
 if(nt != s)
 {
-	s = nt;
-	emit valueChanged(s);
+    s = nt;
+    emit valueChanged(s);
 }
 
 @ Here we want to calculate the number of seconds in the current time, the
@@ -10598,15 +10598,15 @@ timer has already reached 0.
 @<Check for Timer Decrement@>=
 if(s > QTime(0, 0, 0))@/
 {@/
-	@<Load seconds since base time into r@>@;
-	bseconds = TIMETOINT(base);
-	n = bseconds - r;
-	nt = nt.addSecs(n);
-	if(nt != s)
-	{
-		s = nt;
-		emit valueChanged(s);
-	}
+    @<Load seconds since base time into r@>@;
+    bseconds = TIMETOINT(base);
+    n = bseconds - r;
+    nt = nt.addSecs(n);
+    if(nt != s)
+    {
+        s = nt;
+        emit valueChanged(s);
+    }
 }
 
 @ The clock mode is the simplest case as it just needs to find out if the time
@@ -10616,8 +10616,8 @@ has changed.
 time = QTime::currentTime();
 if(time != s)
 {
-	s = time;
-	emit valueChanged(s);
+    s = time;
+    emit valueChanged(s);
 }
 
 @ When counting up or down, it is important to record the time at which the
@@ -10629,26 +10629,26 @@ timer also needs to reset its value if that behavior is desired.
 
 void TimerDisplay::startTimer()@t\2\2@>@/
 {@t\1@>@/
-	if(!running)@/
-	{@t\1@>@/
-		relative = QTime::currentTime();
-		if(ar)@/
-		{
-			reset();
-		}
-		else
-		{
-			relative = TIMESUBTRACT(relative, s);
-		}
-		if(m == Clock)@/
-		{
-			updateTime();
-		}
-		base = s;
-		clock.start();@/
-		running = true;
-		emit runStateChanged(true);@t\2@>@/
-	}@t\2@>@/
+    if(!running)@/
+    {@t\1@>@/
+        relative = QTime::currentTime();
+        if(ar)@/
+        {
+            reset();
+        }
+        else
+        {
+            relative = TIMESUBTRACT(relative, s);
+        }
+        if(m == Clock)@/
+        {
+            updateTime();
+        }
+        base = s;
+        clock.start();@/
+        running = true;
+        emit runStateChanged(true);@t\2@>@/
+    }@t\2@>@/
 }
 
 @ Stopping the timer is a little simpler. Remember to stop the clock so we
@@ -10657,12 +10657,12 @@ aren'@q'@>t updating senselessly.
 @<TimerDisplay Implementation@>=
 void TimerDisplay::stopTimer()@t\2\2@>@/
 {@t\1@>@/
-	if(running)@/
-	{@t\1@>@/
-		clock.stop();@/
-		running = false;
-		emit runStateChanged(false);@t\2@>@/
-	}@t\2@>@/
+    if(running)@/
+    {@t\1@>@/
+        clock.stop();@/
+        running = false;
+        emit runStateChanged(false);@t\2@>@/
+    }@t\2@>@/
 }
 
 @ The clock is also stopped in the destructor.
@@ -10670,7 +10670,7 @@ void TimerDisplay::stopTimer()@t\2\2@>@/
 @<TimerDisplay Implementation@>=
 TimerDisplay::~TimerDisplay()
 {
-	clock.stop();
+    clock.stop();
 }
 
 @ The rest of the functions are trivial. There are functions for changing the
@@ -10679,17 +10679,17 @@ timer mode:
 @<TimerDisplay Implementation@>=
 void TimerDisplay::setCountUpMode()
 {
-	m = TimerDisplay::CountUp;
+    m = TimerDisplay::CountUp;
 }
 
 void TimerDisplay::setCountDownMode()
 {
-	m = TimerDisplay::CountDown;
+    m = TimerDisplay::CountDown;
 }
 
 void TimerDisplay::setClockMode()
 {
-	m = TimerDisplay::Clock;
+    m = TimerDisplay::Clock;
 }
 
 @ There are a few functions to obtain information about the state of the timer.
@@ -10697,37 +10697,37 @@ void TimerDisplay::setClockMode()
 @<TimerDisplay Implementation@>=
 QString TimerDisplay::value()
 {
-	return s.toString(f);
+    return s.toString(f);
 }
 
 QTime TimerDisplay::seconds()
 {
-	return s;
+    return s;
 }
 
 TimerDisplay::TimerMode TimerDisplay::mode()
 {
-	return m;
+    return m;
 }
 
 bool TimerDisplay::isRunning()
 {
-	return running;
+    return running;
 }
 
 QTime TimerDisplay::resetValue()
 {
-	return r;
+    return r;
 }
 
 QString TimerDisplay::displayFormat()
 {
-	return f;
+    return f;
 }
 
 bool TimerDisplay::autoReset()
 {
-	return ar;
+    return ar;
 }
 
 @ There are also some functions for setting aspects of the timer state.
@@ -10735,33 +10735,33 @@ bool TimerDisplay::autoReset()
 @<TimerDisplay Implementation@>=
 void TimerDisplay::setTimer(QTime value)
 {
-	if(value.isValid())
-	{
-		s = value;
-		updateDisplay();
-		emit valueChanged(value);
-	}
+    if(value.isValid())
+    {
+        s = value;
+        updateDisplay();
+        emit valueChanged(value);
+    }
 }
 
 void TimerDisplay::setMode(TimerDisplay::TimerMode mode)
 {
-	m = mode;
+    m = mode;
 }
 
 void TimerDisplay::setResetValue(QTime value)
 {
-	r = value;
+    r = value;
 }
 
 void TimerDisplay::setDisplayFormat(QString format)
 {
-	f = format;
-	setNumDigits(format.length());
+    f = format;
+    setNumDigits(format.length());
 }
 
 void TimerDisplay::setAutoReset(bool reset)
 {
-	ar = reset;
+    ar = reset;
 }
 
 @ |TimerDisplay| supports using the system clipboard to copy the current timer
@@ -10770,7 +10770,7 @@ value.
 @<TimerDisplay Implementation@>=
 void TimerDisplay::copyTimer()
 {
-	QApplication::clipboard()->setText(value());
+    QApplication::clipboard()->setText(value());
 }
 
 @ Resetting the timer is simple. We don'@q'@>t reset the timer if it is still running
@@ -10779,11 +10779,11 @@ mainly to prevent accidents.
 @<TimerDisplay Implementation@>=
 void TimerDisplay::reset()
 {
-	if(!running)
-	{
-		s = r;
-		updateDisplay();
-	}
+    if(!running)
+    {
+        s = r;
+        updateDisplay();
+    }
 }
 
 @ Finally, there is the function for changing the text of the display to the
@@ -10792,7 +10792,7 @@ current time value.
 @<TimerDisplay Implementation@>=
 void TimerDisplay::updateDisplay()
 {
-	display(value());
+    display(value());
 }
 
 @ Exposing |TimerDisplay| to the host environment is simple.
@@ -10814,14 +10814,14 @@ engine->globalObject().setProperty("TimerDisplay", value);
 @<Functions for scripting@>=
 QScriptValue constructTimerDisplay(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new TimerDisplay);
-	setTimerDisplayProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new TimerDisplay);
+    setTimerDisplayProperties(object, engine);
+    return object;
 }
 
 void setTimerDisplayProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQLCDNumberProperties(value, engine);
+    setQLCDNumberProperties(value, engine);
 }
 
 
@@ -10853,24 +10853,24 @@ changed with a call to |setOrientation()|.
 @<Class declarations@>=
 class PackLayout : public QLayout@/
 {@/
-	int doLayout(const QRect &rect, bool testOnly) const;@/
-	QList<QLayoutItem *> itemList;@/
-	Qt::Orientations@, orientation;@/
-	public:@/
-		PackLayout(QWidget *parent, int margin = 0, int spacing = -1);
-		PackLayout(int spacing = -1);
-		~PackLayout();
-		void addItem(QLayoutItem *item);
-		Qt::Orientations@, expandingDirections() const;
-		bool hasHeightForWidth() const;
-		int heightForWidth(int width) const;
-		int count() const;
-		QLayoutItem *itemAt(int index) const;
-		QSize minimumSize() const;
-		void setGeometry(const QRect &rect);
-		void setOrientation(Qt::Orientations direction);
-		QSize sizeHint() const;
-		QLayoutItem *takeAt(int index);
+    int doLayout(const QRect &rect, bool testOnly) const;@/
+    QList<QLayoutItem *> itemList;@/
+    Qt::Orientations@, orientation;@/
+    public:@/
+        PackLayout(QWidget *parent, int margin = 0, int spacing = -1);
+        PackLayout(int spacing = -1);
+        ~PackLayout();
+        void addItem(QLayoutItem *item);
+        Qt::Orientations@, expandingDirections() const;
+        bool hasHeightForWidth() const;
+        int heightForWidth(int width) const;
+        int count() const;
+        QLayoutItem *itemAt(int index) const;
+        QSize minimumSize() const;
+        void setGeometry(const QRect &rect);
+        void setOrientation(Qt::Orientations direction);
+        QSize sizeHint() const;
+        QLayoutItem *takeAt(int index);
 };
 
 @ The interesting portion of this class is in |doLayout()|. This function goes
@@ -10886,18 +10886,18 @@ will not be changed.
 @<PackLayout Implementation@>=
 int PackLayout::doLayout(const QRect &rect, bool testOnly) const
 {
-	int x = rect.x();
-	int y = rect.y();
-	QLayoutItem *item;
-	if(orientation == Qt::Horizontal)
-	{
-		@<Lay the widgets out horizontally@>@;
-	}
-	else
-	{
-		@<Lay the widgets out vertically@>@;
-	}
-	return y;
+    int x = rect.x();
+    int y = rect.y();
+    QLayoutItem *item;
+    if(orientation == Qt::Horizontal)
+    {
+        @<Lay the widgets out horizontally@>@;
+    }
+    else
+    {
+        @<Lay the widgets out vertically@>@;
+    }
+    return y;
 }
 
 @ To lay the widgets out horizontally, we go over each item in the list taking
@@ -10910,18 +10910,18 @@ are used in languages that support them directly.
 @<Lay the widgets out horizontally@>=
 foreach(item, itemList)
 {
-	int nextX = x + item->sizeHint().width() + spacing();
-	int right = x + item->sizeHint().width();
-	if(item == itemList.last())
-	{
-		right = rect.right();
-	}
-	int bottom = rect.bottom();
-	if(!testOnly)
-	{
-		item->setGeometry(QRect(QPoint(x, y), QPoint(right, bottom)));
-	}
-	x = nextX;
+    int nextX = x + item->sizeHint().width() + spacing();
+    int right = x + item->sizeHint().width();
+    if(item == itemList.last())
+    {
+        right = rect.right();
+    }
+    int bottom = rect.bottom();
+    if(!testOnly)
+    {
+        item->setGeometry(QRect(QPoint(x, y), QPoint(right, bottom)));
+    }
+    x = nextX;
 }
 
 @ Laying out the widgets vertically is very similar.
@@ -10929,18 +10929,18 @@ foreach(item, itemList)
 @<Lay the widgets out vertically@>=
 foreach(item, itemList)
 {
-	int nextY = y + item->sizeHint().height() + spacing();
-	int bottom = y + item->sizeHint().height();
-	if(item == itemList.last())
-	{
-		bottom = rect.bottom();
-	}
-	int right = rect.right();
-	if(!testOnly)
-	{
-		item->setGeometry(QRect(QPoint(x, y), QPoint(right, bottom)));
-	}
-	y = nextY;
+    int nextY = y + item->sizeHint().height() + spacing();
+    int bottom = y + item->sizeHint().height();
+    if(item == itemList.last())
+    {
+        bottom = rect.bottom();
+    }
+    int right = rect.right();
+    if(!testOnly)
+    {
+        item->setGeometry(QRect(QPoint(x, y), QPoint(right, bottom)));
+    }
+    y = nextY;
 }
 
 @ As a layout class, there are a number of things the class should be able to do
@@ -10953,29 +10953,29 @@ top, bottom, left, and right margin.
 @<PackLayout Implementation@>=
 QSize PackLayout::minimumSize() const
 {
-	QSize size;
-	QLayoutItem *item;
-	foreach(item, itemList)
-	{
-		if(orientation == Qt::Horizontal)
-		{
-			size += QSize(item->minimumSize().width(), 0);
-			if(size.height() < item->minimumSize().height())
-			{
-				size.setHeight(item->minimumSize().height());
-			}
-		}
-		else
-		{
-			size += QSize(0, item->minimumSize().height());
-			if(size.width() < item->minimumSize().width())
-			{
-				size.setWidth(item->minimumSize().width());
-			}
-		}
-	}
-	size += QSize(2*margin(), 2*margin());
-	return size;
+    QSize size;
+    QLayoutItem *item;
+    foreach(item, itemList)
+    {
+        if(orientation == Qt::Horizontal)
+        {
+            size += QSize(item->minimumSize().width(), 0);
+            if(size.height() < item->minimumSize().height())
+            {
+                size.setHeight(item->minimumSize().height());
+            }
+        }
+        else
+        {
+            size += QSize(0, item->minimumSize().height());
+            if(size.width() < item->minimumSize().width())
+            {
+                size.setWidth(item->minimumSize().width());
+            }
+        }
+    }
+    size += QSize(2*margin(), 2*margin());
+    return size;
 }
 
 @ |PackLayout| features two constructors. One allows for setting the margin,
@@ -10984,17 +10984,17 @@ parentless layout which will have to be added to another widget or layout.
 
 @<PackLayout Implementation@>=
 PackLayout::PackLayout(QWidget *parent, int margin, int spacing) :
-	QLayout(parent)@/
+    QLayout(parent)@/
 {
-	setMargin(margin);
-	setSpacing(spacing);
-	setOrientation(Qt::Horizontal);
+    setMargin(margin);
+    setSpacing(spacing);
+    setOrientation(Qt::Horizontal);
 }
 
 PackLayout::PackLayout(int spacing)
 {
-	setSpacing(spacing);
-	setOrientation(Qt::Horizontal);
+    setSpacing(spacing);
+    setOrientation(Qt::Horizontal);
 }
 
 @ In Qt, items in a layout are owned by that layout. When the layout is
@@ -11003,11 +11003,11 @@ destroyed, all of the items in that layout must also be deleted.
 @<PackLayout Implementation@>=
 PackLayout::~PackLayout()
 {
-	QLayoutItem *item;
-	while((item = takeAt(0)))
-	{
-		delete item;
-	}
+    QLayoutItem *item;
+    while((item = takeAt(0)))
+    {
+        delete item;
+    }
 }
 
 @ Deleting the items uses the |takeAt()| method to remove each widget from the
@@ -11017,14 +11017,14 @@ layout prior to deleting it. The item requested should exist, but if it doesn'@q
 @<PackLayout Implementation@>=
 QLayoutItem* PackLayout::takeAt(int index)
 {
-	if(index >= 0 && index < itemList.size())
-	{
-		return itemList.takeAt(index);
-	}
-	else
-	{
-		return NULL;
-	}
+    if(index >= 0 && index < itemList.size())
+    {
+        return itemList.takeAt(index);
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 @ If we are interested in which item is in a particular position in the layout
@@ -11033,14 +11033,14 @@ but do not want to remove it from the layout, |itemAt()| provides that.
 @<PackLayout Implementation@>=
 QLayoutItem* PackLayout::itemAt(int index) const
 {
-	if(index >= 0 && index < itemList.size())
-	{
-		return itemList.at(index);
-	}
-	else
-	{
-		return NULL;
-	}
+    if(index >= 0 && index < itemList.size())
+    {
+        return itemList.at(index);
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 @ A layout class is not very useful unless there is a way to get items into the
@@ -11056,7 +11056,7 @@ yet.
 @<PackLayout Implementation@>=
 void PackLayout::addItem(QLayoutItem *item)
 {
-	itemList.append(item);
+    itemList.append(item);
 }
 
 @ It is sometimes useful to know how many items are in a layout.
@@ -11064,7 +11064,7 @@ void PackLayout::addItem(QLayoutItem *item)
 @<PackLayout Implementation@>=
 int PackLayout::count() const@;@/
 {@/
-	return itemList.size();@/
+    return itemList.size();@/
 }
 
 @ A few more functions are needed to make the layout class work well with other
@@ -11076,28 +11076,28 @@ Documentation\nfnote{Qt Reference Documentation\par\indent\hbox{%
 @<PackLayout Implementation@>=
 Qt::Orientations PackLayout::expandingDirections() const
 {
-	return Qt::Vertical | Qt::Horizontal;
+    return Qt::Vertical | Qt::Horizontal;
 }
 
 bool PackLayout::hasHeightForWidth() const@t\2\2@>@/
 {@t\1@>@/
-	return false;@t\2@>@/
+    return false;@t\2@>@/
 }@/
 
 int PackLayout::heightForWidth(int width) const
 {
-	return doLayout(QRect(0, 0, width, 0), true);
+    return doLayout(QRect(0, 0, width, 0), true);
 }
 
 void PackLayout::setGeometry(const QRect &rect)
 {
-	QLayout::setGeometry(rect);
-	doLayout(rect, false);
+    QLayout::setGeometry(rect);
+    doLayout(rect, false);
 }
 
 QSize PackLayout::sizeHint() const
 {
-	return minimumSize();
+    return minimumSize();
 }
 
 @ It was mentioned previously that this layout is capable of lining widgets up
@@ -11107,8 +11107,8 @@ in a row or presenting them in a column. This is done with the
 @<PackLayout Implementation@>=
 void PackLayout::setOrientation(Qt::Orientations direction)
 {
-	orientation = direction;
-	doLayout(geometry(), false);
+    orientation = direction;
+    doLayout(geometry(), false);
 }
 
 @* The SceneButton Class.
@@ -11131,14 +11131,14 @@ made for are implemented.
 @<Class declarations@>=
 class SceneButton : public QGraphicsScene@/
 {@/
-	Q_OBJECT@;
-	public:@/
-		SceneButton();
-		~SceneButton();
-	protected:@/
-		void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-	signals:@/
-		void clicked(QPoint pos);
+    Q_OBJECT@;
+    public:@/
+        SceneButton();
+        ~SceneButton();
+    protected:@/
+        void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    signals:@/
+        void clicked(QPoint pos);
 };
 
 @ The implementation is trivial.
@@ -11146,17 +11146,17 @@ class SceneButton : public QGraphicsScene@/
 @<SceneButton Implementation@>=
 SceneButton::SceneButton() : QGraphicsScene()@/
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 SceneButton::~SceneButton()
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 void SceneButton::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	emit clicked(mouseEvent->buttonDownScreenPos(mouseEvent->button()));
+    emit clicked(mouseEvent->buttonDownScreenPos(mouseEvent->button()));
 }
 
 @* The WidgetDecorator Class.
@@ -11173,35 +11173,35 @@ options.
 @<Class declarations@>=
 class WidgetDecorator : public QWidget@/
 {
-	Q_OBJECT@;
-	PackLayout *layout;
-	QGraphicsView *label;
-	QGraphicsTextItem *text;
-	SceneButton *scene;
-	public:@/
-		WidgetDecorator(QWidget *widget, const QString &labeltext,@|
-						Qt::Orientations@, orientation = Qt::Horizontal,@|
-						QWidget *parent = NULL, Qt::WindowFlags f = 0);
-		~WidgetDecorator();
-		void setBackgroundBrush(QBrush background);
-		void setTextColor(QColor color);
+    Q_OBJECT@;
+    PackLayout *layout;
+    QGraphicsView *label;
+    QGraphicsTextItem *text;
+    SceneButton *scene;
+    public:@/
+        WidgetDecorator(QWidget *widget, const QString &labeltext,@|
+                        Qt::Orientations@, orientation = Qt::Horizontal,@|
+                        QWidget *parent = NULL, Qt::WindowFlags f = 0);
+        ~WidgetDecorator();
+        void setBackgroundBrush(QBrush background);
+        void setTextColor(QColor color);
 };
 
 @ Almost everything this class currently does is handled in the constructor.
 
 @<WidgetDecorator Implementation@>=
 WidgetDecorator::WidgetDecorator(QWidget *widget, const QString &labeltext,
-									Qt::Orientations orientation,
-									QWidget *parent, Qt::WindowFlags f)@/:
-	QWidget(parent, f), label(new QGraphicsView()),
-	scene(new SceneButton())@t\2@>@/
+                                    Qt::Orientations orientation,
+                                    QWidget *parent, Qt::WindowFlags f)@/:
+    QWidget(parent, f), label(new QGraphicsView()),
+    scene(new SceneButton())@t\2@>@/
 {
-	layout = new PackLayout(this);
-	layout->setOrientation(orientation);
-	@<Prepare the graphics view@>@;
-	@<Add the label to the scene@>@;
-	@<Adjust the decoration width@>@;
-	@<Pack widgets into the layout@>@;
+    layout = new PackLayout(this);
+    layout->setOrientation(orientation);
+    @<Prepare the graphics view@>@;
+    @<Add the label to the scene@>@;
+    @<Adjust the decoration width@>@;
+    @<Pack widgets into the layout@>@;
 }
 
 @ The decoration is a |QGraphicsView|. To get this to look right, we need to
@@ -11225,7 +11225,7 @@ scene->setBackgroundBrush(Qt::cyan);
 text = scene->addText(labeltext);
 if(orientation == Qt::Horizontal)
 {
-	text->rotate(270.0);
+    text->rotate(270.0);
 }
 label->setScene(scene);
 
@@ -11241,11 +11241,11 @@ height of the text.
 @<Adjust the decoration width@>=
 if(orientation == Qt::Horizontal)
 {
-	label->setMaximumWidth((int)(text->boundingRect().height() + 1));
+    label->setMaximumWidth((int)(text->boundingRect().height() + 1));
 }
 else
 {
-	label->setMaximumHeight((int)(text->boundingRect().height() + 1));
+    label->setMaximumHeight((int)(text->boundingRect().height() + 1));
 }
 label->centerOn(text);
 
@@ -11258,13 +11258,13 @@ layout->addWidget(label);
 layout->addWidget(widget);
 if(orientation == Qt::Horizontal)
 {
-	setMinimumSize(widget->sizeHint().width() + label->sizeHint().width(),
-					widget->sizeHint().height());
+    setMinimumSize(widget->sizeHint().width() + label->sizeHint().width(),
+                    widget->sizeHint().height());
 }
 else
 {
-	setMinimumSize(widget->sizeHint().width(),
-					widget->sizeHint().height() + label->sizeHint().height());
+    setMinimumSize(widget->sizeHint().width(),
+                    widget->sizeHint().height() + label->sizeHint().height());
 }
 
 @ As mentioned previously, it is possible to change the background pattern for
@@ -11273,12 +11273,12 @@ the decoration. It is also possible to change the color of the text.
 @<WidgetDecorator Implementation@>=
 void WidgetDecorator::setBackgroundBrush(QBrush background)
 {
-	scene->setBackgroundBrush(background);
+    scene->setBackgroundBrush(background);
 }
 
 void WidgetDecorator::setTextColor(QColor color)
 {
-	text->setDefaultTextColor(color);
+    text->setDefaultTextColor(color);
 }
 
 @ Finally, there is a destructor.
@@ -11286,7 +11286,7 @@ void WidgetDecorator::setTextColor(QColor color)
 @<WidgetDecorator Implementation@>=
 WidgetDecorator::~WidgetDecorator()
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 @ In order to create a decorated widget from a script, we need these functions.
@@ -11308,29 +11308,29 @@ still simple.
 
 @<Functions for scripting@>=
 QScriptValue constructWidgetDecorator(QScriptContext *context,
-										QScriptEngine *engine)
+                                        QScriptEngine *engine)
 {
-	QWidget *widget = argument<QWidget *>(0, context);
-	QString text = argument<QString>(1, context);
-	Qt::Orientations@, orientation;
-	switch(argument<int>(2, context))@/
-	{@t\1@>@/
-		case 2:@/
-			orientation = Qt::Vertical;
-			break;
-		default:@/
-			orientation = Qt::Horizontal;
-			break;@t\2@>@/
-	}
-	QScriptValue object =
-		engine->newQObject(new WidgetDecorator(widget, text, orientation));
-	setWidgetDecoratorProperties(object, engine);
-	return object;
+    QWidget *widget = argument<QWidget *>(0, context);
+    QString text = argument<QString>(1, context);
+    Qt::Orientations@, orientation;
+    switch(argument<int>(2, context))@/
+    {@t\1@>@/
+        case 2:@/
+            orientation = Qt::Vertical;
+            break;
+        default:@/
+            orientation = Qt::Horizontal;
+            break;@t\2@>@/
+    }
+    QScriptValue object =
+        engine->newQObject(new WidgetDecorator(widget, text, orientation));
+    setWidgetDecoratorProperties(object, engine);
+    return object;
 }
 
 void setWidgetDecoratorProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQWidgetProperties(value, engine);
+    setQWidgetProperties(value, engine);
 }
 
 @* The LogEditWindow Class.
@@ -11348,31 +11348,31 @@ useful in such a case. The |LogEditWindow| provides this.
 @<Class declarations@>=
 class LogEditWindow : public QMainWindow@/
 {@t\1@>@/
-	Q_OBJECT@;
-	QWidget *centralWidget;
-	PackLayout *mainLayout;
-	QHBoxLayout *addRowsLayout;
-	QLabel *startTimeLabel;
-	QTimeEdit *startTime;
-	QLabel *endTimeLabel;
-	QTimeEdit *endTime;
-	QLabel *intervalLabel;
-	QSpinBox *interval;
-	QPushButton *addRows;
-	QAction *saveXml;
-	QAction *saveCsv;
-	QAction *openXml;
-	MeasurementModel *model;
-	QTableView *log;@/
-	@t\4@>private slots@t\kern-3pt@>:@/
-		void addTheRows();
-		void saveXML();
-		void saveCSV();
-		void openXML();@/
-	protected:@/
-		void closeEvent(QCloseEvent *event);@/
-	public:@/
-		LogEditWindow();@t\2@>@/
+    Q_OBJECT@;
+    QWidget *centralWidget;
+    PackLayout *mainLayout;
+    QHBoxLayout *addRowsLayout;
+    QLabel *startTimeLabel;
+    QTimeEdit *startTime;
+    QLabel *endTimeLabel;
+    QTimeEdit *endTime;
+    QLabel *intervalLabel;
+    QSpinBox *interval;
+    QPushButton *addRows;
+    QAction *saveXml;
+    QAction *saveCsv;
+    QAction *openXml;
+    MeasurementModel *model;
+    QTableView *log;@/
+    @t\4@>private slots@t\kern-3pt@>:@/
+        void addTheRows();
+        void saveXML();
+        void saveCSV();
+        void openXML();@/
+    protected:@/
+        void closeEvent(QCloseEvent *event);@/
+    public:@/
+        LogEditWindow();@t\2@>@/
 }@t\kern-3pt@>;
 
 @ This window provides controls for adding rows to a measurement. Typically, the
@@ -11385,49 +11385,49 @@ intervals plus one time at the end.
 @<LogEditWindow Implementation@>=
 void LogEditWindow::addTheRows()
 {
-	QTime s = startTime->time();
-	while(s < endTime->time())
-	{
-		model->newMeasurement(Measurement(0, s), 1);
-		s = s.addSecs(interval->value());
-	}
-	model->newMeasurement(Measurement(0, endTime->time()), 1);
+    QTime s = startTime->time();
+    while(s < endTime->time())
+    {
+        model->newMeasurement(Measurement(0, s), 1);
+        s = s.addSecs(interval->value());
+    }
+    model->newMeasurement(Measurement(0, endTime->time()), 1);
 }
 
 @ The window is prepared in its constructor.
 
 @<LogEditWindow Implementation@>=
 LogEditWindow::LogEditWindow() : QMainWindow(NULL),
-	centralWidget(new QWidget(NULL)), mainLayout(new PackLayout(0)),@|
-	addRowsLayout(new QHBoxLayout(NULL)),
-	startTimeLabel(new QLabel("Start Time")),@|
-	startTime(new QTimeEdit(QTime(0, 0, 0, 0))),@|
-	endTimeLabel(new QLabel("End Time")),
-	endTime(new QTimeEdit(QTime(0, 20, 0, 0))),@|
-	intervalLabel(new QLabel("Interval (seconds)")),@|
-	interval(new QSpinBox()),
-	addRows(new QPushButton("Add Rows")),@|
-	saveXml(new QAction(tr("Save Profile As..."), NULL)),@|
-	saveCsv(new QAction(tr("Export CSV"), NULL)),@|
-	openXml(new QAction(tr("Load Target Profile..."), NULL)),@|
-	model(new MeasurementModel()),
-	log(new QTableView())@/
+    centralWidget(new QWidget(NULL)), mainLayout(new PackLayout(0)),@|
+    addRowsLayout(new QHBoxLayout(NULL)),
+    startTimeLabel(new QLabel("Start Time")),@|
+    startTime(new QTimeEdit(QTime(0, 0, 0, 0))),@|
+    endTimeLabel(new QLabel("End Time")),
+    endTime(new QTimeEdit(QTime(0, 20, 0, 0))),@|
+    intervalLabel(new QLabel("Interval (seconds)")),@|
+    interval(new QSpinBox()),
+    addRows(new QPushButton("Add Rows")),@|
+    saveXml(new QAction(tr("Save Profile As..."), NULL)),@|
+    saveCsv(new QAction(tr("Export CSV"), NULL)),@|
+    openXml(new QAction(tr("Load Target Profile..."), NULL)),@|
+    model(new MeasurementModel()),
+    log(new QTableView())@/
 {
-	@<Restore editor window geometry from settings@>@;
-	@<Set up the editor control bar@>@;
-	@<Prepare the model@>@;
-	@<Prepare the log table@>@;
-	mainLayout->addItem(addRowsLayout);
-	mainLayout->addWidget(log);
-	centralWidget->setLayout(mainLayout);
-	setCentralWidget(centralWidget);
-	QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-	fileMenu->addAction(openXml);
-	connect(openXml, SIGNAL(triggered()), this, SLOT(openXML()));
-	fileMenu->addAction(saveXml);
-	connect(saveXml, SIGNAL(triggered()), this, SLOT(saveXML()));
-	fileMenu->addAction(saveCsv);
-	connect(saveCsv, SIGNAL(triggered()), this, SLOT(saveCSV()));
+    @<Restore editor window geometry from settings@>@;
+    @<Set up the editor control bar@>@;
+    @<Prepare the model@>@;
+    @<Prepare the log table@>@;
+    mainLayout->addItem(addRowsLayout);
+    mainLayout->addWidget(log);
+    centralWidget->setLayout(mainLayout);
+    setCentralWidget(centralWidget);
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(openXml);
+    connect(openXml, SIGNAL(triggered()), this, SLOT(openXML()));
+    fileMenu->addAction(saveXml);
+    connect(saveXml, SIGNAL(triggered()), this, SLOT(saveXML()));
+    fileMenu->addAction(saveCsv);
+    connect(saveCsv, SIGNAL(triggered()), this, SLOT(saveCSV()));
 }
 
 @ The window keeps its previous size and location in settings. These need to be
@@ -11492,40 +11492,40 @@ depreciated, it will not be extended to support arbitrarily many columns.
 @<LogEditWindow Implementation@>=
 void LogEditWindow::saveXML()
 {
-	QSettings settings;
-	QString lastDir = settings.value("lastDirectory").toString();
-	QString filename = QFileDialog::getSaveFileName(this, tr("Save Log As..."),
-						lastDir, "", 0);
-	QFile file(filename);
-	XMLOutput writer(model, &file, 0);
-	writer.addTemperatureColumn("Temperature", 1);
-	writer.addAnnotationColumn("Annotation", 2);
-	if(writer.output())
-	{
-		QFileInfo info(filename);
-		QDir directory = info.dir();
-		lastDir = directory.path();
-		settings.setValue("lastDirectory", lastDir);
-	}
+    QSettings settings;
+    QString lastDir = settings.value("lastDirectory").toString();
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Log As..."),
+                        lastDir, "", 0);
+    QFile file(filename);
+    XMLOutput writer(model, &file, 0);
+    writer.addTemperatureColumn("Temperature", 1);
+    writer.addAnnotationColumn("Annotation", 2);
+    if(writer.output())
+    {
+        QFileInfo info(filename);
+        QDir directory = info.dir();
+        lastDir = directory.path();
+        settings.setValue("lastDirectory", lastDir);
+    }
 }
 
 void LogEditWindow::saveCSV()
 {
-	QSettings settings;
-	QString lastDir = settings.value("lastDirectory").toString();
-	QString filename = QFileDialog::getSaveFileName(this, tr("Export As..."),
-						lastDir, "", 0);
-	QFile file(filename);
-	CSVOutput writer(model, &file, 0);
-	writer.addTemperatureColumn("Temperature", 1);
-	writer.addAnnotationColumn("Annotation", 2);
-	if(writer.output())
-	{
-		QFileInfo info(filename);
-		QDir directory = info.dir();
-		lastDir = directory.path();
-		settings.setValue("lastDirectory", lastDir);
-	}
+    QSettings settings;
+    QString lastDir = settings.value("lastDirectory").toString();
+    QString filename = QFileDialog::getSaveFileName(this, tr("Export As..."),
+                        lastDir, "", 0);
+    QFile file(filename);
+    CSVOutput writer(model, &file, 0);
+    writer.addTemperatureColumn("Temperature", 1);
+    writer.addAnnotationColumn("Annotation", 2);
+    if(writer.output())
+    {
+        QFileInfo info(filename);
+        QDir directory = info.dir();
+        lastDir = directory.path();
+        settings.setValue("lastDirectory", lastDir);
+    }
 }
 
 @ Some may want to open a previously saved profile, for example, to adjust the
@@ -11535,29 +11535,29 @@ profiles with more than one temperature column.
 @<LogEditWindow Implementation@>=
 void LogEditWindow::openXML()
 {
-	QSettings settings;
-	QString lastDir = settings.value("lastDirectory").toString();
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open XML Log..."),
-						lastDir, "", 0);
-	if(filename.isNull())
-	{
-		return;
-	}
-	QFile file(filename);
-	XMLInput reader(&file, 1);
-	connect(&reader, SIGNAL(measure(Measurement, int)),
-			model, SLOT(newMeasurement(Measurement, int)));
-	connect(&reader, SIGNAL(annotation(QString, int, int)),
-			model, SLOT(newAnnotation(QString, int, int)));
-	if(reader.input())
-	{
-		QFileInfo info(filename);
-		setWindowTitle(QString(tr("%1 - %2")).@|
-			arg(QCoreApplication::applicationName()).arg(info.baseName()));
-		QDir directory = info.dir();
-		lastDir = directory.path();
-		settings.setValue("lastDirectory", lastDir);
-	}
+    QSettings settings;
+    QString lastDir = settings.value("lastDirectory").toString();
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open XML Log..."),
+                        lastDir, "", 0);
+    if(filename.isNull())
+    {
+        return;
+    }
+    QFile file(filename);
+    XMLInput reader(&file, 1);
+    connect(&reader, SIGNAL(measure(Measurement, int)),
+            model, SLOT(newMeasurement(Measurement, int)));
+    connect(&reader, SIGNAL(annotation(QString, int, int)),
+            model, SLOT(newAnnotation(QString, int, int)));
+    if(reader.input())
+    {
+        QFileInfo info(filename);
+        setWindowTitle(QString(tr("%1 - %2")).@|
+            arg(QCoreApplication::applicationName()).arg(info.baseName()));
+        QDir directory = info.dir();
+        lastDir = directory.path();
+        settings.setValue("lastDirectory", lastDir);
+    }
 }
 
 @ The window should remember its last size and position, so we store this
@@ -11566,10 +11566,10 @@ information in settings when the window is closed.
 @<LogEditWindow Implementation@>=
 void LogEditWindow::closeEvent(QCloseEvent *event)
 {
-	QSettings settings;
-	settings.setValue("logSize", size());
-	settings.setValue("logPos", pos());
-	event->accept();
+    QSettings settings;
+    settings.setValue("logSize", size());
+    settings.setValue("logPos", pos());
+    event->accept();
 }
 
 @ One function is required to instantiate this class from a script.
@@ -11590,8 +11590,8 @@ engine->globalObject().setProperty("LogEditWindow", value);
 @<Functions for scripting@>=
 QScriptValue constructLogEditWindow(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new LogEditWindow);
-	return object;
+    QScriptValue object = engine->newQObject(new LogEditWindow);
+    return object;
 }
 
 @** File IO.
@@ -11656,22 +11656,22 @@ sorted order is useful.
 @<Class declarations@>=
 class XMLOutput : public QObject@/
 {@/
-	Q_OBJECT@;@/
-	MeasurementModel *data;
-	QIODevice *out;
-	int time;
-	QMap<int, QString> temperatureColumns;
-	QMap<int, QString> controlColumns;
-	QMap<int, QString> annotationColumns;
-	public:@/
-		XMLOutput(MeasurementModel *model, QIODevice *device, int timec = 0);
-		void addTemperatureColumn(const QString &series, int column);
-		void addControlColumn(const QString &series, int column);
-		void addAnnotationColumn(const QString &series, int column);
-		void setModel(MeasurementModel *model);
-		void setTimeColumn(int column);
-		void setDevice(QIODevice *device);
-		bool output();
+    Q_OBJECT@;@/
+    MeasurementModel *data;
+    QIODevice *out;
+    int time;
+    QMap<int, QString> temperatureColumns;
+    QMap<int, QString> controlColumns;
+    QMap<int, QString> annotationColumns;
+    public:@/
+        XMLOutput(MeasurementModel *model, QIODevice *device, int timec = 0);
+        void addTemperatureColumn(const QString &series, int column);
+        void addControlColumn(const QString &series, int column);
+        void addAnnotationColumn(const QString &series, int column);
+        void setModel(MeasurementModel *model);
+        void setTimeColumn(int column);
+        void setDevice(QIODevice *device);
+        bool output();
 };
 
 @ The interesting part of this class is the |output| routine. This goes over the
@@ -11681,30 +11681,30 @@ fails, the function returns |false|, otherwise it returns |true|.
 @<XMLOutput Implementation@>=
 bool XMLOutput::output()@t\2\2@>@/
 {@t\1@>@/
-	if(!out->open(QIODevice::WriteOnly | QIODevice::Text))@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@/
-	QXmlStreamWriter xmlout(out);
-	xmlout.writeStartDocument("1.0");
-	xmlout.writeDTD("<!DOCTYPE roastlog3.0>");
-	xmlout.writeStartElement("roastlog");
-	@<Output the column declarations@>@;
-	xmlout.writeStartElement("roast");
-	bool oresult;
-	for(int i = 0; i < data->rowCount(); i++)@/
-	{
-		@<Check if row should be output@>@;
-		if(oresult)
-		{
-			@<Output tuple element@>@;
-		}
-	}
-	xmlout.writeEndElement();
-	xmlout.writeEndElement();
-	xmlout.writeEndDocument();
-	out->close();@/
-	return true;@t\2@>@/
+    if(!out->open(QIODevice::WriteOnly | QIODevice::Text))@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@/
+    QXmlStreamWriter xmlout(out);
+    xmlout.writeStartDocument("1.0");
+    xmlout.writeDTD("<!DOCTYPE roastlog3.0>");
+    xmlout.writeStartElement("roastlog");
+    @<Output the column declarations@>@;
+    xmlout.writeStartElement("roast");
+    bool oresult;
+    for(int i = 0; i < data->rowCount(); i++)@/
+    {
+        @<Check if row should be output@>@;
+        if(oresult)
+        {
+            @<Output tuple element@>@;
+        }
+    }
+    xmlout.writeEndElement();
+    xmlout.writeEndElement();
+    xmlout.writeEndDocument();
+    out->close();@/
+    return true;@t\2@>@/
 }
 
 @ Temperature column declarations are output before annotation column
@@ -11714,21 +11714,21 @@ column number.
 @<Output the column declarations@>=
 foreach(int c, temperatureColumns.keys())
 {
-	xmlout.writeStartElement("tempseries");
-	xmlout.writeAttribute("name", temperatureColumns.value(c));
-	xmlout.writeEndElement();
+    xmlout.writeStartElement("tempseries");
+    xmlout.writeAttribute("name", temperatureColumns.value(c));
+    xmlout.writeEndElement();
 }
 foreach(int c, controlColumns.keys())
 {
-	xmlout.writeStartElement("controlseries");
-	xmlout.writeAttribute("name", controlColumns.value(c));
-	xmlout.writeEndElement();
+    xmlout.writeStartElement("controlseries");
+    xmlout.writeAttribute("name", controlColumns.value(c));
+    xmlout.writeEndElement();
 }
 foreach(int c, annotationColumns.keys())
 {
-	xmlout.writeStartElement("noteseries");
-	xmlout.writeAttribute("name", annotationColumns.value(c));
-	xmlout.writeEndElement();
+    xmlout.writeStartElement("noteseries");
+    xmlout.writeAttribute("name", annotationColumns.value(c));
+    xmlout.writeEndElement();
 }
 
 @ When checking a row in the model to determine if it contains values that need
@@ -11740,34 +11740,34 @@ need to output a tuple for that row.
 oresult = false;@/
 foreach(int c, temperatureColumns.keys())@/
 {@t\1@>@/
-	if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
-	   !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))@/
-	{@t\1@>@/
-		oresult = true;
-		break;@t\2@>@/
-	}@t\2@>@/
+    if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+       !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))@/
+    {@t\1@>@/
+        oresult = true;
+        break;@t\2@>@/
+    }@t\2@>@/
 }@/
 foreach(int c, controlColumns.keys())
 {
-	if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
-	         !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))
-	{
-		oresult = true;
-		break;
-	}
+    if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+             !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))
+    {
+        oresult = true;
+        break;
+    }
 }
 if(oresult == false)@/
 {@t\1@>@/
-	foreach(int c, annotationColumns.keys())@/
-	{@t\1@>@/
-		if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
-		   !(data->data(data->index(i, c), Qt::DisplayRole).toString().
-		                isEmpty()))@/
-		{@t\1@>@/
-			oresult = true;
-			break;@t\2@>@/
-		}@t\2@>@/
-	}@t\2@>@/
+    foreach(int c, annotationColumns.keys())@/
+    {@t\1@>@/
+        if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+           !(data->data(data->index(i, c), Qt::DisplayRole).toString().
+                        isEmpty()))@/
+        {@t\1@>@/
+            oresult = true;
+            break;@t\2@>@/
+        }@t\2@>@/
+    }@t\2@>@/
 }
 
 @ Now that we know that values from the current row should be output, we can
@@ -11781,45 +11781,45 @@ xmlout.writeTextElement("time", data->data(data->index(i, time),
                                            Qt::DisplayRole).toString());
 foreach(int c, temperatureColumns.keys())@/
 {
-	if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
-	   !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))@/
-	{
-		xmlout.writeStartElement("temperature");
-		xmlout.writeAttribute("series", temperatureColumns.value(c));
-		if(data->data(data->index(i, c), Qt::UserRole).toMap().contains("relative"))
-		{
-			if(data->data(data->index(i, c), Qt::UserRole).toMap().value("relative").toBool())
-			{
-				xmlout.writeAttribute("relative", "true");
-			}
-		}
-		xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).
-		                                  toString());
-		xmlout.writeEndElement();
-	}
+    if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+       !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))@/
+    {
+        xmlout.writeStartElement("temperature");
+        xmlout.writeAttribute("series", temperatureColumns.value(c));
+        if(data->data(data->index(i, c), Qt::UserRole).toMap().contains("relative"))
+        {
+            if(data->data(data->index(i, c), Qt::UserRole).toMap().value("relative").toBool())
+            {
+                xmlout.writeAttribute("relative", "true");
+            }
+        }
+        xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).
+                                          toString());
+        xmlout.writeEndElement();
+    }
 }
 foreach(int c, controlColumns.keys())
 {
-	if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
-	         !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))
-	{
-		xmlout.writeStartElement("control");
-		xmlout.writeAttribute("series", controlColumns.value(c));
-		xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).toString());
-		xmlout.writeEndElement();
-	}
+    if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+             !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))
+    {
+        xmlout.writeStartElement("control");
+        xmlout.writeAttribute("series", controlColumns.value(c));
+        xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).toString());
+        xmlout.writeEndElement();
+    }
 }
 foreach(int c, annotationColumns.keys())@/
 {
-	if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
-	   !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))@/
-	{
-		xmlout.writeStartElement("annotation");
-		xmlout.writeAttribute("series", annotationColumns.value(c));
-		xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).
-		                                  toString());
-		xmlout.writeEndElement();
-	}
+    if(data->data(data->index(i, c), Qt::DisplayRole).isValid() &&
+       !(data->data(data->index(i, c), Qt::DisplayRole).toString().isEmpty()))@/
+    {
+        xmlout.writeStartElement("annotation");
+        xmlout.writeAttribute("series", annotationColumns.value(c));
+        xmlout.writeCharacters(data->data(data->index(i, c), Qt::DisplayRole).
+                                          toString());
+        xmlout.writeEndElement();
+    }
 }
 xmlout.writeEndElement();
 
@@ -11827,24 +11827,24 @@ xmlout.writeEndElement();
 
 @<XMLOutput Implementation@>=
 XMLOutput::XMLOutput(MeasurementModel *model, QIODevice *device, int timec)
-	: QObject(NULL), data(model), out(device), time(timec)@/
+    : QObject(NULL), data(model), out(device), time(timec)@/
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }@;
 
 void XMLOutput::setModel(MeasurementModel *model)
 {
-	data = model;
+    data = model;
 }
 
 void XMLOutput::setTimeColumn(int column)
 {
-	time = column;
+    time = column;
 }
 
 void XMLOutput::setDevice(QIODevice *device)
 {
-	out = device;
+    out = device;
 }
 
 @ As of version 1.2.3, the old |setTemperatureColumn()| and
@@ -11857,17 +11857,17 @@ export.
 @<XMLOutput Implementation@>=
 void XMLOutput::addTemperatureColumn(const QString &series, int column)
 {
-	temperatureColumns.insert(column, series);
+    temperatureColumns.insert(column, series);
 }
 
 void XMLOutput::addControlColumn(const QString &series, int column)
 {
-	controlColumns.insert(column, series);
+    controlColumns.insert(column, series);
 }
 
 void XMLOutput::addAnnotationColumn(const QString &series, int column)
 {
-	annotationColumns.insert(column, series);
+    annotationColumns.insert(column, series);
 }
 
 @* XML Input.
@@ -11892,20 +11892,20 @@ streams to unoccupied columns.
 @<Class declarations@>=
 class XMLInput : public QObject@/
 {
-	Q_OBJECT@;
-	int firstc;
-	QIODevice *in;
-	public:@/
-		XMLInput(QIODevice *input, int c);
-		void setFirstColumn(int column);
-		void setDevice(QIODevice *device);
-		bool input();
-	signals:@/
-		void measure(Measurement, int);
-		void annotation(QString, int, int);
-		void newTemperatureColumn(int, QString);
-		void newAnnotationColumn(int, QString);
-		void lastColumn(int);
+    Q_OBJECT@;
+    int firstc;
+    QIODevice *in;
+    public:@/
+        XMLInput(QIODevice *input, int c);
+        void setFirstColumn(int column);
+        void setDevice(QIODevice *device);
+        bool input();
+    signals:@/
+        void measure(Measurement, int);
+        void annotation(QString, int, int);
+        void newTemperatureColumn(int, QString);
+        void newAnnotationColumn(int, QString);
+        void lastColumn(int);
 };
 
 @ The main point of interest here is the |input()| method. If the file is read
@@ -11914,25 +11914,25 @@ successfully, |true| is returned. Otherwise, |false| is returned.
 @<XMLInput Implementation@>=
 bool XMLInput::input()@t\2\2@>@/
 {@t\1@>@/
-	if(!in->open(QIODevice::ReadOnly | QIODevice::Text))@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@/
-	QXmlStreamReader xmlin(in);
-	QMap<QString, int> temperatureColumns;
-	QMap<QString, int> annotationColumns;
-	int nextColumn = firstc;
-	@<Read column declarations@>@;
-	QTime timeval = QTime();
-	double tempval = 0;
-	QString noteval = QString();
-	int column;
-	int counter = 0;@/
-	while(!xmlin.atEnd())@/
-	{@/
-		@<Read XML file@>@;
-	}@/
-	return true;@t\2@>@/
+    if(!in->open(QIODevice::ReadOnly | QIODevice::Text))@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@/
+    QXmlStreamReader xmlin(in);
+    QMap<QString, int> temperatureColumns;
+    QMap<QString, int> annotationColumns;
+    int nextColumn = firstc;
+    @<Read column declarations@>@;
+    QTime timeval = QTime();
+    double tempval = 0;
+    QString noteval = QString();
+    int column;
+    int counter = 0;@/
+    while(!xmlin.atEnd())@/
+    {@/
+        @<Read XML file@>@;
+    }@/
+    return true;@t\2@>@/
 }
 
 @ A data file may or may not contain elements that specify the name of a column.
@@ -11945,19 +11945,19 @@ file. This should be the first element of the input file encountered.
 @<Read column declarations@>=
 while(!xmlin.isDTD())
 {
-	xmlin.readNext();
+    xmlin.readNext();
 }
 if(xmlin.isDTD())
 {
-	if(xmlin.text() == "<!DOCTYPE roastlog>")
-	{
-		@<Emit old format column specification@>@;
-	}
-	else
-	{
-		xmlin.readNext();
-		@<Scan for column declarations and emit@>@;
-	}
+    if(xmlin.text() == "<!DOCTYPE roastlog>")
+    {
+        @<Emit old format column specification@>@;
+    }
+    else
+    {
+        xmlin.readNext();
+        @<Scan for column declarations and emit@>@;
+    }
 }
 
 @ Old format data will not have column declarations. This means that we must
@@ -11976,29 +11976,29 @@ signals as elements are encountered.
 @<Scan for column declarations and emit@>=
 while(xmlin.name() != "roast")
 {
-	if(xmlin.isStartElement())
-	{
-		if((xmlin.name() == "tempseries") || (xmlin.name() == "controlseries"))
-		{
-			temperatureColumns.insert(xmlin.attributes().value("name").
-									                     toString(),
-									  nextColumn);
-			emit newTemperatureColumn(nextColumn,
-			                          xmlin.attributes().value("name").
-									                     toString());
-			nextColumn++;
-		}
-		else if(xmlin.name() == "noteseries")
-		{
-			annotationColumns.insert(xmlin.attributes().value("name").
-			                         toString(), nextColumn);
-			emit newAnnotationColumn(nextColumn,
-			                         xmlin.attributes().value("name").
-									                    toString());
-			nextColumn++;
-		}
-	}
-	xmlin.readNext();
+    if(xmlin.isStartElement())
+    {
+        if((xmlin.name() == "tempseries") || (xmlin.name() == "controlseries"))
+        {
+            temperatureColumns.insert(xmlin.attributes().value("name").
+                                                         toString(),
+                                      nextColumn);
+            emit newTemperatureColumn(nextColumn,
+                                      xmlin.attributes().value("name").
+                                                         toString());
+            nextColumn++;
+        }
+        else if(xmlin.name() == "noteseries")
+        {
+            annotationColumns.insert(xmlin.attributes().value("name").
+                                     toString(), nextColumn);
+            emit newAnnotationColumn(nextColumn,
+                                     xmlin.attributes().value("name").
+                                                        toString());
+            nextColumn++;
+        }
+    }
+    xmlin.readNext();
 }
 emit lastColumn(nextColumn - 1);
 
@@ -12018,12 +12018,12 @@ event loop to remain responsive to user input.
 xmlin.readNext();
 if(xmlin.isStartElement())
 {
-	@<Read measurement data@>@;
+    @<Read measurement data@>@;
 }
 counter++;
 if(counter % 100 == 0)
 {
-	QCoreApplication::processEvents();
+    QCoreApplication::processEvents();
 }
 
 @ When reading start elements, it is safe to ignore {\tt <tuple>} and
@@ -12043,60 +12043,60 @@ them. \endanger
 @<Read measurement data@>=
 if(xmlin.name() == "time")
 {
-	timeval = QTime::fromString(xmlin.readElementText(), "mm:ss.zzz");
+    timeval = QTime::fromString(xmlin.readElementText(), "mm:ss.zzz");
 }
 else if(xmlin.name() == "temperature")
 {
-	column = xmlin.attributes().value("series").toString().isEmpty() ?
-	         firstc : temperatureColumns.value(xmlin.attributes().
-			                                   value("series").toString());
-	bool relative = (xmlin.attributes().value("relative") == "true");
-	tempval = xmlin.readElementText().toDouble();
-	Measurement measurement(tempval, timeval);
-	if(relative)
-	{
-		measurement.insert("relative", true);
-	}
-	emit measure(measurement, column);
+    column = xmlin.attributes().value("series").toString().isEmpty() ?
+             firstc : temperatureColumns.value(xmlin.attributes().
+                                               value("series").toString());
+    bool relative = (xmlin.attributes().value("relative") == "true");
+    tempval = xmlin.readElementText().toDouble();
+    Measurement measurement(tempval, timeval);
+    if(relative)
+    {
+        measurement.insert("relative", true);
+    }
+    emit measure(measurement, column);
 }
 else if(xmlin.name() == "control")
 {
-	column = xmlin.attributes().value("series").toString().isEmpty() ?
-	         firstc : temperatureColumns.value(xmlin.attributes().
-	                                                   value("series").toString());
-	tempval = xmlin.readElementText().toDouble();
-	Measurement measurement(tempval, timeval, Units::Unitless);
-	emit measure(measurement, column);
+    column = xmlin.attributes().value("series").toString().isEmpty() ?
+             firstc : temperatureColumns.value(xmlin.attributes().
+                                                       value("series").toString());
+    tempval = xmlin.readElementText().toDouble();
+    Measurement measurement(tempval, timeval, Units::Unitless);
+    emit measure(measurement, column);
 }
 else if(xmlin.name() == "annotation")
 {
-	column = xmlin.attributes().value("series").toString().isEmpty() ?
-	         firstc + 1 : annotationColumns.value(xmlin.attributes().
-			                                      value("series").toString());
-	noteval = xmlin.readElementText();
-	if(!noteval.isEmpty())
-	{
-		emit annotation(noteval, firstc, column);
-	}
+    column = xmlin.attributes().value("series").toString().isEmpty() ?
+             firstc + 1 : annotationColumns.value(xmlin.attributes().
+                                                  value("series").toString());
+    noteval = xmlin.readElementText();
+    if(!noteval.isEmpty())
+    {
+        emit annotation(noteval, firstc, column);
+    }
 }
 
 @ The other methods just set the private member data.
 
 @<XMLInput Implementation@>=
 XMLInput::XMLInput(QIODevice *input, int c) :
-	firstc(c), in(input)@/
+    firstc(c), in(input)@/
 {@/
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }
 
 void XMLInput::setFirstColumn(int column)
 {
-	firstc = column;
+    firstc = column;
 }
 
 void XMLInput::setDevice(QIODevice *device)
 {
-	in = device;
+    in = device;
 }
 
 @ In order to allow scripts to instantiate the |XMLInput| class, we need a
@@ -12118,18 +12118,18 @@ engine->globalObject().setProperty("XMLInput", value);
 @<Functions for scripting@>=
 QScriptValue constructXMLInput(QScriptContext *context, QScriptEngine *engine)
 {
-	QIODevice *device = argument<QIODevice *>(0, context);
-	QScriptValue object = engine->newQObject(new XMLInput(&*device,
-											     argument<int>(1, context)));
-	object.setProperty("input", engine->newFunction(XMLInput_input));
-	return object;
+    QIODevice *device = argument<QIODevice *>(0, context);
+    QScriptValue object = engine->newQObject(new XMLInput(&*device,
+                                                 argument<int>(1, context)));
+    object.setProperty("input", engine->newFunction(XMLInput_input));
+    return object;
 }
 
 QScriptValue XMLInput_input(QScriptContext *context, QScriptEngine *)
 {
-	XMLInput *self = getself<@[XMLInput *@]>(context);
-	self->input();
-	return QScriptValue();
+    XMLInput *self = getself<@[XMLInput *@]>(context);
+    self->input();
+    return QScriptValue();
 }
 
 @* CSV Output.
@@ -12147,21 +12147,21 @@ The structure of this class is very similar to the |XMLOutput| class.
 @<Class declarations@>=
 class CSVOutput@/
 {@/
-	MeasurementModel *data;
-	QIODevice *out;
-	int time;
-	QMap<int, QString> temperatureColumns;
-	QMap<int, QString> controlColumns;
-	QMap<int, QString> annotationColumns;@/
-	public:@/
-		CSVOutput(MeasurementModel *model, QIODevice *device, int timec = 0);
-		void addTemperatureColumn(const QString &series, int column);
-		void addControlColumn(const QString &series, int column);
-		void addAnnotationColumn(const QString &series, int column);
-		void setModel(MeasurementModel *model);
-		void setTimeColumn(int column);
-		void setDevice(QIODevice *device);
-		bool output();@/
+    MeasurementModel *data;
+    QIODevice *out;
+    int time;
+    QMap<int, QString> temperatureColumns;
+    QMap<int, QString> controlColumns;
+    QMap<int, QString> annotationColumns;@/
+    public:@/
+        CSVOutput(MeasurementModel *model, QIODevice *device, int timec = 0);
+        void addTemperatureColumn(const QString &series, int column);
+        void addControlColumn(const QString &series, int column);
+        void addAnnotationColumn(const QString &series, int column);
+        void setModel(MeasurementModel *model);
+        void setTimeColumn(int column);
+        void setDevice(QIODevice *device);
+        bool output();@/
 };
 
 @ Very little needs to be done to output the data. We open the output stream
@@ -12176,23 +12176,23 @@ data onto a text stream.
 @<CSVOutput Implementation@>=
 bool CSVOutput::output()@t\2\2@>@/
 {@t\1@>@/
-	if(!out->open(QIODevice::WriteOnly | QIODevice::Text))@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@/
-	QTextStream output(out);
-	@<Output CSV column headers@>@;
-	bool oresult;
-	for(int i = 0; i < data->rowCount(); i++)@/
-	{
-		@<Check if row should be output@>@;
-		if(oresult)
-		{
-			@<Output CSV row@>@;
-		}
-	}
-	out->close();@/
-	return true;@t\2@>@/
+    if(!out->open(QIODevice::WriteOnly | QIODevice::Text))@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@/
+    QTextStream output(out);
+    @<Output CSV column headers@>@;
+    bool oresult;
+    for(int i = 0; i < data->rowCount(); i++)@/
+    {
+        @<Check if row should be output@>@;
+        if(oresult)
+        {
+            @<Output CSV row@>@;
+        }
+    }
+    out->close();@/
+    return true;@t\2@>@/
 }
 
 @ Before writing the data, we output a row containing the name of each column.
@@ -12201,15 +12201,15 @@ bool CSVOutput::output()@t\2\2@>@/
 output << "Time";
 foreach(int c, temperatureColumns.keys())
 {
-	output << ',' << temperatureColumns.value(c);
+    output << ',' << temperatureColumns.value(c);
 }
 foreach(int c, controlColumns.keys())
 {
-	output << ',' << controlColumns.value(c);
+    output << ',' << controlColumns.value(c);
 }
 foreach(int c, annotationColumns.keys())
 {
-	output << ',' << annotationColumns.value(c);
+    output << ',' << annotationColumns.value(c);
 }
 output << '\n';
 
@@ -12226,15 +12226,15 @@ serious issue at this time.
 output << data->data(data->index(i, time), Qt::DisplayRole).toString();
 foreach(int c, temperatureColumns.keys())
 {
-	output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
+    output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
 }
 foreach(int c, controlColumns.keys())
 {
-	output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
+    output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
 }
 foreach(int c, annotationColumns.keys())
 {
-	output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
+    output << ',' << data->data(data->index(i, c), Qt::DisplayRole).toString();
 }
 output << '\n';
 
@@ -12243,39 +12243,39 @@ on the implementation of |XMLOutput|.
 
 @<CSVOutput Implementation@>=
 CSVOutput::CSVOutput(MeasurementModel *model, QIODevice *device, int timec) :
-	data(model), out(device), time(timec)@/
+    data(model), out(device), time(timec)@/
 {
-	/* Nothing has to be done here. */
+    /* Nothing has to be done here. */
 }@;
 
 void CSVOutput::setModel(MeasurementModel *model)
 {
-	data = model;
+    data = model;
 }
 
 void CSVOutput::setTimeColumn(int column)
 {
-	time = column;
+    time = column;
 }
 
 void CSVOutput::addTemperatureColumn(const QString &series, int column)
 {
-	temperatureColumns.insert(column, series);
+    temperatureColumns.insert(column, series);
 }
 
 void CSVOutput::addControlColumn(const QString &series, int column)
 {
-	controlColumns.insert(column, series);
+    controlColumns.insert(column, series);
 }
 
 void CSVOutput::addAnnotationColumn(const QString &series, int column)
 {
-	annotationColumns.insert(column, series);
+    annotationColumns.insert(column, series);
 }
 
 void CSVOutput::setDevice(QIODevice *device)
 {
-	out = device;
+    out = device;
 }
 
 @i webview.w
@@ -12294,18 +12294,18 @@ class NodeInserter;
 class DeviceTreeModel;
 class Application : public QApplication@/
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		Application(int &argc, char **argv);
-		QDomDocument* configuration();
-		@<Device configuration members@>@;
-		QSqlDatabase database();
-		QScriptEngine *engine;@/
-	@[public slots@]:@/
-		@<Extended Application slots@>@;
-	private:@/
-		@<Application private data members@>@;
-		QDomDocument conf;
+    @[Q_OBJECT@]@;
+    public:@/
+        Application(int &argc, char **argv);
+        QDomDocument* configuration();
+        @<Device configuration members@>@;
+        QSqlDatabase database();
+        QScriptEngine *engine;@/
+    @[public slots@]:@/
+        @<Extended Application slots@>@;
+    private:@/
+        @<Application private data members@>@;
+        QDomDocument conf;
 };
 
 @ The constructor for this class handles a few things that had previously been
@@ -12314,10 +12314,10 @@ handled in |main()|.
 @<Application Implementation@>=
 Application::Application(int &argc, char **argv) : QApplication(argc, argv)@/
 {
-	@<Allow use of the default QSettings constructor@>@;
-	@<Load translation objects@>@;
-	@<Register meta-types@>@;
-	@<Register top level device configuration nodes@>@;
+    @<Allow use of the default QSettings constructor@>@;
+    @<Load translation objects@>@;
+    @<Register meta-types@>@;
+    @<Register top level device configuration nodes@>@;
 }
 
 @ We use |QSettings| objects throughout \pn{} to remember details such as the
@@ -12339,12 +12339,12 @@ details, see the Qt Linguist manual.
 QTranslator base;
 if(base.load(QString("qt_%1").arg(QLocale::system().name())))
 {
-	installTranslator(&base);
+    installTranslator(&base);
 }
 QTranslator app;
 if(app.load(QString("%1_%2").arg("Typica").arg(QLocale::system().name())))
 {
-	installTranslator(&app);
+    installTranslator(&app);
 }
 
 @ We also want to be able to access the application instance from within the
@@ -12361,7 +12361,7 @@ current application configuration. The object is populated in |main()|.
 @<Application Implementation@>=
 QDomDocument* Application::configuration()
 {
-	return &conf;
+    return &conf;
 }
 
 @ The |database()| method provides access to a database connection for use by
@@ -12370,14 +12370,14 @@ database aware widgets.
 @<Application Implementation@>=
 QSqlDatabase Application::database()
 {
-	QString connectionName;
-	QSqlDatabase connection =
-		QSqlDatabase::database(QLatin1String(QSqlDatabase::defaultConnection), false);
-	do
-	{
-		connectionName = QUuid::createUuid().toString();
-	} while (QSqlDatabase::connectionNames().contains(connectionName));
-	return QSqlDatabase::cloneDatabase(connection, QString(connectionName));
+    QString connectionName;
+    QSqlDatabase connection =
+        QSqlDatabase::database(QLatin1String(QSqlDatabase::defaultConnection), false);
+    do
+    {
+        connectionName = QUuid::createUuid().toString();
+    } while (QSqlDatabase::connectionNames().contains(connectionName));
+    return QSqlDatabase::cloneDatabase(connection, QString(connectionName));
 }
 
 @** Table editor for ordered arrays with SQL relations.
@@ -12432,32 +12432,32 @@ development time constraints.\endanger
 @<Class declarations@>=
 class SaltModel : public QAbstractItemModel@/
 {
-	Q_OBJECT@t\2\2@>@/
-	QList<QList<QMap<int, QVariant> > > modelData;
-	QStringList hData;
-	int colcount;@t\1\1@>@/
-	public:@/
-		SaltModel(int columns);
-		~SaltModel();
-		int rowCount(const QModelIndex &parent = QModelIndex()) const;
-		int columnCount(const QModelIndex &parent = QModelIndex()) const;
-		bool setHeaderData(int section, Qt::Orientation@, orientation,
-		                   const QVariant &value, int role = Qt::DisplayRole);
-		QVariant data(const QModelIndex &index, int role) const;
-		bool setData(const QModelIndex &index, const QVariant &value,
-		             int role = Qt::EditRole);
-		Qt::ItemFlags@, flags(const QModelIndex &index) const;
-		QVariant headerData(int section, Qt::Orientation@, orientation,
-		                    int role = Qt::DisplayRole) const;
-		QModelIndex index(int row, int column,
-		                  const QModelIndex &parent = QModelIndex()) const;
-		QModelIndex parent(const QModelIndex &index) const;
-		QString arrayLiteral(int column, int role) const;
-		QString quotedArrayLiteral(int column, int role) const;
-		void clear();
-		bool removeRows(int row, int count,
-		                const QModelIndex &parent = QModelIndex());
-		int findData(const QVariant &value, int column, int role = Qt::UserRole);
+    Q_OBJECT@t\2\2@>@/
+    QList<QList<QMap<int, QVariant> > > modelData;
+    QStringList hData;
+    int colcount;@t\1\1@>@/
+    public:@/
+        SaltModel(int columns);
+        ~SaltModel();
+        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        bool setHeaderData(int section, Qt::Orientation@, orientation,
+                           const QVariant &value, int role = Qt::DisplayRole);
+        QVariant data(const QModelIndex &index, int role) const;
+        bool setData(const QModelIndex &index, const QVariant &value,
+                     int role = Qt::EditRole);
+        Qt::ItemFlags@, flags(const QModelIndex &index) const;
+        QVariant headerData(int section, Qt::Orientation@, orientation,
+                            int role = Qt::DisplayRole) const;
+        QModelIndex index(int row, int column,
+                          const QModelIndex &parent = QModelIndex()) const;
+        QModelIndex parent(const QModelIndex &index) const;
+        QString arrayLiteral(int column, int role) const;
+        QString quotedArrayLiteral(int column, int role) const;
+        void clear();
+        bool removeRows(int row, int count,
+                        const QModelIndex &parent = QModelIndex());
+        int findData(const QVariant &value, int column, int role = Qt::UserRole);
 };
 
 @ The only unique methods in this class are the |arrayLiteral| and
@@ -12505,43 +12505,43 @@ http://xkcd.com/327/}%
 @<SaltModel Implementation@>=
 QString SaltModel::arrayLiteral(int column, int role) const
 {
-	QString literal = "'{";
-	for(int i = 0; i < rowCount(); i++)
-	{
-		QString datum = data(index(i, column), role).toString();
-		if(!datum.isEmpty())
-		{
-			literal.append(datum);
-			literal.append(", ");
-		}
-	}
-	if(literal.size() > 2)
-	{
-		literal.chop(2);
-	}
-	literal.append("}'");
-	return literal;
+    QString literal = "'{";
+    for(int i = 0; i < rowCount(); i++)
+    {
+        QString datum = data(index(i, column), role).toString();
+        if(!datum.isEmpty())
+        {
+            literal.append(datum);
+            literal.append(", ");
+        }
+    }
+    if(literal.size() > 2)
+    {
+        literal.chop(2);
+    }
+    literal.append("}'");
+    return literal;
 }
 
 QString SaltModel::quotedArrayLiteral(int column, int role) const
 {
-	QString literal = "'{";
-	for(int i = 0; i < rowCount(); i++)
-	{
-		QString datum = data(index(i, column), role).toString();
-		if(!datum.isEmpty())
-		{
-			literal.append("\"");
-			literal.append(datum);
-			literal.append("\", ");
-		}
-	}
-	if(literal.size() > 2)
-	{
-		literal.chop(2);
-	}
-	literal.append("}'");
-	return literal;
+    QString literal = "'{";
+    for(int i = 0; i < rowCount(); i++)
+    {
+        QString datum = data(index(i, column), role).toString();
+        if(!datum.isEmpty())
+        {
+            literal.append("\"");
+            literal.append(datum);
+            literal.append("\", ");
+        }
+    }
+    if(literal.size() > 2)
+    {
+        literal.chop(2);
+    }
+    literal.append("}'");
+    return literal;
 }
 
 @ No entries in this model have children.
@@ -12549,7 +12549,7 @@ QString SaltModel::quotedArrayLiteral(int column, int role) const
 @<SaltModel Implementation@>=
 QModelIndex SaltModel::parent(const QModelIndex &) const
 {
-	return QModelIndex();
+    return QModelIndex();
 }
 
 @ The |setData()| method is called by delegates on views when the user enters
@@ -12569,28 +12569,28 @@ efficient, but this does work.
 bool SaltModel::setData(const QModelIndex &index, const QVariant &value,
                         int role)@t\2\2@>@/
 {@t\1@>@/
-	@<Check that the SaltModel index is valid@>@;
-	if(!valid)@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}
-	if(index.row() == modelData.size() - 1)@/
-	{
-		beginInsertRows(QModelIndex(), modelData.size(), modelData.size());
-		@<Expand the SaltModel@>@;
-		endInsertRows();
-	}
-	QList<QMap<int, QVariant> > row = modelData.at(index.row());
-	QMap<int, QVariant> cell = row.at(index.column());
-	cell.insert(role, value);
-	if(role == Qt::EditRole)@/
-	{
-		cell.insert(Qt::DisplayRole, value);
-	}
-	row.replace(index.column(), cell);
-	modelData.replace(index.row(), row);
-	emit dataChanged(index, index);@/
-	return true;@t\2@>@/
+    @<Check that the SaltModel index is valid@>@;
+    if(!valid)@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }
+    if(index.row() == modelData.size() - 1)@/
+    {
+        beginInsertRows(QModelIndex(), modelData.size(), modelData.size());
+        @<Expand the SaltModel@>@;
+        endInsertRows();
+    }
+    QList<QMap<int, QVariant> > row = modelData.at(index.row());
+    QMap<int, QVariant> cell = row.at(index.column());
+    cell.insert(role, value);
+    if(role == Qt::EditRole)@/
+    {
+        cell.insert(Qt::DisplayRole, value);
+    }
+    row.replace(index.column(), cell);
+    modelData.replace(index.row(), row);
+    emit dataChanged(index, index);@/
+    return true;@t\2@>@/
 }
 
 @ Some model operations require checking that a model index is valid. This
@@ -12600,13 +12600,13 @@ chunk is used in these cases.
 bool valid = false;@/
 if(index.isValid())@/
 {@t\1@>@/
-	if(index.row() < modelData.size())@/
-	{@t\1@>@/
-		if(index.column() < colcount)@/
-		{@t\1@>@/
-			valid = true;@t\2@>@/
-		}@t\2@>@/
-	}@t\2@>@/
+    if(index.row() < modelData.size())@/
+    {@t\1@>@/
+        if(index.column() < colcount)@/
+        {@t\1@>@/
+            valid = true;@t\2@>@/
+        }@t\2@>@/
+    }@t\2@>@/
 }
 
 @ When data is modified in the last row of the table, the model must be expanded
@@ -12617,7 +12617,7 @@ QList<QMap<int, QVariant> > newRow;
 QMap<int, QVariant> defaults;
 for(int i = 0; i < colcount; i++)
 {
-	newRow.append(defaults);
+    newRow.append(defaults);
 }
 modelData.append(newRow);
 
@@ -12626,11 +12626,11 @@ modelData.append(newRow);
 @<SaltModel Implementation@>=
 SaltModel::SaltModel(int columns) : QAbstractItemModel(), colcount(columns)
 {
-	for(int i = 0; i < columns; i++)
-	{
-		hData << "";
-	}
-	@<Expand the SaltModel@>@;
+    for(int i = 0; i < columns; i++)
+    {
+        hData << "";
+    }
+    @<Expand the SaltModel@>@;
 }
 
 @ The destructor doesn'@q'@>t need to do anything.
@@ -12638,7 +12638,7 @@ SaltModel::SaltModel(int columns) : QAbstractItemModel(), colcount(columns)
 @<SaltModel Implementation@>=
 SaltModel::~SaltModel()
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @ A pair of methods provide the number of rows and columns in the model. No
@@ -12648,12 +12648,12 @@ root object.
 @<SaltModel Implementation@>=
 int SaltModel::rowCount(const QModelIndex &parent) const
 {
-	return (parent == QModelIndex() ? modelData.size() : 0);
+    return (parent == QModelIndex() ? modelData.size() : 0);
 }
 
 int SaltModel::columnCount(const QModelIndex &parent) const
 {
-	return (parent == QModelIndex() ? colcount : 0);
+    return (parent == QModelIndex() ? colcount : 0);
 }
 
 @ The model maintains header data for labeling the model columns.
@@ -12662,13 +12662,13 @@ int SaltModel::columnCount(const QModelIndex &parent) const
 bool SaltModel::setHeaderData(int section, Qt::Orientation@, orientation,@|
                               const QVariant &value, int)@t\2\2@>@/
 {@t\1@>@/
-	if(orientation == Qt::Horizontal && section < colcount)@/
-	{@t\1@>@/
-		hData.replace(section, value.toString());@/
-		emit headerDataChanged(orientation, section, section);@/
-		return true;@t\2@>@/
-	}@/
-	return false;@t\2@>@/
+    if(orientation == Qt::Horizontal && section < colcount)@/
+    {@t\1@>@/
+        hData.replace(section, value.toString());@/
+        emit headerDataChanged(orientation, section, section);@/
+        return true;@t\2@>@/
+    }@/
+    return false;@t\2@>@/
 }
 
 @ Views need to be able to retrieve model and header data.
@@ -12676,25 +12676,25 @@ bool SaltModel::setHeaderData(int section, Qt::Orientation@, orientation,@|
 @<SaltModel Implementation@>=
 QVariant SaltModel::data(const QModelIndex &index, int role) const
 {
-	@<Check that the SaltModel index is valid@>@;
-	if(!valid)
-	{
-		return QVariant();
-	}
-	QList<QMap<int,QVariant> > row = modelData.at(index.row());
-	QMap<int,QVariant> cell = row.at(index.column());
-	return cell.value(role, QVariant());
+    @<Check that the SaltModel index is valid@>@;
+    if(!valid)
+    {
+        return QVariant();
+    }
+    QList<QMap<int,QVariant> > row = modelData.at(index.row());
+    QMap<int,QVariant> cell = row.at(index.column());
+    return cell.value(role, QVariant());
 }
 
 QVariant SaltModel::headerData(int section, Qt::Orientation@, orientation,
                                int role) const
 {
-	if(orientation == Qt::Horizontal && role == Qt::DisplayRole &&
-	   section < colcount)
-	{
-		return QVariant(hData.at(section));
-	}
-	return QVariant();
+    if(orientation == Qt::Horizontal && role == Qt::DisplayRole &&
+       section < colcount)
+    {
+        return QVariant(hData.at(section));
+    }
+    return QVariant();
 }
 
 @ Views need to know certain details such as if an item in the view can be
@@ -12703,12 +12703,12 @@ altered by the view. For this model, all valid indices can be edited.
 @<SaltModel Implementation@>=
 Qt::ItemFlags SaltModel::flags(const QModelIndex &index) const
 {
-	@<Check that the SaltModel index is valid@>@;
-	if(valid)
-	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
-	}
-	return 0;
+    @<Check that the SaltModel index is valid@>@;
+    if(valid)
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+    }
+    return 0;
 }
 
 @ So far, many of the methods use model indices. The model is responsible for
@@ -12718,14 +12718,14 @@ creating these.
 QModelIndex SaltModel::index(int row, int column,
                              const QModelIndex &parent) const
 {
-	if(parent == QModelIndex())
-	{
-		if(row < modelData.size() && column < colcount)
-		{
-			return createIndex(row, column);
-		}
-	}
-	return QModelIndex();
+    if(parent == QModelIndex())
+    {
+        if(row < modelData.size() && column < colcount)
+        {
+            return createIndex(row, column);
+        }
+    }
+    return QModelIndex();
 }
 
 @ There are some times when it is useful to clear the model data. Note that
@@ -12735,10 +12735,10 @@ after this method is called.
 @<SaltModel Implementation@>=
 void SaltModel::clear()
 {
-	beginResetModel();
-	modelData.clear();
-	@<Expand the SaltModel@>@;
-	endResetModel();
+    beginResetModel();
+    modelData.clear();
+    @<Expand the SaltModel@>@;
+    endResetModel();
 }
 
 @ Another commonly useful operation is the ability to remove rows from the
@@ -12750,26 +12750,26 @@ empty row will be created.
 bool SaltModel::removeRows(int row, int count,
                            const QModelIndex &parent)
 {
-	if(parent == QModelIndex())
-	{
-		if(row >= 0 && count > 0 && (row + count - 1) < modelData.size())
-		{
-			beginRemoveRows(parent, row, row + count - 1);
-			for(int i = 0; i < count; i++)
-			{
-				modelData.removeAt(row);
-			}
-			endRemoveRows();
-			if(modelData.size() == 0)
-			{
-				beginInsertRows(parent, 0, 0);
-				@<Expand the SaltModel@>@;
-				endInsertRows();
-			}
-			return @[true@];
-		}
-	}
-	return @[false@];
+    if(parent == QModelIndex())
+    {
+        if(row >= 0 && count > 0 && (row + count - 1) < modelData.size())
+        {
+            beginRemoveRows(parent, row, row + count - 1);
+            for(int i = 0; i < count; i++)
+            {
+                modelData.removeAt(row);
+            }
+            endRemoveRows();
+            if(modelData.size() == 0)
+            {
+                beginInsertRows(parent, 0, 0);
+                @<Expand the SaltModel@>@;
+                endInsertRows();
+            }
+            return @[true@];
+        }
+    }
+    return @[false@];
 }
 
 @ To find the row number for removal operations it is useful to search for
@@ -12780,20 +12780,20 @@ or |-1| if no such match exists.
 @<SaltModel Implementation@>=
 int SaltModel::findData(const QVariant &value, int column, int role)
 {
-	for(int i = 0; i < modelData.size(); i++)
-	{
-		if(modelData.at(i).size() > column)
-		{
-			if(modelData.at(i).at(column).contains(role))
-			{
-				if(modelData.at(i).at(column).value(role) == value)
-				{
-					return i;
-				}
-			}
-		}
-	}
-	return -1;
+    for(int i = 0; i < modelData.size(); i++)
+    {
+        if(modelData.at(i).size() > column)
+        {
+            if(modelData.at(i).at(column).contains(role))
+            {
+                if(modelData.at(i).at(column).value(role) == value)
+                {
+                    return i;
+                }
+            }
+        }
+    }
+    return -1;
 }
 
 @* A Delegate for SQL Relations.
@@ -12817,24 +12817,24 @@ this widget as a delegate and handles communications between it and the model.
 @<Class declarations@>=
 class SqlComboBox : public QComboBox@/
 {@t\1@>@/
-	Q_OBJECT@;
-	int dataColumn;
-	int displayColumn;
-	bool dataColumnShown;
-	QString specialNullText;
-	QVariant specialNullData;
-	public:@/
-		SqlComboBox();
-		~SqlComboBox();
-		SqlComboBox* clone(QWidget *parent);@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void addNullOption();
-		void addSqlOptions(QString query);
-		void setDataColumn(int column);
-		void setDisplayColumn(int column);
-		void showData(bool show);
-		void setNullText(QString nullText);
-		void setNullData(QVariant nullData);@t\2@>@/
+    Q_OBJECT@;
+    int dataColumn;
+    int displayColumn;
+    bool dataColumnShown;
+    QString specialNullText;
+    QVariant specialNullData;
+    public:@/
+        SqlComboBox();
+        ~SqlComboBox();
+        SqlComboBox* clone(QWidget *parent);@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void addNullOption();
+        void addSqlOptions(QString query);
+        void setDataColumn(int column);
+        void setDisplayColumn(int column);
+        void showData(bool show);
+        void setNullText(QString nullText);
+        void setNullData(QVariant nullData);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ In order to make this class work a little more nicely as an item delegate,
@@ -12844,13 +12844,13 @@ options as a prototype.
 @<SqlComboBox Implementation@>=
 SqlComboBox* SqlComboBox::clone(QWidget *parent)
 {
-	SqlComboBox *widget = new SqlComboBox();
-	widget->setParent(parent);
-	for(int i = 0; i < count(); i++)
-	{
-		widget->addItem(itemText(i), itemData(i));
-	}
-	return widget;
+    SqlComboBox *widget = new SqlComboBox();
+    widget->setParent(parent);
+    for(int i = 0; i < count(); i++)
+    {
+        widget->addItem(itemText(i), itemData(i));
+    }
+    return widget;
 }
 
 @ When using this class, we must first decide if the data column is shown. If
@@ -12861,7 +12861,7 @@ cases where the same text is used for two different items.
 @<SqlComboBox Implementation@>=
 void SqlComboBox::showData(bool show)
 {
-	dataColumnShown = show;
+    dataColumnShown = show;
 }
 
 @ Next, there is a need to know if the NULL value may legally be selected. Where
@@ -12875,17 +12875,17 @@ any customization of the NULL text or data must be set before a call to
 @<SqlComboBox Implementation@>=
 void SqlComboBox::addNullOption()
 {
-	addItem(specialNullText, specialNullData);
+    addItem(specialNullText, specialNullData);
 }
 
 void SqlComboBox::setNullText(QString nullText)
 {
-	specialNullText = nullText;
+    specialNullText = nullText;
 }
 
 void SqlComboBox::setNullData(QVariant nullData)
 {
-	specialNullData = nullData;
+    specialNullData = nullData;
 }
 
 @ Typically, the SQL query used to populate this widget will request two columns
@@ -12898,12 +12898,12 @@ query.
 @<SqlComboBox Implementation@>=
 void SqlComboBox::setDataColumn(int column)
 {
-	dataColumn = column;
+    dataColumn = column;
 }
 
 void SqlComboBox::setDisplayColumn(int column)
 {
-	displayColumn = column;
+    displayColumn = column;
 }
 
 @ Once the widget is properly configured, we can run the SQL query and populate
@@ -12912,27 +12912,27 @@ the combo box with the results.
 @<SqlComboBox Implementation@>=
 void SqlComboBox::addSqlOptions(QString query)
 {
-	SqlQueryConnection h;
-	QSqlQuery *dbquery = h.operator->();
-	if(!dbquery->exec(query))
-	{
-		QSqlError error = dbquery->lastError();
-		qDebug() << error.databaseText();
-		qDebug() << error.driverText();
-		qDebug() << error.text();
-		qDebug() << dbquery->lastQuery();
-		/* Throw an error here, please. */
-	}
-	while(dbquery->next())
-	{
-		QString displayValue(dbquery->value(displayColumn).toString());
-		QString dataValue(dbquery->value(dataColumn).toString());
-		if(dataColumnShown)
-		{
-			displayValue.append(QString(" (%1)").arg(dataValue));
-		}
-		addItem(displayValue, dataValue);
-	}
+    SqlQueryConnection h;
+    QSqlQuery *dbquery = h.operator->();
+    if(!dbquery->exec(query))
+    {
+        QSqlError error = dbquery->lastError();
+        qDebug() << error.databaseText();
+        qDebug() << error.driverText();
+        qDebug() << error.text();
+        qDebug() << dbquery->lastQuery();
+        /* Throw an error here, please. */
+    }
+    while(dbquery->next())
+    {
+        QString displayValue(dbquery->value(displayColumn).toString());
+        QString dataValue(dbquery->value(dataColumn).toString());
+        if(dataColumnShown)
+        {
+            displayValue.append(QString(" (%1)").arg(dataValue));
+        }
+        addItem(displayValue, dataValue);
+    }
 }
 
 @ The constructor initializes some private member data. A size policy is also
@@ -12947,15 +12947,15 @@ The destructor is trivial.
 
 @<SqlComboBox Implementation@>=
 SqlComboBox::SqlComboBox() :
-	dataColumn(0), displayColumn(0), dataColumnShown(false),
-	specialNullText(tr("Unknown")), specialNullData(QVariant::String)
+    dataColumn(0), displayColumn(0), dataColumnShown(false),
+    specialNullText(tr("Unknown")), specialNullData(QVariant::String)
 {
-	view()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    view()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
 SqlComboBox::~SqlComboBox()
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @ To use this class as an editor delegate in a model we wrap the class in a
@@ -12964,21 +12964,21 @@ SqlComboBox::~SqlComboBox()
 @<Class declarations@>=
 class SqlComboBoxDelegate : public QItemDelegate@/
 {
-	Q_OBJECT@;
-	SqlComboBox *delegate;
-	public:@/
-		SqlComboBoxDelegate(QObject *parent = NULL);
-		QWidget *createEditor(QWidget *parent,
-		                      const QStyleOptionViewItem &option,@|
-							  const QModelIndex &index) const;
-		void setEditorData(QWidget *editor, const QModelIndex &index) const;
-		void setModelData(QWidget *editor, QAbstractItemModel *model,@|
-		                  const QModelIndex &index) const;
-		void setWidget(SqlComboBox *widget);
-		virtual QSize sizeHint() const;
-		void updateEditorGeometry(QWidget *editor,
-		                          const QStyleOptionViewItem &option,@|
-								  const QModelIndex &index) const;
+    Q_OBJECT@;
+    SqlComboBox *delegate;
+    public:@/
+        SqlComboBoxDelegate(QObject *parent = NULL);
+        QWidget *createEditor(QWidget *parent,
+                              const QStyleOptionViewItem &option,@|
+                              const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model,@|
+                          const QModelIndex &index) const;
+        void setWidget(SqlComboBox *widget);
+        virtual QSize sizeHint() const;
+        void updateEditorGeometry(QWidget *editor,
+                                  const QStyleOptionViewItem &option,@|
+                                  const QModelIndex &index) const;
 };
 
 @ Rather than set the values for the combo box through the delegate class, we
@@ -12987,7 +12987,7 @@ create the editor and pass it in to the delegate.
 @<SqlComboBoxDelegate Implementation@>=
 void SqlComboBoxDelegate::setWidget(SqlComboBox *widget)
 {
-	delegate = widget;
+    delegate = widget;
 }
 
 @ When a view requests this delegate, we simply return the widget that was
@@ -12996,9 +12996,9 @@ previously passed in.
 @<SqlComboBoxDelegate Implementation@>=
 QWidget* SqlComboBoxDelegate::createEditor(QWidget *parent,@|
                                            const QStyleOptionViewItem &,
-										   const QModelIndex &) const
+                                           const QModelIndex &) const
 {
-	return delegate->clone(parent);
+    return delegate->clone(parent);
 }
 
 @ To set the appropriate editor data, we check the value in the model and
@@ -13008,10 +13008,10 @@ attempt to set the value to match that.
 void SqlComboBoxDelegate::setEditorData(QWidget *editor,
                                         const QModelIndex &index) const
 {
-	SqlComboBox *self = qobject_cast<SqlComboBox *>(editor);
-	self->setCurrentIndex(self->findData(
-								index.model()->data(index,
-													Qt::UserRole).toString()));
+    SqlComboBox *self = qobject_cast<SqlComboBox *>(editor);
+    self->setCurrentIndex(self->findData(
+                                index.model()->data(index,
+                                                    Qt::UserRole).toString()));
 }
 
 @ When setting the model data, we need to specify both the display role and the
@@ -13022,20 +13022,20 @@ void SqlComboBoxDelegate::setModelData(QWidget *editor,@|
                                        QAbstractItemModel *model,
                                        const QModelIndex &index) const
 {
-	SqlComboBox *self = qobject_cast<SqlComboBox *>(editor);
-	model->setData(index, self->itemData(self->currentIndex(), Qt::UserRole),
-	               Qt::UserRole);
-	model->setData(index, self->currentText(), Qt::DisplayRole);
+    SqlComboBox *self = qobject_cast<SqlComboBox *>(editor);
+    model->setData(index, self->itemData(self->currentIndex(), Qt::UserRole),
+                   Qt::UserRole);
+    model->setData(index, self->currentText(), Qt::DisplayRole);
 }
 
 @ This is needed to play nicely with the model view architecture.
 
 @<SqlComboBoxDelegate Implementation@>=
 void SqlComboBoxDelegate::updateEditorGeometry(QWidget *editor,
-											const QStyleOptionViewItem &option,
-											const QModelIndex &) const
+                                            const QStyleOptionViewItem &option,
+                                            const QModelIndex &) const
 {
-	editor->setGeometry(option.rect);
+    editor->setGeometry(option.rect);
 }
 
 @ When this delegate is used in a table view, we want to be able to provide a
@@ -13044,16 +13044,16 @@ size hint that can be used to resize the column in order to fit the delegate.
 @<SqlComboBoxDelegate Implementation@>=
 QSize SqlComboBoxDelegate::sizeHint() const
 {
-	return delegate->sizeHint();
+    return delegate->sizeHint();
 }
 
 @ Finally, we need a constructor.
 
 @<SqlComboBoxDelegate Implementation@>=
 SqlComboBoxDelegate::SqlComboBoxDelegate(QObject *parent)
-	: QItemDelegate(parent)@/
+    : QItemDelegate(parent)@/
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @** The main program.
@@ -13067,23 +13067,23 @@ build.
 @<The main program@>=
 int main(int argc, char **argv)@/
 {@/
-	int *c = &argc;
-	Application app(*c, argv);
-	QSettings settings;
-	@<Set up logging@>@;
-	@<Set up icons@>@;
-	@<Set up fonts@>@;
+    int *c = &argc;
+    Application app(*c, argv);
+    QSettings settings;
+    @<Set up logging@>@;
+    @<Set up icons@>@;
+    @<Set up fonts@>@;
 
-	@<Register device configuration widgets@>@;
-	@<Prepare the database connection@>@;
-	@<Load the application configuration@>@;
-	@<Set up the scripting engine@>@;
-	app.engine = engine;
-	@<Find and evaluate starting script@>@;
+    @<Register device configuration widgets@>@;
+    @<Prepare the database connection@>@;
+    @<Load the application configuration@>@;
+    @<Set up the scripting engine@>@;
+    app.engine = engine;
+    @<Find and evaluate starting script@>@;
 
-	int retval = app.exec();
-	delete engine;
-	return retval;@/
+    int retval = app.exec();
+    delete engine;
+    return retval;@/
 }
 
 @ \pn{} 1.6.3 introduces optional logging of diagnostic messages to a file. By
@@ -13093,7 +13093,7 @@ allow specification of where this file should be created.
 @<Set up logging@>=
 if(settings.value("settings/advanced/logging", false).toBool())
 {
-	qInstallMsgHandler(messageFileOutput);
+    qInstallMsgHandler(messageFileOutput);
 }
 
 @ This requires that we have our messageFileOutput function.
@@ -13104,12 +13104,12 @@ void messageFileOutput(QtMsgType type, const char *msg);
 @ The current implementation is straightforward.
 
 @<Logging function implementation@>=
-void messageFileOutput(QtMsgType type, const char *msg)
+void messageFileOutput(QtMsgType, const char *msg)
 {
-	QFile output("Typica-"+QDate::currentDate().toString("yyyy-MM-dd")+".log");
-	output.open(QIODevice::WriteOnly | QIODevice::Append);
-	QTextStream outstream(&output);
-	outstream << msg << "\r\n";
+    QFile output("Typica-"+QDate::currentDate().toString("yyyy-MM-dd")+".log");
+    output.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream outstream(&output);
+    outstream << msg << "\r\n";
 }
 
 @ \pn{} 1.4 introduces the ability to use icons in certain interface elements.
@@ -13156,11 +13156,11 @@ changed if an attempt to connect to the database fails.
 @<Prepare the database connection@>=
 if(settings.value("database/exists", "false").toString() == "true")
 {
-	@<Try connecting to the database@>@;
+    @<Try connecting to the database@>@;
 }
 if(settings.value("database/exists", "false").toString() == "false")
 {
-	@<Prompt for database connection information@>@;
+    @<Prompt for database connection information@>@;
 }
 
 
@@ -13175,56 +13175,56 @@ provided to gather this information.
 @<Class declarations@>=
 class SqlConnectionSetup : public QDialog@/
 {@t\1@>@/
-	Q_OBJECT@;
-	public:@/
-		SqlConnectionSetup();
-		~SqlConnectionSetup();@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void testConnection();
-	private:@/
-		QFormLayout *formLayout;
-		QComboBox *driver;
-		QLineEdit *hostname;
-		QLineEdit *dbname;
-		QLineEdit *user;
-		QLineEdit *password;
-		QVBoxLayout *layout;
-		QHBoxLayout *buttons;
-		QPushButton *cancelButton;
-		QPushButton *connectButton;@t\2@>@/
+    Q_OBJECT@;
+    public:@/
+        SqlConnectionSetup();
+        ~SqlConnectionSetup();@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void testConnection();
+    private:@/
+        QFormLayout *formLayout;
+        QComboBox *driver;
+        QLineEdit *hostname;
+        QLineEdit *dbname;
+        QLineEdit *user;
+        QLineEdit *password;
+        QVBoxLayout *layout;
+        QHBoxLayout *buttons;
+        QPushButton *cancelButton;
+        QPushButton *connectButton;@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The constructor sets up this widget. The destructor does nothing.
 
 @<SqlConnectionSetup implementation@>=
 SqlConnectionSetup::SqlConnectionSetup() :
-	formLayout(new QFormLayout), driver(new QComboBox), hostname(new QLineEdit),
-	dbname(new QLineEdit), user(new QLineEdit), password(new QLineEdit),
-	layout(new QVBoxLayout), buttons(new QHBoxLayout),
-	cancelButton(new QPushButton(tr("Cancel"))),
-	connectButton(new QPushButton(tr("Connect")))@/
+    formLayout(new QFormLayout), driver(new QComboBox), hostname(new QLineEdit),
+    dbname(new QLineEdit), user(new QLineEdit), password(new QLineEdit),
+    layout(new QVBoxLayout), buttons(new QHBoxLayout),
+    cancelButton(new QPushButton(tr("Cancel"))),
+    connectButton(new QPushButton(tr("Connect")))@/
 {
-	driver->addItem("PostgreSQL", "QPSQL");
-	formLayout->addRow(tr("Database driver:"), driver);
-	formLayout->addRow(tr("Host name:"), hostname);
-	formLayout->addRow(tr("Database name:"), dbname);
-	formLayout->addRow(tr("User name:"), user);
-	password->setEchoMode(QLineEdit::Password);
-	formLayout->addRow(tr("Password:"), password);
-	layout->addLayout(formLayout);
-	buttons->addStretch(1);
-	buttons->addWidget(cancelButton);
-	connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
-	buttons->addWidget(connectButton);
-	layout->addLayout(buttons);
-	connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(testConnection()));
-	setLayout(layout);
-	setModal(true);
+    driver->addItem("PostgreSQL", "QPSQL");
+    formLayout->addRow(tr("Database driver:"), driver);
+    formLayout->addRow(tr("Host name:"), hostname);
+    formLayout->addRow(tr("Database name:"), dbname);
+    formLayout->addRow(tr("User name:"), user);
+    password->setEchoMode(QLineEdit::Password);
+    formLayout->addRow(tr("Password:"), password);
+    layout->addLayout(formLayout);
+    buttons->addStretch(1);
+    buttons->addWidget(cancelButton);
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
+    buttons->addWidget(connectButton);
+    layout->addLayout(buttons);
+    connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(testConnection()));
+    setLayout(layout);
+    setModal(true);
 }
 
 SqlConnectionSetup::~SqlConnectionSetup()
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @ The |testConnection()| method checks if the information provided can be used
@@ -13233,32 +13233,32 @@ to open a new database connection.
 @<SqlConnectionSetup implementation@>=
 void SqlConnectionSetup::testConnection()
 {
-	QSqlDatabase database =
-		QSqlDatabase::addDatabase(driver->itemData(driver->currentIndex()).
-		                          toString());
-	database.setConnectOptions("application_name=Typica");
-	database.setHostName(hostname->text());
-	database.setDatabaseName(dbname->text());
-	database.setUserName(user->text());
-	database.setPassword(password->text());
-	if(database.open())
-	{
-		QSettings settings;
-		settings.setValue("database/exists", "true");
-		settings.setValue("database/driver",
-		                  driver->itemData(driver->currentIndex()).toString());
-		settings.setValue("database/hostname", hostname->text());
-		settings.setValue("database/dbname", dbname->text());
-		settings.setValue("database/user", user->text());
-		settings.setValue("database/password", password->text());
-		database.close();
-		accept();
-	}
-	else
-	{
-		QMessageBox::information(this, tr("Database connection failed"),
-		                         tr("Failed to connect to database."));
-	}
+    QSqlDatabase database =
+        QSqlDatabase::addDatabase(driver->itemData(driver->currentIndex()).
+                                  toString());
+    database.setConnectOptions("application_name=Typica");
+    database.setHostName(hostname->text());
+    database.setDatabaseName(dbname->text());
+    database.setUserName(user->text());
+    database.setPassword(password->text());
+    if(database.open())
+    {
+        QSettings settings;
+        settings.setValue("database/exists", "true");
+        settings.setValue("database/driver",
+                          driver->itemData(driver->currentIndex()).toString());
+        settings.setValue("database/hostname", hostname->text());
+        settings.setValue("database/dbname", dbname->text());
+        settings.setValue("database/user", user->text());
+        settings.setValue("database/password", password->text());
+        database.close();
+        accept();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Database connection failed"),
+                                 tr("Failed to connect to database."));
+    }
 }
 
 @ In order to prompt for connection information, we simply create a
@@ -13277,7 +13277,7 @@ help.
 
 @<Try connecting to the database@>=
 QSqlDatabase database =
-	QSqlDatabase::addDatabase(settings.value("database/driver").toString());
+    QSqlDatabase::addDatabase(settings.value("database/driver").toString());
 database.setConnectOptions("application_name=Typica");
 database.setHostName(settings.value("database/hostname").toString());
 database.setDatabaseName(settings.value("database/dbname").toString());
@@ -13285,11 +13285,11 @@ database.setUserName(settings.value("database/user").toString());
 database.setPassword(settings.value("database/password").toString());
 if(!database.open())
 {
-	settings.setValue("database/exists", "false");
+    settings.setValue("database/exists", "false");
 }
 else
 {
-	database.close();
+    database.close();
 }
 
 @** Viewing a record of batches.
@@ -13310,22 +13310,22 @@ This class also automatically persists column widths when these are changed.
 @<Class declarations@>=
 class SqlQueryView : public QTableView@/
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		SqlQueryView(QWidget *parent = NULL);
-		void setQuery(const QString &query);
-		bool setHeaderData(int section, Qt::Orientation@, orientation,
-						   const QVariant &value, int role);
-		@[Q_INVOKABLE@,@, QVariant@]@, data(int row, int column,
-								  int role = Qt::DisplayRole);@t\2\2@>@/
-	signals:@/
-		void openEntry(QString key);
-		void openEntryRow(int row);@/
-	protected:@/
-		virtual void showEvent(QShowEvent *event);@/
-	@[private slots@]:@/
-		void openRow(const QModelIndex &index);
-		void persistColumnResize(int column, int oldsize, int newsize);@/
+    @[Q_OBJECT@]@;
+    public:@/
+        SqlQueryView(QWidget *parent = NULL);
+        void setQuery(const QString &query);
+        bool setHeaderData(int section, Qt::Orientation@, orientation,
+                           const QVariant &value, int role);
+        @[Q_INVOKABLE@,@, QVariant@]@, data(int row, int column,
+                                  int role = Qt::DisplayRole);@t\2\2@>@/
+    signals:@/
+        void openEntry(QString key);
+        void openEntryRow(int row);@/
+    protected:@/
+        virtual void showEvent(QShowEvent *event);@/
+    @[private slots@]:@/
+        void openRow(const QModelIndex &index);
+        void persistColumnResize(int column, int oldsize, int newsize);@/
 };
 
 @ The constructor sets up the communication between the model and the view and
@@ -13335,11 +13335,11 @@ persist that preference.
 @<SqlQueryView implementation@>=
 SqlQueryView::SqlQueryView(QWidget *parent) : QTableView(parent)
 {
-	setModel(new QSqlQueryModel);
-	connect(this, SIGNAL(doubleClicked(QModelIndex)),
-	        this, SLOT(openRow(QModelIndex)));
-	connect(horizontalHeader(), SIGNAL(sectionResized(int, int, int)),
-	        this, SLOT(persistColumnResize(int, int, int)));
+    setModel(new QSqlQueryModel);
+    connect(this, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(openRow(QModelIndex)));
+    connect(horizontalHeader(), SIGNAL(sectionResized(int, int, int)),
+            this, SLOT(persistColumnResize(int, int, int)));
 }
 
 @ Column width persistance requires two methods. First we have a slot
@@ -13350,7 +13350,7 @@ table, and the column number.
 @<SqlQueryView implementation@>=
 void SqlQueryView::persistColumnResize(int column, int, int newsize)
 {
-	@<Save updated column size@>@;
+    @<Save updated column size@>@;
 }
 
 @ The body of this function has been split out so that it can be shared with
@@ -13361,8 +13361,8 @@ QSettings settings;
 @<Obtain top level widget@>@;
 settings.setValue(QString("columnWidths/%1/%2/%3").
                          arg(topLevelWidget->objectName()).
-	                     arg(objectName()).arg(column),
-				  QVariant(newsize));
+                         arg(objectName()).arg(column),
+                  QVariant(newsize));
 
 @ To determine which window a given table is in, we just follow
 |parentWidget()| until there isn'@q'@>t one. It is possible that the table view
@@ -13373,7 +13373,7 @@ settings key to be non-unique in such a case.
 QWidget *topLevelWidget = this;
 while(topLevelWidget->parentWidget())
 {
-	topLevelWidget = topLevelWidget->parentWidget();
+    topLevelWidget = topLevelWidget->parentWidget();
 }
 
 @ We restore column widths in response to a show event. One of these should be
@@ -13382,8 +13382,8 @@ received just before the widget is shown so the widget should appear correctly.
 @<SqlQueryView implementation@>=
 void SqlQueryView::showEvent(QShowEvent *event)
 {
-	@<Restore table column widths@>@;
-	event->accept();
+    @<Restore table column widths@>@;
+    event->accept();
 }
 
 @ Similarly, most of the body of this method has also been split into a chunk
@@ -13393,15 +13393,15 @@ so that it might be shared with other classes.
 QSettings settings;
 @<Obtain top level widget@>
 QString baseKey =
-	QString("columnWidths/%1/%2").arg(topLevelWidget->objectName()).
-	                               arg(objectName());
+    QString("columnWidths/%1/%2").arg(topLevelWidget->objectName()).
+                                   arg(objectName());
 for(int i = 0; i < model()->columnCount(); i++)
 {
-	QString key = QString("%1/%2").arg(baseKey).arg(i);
-	if(settings.contains(key))
-	{
-		setColumnWidth(i, settings.value(key).toInt());
-	}
+    QString key = QString("%1/%2").arg(baseKey).arg(i);
+    if(settings.contains(key))
+    {
+        setColumnWidth(i, settings.value(key).toInt());
+    }
 }
 
 @ A slot is required for obtaining the information to send out in our signals.
@@ -13409,8 +13409,8 @@ for(int i = 0; i < model()->columnCount(); i++)
 @<SqlQueryView implementation@>=
 void SqlQueryView::openRow(const QModelIndex &index)
 {
-	emit openEntry(((QSqlQueryModel *)model())->record(index.row()).value(0).toString());
-	emit openEntryRow(index.row());
+    emit openEntry(((QSqlQueryModel *)model())->record(index.row()).value(0).toString());
+    emit openEntryRow(index.row());
 }
 
 @ The other functions are wrappers around model methods.
@@ -13418,17 +13418,17 @@ void SqlQueryView::openRow(const QModelIndex &index)
 @<SqlQueryView implementation@>=
 void SqlQueryView::setQuery(const QString &query)
 {
-	QSqlDatabase database = AppInstance->database();
-	database.open();
-	QSqlQuery q(query, database);
-	((QSqlQueryModel*)model())->setQuery(q);
-	database.close();
+    QSqlDatabase database = AppInstance->database();
+    database.open();
+    QSqlQuery q(query, database);
+    ((QSqlQueryModel*)model())->setQuery(q);
+    database.close();
 }
 
 bool SqlQueryView::setHeaderData(int section, Qt::Orientation@, orientation,
                                  const QVariant &value, int role)
 {
-	return model()->setHeaderData(section, orientation, value, role);
+    return model()->setHeaderData(section, orientation, value, role);
 }
 
 @ A method is also provided to allow scripts to access the data.
@@ -13436,7 +13436,7 @@ bool SqlQueryView::setHeaderData(int section, Qt::Orientation@, orientation,
 @<SqlQueryView implementation@>=
 QVariant SqlQueryView::data(int row, int column, int role)
 {
-	return model()->data(model()->index(row, column), role);
+    return model()->data(model()->index(row, column), role);
 }
 
 @ To use this class, it is useful to expose it to the host environment.
@@ -13463,17 +13463,17 @@ environment, and pass that back.
 @<Functions for scripting@>=
 QScriptValue constructSqlQueryView(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new SqlQueryView);
-	setSqlQueryViewProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new SqlQueryView);
+    setSqlQueryViewProperties(object, engine);
+    return object;
 }
 
 void setSqlQueryViewProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQTableViewProperties(value, engine);
-	value.setProperty("setHeaderData",
-	                  engine->newFunction(SqlQueryView_setHeaderData));
-	value.setProperty("setQuery", engine->newFunction(SqlQueryView_setQuery));
+    setQTableViewProperties(value, engine);
+    value.setProperty("setHeaderData",
+                      engine->newFunction(SqlQueryView_setHeaderData));
+    value.setProperty("setQuery", engine->newFunction(SqlQueryView_setQuery));
 }
 
 @ The properties added are simplified wrappers around the class methods.
@@ -13481,21 +13481,21 @@ void setSqlQueryViewProperties(QScriptValue value, QScriptEngine *engine)
 @<Functions for scripting@>=
 QScriptValue SqlQueryView_setQuery(QScriptContext *context, QScriptEngine *)
 {
-	SqlQueryView *self = getself<SqlQueryView *>(context);
-	QString query = argument<QString>(0, context);
-	self->setQuery(query);
-	self->reset();
-	return QScriptValue();
+    SqlQueryView *self = getself<SqlQueryView *>(context);
+    QString query = argument<QString>(0, context);
+    self->setQuery(query);
+    self->reset();
+    return QScriptValue();
 }
 
 QScriptValue SqlQueryView_setHeaderData(QScriptContext *context,
                                         QScriptEngine *)
 {
-	SqlQueryView *self = getself<SqlQueryView *>(context);
-	int section = argument<int>(0, context);
-	QString data = argument<QString>(1, context);
-	self->setHeaderData(section, Qt::Horizontal, data, Qt::DisplayRole);
-	return QScriptValue();
+    SqlQueryView *self = getself<SqlQueryView *>(context);
+    int section = argument<int>(0, context);
+    QString data = argument<QString>(1, context);
+    self->setHeaderData(section, Qt::Horizontal, data, Qt::DisplayRole);
+    return QScriptValue();
 }
 
 @** Reporting.
@@ -13554,8 +13554,8 @@ directory.setNameFilters(nameFilter);
 QFileInfoList reportFiles = directory.entryInfoList();
 for(int i = 0; i < reportFiles.size(); i++)
 {
-	QFileInfo reportFile = reportFiles.at(i);
-	@<Add report to reports menu@>@;
+    QFileInfo reportFile = reportFiles.at(i);
+    @<Add report to reports menu@>@;
 }
 
 @ The menu items themselves are a subclass of |QAction| which holds all of the
@@ -13565,14 +13565,14 @@ report.
 @<Class declarations@>=
 class ReportAction : public QAction@/
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		ReportAction(const QString &fileName, const QString &reportName,
-		             QObject *parent = NULL);@/
-	@[private slots@]:@/
-		void createReport();@/
-	private:@/
-		QString reportFile;@/
+    @[Q_OBJECT@]@;
+    public:@/
+        ReportAction(const QString &fileName, const QString &reportName,
+                     QObject *parent = NULL);@/
+    @[private slots@]:@/
+        void createReport();@/
+    private:@/
+        QString reportFile;@/
 };
 
 @ The constructor receives the name of the report file which is used to
@@ -13582,9 +13582,9 @@ name presented in the menu.
 @<ReportAction implementation@>=
 ReportAction::ReportAction(const QString &fileName, const QString &reportName,
                            QObject *parent) :
-	QAction(reportName, parent), reportFile(fileName)
+    QAction(reportName, parent), reportFile(fileName)
 {
-	connect(this, SIGNAL(triggered()), this, SLOT(createReport()));
+    connect(this, SIGNAL(triggered()), this, SLOT(createReport()));
 }
 
 @ The slot method is responsible for creating the new report. This is very
@@ -13598,20 +13598,20 @@ system.
 @<ReportAction implementation@>=
 void ReportAction::createReport()
 {
-	QFile file(reportFile);
-	QDomDocument document;
-	if(file.open(QIODevice::ReadOnly))
-	{
-		document.setContent(&file, true);
-		QDomElement element = document.documentElement();
-		QScriptEngine *engine = AppInstance->engine;
-		QScriptContext *context = engine->pushContext();
-		QScriptValue object;
-		QString targetID = reportFile;
-		@<Display the window@>@;
-		file.close();
-		engine->popContext();
-	}
+    QFile file(reportFile);
+    QDomDocument document;
+    if(file.open(QIODevice::ReadOnly))
+    {
+        document.setContent(&file, true);
+        QDomElement element = document.documentElement();
+        QScriptEngine *engine = AppInstance->engine;
+        QScriptContext *context = engine->pushContext();
+        QScriptValue object;
+        QString targetID = reportFile;
+        @<Display the window@>@;
+        file.close();
+        engine->popContext();
+    }
 }
 
 @ With the |ReportAction| available, we are now ready to add reports to the
@@ -13624,23 +13624,23 @@ QString path = reportFile.absoluteFilePath();
 QFile file(path);
 if(file.open(QIODevice::ReadOnly))
 {
-	QDomDocument document;
-	document.setContent(&file, true);
-	QDomElement root = document.documentElement();
-	QDomNode titleNode = root.elementsByTagName("reporttitle").at(0);
-	if(!titleNode.isNull())
-	{
-		QDomElement titleElement = titleNode.toElement();
-		QString title = titleElement.text();
-		if(!title.isEmpty())
-		{
-			QStringList hierarchy = title.split(":->");
-			QMenu *insertionPoint = menu;
-			@<Traverse report menu hierarchy@>
-			ReportAction *action = new ReportAction(path, hierarchy.last());
-			insertionPoint->addAction(action);
-		}
-	}
+    QDomDocument document;
+    document.setContent(&file, true);
+    QDomElement root = document.documentElement();
+    QDomNode titleNode = root.elementsByTagName("reporttitle").at(0);
+    if(!titleNode.isNull())
+    {
+        QDomElement titleElement = titleNode.toElement();
+        QString title = titleElement.text();
+        if(!title.isEmpty())
+        {
+            QStringList hierarchy = title.split(":->");
+            QMenu *insertionPoint = menu;
+            @<Traverse report menu hierarchy@>
+            ReportAction *action = new ReportAction(path, hierarchy.last());
+            insertionPoint->addAction(action);
+        }
+    }
 }
 
 @ \pn{} allows the Reports menu to contain arbitrarily deep menu hierarchies.
@@ -13649,25 +13649,25 @@ It is advised to keep these hierarchies shallow.
 @<Traverse report menu hierarchy@>=
 for(int j = 0; j < hierarchy.size() - 1; j++)
 {
-	QObjectList menuList = insertionPoint->children();
-	bool menuFound = @[false@];
-	for(int k = 0; k < menuList.size(); k++)
-	{
-		QMenu *currentItem = qobject_cast<QMenu*>(menuList.at(k));
-		if(currentItem)
-		{
-			if(currentItem->title() == hierarchy.at(j))
-			{
-				menuFound = @[true@];
-				insertionPoint = currentItem;
-				break;
-			}
-		}
-	}
-	if(!menuFound)
-	{
-		insertionPoint = insertionPoint->addMenu(hierarchy.at(j));
-	}
+    QObjectList menuList = insertionPoint->children();
+    bool menuFound = @[false@];
+    for(int k = 0; k < menuList.size(); k++)
+    {
+        QMenu *currentItem = qobject_cast<QMenu*>(menuList.at(k));
+        if(currentItem)
+        {
+            if(currentItem->title() == hierarchy.at(j))
+            {
+                menuFound = @[true@];
+                insertionPoint = currentItem;
+                break;
+            }
+        }
+    }
+    if(!menuFound)
+    {
+        insertionPoint = insertionPoint->addMenu(hierarchy.at(j));
+    }
 }
 
 @ \noindent The reporting functionality in \pn{} is based on the Scribe framework
@@ -13689,20 +13689,20 @@ layout, but also construct the document.
 void addReportToLayout(QDomElement element, QStack<QWidget *> *,@|
                        QStack<QLayout *> *layoutStack)
 {
-	QTextEdit *widget = new QTextEdit;
-	if(element.hasAttribute("id"))
-	{
-		widget->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(widget);
-	QTextDocument *document = new QTextDocument;
-	QFont defaultFont;
-	defaultFont.setPointSize(11);
-	document->setDefaultFont(defaultFont);
-	QTextCursor cursor(document);
-	@<Construct report document@>@;
-	widget->setDocument(document);
+    QTextEdit *widget = new QTextEdit;
+    if(element.hasAttribute("id"))
+    {
+        widget->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(widget);
+    QTextDocument *document = new QTextDocument;
+    QFont defaultFont;
+    defaultFont.setPointSize(11);
+    document->setDefaultFont(defaultFont);
+    QTextCursor cursor(document);
+    @<Construct report document@>@;
+    widget->setDocument(document);
 }
 
 @ Several child elements are allowed under the {\tt <report>} element. These
@@ -13712,14 +13712,14 @@ should be processed in order to produce the final report document.
 QDomNodeList children = element.childNodes();
 for(int i = 0; i < children.count(); i++)
 {
-	QDomNode current;
-	QDomElement currentElement;
-	current = children.at(i);
-	if(current.isElement())
-	{
-		currentElement = current.toElement();
-		@<Process report document elements@>@;
-	}
+    QDomNode current;
+    QDomElement currentElement;
+    current = children.at(i);
+    if(current.isElement())
+    {
+        currentElement = current.toElement();
+        @<Process report document elements@>@;
+    }
 }
 
 @ If any custom styling for HTML content is required, a {\tt <style>} element
@@ -13728,7 +13728,7 @@ should be placed in the report description before any such content.
 @<Process report document elements@>=
 if(currentElement.tagName() == "style")
 {
-	document->setDefaultStyleSheet(currentElement.text());
+    document->setDefaultStyleSheet(currentElement.text());
 }
 
 @ One common need is the ability to insert static text, such as the title of the
@@ -13739,7 +13739,7 @@ element should be a CDATA section.
 @<Process report document elements@>=
 if(currentElement.tagName() == "html")
 {
-	cursor.insertHtml(currentElement.text());
+    cursor.insertHtml(currentElement.text());
 }
 
 @ If no special formatting is needed, a plain text element can be used. This
@@ -13749,7 +13749,7 @@ formatting to be used with the text.
 @<Process report document elements@>=
 if(currentElement.tagName() == "text")
 {
-	cursor.insertText(currentElement.text());
+    cursor.insertText(currentElement.text());
 }
 
 @ One of the more interesting elements of a report is the {\tt <table>} element.
@@ -13759,13 +13759,13 @@ controls.
 @<Process report document elements@>=
 if(currentElement.tagName() == "table")
 {
-	QTextFrame *frame = cursor.insertFrame(QTextFrameFormat());
-	ReportTable *table = new ReportTable(frame, currentElement);
-	table->setParent(widget);
-	if(currentElement.hasAttribute("id"))
-	{
-		table->setObjectName(currentElement.attribute("id"));
-	}
+    QTextFrame *frame = cursor.insertFrame(QTextFrameFormat());
+    ReportTable *table = new ReportTable(frame, currentElement);
+    table->setParent(widget);
+    if(currentElement.hasAttribute("id"))
+    {
+        table->setObjectName(currentElement.attribute("id"));
+    }
 }
 
 @ The |ReportTable| class is responsible for parsing {\tt <table>} child
@@ -13774,16 +13774,16 @@ elements and inserting the table into the document at the correct location.
 @<Class declarations@>=
 class ReportTable : public QObject@/
 {@t\1@>@/
-	Q_OBJECT@;
-	QTextFrame *area;
-	QDomElement configuration;
-	QMap<QString, QVariant> bindings;
-	public:@/
-		ReportTable(QTextFrame *frame, QDomElement description);
-		~ReportTable();
-		@[Q_INVOKABLE@,@, void@]@, bind(QString placeholder, QVariant value);@t\2\2@>@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void refresh();@t\2@>@/
+    Q_OBJECT@;
+    QTextFrame *area;
+    QDomElement configuration;
+    QMap<QString, QVariant> bindings;
+    public:@/
+        ReportTable(QTextFrame *frame, QDomElement description);
+        ~ReportTable();
+        @[Q_INVOKABLE@,@, void@]@, bind(QString placeholder, QVariant value);@t\2\2@>@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void refresh();@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The |ReportTable| class takes a |QTextFrame| and |QDomElement| pointer in
@@ -13792,9 +13792,9 @@ a document and the latter is used for generating the table contents.
 
 @<ReportTable implementation@>=
 ReportTable::ReportTable(QTextFrame *frame, QDomElement description) :
-	area(frame), configuration(description)
+    area(frame), configuration(description)
 {
-	refresh();
+    refresh();
 }
 
 ReportTable::~ReportTable()
@@ -13809,7 +13809,7 @@ query.
 @<ReportTable implementation@>=
 void ReportTable::bind(QString placeholder, QVariant value)
 {
-	bindings.insert(placeholder, value);
+    bindings.insert(placeholder, value);
 }
 
 @ All of the interesting work is done in the |refresh()| slot. This method
@@ -13819,17 +13819,17 @@ description of the table in the configuration document.
 @<ReportTable implementation@>=
 void ReportTable::refresh()
 {
-	@<Delete current report table content@>@;
-	int rows = 1;
-	int columns = 1;
-	int currentRow = 0;
-	QTextTable *table = cursor.insertTable(rows, columns);
-	@<Set table formatting@>@;
-	@<Reconstruct report table content@>@;
-	if(rows > 1)
-	{
-		table->removeRows(0, 1);
-	}
+    @<Delete current report table content@>@;
+    int rows = 1;
+    int columns = 1;
+    int currentRow = 0;
+    QTextTable *table = cursor.insertTable(rows, columns);
+    @<Set table formatting@>@;
+    @<Reconstruct report table content@>@;
+    if(rows > 1)
+    {
+        table->removeRows(0, 1);
+    }
 }
 
 @ Deleting the current content of the table involves using a cursor to select
@@ -13841,7 +13841,7 @@ reconsider what you are trying to do.
 QTextCursor cursor = area->firstCursorPosition();
 while(cursor < area->lastCursorPosition())
 {
-	cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+    cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
 }
 cursor.removeSelectedText();
 
@@ -13855,10 +13855,10 @@ QTextTableFormat format = table->format();
 format.setBorderStyle(QTextFrameFormat::BorderStyle_None);
 if(configuration.hasAttribute("align"))
 {
-	if(configuration.attribute("align") == "center")
-	{
-		format.setAlignment(Qt::AlignHCenter);
-	}
+    if(configuration.attribute("align") == "center")
+    {
+        format.setAlignment(Qt::AlignHCenter);
+    }
 }
 table->setFormat(format);
 
@@ -13868,21 +13868,21 @@ table->setFormat(format);
 QDomNodeList children = configuration.childNodes();
 for(int i = 0; i < children.count(); i++)
 {
-	QDomNode current;
-	QDomElement currentElement;
-	current = children.at(i);
-	if(current.isElement())
-	{
-		currentElement = current.toElement();
-		if(currentElement.tagName() == "query")
-		{
-			@<Add SQL query results to report table@>@;
-		}
-		else if(currentElement.tagName() == "row")
-		{
-			@<Add new row to report table@>@;
-		}
-	}
+    QDomNode current;
+    QDomElement currentElement;
+    current = children.at(i);
+    if(current.isElement())
+    {
+        currentElement = current.toElement();
+        if(currentElement.tagName() == "query")
+        {
+            @<Add SQL query results to report table@>@;
+        }
+        else if(currentElement.tagName() == "row")
+        {
+            @<Add new row to report table@>@;
+        }
+    }
 }
 
 @ The text of a {\tt <query>} element will be the query desired in the table.
@@ -13897,31 +13897,31 @@ QSqlQuery *query = h.operator->();
 query->prepare(currentElement.text());
 foreach(QString key, bindings.uniqueKeys())
 {
-	if(currentElement.text().contains(key))
-	{
-		query->bindValue(key, bindings.value(key));
-	}
+    if(currentElement.text().contains(key))
+    {
+        query->bindValue(key, bindings.value(key));
+    }
 }
 query->exec();
 if(!query->next())
 {
-	continue;
+    continue;
 }
 if(query->record().count() > columns)
 {
-	table->appendColumns(query->record().count() - columns);
+    table->appendColumns(query->record().count() - columns);
 }
 do
 {
-	table->appendRows(1);
-	rows++;
-	currentRow++;
-	for(int j = 0; j < query->record().count(); j++)
-	{
-		QTextTableCell cell = table->cellAt(currentRow, j);
-		cursor = cell.firstCursorPosition();
-		cursor.insertText(query->value(j).toString());
-	}
+    table->appendRows(1);
+    rows++;
+    currentRow++;
+    for(int j = 0; j < query->record().count(); j++)
+    {
+        QTextTableCell cell = table->cellAt(currentRow, j);
+        cursor = cell.firstCursorPosition();
+        cursor.insertText(query->value(j).toString());
+    }
 } while(query->next());
 
 @ It is sometimes desirable to add fixed data such as column headers to a table.
@@ -13939,25 +13939,25 @@ QDomNodeList rowChildren = currentElement.childNodes();
 int currentColumn = 0;
 for(int j = 0; j < rowChildren.count(); j++)
 {
-	QDomNode node;
-	QDomElement nodeElement;
-	node = rowChildren.at(j);
-	if(node.isElement())
-	{
-		nodeElement = node.toElement();
-		if(nodeElement.tagName() == "cell")
-		{
-			if(currentColumn == columns)
-			{
-				table->appendColumns(1);
-				columns++;
-			}
-			QTextTableCell cell = table->cellAt(currentRow, currentColumn);
-			cursor = cell.firstCursorPosition();
-			cursor.insertText(nodeElement.text());
-			currentColumn++;
-		}
-	}
+    QDomNode node;
+    QDomElement nodeElement;
+    node = rowChildren.at(j);
+    if(node.isElement())
+    {
+        nodeElement = node.toElement();
+        if(nodeElement.tagName() == "cell")
+        {
+            if(currentColumn == columns)
+            {
+                table->appendColumns(1);
+                columns++;
+            }
+            QTextTableCell cell = table->cellAt(currentRow, currentColumn);
+            cursor = cell.firstCursorPosition();
+            cursor.insertText(nodeElement.text());
+            currentColumn++;
+        }
+    }
 }
 
 @ In order to expose report printing capabilities, we provide a property on
@@ -13972,17 +13972,17 @@ QScriptValue QTextEdit_print(QScriptContext *context, QScriptEngine *engine);
 @<Functions for scripting@>=
 QScriptValue QTextEdit_print(QScriptContext *context, QScriptEngine *)
 {
-	QTextEdit *self = getself<QTextEdit *>(context);
-	QTextDocument *document = self->document();
-	QPrinter printer;
+    QTextEdit *self = getself<QTextEdit *>(context);
+    QTextDocument *document = self->document();
+    QPrinter printer;
 
-	QPrintDialog printwindow(&printer, self);
-	if(printwindow.exec() != QDialog::Accepted)
-	{
-		return QScriptValue();
-	}
-	document->print(&printer);
-	return QScriptValue();
+    QPrintDialog printwindow(&printer, self);
+    if(printwindow.exec() != QDialog::Accepted)
+    {
+        return QScriptValue();
+    }
+    document->print(&printer);
+    return QScriptValue();
 }
 
 @ The host environment must be informed of this function.
@@ -13990,8 +13990,8 @@ QScriptValue QTextEdit_print(QScriptContext *context, QScriptEngine *)
 @<Functions for scripting@>=
 void setQTextEditProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractScrollAreaProperties(value, engine);
-	value.setProperty("print", engine->newFunction(QTextEdit_print));
+    setQAbstractScrollAreaProperties(value, engine);
+    value.setProperty("print", engine->newFunction(QTextEdit_print));
 }
 
 @i daterangeselector.w
@@ -14013,21 +14013,21 @@ from the host environment.
 @<Class declarations@>=
 class FormArray : public QScrollArea@/
 {@t\1@>@/
-	Q_OBJECT@;
-	QDomElement configuration;
-	QWidget itemContainer;
-	QVBoxLayout itemLayout;
-	int maxwidth;
-	int maxheight;
-	public:@/
-		FormArray(QDomElement description);
-		@[Q_INVOKABLE@,@, QWidget*@] elementAt(int index);@t\2\2@>@/
-		@[Q_INVOKABLE@,@, int@] elements();@t\2\2@>@/
-	@t\4@>public slots@t\kern-3pt@>:@/
-		void addElements(int copies = 1);
-		void removeAllElements();
-		void setMaximumElementWidth(int width);
-		void setMaximumElementHeight(int height);@t\2@>@/
+    Q_OBJECT@;
+    QDomElement configuration;
+    QWidget itemContainer;
+    QVBoxLayout itemLayout;
+    int maxwidth;
+    int maxheight;
+    public:@/
+        FormArray(QDomElement description);
+        @[Q_INVOKABLE@,@, QWidget*@] elementAt(int index);@t\2\2@>@/
+        @[Q_INVOKABLE@,@, int@] elements();@t\2\2@>@/
+    @t\4@>public slots@t\kern-3pt@>:@/
+        void addElements(int copies = 1);
+        void removeAllElements();
+        void setMaximumElementWidth(int width);
+        void setMaximumElementHeight(int height);@t\2@>@/
 }@t\kern-3pt@>;
 
 @ The |FormArray| is just a |QScrollArea| providing a view onto a |QWidget|
@@ -14037,10 +14037,10 @@ contents determined by the configuration document used to create the
 
 @<FormArray implementation@>=
 FormArray::FormArray(QDomElement description) : configuration(description),
-	maxwidth(-1), maxheight(-1)@/
+    maxwidth(-1), maxheight(-1)@/
 {
-	setWidget(&itemContainer);
-	itemContainer.setLayout(&itemLayout);
+    setWidget(&itemContainer);
+    itemContainer.setLayout(&itemLayout);
 }
 
 @ The |FormArray| was initially created by an XML element. A copy of this is
@@ -14055,46 +14055,46 @@ the first one added to the area.
 @<FormArray implementation@>=
 void FormArray::addElements(int copies)
 {
-	QStack<QWidget *> *widgetStack = new QStack<QWidget *>;
-	QStack<QLayout *> *layoutStack = new QStack<QLayout *>;
-	QWidget *widget;
-	for(int i = 0; i < copies; i++)
-	{
-		widget = new QWidget;
-		if(maxwidth > -1)
-		{
-			widget->setMaximumWidth(maxwidth);
-		}
-		if(maxheight > -1)
-		{
-			widget->setMaximumHeight(maxheight);
-		}
-		if(configuration.hasChildNodes())
-		{
-			widgetStack->push(widget);
-			populateWidget(configuration, widgetStack, layoutStack);
-			widgetStack->pop();
-			widget->setMinimumHeight(widget->sizeHint().height());
-			itemLayout.addWidget(widget);
-			if(widget->sizeHint().height() > maxheight && maxheight > -1)
-			{
-				itemContainer.setMinimumHeight(maxheight * elements() + 50);
-			}
-			else
-			{
-				itemContainer.setMinimumHeight(itemContainer.sizeHint().height()
-				                               + widget->sizeHint().height());
-			}
-			if(maxwidth > -1)
-			{
-				itemContainer.setMinimumWidth(maxwidth + 50);
-			}
-			else
-			{
-				itemContainer.setMinimumWidth(widget->sizeHint().width() + 50);
-			}
-		}
-	}
+    QStack<QWidget *> *widgetStack = new QStack<QWidget *>;
+    QStack<QLayout *> *layoutStack = new QStack<QLayout *>;
+    QWidget *widget;
+    for(int i = 0; i < copies; i++)
+    {
+        widget = new QWidget;
+        if(maxwidth > -1)
+        {
+            widget->setMaximumWidth(maxwidth);
+        }
+        if(maxheight > -1)
+        {
+            widget->setMaximumHeight(maxheight);
+        }
+        if(configuration.hasChildNodes())
+        {
+            widgetStack->push(widget);
+            populateWidget(configuration, widgetStack, layoutStack);
+            widgetStack->pop();
+            widget->setMinimumHeight(widget->sizeHint().height());
+            itemLayout.addWidget(widget);
+            if(widget->sizeHint().height() > maxheight && maxheight > -1)
+            {
+                itemContainer.setMinimumHeight(maxheight * elements() + 50);
+            }
+            else
+            {
+                itemContainer.setMinimumHeight(itemContainer.sizeHint().height()
+                                               + widget->sizeHint().height());
+            }
+            if(maxwidth > -1)
+            {
+                itemContainer.setMinimumWidth(maxwidth + 50);
+            }
+            else
+            {
+                itemContainer.setMinimumWidth(widget->sizeHint().width() + 50);
+            }
+        }
+    }
 }
 
 @ In order to retrieve a widget from the area, we use the |elementAt()| method.
@@ -14105,15 +14105,15 @@ form.
 @<FormArray implementation@>=
 QWidget* FormArray::elementAt(int index)
 {
-	if(index < itemLayout.count())
-	{
-		QLayoutItem *item = itemLayout.itemAt(index);
-		return item->widget();
-	}
-	else
-	{
-		return NULL;
-	}
+    if(index < itemLayout.count())
+    {
+        QLayoutItem *item = itemLayout.itemAt(index);
+        return item->widget();
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 @ Removing all elements is trivial, however we must be sure to reset the size of
@@ -14122,14 +14122,14 @@ QWidget* FormArray::elementAt(int index)
 @<FormArray implementation@>=
 void FormArray::removeAllElements()
 {
-	while(itemLayout.count() > 0)
-	{
-		QLayoutItem *item;
-		item = itemLayout.itemAt(0);
-		item->widget()->hide();
-		itemLayout.removeWidget(item->widget());
-	}
-	itemContainer.setMinimumHeight(0);
+    while(itemLayout.count() > 0)
+    {
+        QLayoutItem *item;
+        item = itemLayout.itemAt(0);
+        item->widget()->hide();
+        itemLayout.removeWidget(item->widget());
+    }
+    itemContainer.setMinimumHeight(0);
 }
 
 @ This just leaves a method for determining the number of elements already in
@@ -14138,7 +14138,7 @@ the view. This is equal to the number of items in the layout.
 @<FormArray implementation@>=
 int FormArray::elements()
 {
-	return itemLayout.count();
+    return itemLayout.count();
 }
 
 @ Some widgets do not behave well in a |FormArray| setting and will try to use
@@ -14149,12 +14149,12 @@ adding new elements.
 @<FormArray implementation@>=
 void FormArray::setMaximumElementWidth(int width)
 {
-	maxwidth = width;
+    maxwidth = width;
 }
 
 void FormArray::setMaximumElementHeight(int height)
 {
-	maxheight = height;
+    maxheight = height;
 }
 
 @ In order to create an instance of this class from the configuration document,
@@ -14171,13 +14171,13 @@ void addFormArrayToLayout(QDomElement element, QStack<QWidget *> *widgetStack,@|
 void addFormArrayToLayout(QDomElement element, QStack<QWidget *> *,@|
                           QStack<QLayout *> *layoutStack)
 {
-	FormArray *widget = new FormArray(element);
-	if(element.hasAttribute("id"))
-	{
-		widget->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(widget);
+    FormArray *widget = new FormArray(element);
+    if(element.hasAttribute("id"))
+    {
+        widget->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(widget);
 }
 
 @** Scale widgets.
@@ -14229,24 +14229,24 @@ range and tick patterns and user defined colors for the indicators.
 @<Class declarations@>=
 class ScaleControl : public QGraphicsView@/
 {@t\1@>@/
-	Q_OBJECT@/
-	Q_PROPERTY(double initialValue READ initialValue WRITE setInitialValue)@/
-	Q_PROPERTY(double finalValue READ finalValue WRITE setFinalValue)@/
-	@<ScaleControl private members@>@t\2\2@>@/
-	public:@/
-		ScaleControl();
-		double initialValue(void);
-		double finalValue(void);
-		virtual QSize sizeHint() const;@/
-	@[public slots@]:@/
-		void setInitialValue(double value);
-		void setFinalValue(double value);@/
-	signals:@/
-		void initialChanged(double);
-		void finalChanged(double);@/
-	protected:@/
-		virtual void mousePressEvent(QMouseEvent *event);
-		virtual void mouseReleaseEvent(QMouseEvent *event);@t\2@>@/
+    Q_OBJECT@/
+    Q_PROPERTY(double initialValue READ initialValue WRITE setInitialValue)@/
+    Q_PROPERTY(double finalValue READ finalValue WRITE setFinalValue)@/
+    @<ScaleControl private members@>@t\2\2@>@/
+    public:@/
+        ScaleControl();
+        double initialValue(void);
+        double finalValue(void);
+        virtual QSize sizeHint() const;@/
+    @[public slots@]:@/
+        void setInitialValue(double value);
+        void setFinalValue(double value);@/
+    signals:@/
+        void initialChanged(double);
+        void finalChanged(double);@/
+    protected:@/
+        virtual void mousePressEvent(QMouseEvent *event);
+        virtual void mouseReleaseEvent(QMouseEvent *event);@t\2@>@/
 }@t\kern-4pt@>;
 
 @ The private variables available to instances of this class are used for
@@ -14279,72 +14279,72 @@ considerable room for improvement here.
 
 @<ScaleControl implementation@>=
 ScaleControl::ScaleControl() : QGraphicsView(NULL, NULL), nonScoredValue(-1),
-	scoredValue(-1), initialSet(false), finalSet(false), scaleDown(false)
+    scoredValue(-1), initialSet(false), finalSet(false), scaleDown(false)
 {
-	left << QPointF(0, 5) << QPointF(10, 0) << QPointF(10, 10) <<
-	        QPointF(0, 5);
-	right << QPointF(10, 5) << QPointF(0, 0) << QPointF(0, 10) <<
-	         QPointF(10, 5);
-	down << QPointF(0, 0) << QPointF(-5, -10) << QPointF(5, -10) <<
-	        QPointF(0, 0);
-	up << QPointF(0, 0) << QPointF(-5, 10) << QPointF(4, 10) << QPointF(0, 0);
-	initialBrush.setColor(QColor(170, 170, 255));
-	initialBrush.setStyle(Qt::SolidPattern);
-	finalBrush.setColor(Qt::blue);
-	finalBrush.setStyle(Qt::SolidPattern);
-	initialDecrement.setPolygon(left);
-	initialDecrement.setBrush(initialBrush);
-	initialDecrement.setPos(0, 0);
-	scene.addItem(&initialDecrement);
-	initialIncrement.setPolygon(right);
-	initialIncrement.setBrush(initialBrush);
-	initialIncrement.setPos(122, 0);
-	scene.addItem(&initialIncrement);
-	finalDecrement.setPolygon(left);
-	finalDecrement.setBrush(finalBrush);
-	finalDecrement.setPos(0, 12);
-	scene.addItem(&finalDecrement);
-	finalIncrement.setPolygon(right);
-	finalIncrement.setBrush(finalBrush);
-	finalIncrement.setPos(122, 12);
-	scene.addItem(&finalIncrement);
-	scalePath.moveTo(0, 10);
-	scalePath.lineTo(100, 10);
-	scalePath.moveTo(0, 0);
-	scalePath.lineTo(0, 20);
-	scalePath.moveTo(10, 5);
-	scalePath.lineTo(10, 15);
-	scalePath.moveTo(20, 5);
-	scalePath.lineTo(20, 15);
-	scalePath.moveTo(30, 5);
-	scalePath.lineTo(30, 15);
-	scalePath.moveTo(40, 5);
-	scalePath.lineTo(40, 15);
-	scalePath.moveTo(50, 0);
-	scalePath.lineTo(50, 20);
-	scalePath.moveTo(60, 5);
-	scalePath.lineTo(60, 15);
-	scalePath.moveTo(70, 5);
-	scalePath.lineTo(70, 15);
-	scalePath.moveTo(80, 5);
-	scalePath.lineTo(80, 15);
-	scalePath.moveTo(90, 5);
-	scalePath.lineTo(90, 15);
-	scalePath.moveTo(100, 0);
-	scalePath.lineTo(100, 20);
-	scaleLine.setPath(scalePath);
-	scaleLine.setPos(16, 1);
-	scene.addItem(&scaleLine);
-	setScene(&scene);
-	initialIndicator.setPolygon(down);
-	initialIndicator.setBrush(initialBrush);
-	finalIndicator.setPolygon(up);
-	finalIndicator.setBrush(finalBrush);
-	setMinimumSize(sizeHint());
-	setMaximumSize(sizeHint());
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setMinimumSize(sizeHint());
+    left << QPointF(0, 5) << QPointF(10, 0) << QPointF(10, 10) <<
+            QPointF(0, 5);
+    right << QPointF(10, 5) << QPointF(0, 0) << QPointF(0, 10) <<
+             QPointF(10, 5);
+    down << QPointF(0, 0) << QPointF(-5, -10) << QPointF(5, -10) <<
+            QPointF(0, 0);
+    up << QPointF(0, 0) << QPointF(-5, 10) << QPointF(4, 10) << QPointF(0, 0);
+    initialBrush.setColor(QColor(170, 170, 255));
+    initialBrush.setStyle(Qt::SolidPattern);
+    finalBrush.setColor(Qt::blue);
+    finalBrush.setStyle(Qt::SolidPattern);
+    initialDecrement.setPolygon(left);
+    initialDecrement.setBrush(initialBrush);
+    initialDecrement.setPos(0, 0);
+    scene.addItem(&initialDecrement);
+    initialIncrement.setPolygon(right);
+    initialIncrement.setBrush(initialBrush);
+    initialIncrement.setPos(122, 0);
+    scene.addItem(&initialIncrement);
+    finalDecrement.setPolygon(left);
+    finalDecrement.setBrush(finalBrush);
+    finalDecrement.setPos(0, 12);
+    scene.addItem(&finalDecrement);
+    finalIncrement.setPolygon(right);
+    finalIncrement.setBrush(finalBrush);
+    finalIncrement.setPos(122, 12);
+    scene.addItem(&finalIncrement);
+    scalePath.moveTo(0, 10);
+    scalePath.lineTo(100, 10);
+    scalePath.moveTo(0, 0);
+    scalePath.lineTo(0, 20);
+    scalePath.moveTo(10, 5);
+    scalePath.lineTo(10, 15);
+    scalePath.moveTo(20, 5);
+    scalePath.lineTo(20, 15);
+    scalePath.moveTo(30, 5);
+    scalePath.lineTo(30, 15);
+    scalePath.moveTo(40, 5);
+    scalePath.lineTo(40, 15);
+    scalePath.moveTo(50, 0);
+    scalePath.lineTo(50, 20);
+    scalePath.moveTo(60, 5);
+    scalePath.lineTo(60, 15);
+    scalePath.moveTo(70, 5);
+    scalePath.lineTo(70, 15);
+    scalePath.moveTo(80, 5);
+    scalePath.lineTo(80, 15);
+    scalePath.moveTo(90, 5);
+    scalePath.lineTo(90, 15);
+    scalePath.moveTo(100, 0);
+    scalePath.lineTo(100, 20);
+    scaleLine.setPath(scalePath);
+    scaleLine.setPos(16, 1);
+    scene.addItem(&scaleLine);
+    setScene(&scene);
+    initialIndicator.setPolygon(down);
+    initialIndicator.setBrush(initialBrush);
+    finalIndicator.setPolygon(up);
+    finalIndicator.setBrush(finalBrush);
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setMinimumSize(sizeHint());
 }
 
 @ The size hint forces a smaller representation of the widget, making it easier
@@ -14353,7 +14353,7 @@ to arrange with other widgets.
 @<ScaleControl implementation@>=
 QSize ScaleControl::sizeHint() const
 {
-	return QSize(140, 30);
+    return QSize(140, 30);
 }
 
 @ The methods for setting the values represented on the scale must ensure that
@@ -14362,36 +14362,36 @@ the appropriate indicator is drawn and position it appropriately.
 @<ScaleControl implementation@>=
 void ScaleControl::setInitialValue(double value)@t\2\2@>@/
 {@t\1@>@/
-	if(value >= 0 && value <= 10)@/
-	{@t\1@>@/
-		nonScoredValue = value;
-		if(!initialSet)
-		{
-			scene.addItem(&initialIndicator);
-		}
-		initialSet = true;
-		initialIndicator.setPos(value * 10 + 16, 10);
-		emit initialChanged(value);
-		if(!finalSet)
-		{
-			setFinalValue(value);
-		}@t\2@>@/
-	}@t\2@>@/
+    if(value >= 0 && value <= 10)@/
+    {@t\1@>@/
+        nonScoredValue = value;
+        if(!initialSet)
+        {
+            scene.addItem(&initialIndicator);
+        }
+        initialSet = true;
+        initialIndicator.setPos(value * 10 + 16, 10);
+        emit initialChanged(value);
+        if(!finalSet)
+        {
+            setFinalValue(value);
+        }@t\2@>@/
+    }@t\2@>@/
 }@/@/
 
 void ScaleControl::setFinalValue(double value)@t\2\2@>@/
 {@t\1@>@/
-	if(value >= 0 && value <= 10)@/
-	{@t\1@>@/
-		scoredValue = value;
-		if(!finalSet)@/
-		{
-			scene.addItem(&finalIndicator);
-		}
-		finalSet = true;
-		finalIndicator.setPos(value * 10 + 16, 11);
-		emit finalChanged(value);@t\2@>@/
-	}@t\2@>@/
+    if(value >= 0 && value <= 10)@/
+    {@t\1@>@/
+        scoredValue = value;
+        if(!finalSet)@/
+        {
+            scene.addItem(&finalIndicator);
+        }
+        finalSet = true;
+        finalIndicator.setPos(value * 10 + 16, 11);
+        emit finalChanged(value);@t\2@>@/
+    }@t\2@>@/
 }
 
 @ These values can, of course, be retrieved programmatically.
@@ -14399,12 +14399,12 @@ void ScaleControl::setFinalValue(double value)@t\2\2@>@/
 @<ScaleControl implementation@>=
 double ScaleControl::initialValue(void)
 {
-	return nonScoredValue;
+    return nonScoredValue;
 }
 
 double ScaleControl::finalValue(void)
 {
-	return scoredValue;
+    return scoredValue;
 }
 
 @ This only leaves the matter of handling interaction with the widget. A future
@@ -14420,9 +14420,9 @@ pressed.
 @<ScaleControl implementation@>=
 void ScaleControl::mousePressEvent(QMouseEvent *event)
 {
-	@<Check that the left button was pressed@>@;
-	scaleDown = @[true@];
-	event->accept();
+    @<Check that the left button was pressed@>@;
+    scaleDown = @[true@];
+    event->accept();
 }
 
 @ The primary action button on the mouse is the left button. While there might
@@ -14432,8 +14432,8 @@ presently supported.
 @<Check that the left button was pressed@>=
 if(event->button() != Qt::LeftButton)
 {
-	event->ignore();
-	return;
+    event->ignore();
+    return;
 }
 
 @ Most of the click event handling is done in response to releasing the mouse
@@ -14443,19 +14443,19 @@ clickable portion of the scale and take the appropriate action in response.
 @<ScaleControl implementation@>=
 void ScaleControl::mouseReleaseEvent(QMouseEvent *event)@t\2\2@>@/
 {@t\1@>@/
-	@<Check that the left button was pressed@>@;
-	if(!scaleDown)
-	{
-		event->ignore();
-		return;
-	}
-	scaleDown = false;
-	QPointF sceneCoordinate = mapToScene(event->x(), event->y());
-	@<Handle clicks in the decrement controls@>@;
-	@<Handle clicks in the increment controls@>@;
-	@<Handle clicks in the scale area@>@;
-	event->ignore();
-	return;@t\2@>@/
+    @<Check that the left button was pressed@>@;
+    if(!scaleDown)
+    {
+        event->ignore();
+        return;
+    }
+    scaleDown = false;
+    QPointF sceneCoordinate = mapToScene(event->x(), event->y());
+    @<Handle clicks in the decrement controls@>@;
+    @<Handle clicks in the increment controls@>@;
+    @<Handle clicks in the scale area@>@;
+    event->ignore();
+    return;@t\2@>@/
 }
 
 @ As currently implemented, each horizontal pixel position represents a value
@@ -14468,24 +14468,24 @@ $0.05$.
 @<Handle clicks in the decrement controls@>=
 if(sceneCoordinate.x() >= 0 && sceneCoordinate.x() <= 10)
 {
-	if(sceneCoordinate.y() >= 0 && sceneCoordinate.y() <= 10)
-	{
-		if(initialSet)
-		{
-			setInitialValue(nonScoredValue - 0.05);
-		}
-		event->accept();
-		return;
-	}
-	else if(sceneCoordinate.y() >= 12 && sceneCoordinate.y() <= 22)
-	{
-		if(finalSet)
-		{
-			setFinalValue(scoredValue - 0.05);
-			event->accept();
-			return;
-		}
-	}
+    if(sceneCoordinate.y() >= 0 && sceneCoordinate.y() <= 10)
+    {
+        if(initialSet)
+        {
+            setInitialValue(nonScoredValue - 0.05);
+        }
+        event->accept();
+        return;
+    }
+    else if(sceneCoordinate.y() >= 12 && sceneCoordinate.y() <= 22)
+    {
+        if(finalSet)
+        {
+            setFinalValue(scoredValue - 0.05);
+            event->accept();
+            return;
+        }
+    }
 }
 
 @ Incrementing represented values is done in the same manner as decrementing
@@ -14494,24 +14494,24 @@ them.
 @<Handle clicks in the increment controls@>=
 else if(sceneCoordinate.x() >= 122 && sceneCoordinate.x() <= 132)
 {
-	if(sceneCoordinate.y() >= 0 && sceneCoordinate.y() <= 10)
-	{
-		if(initialSet)
-		{
-			setInitialValue(nonScoredValue + 0.05);
-			event->accept();
-			return;
-		}
-	}
-	else if(sceneCoordinate.y() >= 12 && sceneCoordinate.y() <= 22)
-	{
-		if(finalSet)
-		{
-			setFinalValue(scoredValue + 0.05);
-			event->accept();
-			return;
-		}
-	}
+    if(sceneCoordinate.y() >= 0 && sceneCoordinate.y() <= 10)
+    {
+        if(initialSet)
+        {
+            setInitialValue(nonScoredValue + 0.05);
+            event->accept();
+            return;
+        }
+    }
+    else if(sceneCoordinate.y() >= 12 && sceneCoordinate.y() <= 22)
+    {
+        if(finalSet)
+        {
+            setFinalValue(scoredValue + 0.05);
+            event->accept();
+            return;
+        }
+    }
 }
 
 @ When handling clicks in the scale area, there is a difference between the
@@ -14521,21 +14521,21 @@ first click and any subsequent click.
 double relativeX = sceneCoordinate.x() - 16;
 if(initialSet)
 {
-	if(relativeX >= 0 && relativeX <= 100)
-	{
-		setFinalValue(relativeX / 10.0);
-		event->accept();
-		return;
-	}
+    if(relativeX >= 0 && relativeX <= 100)
+    {
+        setFinalValue(relativeX / 10.0);
+        event->accept();
+        return;
+    }
 }
 else
 {
-	if(relativeX >= 0 && relativeX <= 100)
-	{
-		setInitialValue(relativeX / 10.0);
-		event->accept();
-		return;
-	}
+    if(relativeX >= 0 && relativeX <= 100)
+    {
+        setInitialValue(relativeX / 10.0);
+        event->accept();
+        return;
+    }
 }
 
 @* The Vertical Scale.
@@ -14552,32 +14552,32 @@ water.
 @<Class declarations@>=
 class IntensityControl : public QGraphicsView@/
 {@/
-	@[Q_OBJECT@]@;
-	@[Q_PROPERTY(double value READ value WRITE setValue)@]@;
-	QGraphicsScene scene;
-	QGraphicsPolygonItem decrement;
-	QGraphicsPolygonItem increment;
-	QGraphicsPolygonItem indicator;
-	QGraphicsPathItem scaleLine;
-	QPolygonF left;
-	QPolygonF up;
-	QPolygonF down;
-	QPainterPath scalePath;
-	QBrush theBrush;
-	double theValue;
-	bool valueSet;
-	bool scaleDown;
-	public:@/
-		IntensityControl();
-		double value();
-		virtual QSize sizeHint() const;@/
-	@[public slots@]:@/
-		void setValue(double val);@/
-	signals:@/
-		void valueChanged(double);@/
-	protected:@/
-		virtual void mousePressEvent(QMouseEvent *event);
-		virtual void mouseReleaseEvent(QMouseEvent *event);@/
+    @[Q_OBJECT@]@;
+    @[Q_PROPERTY(double value READ value WRITE setValue)@]@;
+    QGraphicsScene scene;
+    QGraphicsPolygonItem decrement;
+    QGraphicsPolygonItem increment;
+    QGraphicsPolygonItem indicator;
+    QGraphicsPathItem scaleLine;
+    QPolygonF left;
+    QPolygonF up;
+    QPolygonF down;
+    QPainterPath scalePath;
+    QBrush theBrush;
+    double theValue;
+    bool valueSet;
+    bool scaleDown;
+    public:@/
+        IntensityControl();
+        double value();
+        virtual QSize sizeHint() const;@/
+    @[public slots@]:@/
+        void setValue(double val);@/
+    signals:@/
+        void valueChanged(double);@/
+    protected:@/
+        virtual void mousePressEvent(QMouseEvent *event);
+        virtual void mouseReleaseEvent(QMouseEvent *event);@/
 };
 
 @ Note the similarity between this constructor and the the |ScaleControl|
@@ -14585,55 +14585,55 @@ constructor.
 
 @<IntensityControl implementation@>=
 IntensityControl::IntensityControl() : QGraphicsView(NULL, NULL), theValue(-1),
-	valueSet(false), scaleDown(false)
+    valueSet(false), scaleDown(false)
 {
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	left << QPointF(0, 0) << QPointF(10, -5) << QPointF(10, 5) << QPointF(0, 0);
-	down << QPointF(0, 0) << QPointF(10, 0) << QPointF(5, 10) << QPointF(0, 0);
-	up << QPointF(0, 10) << QPointF(10, 10) << QPointF(5, 0) << QPointF(0, 10);
-	theBrush.setColor(Qt::blue);
-	theBrush.setStyle(Qt::SolidPattern);
-	increment.setPolygon(up);
-	increment.setBrush(theBrush);
-	increment.setPos(0, 0);
-	scene.addItem(&increment);
-	decrement.setPolygon(down);
-	decrement.setBrush(theBrush);
-	decrement.setPos(0, 122);
-	scene.addItem(&decrement);
-	scalePath.moveTo(5, 0);
-	scalePath.lineTo(5, 100);
-	scalePath.moveTo(0, 0);
-	scalePath.lineTo(10, 0);
-	scalePath.moveTo(0, 10);
-	scalePath.lineTo(10, 10);
-	scalePath.moveTo(0, 20);
-	scalePath.lineTo(10, 20);
-	scalePath.moveTo(0, 30);
-	scalePath.lineTo(10, 30);
-	scalePath.moveTo(0, 40);
-	scalePath.lineTo(10, 40);
-	scalePath.moveTo(0, 50);
-	scalePath.lineTo(10, 50);
-	scalePath.moveTo(0, 60);
-	scalePath.lineTo(10, 60);
-	scalePath.moveTo(0, 70);
-	scalePath.lineTo(10, 70);
-	scalePath.moveTo(0, 80);
-	scalePath.lineTo(10, 80);
-	scalePath.moveTo(0, 90);
-	scalePath.lineTo(10, 90);
-	scalePath.moveTo(0, 100);
-	scalePath.lineTo(10, 100);
-	scaleLine.setPath(scalePath);
-	scaleLine.setPos(0, 16);
-	scene.addItem(&scaleLine);
-	setScene(&scene);
-	indicator.setPolygon(left);
-	indicator.setBrush(theBrush);
-	setMinimumSize(sizeHint());
-	setMaximumSize(sizeHint());
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    left << QPointF(0, 0) << QPointF(10, -5) << QPointF(10, 5) << QPointF(0, 0);
+    down << QPointF(0, 0) << QPointF(10, 0) << QPointF(5, 10) << QPointF(0, 0);
+    up << QPointF(0, 10) << QPointF(10, 10) << QPointF(5, 0) << QPointF(0, 10);
+    theBrush.setColor(Qt::blue);
+    theBrush.setStyle(Qt::SolidPattern);
+    increment.setPolygon(up);
+    increment.setBrush(theBrush);
+    increment.setPos(0, 0);
+    scene.addItem(&increment);
+    decrement.setPolygon(down);
+    decrement.setBrush(theBrush);
+    decrement.setPos(0, 122);
+    scene.addItem(&decrement);
+    scalePath.moveTo(5, 0);
+    scalePath.lineTo(5, 100);
+    scalePath.moveTo(0, 0);
+    scalePath.lineTo(10, 0);
+    scalePath.moveTo(0, 10);
+    scalePath.lineTo(10, 10);
+    scalePath.moveTo(0, 20);
+    scalePath.lineTo(10, 20);
+    scalePath.moveTo(0, 30);
+    scalePath.lineTo(10, 30);
+    scalePath.moveTo(0, 40);
+    scalePath.lineTo(10, 40);
+    scalePath.moveTo(0, 50);
+    scalePath.lineTo(10, 50);
+    scalePath.moveTo(0, 60);
+    scalePath.lineTo(10, 60);
+    scalePath.moveTo(0, 70);
+    scalePath.lineTo(10, 70);
+    scalePath.moveTo(0, 80);
+    scalePath.lineTo(10, 80);
+    scalePath.moveTo(0, 90);
+    scalePath.lineTo(10, 90);
+    scalePath.moveTo(0, 100);
+    scalePath.lineTo(10, 100);
+    scaleLine.setPath(scalePath);
+    scaleLine.setPos(0, 16);
+    scene.addItem(&scaleLine);
+    setScene(&scene);
+    indicator.setPolygon(left);
+    indicator.setBrush(theBrush);
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 @ Once again, the size hint reduces the default size of the widget.
@@ -14641,7 +14641,7 @@ IntensityControl::IntensityControl() : QGraphicsView(NULL, NULL), theValue(-1),
 @<IntensityControl implementation@>=
 QSize IntensityControl::sizeHint() const
 {
-	return QSize(25, 160);
+    return QSize(25, 160);
 }
 
 @ To support a more intuitive numerical representation, higher values should map
@@ -14656,30 +14656,30 @@ controls. Adding two additional execution branches corrects this issue.
 @<IntensityControl implementation@>=
 void IntensityControl::setValue(double val)
 {
-	if(val >= 0 && val <= 10)
-	{
-		theValue = val;
-		if(!valueSet)
-		{
-			scene.addItem(&indicator);
-		}
-		valueSet = @[true@];
-		indicator.setPos(6, (100 - (val * 10)) + 16);
-		emit(valueChanged(val));
-	}
-	else if(val < 1)
-	{
-		setValue(0);
-	}
-	else
-	{
-		setValue(10);
-	}
+    if(val >= 0 && val <= 10)
+    {
+        theValue = val;
+        if(!valueSet)
+        {
+            scene.addItem(&indicator);
+        }
+        valueSet = @[true@];
+        indicator.setPos(6, (100 - (val * 10)) + 16);
+        emit(valueChanged(val));
+    }
+    else if(val < 1)
+    {
+        setValue(0);
+    }
+    else
+    {
+        setValue(10);
+    }
 }
 
 double IntensityControl::value()
 {
-	return theValue;
+    return theValue;
 }
 
 @ Mouse event handling is similar as well. The mouse press event simply notes
@@ -14688,9 +14688,9 @@ that the button has been pressed.
 @<IntensityControl implementation@>=
 void IntensityControl::mousePressEvent(QMouseEvent *event)
 {
-	@<Check that the left button was pressed@>@;
-	scaleDown = @[true@];
-	event->accept();
+    @<Check that the left button was pressed@>@;
+    scaleDown = @[true@];
+    event->accept();
 }
 
 @ Since there are fewer clickable areas there are fewer regions to check while
@@ -14702,41 +14702,41 @@ when determining which value the click intends.
 @<IntensityControl implementation@>=
 void IntensityControl::mouseReleaseEvent(QMouseEvent *event)
 {
-	@<Check that the left button was pressed@>@;
-	if(!scaleDown)
-	{
-		event->ignore();
-		return;
-	}
-	scaleDown = @[false@];
-	QPointF sceneCoordinate = mapToScene(event->x(), event->y());
-	if(sceneCoordinate.x() >= 0 && sceneCoordinate.x() <= 16)
-	{
-		if(sceneCoordinate.y() >= 0 && sceneCoordinate.y() <= 10)
-		{
-			if(valueSet)
-			{
-				setValue(theValue + 0.05);
-			}
-			event->accept();
-			return;
-		}
-		else if(sceneCoordinate.y() >= 122 && sceneCoordinate.y() <= 132)
-		{
-			if(valueSet)
-			{
-				setValue(theValue - 0.05);
-			}
-			event->accept();
-			return;
-		}
-		else if(sceneCoordinate.y() >= 16 && sceneCoordinate.y() <= 116)
-		{
-			setValue(10 - ((sceneCoordinate.y() - 16) / 10.0));
-			event->accept();
-			return;
-		}
-	}
+    @<Check that the left button was pressed@>@;
+    if(!scaleDown)
+    {
+        event->ignore();
+        return;
+    }
+    scaleDown = @[false@];
+    QPointF sceneCoordinate = mapToScene(event->x(), event->y());
+    if(sceneCoordinate.x() >= 0 && sceneCoordinate.x() <= 16)
+    {
+        if(sceneCoordinate.y() >= 0 && sceneCoordinate.y() <= 10)
+        {
+            if(valueSet)
+            {
+                setValue(theValue + 0.05);
+            }
+            event->accept();
+            return;
+        }
+        else if(sceneCoordinate.y() >= 122 && sceneCoordinate.y() <= 132)
+        {
+            if(valueSet)
+            {
+                setValue(theValue - 0.05);
+            }
+            event->accept();
+            return;
+        }
+        else if(sceneCoordinate.y() >= 16 && sceneCoordinate.y() <= 116)
+        {
+            setValue(10 - ((sceneCoordinate.y() - 16) / 10.0));
+            event->accept();
+            return;
+        }
+    }
 }
 
 @* Scripting the Scale Widgets.
@@ -14747,10 +14747,10 @@ void IntensityControl::mouseReleaseEvent(QMouseEvent *event)
 @<Function prototypes for scripting@>=
 void addScaleControlToLayout(QDomElement element,
                              QStack<QWidget *> *widgetStack,
-							 QStack<QLayout *> *layoutStack);
+                             QStack<QLayout *> *layoutStack);
 void addIntensityControlToLayout(QDomElement element,
                                  QStack<QWidget *> *widgetStack,
-								 QStack<QLayout *> *layoutStack);
+                                 QStack<QLayout *> *layoutStack);
 
 @ Adding these widgets is done in the same way as adding other widgets.
 
@@ -14758,25 +14758,25 @@ void addIntensityControlToLayout(QDomElement element,
 void addScaleControlToLayout(QDomElement element, QStack<QWidget *> *,
                              QStack<QLayout *> *layoutStack)
 {
-	ScaleControl *scale = new ScaleControl;
-	if(element.hasAttribute("id"))
-	{
-		scale->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(scale);
+    ScaleControl *scale = new ScaleControl;
+    if(element.hasAttribute("id"))
+    {
+        scale->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(scale);
 }
 
 void addIntensityControlToLayout(QDomElement element, QStack<QWidget *> *,
                                  QStack<QLayout *> *layoutStack)
 {
-	IntensityControl *scale = new IntensityControl;
-	if(element.hasAttribute("id"))
-	{
-		scale->setObjectName(element.attribute("id"));
-	}
-	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(scale);
+    IntensityControl *scale = new IntensityControl;
+    if(element.hasAttribute("id"))
+    {
+        scale->setObjectName(element.attribute("id"));
+    }
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    layout->addWidget(scale);
 }
 
 
@@ -14856,9 +14856,9 @@ void saveDeviceConfiguration();
 @<Application Implementation@>=
 void Application::saveDeviceConfiguration()
 {
-	QSettings settings;
-	settings.setValue("DeviceConfiguration",
-	                  QVariant(deviceConfigurationDocument.toByteArray()));
+    QSettings settings;
+    settings.setValue("DeviceConfiguration",
+                      QVariant(deviceConfigurationDocument.toByteArray()));
 }
 
 @ Producing a pointer to a loaded configuration only slightly more complicated.
@@ -14868,11 +14868,11 @@ Otherwise, we attempt to load the document.
 @<Application Implementation@>=
 QDomDocument Application::deviceConfiguration()
 {
-	if(deviceConfigurationDocument.isNull())
-	{
-		@<Load device configuration document from settings@>@;
-	}
-	return deviceConfigurationDocument;
+    if(deviceConfigurationDocument.isNull())
+    {
+        @<Load device configuration document from settings@>@;
+    }
+    return deviceConfigurationDocument;
 }
 
 @ In most cases a document will already exist in settings, but we must verify
@@ -14887,17 +14887,17 @@ int eline;
 int ecol;
 if(document.length() == 0)
 {
-	qDebug() << "Loaded settings length is 0. Creating new configuration.";
-	@<Create device configuration document@>@;
+    qDebug() << "Loaded settings length is 0. Creating new configuration.";
+    @<Create device configuration document@>@;
 }
 else
 {
-	if(!deviceConfigurationDocument.setContent(document, false,
-	                                           &etext, &eline, &ecol))
-	{
-		@<Report configuration loading error@>@;
-		@<Create device configuration document@>@;
-	}
+    if(!deviceConfigurationDocument.setContent(document, false,
+                                               &etext, &eline, &ecol))
+    {
+        @<Report configuration loading error@>@;
+        @<Create device configuration document@>@;
+    }
 }
 
 @ Rather than generate the empty device configuration programmatically, we keep
@@ -14909,11 +14909,11 @@ emptyDocument.open(QIODevice::ReadOnly);
 if(!deviceConfigurationDocument.setContent(&emptyDocument, false,
                                            &etext, &eline, &ecol))
 {
-	@<Report configuration loading error@>@;
+    @<Report configuration loading error@>@;
 }
 else
 {
-	saveDeviceConfiguration();
+    saveDeviceConfiguration();
 }
 
 @ There isn'@q'@>t really anything that can be done if the device configuration data
@@ -14940,19 +14940,19 @@ instances with the data we want.
 @<Class declarations@>=
 class DeviceTreeModelNode
 {
-	public:
-		DeviceTreeModelNode(QDomNode &node, int row,
-		                    DeviceTreeModelNode *parent = NULL);
-		~DeviceTreeModelNode();
-		DeviceTreeModelNode *child(int index);
-		DeviceTreeModelNode *parent();
-		QDomNode node() const;
-		int row();
-	private:
-		QDomNode domNode;
-		QHash<int, DeviceTreeModelNode*> children;
-		int rowNumber;
-		DeviceTreeModelNode *parentItem;
+    public:
+        DeviceTreeModelNode(QDomNode &node, int row,
+                            DeviceTreeModelNode *parent = NULL);
+        ~DeviceTreeModelNode();
+        DeviceTreeModelNode *child(int index);
+        DeviceTreeModelNode *parent();
+        QDomNode node() const;
+        int row();
+    private:
+        QDomNode domNode;
+        QHash<int, DeviceTreeModelNode*> children;
+        int rowNumber;
+        DeviceTreeModelNode *parentItem;
 };
 
 @ Implementation of this helper class is trivial.
@@ -14960,50 +14960,50 @@ class DeviceTreeModelNode
 @<DeviceTreeModelNode implementation@>=
 DeviceTreeModelNode::DeviceTreeModelNode(QDomNode &node, int row,
                                          DeviceTreeModelNode *parent)
-	: domNode(node), rowNumber(row), parentItem(parent)
+    : domNode(node), rowNumber(row), parentItem(parent)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 DeviceTreeModelNode::~DeviceTreeModelNode()
 {
-	QHash<int, DeviceTreeModelNode *>::iterator@, i;
-	for(i = children.begin(); i != children.end(); i++)
-	{
-		delete i.value();
-	}
+    QHash<int, DeviceTreeModelNode *>::iterator@, i;
+    for(i = children.begin(); i != children.end(); i++)
+    {
+        delete i.value();
+    }
 }
 
 DeviceTreeModelNode *DeviceTreeModelNode::parent()
 {
-	return parentItem;
+    return parentItem;
 }
 
 int DeviceTreeModelNode::row()
 {
-	return rowNumber;
+    return rowNumber;
 }
 
 QDomNode DeviceTreeModelNode::node() const
 {
-	return domNode;
+    return domNode;
 }
 
 DeviceTreeModelNode *DeviceTreeModelNode::child(int index)
 {
-	if(children.contains(index))
-	{
-		return children[index];
-	}
-	if(index >= 0 && index < domNode.childNodes().count())
-	{
-		QDomNode childNode = domNode.childNodes().item(index);
-		DeviceTreeModelNode *childItem = new DeviceTreeModelNode(childNode,
-		                                                         index, this);
-		children[index] = childItem;
-		return childItem;
-	}
-	return NULL;
+    if(children.contains(index))
+    {
+        return children[index];
+    }
+    if(index >= 0 && index < domNode.childNodes().count())
+    {
+        QDomNode childNode = domNode.childNodes().item(index);
+        DeviceTreeModelNode *childItem = new DeviceTreeModelNode(childNode,
+                                                                 index, this);
+        children[index] = childItem;
+        return childItem;
+    }
+    return NULL;
 }
 
 @ The model class provides a single column representation of the {\tt devices}
@@ -15015,31 +15015,31 @@ a given node.
 @<Class declarations@>=
 class DeviceTreeModel : public QAbstractItemModel@/
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		DeviceTreeModel(QObject *parent = NULL);
-		~DeviceTreeModel();
-		QVariant data(const QModelIndex &index, int role) const;
-		Qt::ItemFlags flags(const QModelIndex &index) const;
-		QVariant headerData(int section, Qt::Orientation orientation,
-		                    int role = Qt::DisplayRole) const;
-		QModelIndex index(int row, int column,
-		                  const QModelIndex &parent = QModelIndex()) const;
-		QModelIndex parent(const QModelIndex &child) const;
-		int rowCount(const QModelIndex &parent = QModelIndex()) const;
-		int columnCount(const QModelIndex &parent = QModelIndex()) const;
-		bool setData(const QModelIndex &index, const QVariant &value,
-		             int role);
-		bool removeRows(int row, int count, const QModelIndex &parent);
-		QDomElement referenceElement(const QString &id);
-	@[public slots@]:@/
-		void newNode(const QString &name, const QString &driver,
-		             const QModelIndex &parent);
-	private:@/
-		QDomDocument document;
-		DeviceTreeModelNode *root;
-		QDomNode referenceSection;
-		QDomNode treeRoot;
+    @[Q_OBJECT@]@;
+    public:@/
+        DeviceTreeModel(QObject *parent = NULL);
+        ~DeviceTreeModel();
+        QVariant data(const QModelIndex &index, int role) const;
+        Qt::ItemFlags flags(const QModelIndex &index) const;
+        QVariant headerData(int section, Qt::Orientation orientation,
+                            int role = Qt::DisplayRole) const;
+        QModelIndex index(int row, int column,
+                          const QModelIndex &parent = QModelIndex()) const;
+        QModelIndex parent(const QModelIndex &child) const;
+        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        bool setData(const QModelIndex &index, const QVariant &value,
+                     int role);
+        bool removeRows(int row, int count, const QModelIndex &parent);
+        QDomElement referenceElement(const QString &id);
+    @[public slots@]:@/
+        void newNode(const QString &name, const QString &driver,
+                     const QModelIndex &parent);
+    private:@/
+        QDomDocument document;
+        DeviceTreeModelNode *root;
+        QDomNode referenceSection;
+        QDomNode treeRoot;
 };
 
 @ In the constructor we locate the {\tt devices} and {\tt references} sections
@@ -15048,33 +15048,33 @@ the former and is expanded as needed.
 
 @<DeviceTreeModel implementation@>=
 DeviceTreeModel::DeviceTreeModel(QObject *parent)
-	: QAbstractItemModel(parent)
+    : QAbstractItemModel(parent)
 {
-	document = AppInstance->deviceConfiguration();
-	QDomNodeList elements = document.elementsByTagName("devices");
-	if(elements.size() != 1)
-	{
-		qDebug() << "Unexpected result when loading device map.";
-	}
-	treeRoot = elements.at(0);
-	root = new DeviceTreeModelNode(treeRoot, 0);
-	elements = document.elementsByTagName("references");
-	if(elements.size() != 1)
-	{
-		qDebug() << "No references section. Creating.";
-		referenceSection = document.createElement("references");
-		document.appendChild(referenceSection);
-	}
-	else
-	{
-		referenceSection = elements.at(0);
-	}
-	connect(this, SIGNAL(dataChanged(QModelIndex, QModelIndex)),
-	        AppInstance, SLOT(saveDeviceConfiguration()));
-	connect(this, SIGNAL(modelReset()),
-	        AppInstance, SLOT(saveDeviceConfiguration()));
-	connect(this, SIGNAL(rowsInserted(QModelIndex, int, int)),
-	        AppInstance, SLOT(saveDeviceConfiguration()));
+    document = AppInstance->deviceConfiguration();
+    QDomNodeList elements = document.elementsByTagName("devices");
+    if(elements.size() != 1)
+    {
+        qDebug() << "Unexpected result when loading device map.";
+    }
+    treeRoot = elements.at(0);
+    root = new DeviceTreeModelNode(treeRoot, 0);
+    elements = document.elementsByTagName("references");
+    if(elements.size() != 1)
+    {
+        qDebug() << "No references section. Creating.";
+        referenceSection = document.createElement("references");
+        document.appendChild(referenceSection);
+    }
+    else
+    {
+        referenceSection = elements.at(0);
+    }
+    connect(this, SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+            AppInstance, SLOT(saveDeviceConfiguration()));
+    connect(this, SIGNAL(modelReset()),
+            AppInstance, SLOT(saveDeviceConfiguration()));
+    connect(this, SIGNAL(rowsInserted(QModelIndex, int, int)),
+            AppInstance, SLOT(saveDeviceConfiguration()));
 }
 
 @ We only provide a single column for our model, so |columnCount()| can simply
@@ -15084,17 +15084,17 @@ depending on the parent node.
 @<DeviceTreeModel implementation@>=
 int DeviceTreeModel::columnCount(const QModelIndex &) const
 {
-	return 1;
+    return 1;
 }
 
 int DeviceTreeModel::rowCount(const QModelIndex &parent) const
 {
-	if(parent.column() > 0)
-	{
-		return 0;
-	}
-	@<Get parent item from index@>@;
-	return parentItem->node().childNodes().count();
+    if(parent.column() > 0)
+    {
+        return 0;
+    }
+    @<Get parent item from index@>@;
+    return parentItem->node().childNodes().count();
 }
 
 @ If an invalid index is passed as the parent index, we assume the parent to
@@ -15104,11 +15104,11 @@ be the root element.
 DeviceTreeModelNode *parentItem;
 if(!parent.isValid())
 {
-	parentItem = root;
+    parentItem = root;
 }
 else
 {
-	parentItem = static_cast<DeviceTreeModelNode *>(parent.internalPointer());
+    parentItem = static_cast<DeviceTreeModelNode *>(parent.internalPointer());
 }
 
 @ As seen in |rowCount()|, we keep a pointer to the cached node in our model
@@ -15118,17 +15118,17 @@ indices.
 QModelIndex DeviceTreeModel::index(int row, int column,
                                    const QModelIndex &parent) const
 {
-	if(!hasIndex(row, column, parent))
-	{
-		return QModelIndex();
-	}
-	@<Get parent item from index@>@;
-	DeviceTreeModelNode *childItem = parentItem->child(row);
-	if(childItem)
-	{
-		return createIndex(row, column, childItem);
-	}
-	return QModelIndex();
+    if(!hasIndex(row, column, parent))
+    {
+        return QModelIndex();
+    }
+    @<Get parent item from index@>@;
+    DeviceTreeModelNode *childItem = parentItem->child(row);
+    if(childItem)
+    {
+        return createIndex(row, column, childItem);
+    }
+    return QModelIndex();
 }
 
 @ We can also request an index for the parent of a given index.
@@ -15136,18 +15136,18 @@ QModelIndex DeviceTreeModel::index(int row, int column,
 @<DeviceTreeModel implementation@>=
 QModelIndex DeviceTreeModel::parent(const QModelIndex &child) const
 {
-	if(!child.isValid())
-	{
-		return QModelIndex();
-	}
-	DeviceTreeModelNode *childItem =
-		static_cast<DeviceTreeModelNode *>(child.internalPointer());
-	DeviceTreeModelNode *parentItem = childItem->parent();
-	if(!parentItem || parentItem == root)
-	{
-		return QModelIndex();
-	}
-	return createIndex(parentItem->row(), 0, parentItem);
+    if(!child.isValid())
+    {
+        return QModelIndex();
+    }
+    DeviceTreeModelNode *childItem =
+        static_cast<DeviceTreeModelNode *>(child.internalPointer());
+    DeviceTreeModelNode *parentItem = childItem->parent();
+    if(!parentItem || parentItem == root)
+    {
+        return QModelIndex();
+    }
+    return createIndex(parentItem->row(), 0, parentItem);
 }
 
 @ All items should be enabled, selectable, and editable.
@@ -15155,11 +15155,11 @@ QModelIndex DeviceTreeModel::parent(const QModelIndex &child) const
 @<DeviceTreeModel implementation@>=
 Qt::ItemFlags DeviceTreeModel::flags(const QModelIndex &index) const
 {
-	if(!index.isValid())
-	{
-		return 0;
-	}
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    if(!index.isValid())
+    {
+        return 0;
+    }
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 @ Each node in the model maintains two pieces of information. One is the
@@ -15170,29 +15170,29 @@ corresponding XML element. The other is a reference ID held in the
 @<DeviceTreeModel implementation@>=
 QVariant DeviceTreeModel::data(const QModelIndex &index, int role) const
 {
-	if(!index.isValid())
-	{
-		return QVariant();
-	}
-	if(role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::EditRole)
-	{
-		return QVariant();
-	}
-	DeviceTreeModelNode *item =
-		static_cast<DeviceTreeModelNode *>(index.internalPointer());
-	QDomNode node = item->node();
-	QDomElement element = node.toElement();
-	switch(role)
-	{
-		case Qt::DisplayRole:@/
-		case Qt::EditRole:@/
-			return QVariant(element.attribute("name"));
-		case Qt::UserRole:@/
-			return QVariant(element.attribute("reference"));
-		default:@/
-			return QVariant();
-	}
-	return QVariant();
+    if(!index.isValid())
+    {
+        return QVariant();
+    }
+    if(role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::EditRole)
+    {
+        return QVariant();
+    }
+    DeviceTreeModelNode *item =
+        static_cast<DeviceTreeModelNode *>(index.internalPointer());
+    QDomNode node = item->node();
+    QDomElement element = node.toElement();
+    switch(role)
+    {
+        case Qt::DisplayRole:@/
+        case Qt::EditRole:@/
+            return QVariant(element.attribute("name"));
+        case Qt::UserRole:@/
+            return QVariant(element.attribute("reference"));
+        default:@/
+            return QVariant();
+    }
+    return QVariant();
 }
 
 @ The reference value is managed by the model and should never be changed. The
@@ -15203,17 +15203,17 @@ back to the XML document underlying the model.
 bool DeviceTreeModel::setData(const QModelIndex &index,
                               const QVariant &value, int)@;@/
 {@t\1@>@/
-	if(!index.isValid())@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@/
-	DeviceTreeModelNode *item =
-		static_cast<DeviceTreeModelNode *>(index.internalPointer());
-	QDomNode node = item->node();
-	QDomElement element = node.toElement();
-	element.setAttribute("name", value.toString());
-	emit dataChanged(index, index);@;
-	return true;@t\2@>@/
+    if(!index.isValid())@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@/
+    DeviceTreeModelNode *item =
+        static_cast<DeviceTreeModelNode *>(index.internalPointer());
+    QDomNode node = item->node();
+    QDomElement element = node.toElement();
+    element.setAttribute("name", value.toString());
+    emit dataChanged(index, index);@;
+    return true;@t\2@>@/
 }
 
 @ A custom method is provided for adding new nodes to the model. This generates
@@ -15226,20 +15226,20 @@ determine what classes are used to work with that data.
 void DeviceTreeModel::newNode(const QString &name, const QString &driver,
                               const QModelIndex &parent)
 {
-	QString referenceID = QUuid::createUuid().toString();
-	@<Get parent item from index@>@;
-	QDomNode parentNode = parentItem->node();
-	int newRowNumber = rowCount(parent);
-	beginInsertRows(parent, newRowNumber, newRowNumber);
-	QDomElement deviceElement = document.createElement("node");
-	deviceElement.setAttribute("name", name);
-	deviceElement.setAttribute("reference", referenceID);
-	parentNode.appendChild(deviceElement);
-	QDomElement referenceElement = document.createElement("reference");
-	referenceElement.setAttribute("id", referenceID);
-	referenceElement.setAttribute("driver", driver);
-	referenceSection.appendChild(referenceElement);
-	endInsertRows();
+    QString referenceID = QUuid::createUuid().toString();
+    @<Get parent item from index@>@;
+    QDomNode parentNode = parentItem->node();
+    int newRowNumber = rowCount(parent);
+    beginInsertRows(parent, newRowNumber, newRowNumber);
+    QDomElement deviceElement = document.createElement("node");
+    deviceElement.setAttribute("name", name);
+    deviceElement.setAttribute("reference", referenceID);
+    parentNode.appendChild(deviceElement);
+    QDomElement referenceElement = document.createElement("reference");
+    referenceElement.setAttribute("id", referenceID);
+    referenceElement.setAttribute("driver", driver);
+    referenceSection.appendChild(referenceElement);
+    endInsertRows();
 }
 
 @ We can also delete nodes. When deleting a node, both XML elements are
@@ -15248,40 +15248,40 @@ removed and our node cache is invalidated.
 @<DeviceTreeModel implementation@>=
 bool DeviceTreeModel::removeRows(int row, int count, const QModelIndex &parent)@t\2\2@>@/
 {@t\1@>@/
-	@<Get parent item from index@>@;
-	QDomNode parentNode = parentItem->node();
-	QDomNodeList childNodes = parentNode.childNodes();@;
-	if(childNodes.size() < row + count)@/
-	{@t\1@>@/
-		return false;@t\2@>@/
-	}@/
-	beginRemoveRows(parent, row, row + count - 1);
-	QList<QDomElement> removalList;
-	for(int i = row; i < row + count; i++)
-	{
-		removalList.append(childNodes.at(i).toElement());
-	}
-	QDomElement element;
-	QDomElement reference;
-	for(int i = 0; i < count; i++)
-	{
-		element = removalList.at(i);
-		if(element.hasAttribute("reference"))
-		{
-			reference = referenceElement(element.attribute("reference"));
-			if(!reference.isNull())
-			{
-				referenceSection.removeChild(reference);
-			}
-		}
-		parentNode.removeChild(element);
-	}
-	endRemoveRows();
-	beginResetModel();
-	delete root;
-	root = new DeviceTreeModelNode(treeRoot, 0);
-	endResetModel();@;
-	return true;@t\2@>@/
+    @<Get parent item from index@>@;
+    QDomNode parentNode = parentItem->node();
+    QDomNodeList childNodes = parentNode.childNodes();@;
+    if(childNodes.size() < row + count)@/
+    {@t\1@>@/
+        return false;@t\2@>@/
+    }@/
+    beginRemoveRows(parent, row, row + count - 1);
+    QList<QDomElement> removalList;
+    for(int i = row; i < row + count; i++)
+    {
+        removalList.append(childNodes.at(i).toElement());
+    }
+    QDomElement element;
+    QDomElement reference;
+    for(int i = 0; i < count; i++)
+    {
+        element = removalList.at(i);
+        if(element.hasAttribute("reference"))
+        {
+            reference = referenceElement(element.attribute("reference"));
+            if(!reference.isNull())
+            {
+                referenceSection.removeChild(reference);
+            }
+        }
+        parentNode.removeChild(element);
+    }
+    endRemoveRows();
+    beginResetModel();
+    delete root;
+    root = new DeviceTreeModelNode(treeRoot, 0);
+    endResetModel();@;
+    return true;@t\2@>@/
 }
 
 @ Another custom method obtains the {\tt reference} element for a given
@@ -15290,20 +15290,20 @@ reference ID.
 @<DeviceTreeModel implementation@>=
 QDomElement DeviceTreeModel::referenceElement(const QString &id)
 {
-	QDomNodeList childNodes = referenceSection.childNodes();
-	QDomElement element;
-	for(int i = 0; i < childNodes.size(); i++)
-	{
-		element = childNodes.at(i).toElement();
-		if(element.hasAttribute("id"))
-		{
-			if(element.attribute("id") == id)
-			{
-				return element;
-			}
-		}
-	}
-	return QDomElement();
+    QDomNodeList childNodes = referenceSection.childNodes();
+    QDomElement element;
+    for(int i = 0; i < childNodes.size(); i++)
+    {
+        element = childNodes.at(i).toElement();
+        if(element.hasAttribute("id"))
+        {
+            if(element.attribute("id") == id)
+            {
+                return element;
+            }
+        }
+    }
+    return QDomElement();
 }
 
 @ We don'@q'@>t want any headers, so |headerData()| is very simple.
@@ -15311,7 +15311,7 @@ QDomElement DeviceTreeModel::referenceElement(const QString &id)
 @<DeviceTreeModel implementation@>=
 QVariant DeviceTreeModel::headerData(int, Qt::Orientation, int) const
 {
-	return QVariant();
+    return QVariant();
 }
 
 @ The destructor destroys the node cache. The destructor for the top level node
@@ -15320,7 +15320,7 @@ will recursively destroy all child nodes.
 @<DeviceTreeModel implementation@>=
 DeviceTreeModel::~DeviceTreeModel()
 {
-	delete root;
+    delete root;
 }
 
 @ Exposing this class to the host environment allows a number of interesting
@@ -15347,9 +15347,9 @@ QScriptValue QAbstractItemModel_hasChildren(QScriptContext *context, QScriptEngi
 @<Functions for scripting@>=
 QScriptValue constructDeviceTreeModel(QScriptContext *, QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new DeviceTreeModel);
-	setDeviceTreeModelProperties(object, engine);
-	return object;
+    QScriptValue object = engine->newQObject(new DeviceTreeModel);
+    setDeviceTreeModelProperties(object, engine);
+    return object;
 }
 
 @ As usual the host environment is informed of this constructor.
@@ -15370,18 +15370,18 @@ feature set.
 @<Functions for scripting@>=
 void setDeviceTreeModelProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQAbstractItemModelProperties(value, engine);
-	value.setProperty("referenceElement",
-	                  engine->newFunction(DeviceTreeModel_referenceElement));
+    setQAbstractItemModelProperties(value, engine);
+    value.setProperty("referenceElement",
+                      engine->newFunction(DeviceTreeModel_referenceElement));
 }
 
 void setQAbstractItemModelProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	value.setProperty("data", engine->newFunction(QAbstractItemModel_data));
-	value.setProperty("index", engine->newFunction(QAbstractItemModel_index));
-	value.setProperty("rowCount", engine->newFunction(QAbstractItemModel_rowCount));
-	value.setProperty("hasChildren", engine->newFunction(QAbstractItemModel_hasChildren));
+    setQObjectProperties(value, engine);
+    value.setProperty("data", engine->newFunction(QAbstractItemModel_data));
+    value.setProperty("index", engine->newFunction(QAbstractItemModel_index));
+    value.setProperty("rowCount", engine->newFunction(QAbstractItemModel_rowCount));
+    value.setProperty("hasChildren", engine->newFunction(QAbstractItemModel_hasChildren));
 }
 
 @ The wrapped call to |referenceElement| does a little more than might be
@@ -15398,69 +15398,69 @@ of the map.
 QScriptValue DeviceTreeModel_referenceElement(QScriptContext *context,
                                               QScriptEngine *engine)
 {
-	DeviceTreeModel *model = getself<DeviceTreeModel *>(context);
-	QDomElement referenceElement = model->referenceElement(argument<QString>(0, context));
-	QDomNodeList configData = referenceElement.elementsByTagName("attribute");
-	QDomElement node;
-	QVariantMap retval;
-	retval.insert("driver", referenceElement.attribute("driver"));
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		retval.insert(node.attribute("name"), node.attribute("value"));
-	}
-	return engine->toScriptValue(retval);
+    DeviceTreeModel *model = getself<DeviceTreeModel *>(context);
+    QDomElement referenceElement = model->referenceElement(argument<QString>(0, context));
+    QDomNodeList configData = referenceElement.elementsByTagName("attribute");
+    QDomElement node;
+    QVariantMap retval;
+    retval.insert("driver", referenceElement.attribute("driver"));
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        retval.insert(node.attribute("name"), node.attribute("value"));
+    }
+    return engine->toScriptValue(retval);
 }
 
 QScriptValue QAbstractItemModel_data(QScriptContext *context, QScriptEngine *engine)
 {
-	QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
-	QModelIndex index = argument<QModelIndex>(0, context);
-	int role = argument<int>(1, context);
-	return engine->toScriptValue(model->data(index, role));
+    QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
+    QModelIndex index = argument<QModelIndex>(0, context);
+    int role = argument<int>(1, context);
+    return engine->toScriptValue(model->data(index, role));
 }
 
 QScriptValue QAbstractItemModel_index(QScriptContext *context, QScriptEngine *engine)
 {
-	QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
-	int row = 0;
-	int column = 0;
-	QModelIndex index;
-	if(context->argumentCount() > 1)
-	{
-		row = argument<int>(0, context);
-		column = argument<int>(1, context);
-	}
-	if(context->argumentCount() > 2)
-	{
-		index = argument<QModelIndex>(2, context);
-	}
-	QModelIndex retval = model->index(row, column, index);
-	return engine->toScriptValue(retval);
+    QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
+    int row = 0;
+    int column = 0;
+    QModelIndex index;
+    if(context->argumentCount() > 1)
+    {
+        row = argument<int>(0, context);
+        column = argument<int>(1, context);
+    }
+    if(context->argumentCount() > 2)
+    {
+        index = argument<QModelIndex>(2, context);
+    }
+    QModelIndex retval = model->index(row, column, index);
+    return engine->toScriptValue(retval);
 }
 
 QScriptValue QAbstractItemModel_rowCount(QScriptContext *context,
                                          QScriptEngine *)
 {
-	QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
-	QModelIndex index;
-	if(context->argumentCount() == 1)
-	{
-		index = argument<QModelIndex>(0, context);
-	}
-	return QScriptValue(model->rowCount(index));
+    QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
+    QModelIndex index;
+    if(context->argumentCount() == 1)
+    {
+        index = argument<QModelIndex>(0, context);
+    }
+    return QScriptValue(model->rowCount(index));
 }
 
 QScriptValue QAbstractItemModel_hasChildren(QScriptContext *context,
                                             QScriptEngine *engine)
 {
-	QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
-	QModelIndex index;
-	if(context->argumentCount() == 1)
-	{
-		index = argument<QModelIndex>(0, context);
-	}
-	return QScriptValue(engine, model->hasChildren(index));
+    QAbstractItemModel *model = getself<QAbstractItemModel *>(context);
+    QModelIndex index;
+    if(context->argumentCount() == 1)
+    {
+        index = argument<QModelIndex>(0, context);
+    }
+    return QScriptValue(engine, model->hasChildren(index));
 }
 
 @ Some additional work is needed to handle |QModelIndex| appropriately. First
@@ -15481,15 +15481,15 @@ void QModelIndex_fromScriptValue(const QScriptValue &value, QModelIndex &index);
 @<Functions for scripting@>=
 QScriptValue QModelIndex_toScriptValue(QScriptEngine *engine, const QModelIndex &index)
 {
-	QVariant var;
-	var.setValue(index);
-	QScriptValue object = engine->newVariant(var);
-	return object;
+    QVariant var;
+    var.setValue(index);
+    QScriptValue object = engine->newVariant(var);
+    return object;
 }
 
 void QModelIndex_fromScriptValue(const QScriptValue &value, QModelIndex &index)
 {
-	index = value.toVariant().value<QModelIndex>();
+    index = value.toVariant().value<QModelIndex>();
 }
 
 @ Finally we register this with the engine.
@@ -15525,7 +15525,7 @@ QWidget* deviceConfigurationWidget(DeviceTreeModel *model,
 void Application::registerDeviceConfigurationWidget(QString driver,
                                                      QMetaObject widget)
 {
-	deviceConfigurationWidgets.insert(driver, widget);
+    deviceConfigurationWidgets.insert(driver, widget);
 }
 
 @ Obtaining the configuration widget for a given node involves looking up the
@@ -15541,24 +15541,24 @@ configuration widget.
 QWidget* Application::deviceConfigurationWidget(DeviceTreeModel *model,
                                                 const QModelIndex &index)
 {
-	QVariant nodeReference = index.data(Qt::UserRole);
-	QDomElement referenceElement = model->referenceElement(
-		model->data(index, Qt::UserRole).toString());
-	QMetaObject metaObject =
-		deviceConfigurationWidgets.value(referenceElement.attribute("driver"),
-		                                 QWidget::staticMetaObject);
-	QWidget *editor;
-	if(metaObject.className() == QWidget::staticMetaObject.className())
-	{
-		editor = NULL;
-	}
-	else
-	{
-		editor = qobject_cast<QWidget *>(
-					metaObject.newInstance(Q_ARG(DeviceTreeModel *, model),
-									       Q_ARG(QModelIndex, index)));
-	}
-	return editor;
+    QVariant nodeReference = index.data(Qt::UserRole);
+    QDomElement referenceElement = model->referenceElement(
+        model->data(index, Qt::UserRole).toString());
+    QMetaObject metaObject =
+        deviceConfigurationWidgets.value(referenceElement.attribute("driver"),
+                                         QWidget::staticMetaObject);
+    QWidget *editor;
+    if(metaObject.className() == QWidget::staticMetaObject.className())
+    {
+        editor = NULL;
+    }
+    else
+    {
+        editor = qobject_cast<QWidget *>(
+                    metaObject.newInstance(Q_ARG(DeviceTreeModel *, model),
+                                           Q_ARG(QModelIndex, index)));
+    }
+    return editor;
 }
 
 @ Every node type should have an associated editor and the editors for nodes
@@ -15576,17 +15576,17 @@ supply the information needed to add a new top level node.
 @<Class declarations@>=
 class NodeInserter : public QAction@/
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		NodeInserter(const QString &title, const QString &name,
-		             const QString &driver, QObject *parent = NULL);
-	signals:@/
-		void triggered(QString name, QString driver);
-	@[private slots@]:@/
-		void onTriggered();
-	private:@/
-		QString defaultNodeName;
-		QString driverString;
+    @[Q_OBJECT@]@;
+    public:@/
+        NodeInserter(const QString &title, const QString &name,
+                     const QString &driver, QObject *parent = NULL);
+    signals:@/
+        void triggered(QString name, QString driver);
+    @[private slots@]:@/
+        void onTriggered();
+    private:@/
+        QString defaultNodeName;
+        QString driverString;
 };
 
 @ The constructor saves the information that will later be emitted and connects
@@ -15596,14 +15596,14 @@ the |triggered()| signal from |QAction| to a private slot which emits our new
 @<NodeInserter implementation@>=
 NodeInserter::NodeInserter(const QString &title, const QString &name,
                            const QString &driver, QObject *parent) :
-	QAction(title, parent), defaultNodeName(name), driverString(driver)
+    QAction(title, parent), defaultNodeName(name), driverString(driver)
 {
-	connect(this, SIGNAL(triggered()), this, SLOT(onTriggered()));
+    connect(this, SIGNAL(triggered()), this, SLOT(onTriggered()));
 }
 
 void NodeInserter::onTriggered()
 {
-	emit triggered(defaultNodeName, driverString);
+    emit triggered(defaultNodeName, driverString);
 }
 
 @ An interface for adding top level nodes to the device configuration needs to
@@ -15631,20 +15631,20 @@ should be changed in a future version to reflect this change.
 @<Class declarations@>=
 class DeviceConfigurationWindow : public QWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		DeviceConfigurationWindow();
-	@[public slots@]:@/
-		void addDevice();
-		void removeNode();
-		void newSelection(const QModelIndex &index);
-	@[private slots@]:@/
-		void resizeColumn();
-	private:@/
-		QDomDocument document;
-		DeviceTreeModel *model;
-		QTreeView *view;
-		QScrollArea *configArea;
+    @[Q_OBJECT@]@;
+    public:@/
+        DeviceConfigurationWindow();
+    @[public slots@]:@/
+        void addDevice();
+        void removeNode();
+        void newSelection(const QModelIndex &index);
+    @[private slots@]:@/
+        void resizeColumn();
+    private:@/
+        QDomDocument document;
+        DeviceTreeModel *model;
+        QTreeView *view;
+        QScrollArea *configArea;
 };
 
 @ This window consists of two main panels separated by a splitter. The left
@@ -15663,54 +15663,54 @@ expanded.
 
 @<DeviceConfigurationWindow implementation@>=
 DeviceConfigurationWindow::DeviceConfigurationWindow() : QWidget(NULL),
-	view(new QTreeView), configArea(new QScrollArea)
+    view(new QTreeView), configArea(new QScrollArea)
 {
-	QSplitter *splitter = new QSplitter;
-	QWidget *leftWidget = new QWidget;
-	leftWidget->setMinimumWidth(200);
-	QVBoxLayout *left = new QVBoxLayout;
-	view->setAnimated(true);
-	view->setSelectionMode(QAbstractItemView::SingleSelection);
-	document = AppInstance->deviceConfiguration();
-	model = new DeviceTreeModel;
-	view->setModel(model);
-	view->setTextElideMode(Qt::ElideNone);
-	view->expandAll();
-	view->resizeColumnToContents(0);
-	connect(model, SIGNAL(modelReset()), view, SLOT(expandAll()));
-	QHBoxLayout *treeButtons = new QHBoxLayout;
-	QToolButton *addDeviceButton = new QToolButton;
-	addDeviceButton->setIcon(QIcon::fromTheme("list-add"));
-	addDeviceButton->setToolTip(tr("New Roaster"));
-	connect(addDeviceButton, SIGNAL(clicked()),
-	        this, SLOT(addDevice()));
-	QToolButton *removeNodeButton = new QToolButton;
-	removeNodeButton->setIcon(QIcon::fromTheme("list-remove"));
-	removeNodeButton->setToolTip(tr("Delete Selection"));
-	connect(removeNodeButton, SIGNAL(clicked()), this, SLOT(removeNode()));
-	treeButtons->addWidget(addDeviceButton);
-	treeButtons->addWidget(removeNodeButton);
-	left->addWidget(view);
-	left->addLayout(treeButtons);
-	leftWidget->setLayout(left);
-	splitter->addWidget(leftWidget);
-	configArea->setMinimumWidth(580);
-	configArea->setMinimumHeight(460);
-	configArea->setWidgetResizable(true);
-	splitter->addWidget(configArea);
-	QVBoxLayout *centralLayout = new QVBoxLayout;
-	centralLayout->addWidget(splitter);
-	setLayout(centralLayout);
-	connect(view, SIGNAL(activated(QModelIndex)),
-	        this, SLOT(newSelection(QModelIndex)));
-	connect(view, SIGNAL(clicked(QModelIndex)),
-	        this, SLOT(newSelection(QModelIndex)));
-	connect(model, SIGNAL(rowsInserted(QModelIndex, int, int)),
-	        view, SLOT(expand(QModelIndex)));
-	connect(model, SIGNAL(rowsInserted(QModelIndex, int, int)),
-	        this, SLOT(resizeColumn()));
-	connect(model, SIGNAL(rowsRemoved(QModelIndex, int, int)),
-	        this, SLOT(resizeColumn()));
+    QSplitter *splitter = new QSplitter;
+    QWidget *leftWidget = new QWidget;
+    leftWidget->setMinimumWidth(200);
+    QVBoxLayout *left = new QVBoxLayout;
+    view->setAnimated(true);
+    view->setSelectionMode(QAbstractItemView::SingleSelection);
+    document = AppInstance->deviceConfiguration();
+    model = new DeviceTreeModel;
+    view->setModel(model);
+    view->setTextElideMode(Qt::ElideNone);
+    view->expandAll();
+    view->resizeColumnToContents(0);
+    connect(model, SIGNAL(modelReset()), view, SLOT(expandAll()));
+    QHBoxLayout *treeButtons = new QHBoxLayout;
+    QToolButton *addDeviceButton = new QToolButton;
+    addDeviceButton->setIcon(QIcon::fromTheme("list-add"));
+    addDeviceButton->setToolTip(tr("New Roaster"));
+    connect(addDeviceButton, SIGNAL(clicked()),
+            this, SLOT(addDevice()));
+    QToolButton *removeNodeButton = new QToolButton;
+    removeNodeButton->setIcon(QIcon::fromTheme("list-remove"));
+    removeNodeButton->setToolTip(tr("Delete Selection"));
+    connect(removeNodeButton, SIGNAL(clicked()), this, SLOT(removeNode()));
+    treeButtons->addWidget(addDeviceButton);
+    treeButtons->addWidget(removeNodeButton);
+    left->addWidget(view);
+    left->addLayout(treeButtons);
+    leftWidget->setLayout(left);
+    splitter->addWidget(leftWidget);
+    configArea->setMinimumWidth(580);
+    configArea->setMinimumHeight(460);
+    configArea->setWidgetResizable(true);
+    splitter->addWidget(configArea);
+    QVBoxLayout *centralLayout = new QVBoxLayout;
+    centralLayout->addWidget(splitter);
+    setLayout(centralLayout);
+    connect(view, SIGNAL(activated(QModelIndex)),
+            this, SLOT(newSelection(QModelIndex)));
+    connect(view, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(newSelection(QModelIndex)));
+    connect(model, SIGNAL(rowsInserted(QModelIndex, int, int)),
+            view, SLOT(expand(QModelIndex)));
+    connect(model, SIGNAL(rowsInserted(QModelIndex, int, int)),
+            this, SLOT(resizeColumn()));
+    connect(model, SIGNAL(rowsRemoved(QModelIndex, int, int)),
+            this, SLOT(resizeColumn()));
 }
 
 @ Adding a new top level node to the model is just a matter of extracting the
@@ -15719,7 +15719,7 @@ required information from the signal requesting that addition.
 @<DeviceConfigurationWindow implementation@>=
 void DeviceConfigurationWindow::addDevice()
 {
-	model->newNode(tr("New Roaster"), "roaster", QModelIndex());
+    model->newNode(tr("New Roaster"), "roaster", QModelIndex());
 }
 
 @ Removing the currently selected node is also simple.
@@ -15727,13 +15727,13 @@ void DeviceConfigurationWindow::addDevice()
 @<DeviceConfigurationWindow implementation@>=
 void DeviceConfigurationWindow::removeNode()
 {
-	QModelIndex index = view->currentIndex();
-	if(index.isValid())
-	{
-		int row = index.row();
-		QModelIndex parent = index.parent();
-		model->removeRow(row, parent);
-	}
+    QModelIndex index = view->currentIndex();
+    if(index.isValid())
+    {
+        int row = index.row();
+        QModelIndex parent = index.parent();
+        model->removeRow(row, parent);
+    }
 }
 
 @ Due to most of the required logic being implemented in
@@ -15743,12 +15743,12 @@ right area is also trivial.
 @<DeviceConfigurationWindow implementation@>=
 void DeviceConfigurationWindow::newSelection(const QModelIndex &index)
 {
-	QWidget *editor = AppInstance->deviceConfigurationWidget(model, index);
-	if(editor)
-	{
-		configArea->setWidget(editor);
-		editor->show();
-	}
+    QWidget *editor = AppInstance->deviceConfigurationWidget(model, index);
+    if(editor)
+    {
+        configArea->setWidget(editor);
+        editor->show();
+    }
 }
 
 @ As nodes are added deeper in the device hierarchy or as nodes obtain longer
@@ -15760,7 +15760,7 @@ instead.
 @<DeviceConfigurationWindow implementation@>=
 void DeviceConfigurationWindow::resizeColumn()
 {
-	view->resizeColumnToContents(0);
+    view->resizeColumnToContents(0);
 }
 
 @ At least for the initial testing of this feature it will be useful if we can
@@ -15780,8 +15780,8 @@ QScriptValue constructDeviceConfigurationWindow(QScriptContext *context,
 QScriptValue constructDeviceConfigurationWindow(QScriptContext *,
                                                 QScriptEngine *engine)
 {
-	QScriptValue object = engine->newQObject(new DeviceConfigurationWindow);
-	return object;
+    QScriptValue object = engine->newQObject(new DeviceConfigurationWindow);
+    return object;
 }
 
 @ Finally we inform the host environment of this constructor.
@@ -15801,16 +15801,16 @@ in a base class.
 @<Class declarations@>=
 class BasicDeviceConfigurationWidget : public QWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		BasicDeviceConfigurationWidget(DeviceTreeModel *model,
-		                               const QModelIndex &index);
-	@[public slots@]:@/
-		void insertChildNode(const QString &name, const QString &driver);
-		void updateAttribute(const QString &name, const QString &value);
-	protected:@/
-		DeviceTreeModel *deviceModel;
-		QModelIndex currentNode;
+    @[Q_OBJECT@]@;
+    public:@/
+        BasicDeviceConfigurationWidget(DeviceTreeModel *model,
+                                       const QModelIndex &index);
+    @[public slots@]:@/
+        void insertChildNode(const QString &name, const QString &driver);
+        void updateAttribute(const QString &name, const QString &value);
+    protected:@/
+        DeviceTreeModel *deviceModel;
+        QModelIndex currentNode;
 };
 
 @ The constructor just passes its arguments to a pair of protected data
@@ -15819,10 +15819,10 @@ outside of this branch of the object hierarchy.
 
 @<BasicDeviceConfigurationWidget implementation@>=
 BasicDeviceConfigurationWidget::BasicDeviceConfigurationWidget(
-	DeviceTreeModel *model, const QModelIndex &index)
-	: QWidget(NULL), deviceModel(model), currentNode(index)
+    DeviceTreeModel *model, const QModelIndex &index)
+    : QWidget(NULL), deviceModel(model), currentNode(index)
 {
-	/* Nothing needs to be done here. */
+    /* Nothing needs to be done here. */
 }
 
 @ The |updateAttribute()| method sets the value property of an attribute
@@ -15833,29 +15833,29 @@ element if it does not exist.
 void BasicDeviceConfigurationWidget::updateAttribute(const QString &name,
                                                      const QString &value)
 {
-	QDomElement referenceElement = deviceModel->referenceElement(
-		deviceModel->data(currentNode, Qt::UserRole).toString());
-	QDomNodeList configData = referenceElement.elementsByTagName("attribute");
-	QDomElement node;
-	bool found = @[false@];
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == name)
-		{
-			node.setAttribute("value", value);
-			found = @[true@];
-			break;
-		}
-	}
-	if(!found)
-	{
-		node = AppInstance->deviceConfiguration().createElement("attribute");
-		node.setAttribute("name", name);
-		node.setAttribute("value", value);
-		referenceElement.appendChild(node);
-	}
-	AppInstance->saveDeviceConfiguration();
+    QDomElement referenceElement = deviceModel->referenceElement(
+        deviceModel->data(currentNode, Qt::UserRole).toString());
+    QDomNodeList configData = referenceElement.elementsByTagName("attribute");
+    QDomElement node;
+    bool found = @[false@];
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == name)
+        {
+            node.setAttribute("value", value);
+            found = @[true@];
+            break;
+        }
+    }
+    if(!found)
+    {
+        node = AppInstance->deviceConfiguration().createElement("attribute");
+        node.setAttribute("name", name);
+        node.setAttribute("value", value);
+        referenceElement.appendChild(node);
+    }
+    AppInstance->saveDeviceConfiguration();
 }
 
 @ The |insertChildNode()| method constructs a new node with the specified name
@@ -15867,7 +15867,7 @@ will be presented in that node.
 void BasicDeviceConfigurationWidget::insertChildNode(const QString &name,
                                                      const QString &driver)
 {
-	deviceModel->newNode(name, driver, currentNode);
+    deviceModel->newNode(name, driver, currentNode);
 }
 
 @** Configuration of Top Level Roaster Nodes.
@@ -15886,12 +15886,12 @@ meta-object system. All of these constructors take a |DeviceTreeModel *| and a
 @<Class declarations@>=
 class RoasterConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, RoasterConfWidget(DeviceTreeModel *model,
-		                                    const QModelIndex &index);
-	@[private slots@]:@/
-		void updateRoasterId(int id);
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, RoasterConfWidget(DeviceTreeModel *model,
+                                            const QModelIndex &index);
+    @[private slots@]:@/
+        void updateRoasterId(int id);
 };
 
 @ Aside from the ID number used to identify the roaster in the database we also
@@ -15903,71 +15903,71 @@ available through different controls.
 RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
-	QPushButton *addDeviceButton = new QPushButton(tr("Add Device"));
-	QMenu *deviceMenu = new QMenu;
-	NodeInserter *insertAction;
-	foreach(insertAction, AppInstance->topLevelNodeInserters)
-	{
-		connect(insertAction, SIGNAL(triggered(QString, QString)),
-		        this, SLOT(insertChildNode(QString, QString)));
-		deviceMenu->addAction(insertAction);
-	}
-	addDeviceButton->setMenu(deviceMenu);
-	layout->addWidget(addDeviceButton);
-	QPushButton *addAnnotationControlButton = new QPushButton(tr("Add Annotation Control"));
-	QMenu *annotationMenu = new QMenu;
-	NodeInserter *basicButtonInserter = new NodeInserter(tr("Annotation Button"), tr("Annotation Button"), "annotationbutton");
-	NodeInserter *countingButtonInserter = new NodeInserter(tr("Counting Button"), tr("Counting Button"), "reconfigurablebutton");
-	NodeInserter *spinBoxInserter = new NodeInserter(tr("Numeric Entry"), tr("Numeric Entry"), "annotationspinbox");
-	NodeInserter *freeAnnotationInserter = new NodeInserter(tr("Free Text"),
-	                                                        tr("Free Text"),
-	                                                        "freeannotation");
-	annotationMenu->addAction(basicButtonInserter);
-	annotationMenu->addAction(countingButtonInserter);
-	annotationMenu->addAction(spinBoxInserter);
-	annotationMenu->addAction(freeAnnotationInserter);
-	connect(basicButtonInserter, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	connect(countingButtonInserter, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	connect(spinBoxInserter, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	connect(freeAnnotationInserter, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	@<Add annotation control node inserters@>@;
-	addAnnotationControlButton->setMenu(annotationMenu);
-	layout->addWidget(addAnnotationControlButton);
-	QPushButton *advancedButton = new QPushButton(tr("Advanced Features"));
-	QMenu *advancedMenu = new QMenu;
-	NodeInserter *linearsplineinserter = new NodeInserter(tr("Linear Spline Interpolated Series"), tr("Linear Spline Interpolated Series"), "linearspline");
-	advancedMenu->addAction(linearsplineinserter);
-	NodeInserter *translationinserter = new NodeInserter(tr("Profile Translation"), tr("Profile Translation"), "translation");
-	advancedMenu->addAction(translationinserter);
-	connect(linearsplineinserter, SIGNAL(triggered(QString, QString)), this, SLOT(insertChildNode(QString, QString)));
-	connect(translationinserter, SIGNAL(triggered(QString, QString)), this, SLOT(insertChildNode(QString, QString)));
-	@<Add node inserters to advanced features menu@>@;
-	advancedButton->setMenu(advancedMenu);
-	layout->addWidget(advancedButton);
-	QHBoxLayout *idLayout = new QHBoxLayout;
-	QLabel *idLabel = new QLabel(tr("Machine ID for database:"));
-	idLayout->addWidget(idLabel);
-	QSpinBox *id = new QSpinBox;
-	idLayout->addWidget(id);
-	layout->addLayout(idLayout);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "databaseid")
-		{
-			id->setValue(node.attribute("value").toInt());
-			break;
-		}
-	}
-	updateRoasterId(id->value());
-	connect(id, SIGNAL(valueChanged(int)), this, SLOT(updateRoasterId(int)));
-	setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout;
+    QPushButton *addDeviceButton = new QPushButton(tr("Add Device"));
+    QMenu *deviceMenu = new QMenu;
+    NodeInserter *insertAction;
+    foreach(insertAction, AppInstance->topLevelNodeInserters)
+    {
+        connect(insertAction, SIGNAL(triggered(QString, QString)),
+                this, SLOT(insertChildNode(QString, QString)));
+        deviceMenu->addAction(insertAction);
+    }
+    addDeviceButton->setMenu(deviceMenu);
+    layout->addWidget(addDeviceButton);
+    QPushButton *addAnnotationControlButton = new QPushButton(tr("Add Annotation Control"));
+    QMenu *annotationMenu = new QMenu;
+    NodeInserter *basicButtonInserter = new NodeInserter(tr("Annotation Button"), tr("Annotation Button"), "annotationbutton");
+    NodeInserter *countingButtonInserter = new NodeInserter(tr("Counting Button"), tr("Counting Button"), "reconfigurablebutton");
+    NodeInserter *spinBoxInserter = new NodeInserter(tr("Numeric Entry"), tr("Numeric Entry"), "annotationspinbox");
+    NodeInserter *freeAnnotationInserter = new NodeInserter(tr("Free Text"),
+                                                            tr("Free Text"),
+                                                            "freeannotation");
+    annotationMenu->addAction(basicButtonInserter);
+    annotationMenu->addAction(countingButtonInserter);
+    annotationMenu->addAction(spinBoxInserter);
+    annotationMenu->addAction(freeAnnotationInserter);
+    connect(basicButtonInserter, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(countingButtonInserter, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(spinBoxInserter, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(freeAnnotationInserter, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    @<Add annotation control node inserters@>@;
+    addAnnotationControlButton->setMenu(annotationMenu);
+    layout->addWidget(addAnnotationControlButton);
+    QPushButton *advancedButton = new QPushButton(tr("Advanced Features"));
+    QMenu *advancedMenu = new QMenu;
+    NodeInserter *linearsplineinserter = new NodeInserter(tr("Linear Spline Interpolated Series"), tr("Linear Spline Interpolated Series"), "linearspline");
+    advancedMenu->addAction(linearsplineinserter);
+    NodeInserter *translationinserter = new NodeInserter(tr("Profile Translation"), tr("Profile Translation"), "translation");
+    advancedMenu->addAction(translationinserter);
+    connect(linearsplineinserter, SIGNAL(triggered(QString, QString)), this, SLOT(insertChildNode(QString, QString)));
+    connect(translationinserter, SIGNAL(triggered(QString, QString)), this, SLOT(insertChildNode(QString, QString)));
+    @<Add node inserters to advanced features menu@>@;
+    advancedButton->setMenu(advancedMenu);
+    layout->addWidget(advancedButton);
+    QHBoxLayout *idLayout = new QHBoxLayout;
+    QLabel *idLabel = new QLabel(tr("Machine ID for database:"));
+    idLayout->addWidget(idLabel);
+    QSpinBox *id = new QSpinBox;
+    idLayout->addWidget(id);
+    layout->addLayout(idLayout);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "databaseid")
+        {
+            id->setValue(node.attribute("value").toInt());
+            break;
+        }
+    }
+    updateRoasterId(id->value());
+    connect(id, SIGNAL(valueChanged(int)), this, SLOT(updateRoasterId(int)));
+    setLayout(layout);
 }
 
 @ Iterating over the configuration data associated with the current node is
@@ -15979,7 +15979,7 @@ the same code many times.
 
 @<Get device configuration data for current node@>=
 QDomElement referenceElement =
-	model->referenceElement(model->data(index, Qt::UserRole).toString());
+    model->referenceElement(model->data(index, Qt::UserRole).toString());
 QDomNodeList configData = referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
@@ -15990,7 +15990,7 @@ makes this trivial.
 @<RoasterConfWidget implementation@>=
 void RoasterConfWidget::updateRoasterId(int id)
 {
-	updateAttribute("databaseid", QString("%1").arg(id));
+    updateAttribute("databaseid", QString("%1").arg(id));
 }
 
 @ Finally we must register the configuration widget so that it can be
@@ -16021,10 +16021,10 @@ thermocouple type.
 @<Class declarations@>=
 class NiDaqMxBaseDriverConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, NiDaqMxBaseDriverConfWidget(DeviceTreeModel *model,@|
-		                                        const QModelIndex &index);
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, NiDaqMxBaseDriverConfWidget(DeviceTreeModel *model,@|
+                                                const QModelIndex &index);
 };
 
 @ There is very little to configure here so there isn'@q'@>t much for the
@@ -16035,27 +16035,27 @@ there is no need to read any configuration data here.
 
 @<NiDaqMxBaseDriverConfWidget implementation@>=
 NiDaqMxBaseDriverConfWidget::NiDaqMxBaseDriverConfWidget(
-	DeviceTreeModel *model, const QModelIndex &index) :
-	BasicDeviceConfigurationWidget(model, index)
+    DeviceTreeModel *model, const QModelIndex &index) :
+    BasicDeviceConfigurationWidget(model, index)
 {
-	QHBoxLayout *layout = new QHBoxLayout;
-	QToolButton *addDeviceButton = new QToolButton;
-	addDeviceButton->setText(tr("Add Device"));
-	NodeInserter *add9211 = new NodeInserter("NI USB 9211", "NI USB 9211",
-	                                         "nidaqmxbase9211series");
-	NodeInserter *add9211a = new NodeInserter("NI USB 9211A", "NI USB 9211A",
-	                                          "nidaqmxbase9211series");
-	connect(add9211, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	connect(add9211a, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	QMenu *deviceMenu = new QMenu;
-	deviceMenu->addAction(add9211);
-	deviceMenu->addAction(add9211a);
-	addDeviceButton->setMenu(deviceMenu);
-	addDeviceButton->setPopupMode(QToolButton::InstantPopup);
-	layout->addWidget(addDeviceButton);
-	setLayout(layout);
+    QHBoxLayout *layout = new QHBoxLayout;
+    QToolButton *addDeviceButton = new QToolButton;
+    addDeviceButton->setText(tr("Add Device"));
+    NodeInserter *add9211 = new NodeInserter("NI USB 9211", "NI USB 9211",
+                                             "nidaqmxbase9211series");
+    NodeInserter *add9211a = new NodeInserter("NI USB 9211A", "NI USB 9211A",
+                                              "nidaqmxbase9211series");
+    connect(add9211, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(add9211a, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    QMenu *deviceMenu = new QMenu;
+    deviceMenu->addAction(add9211);
+    deviceMenu->addAction(add9211a);
+    addDeviceButton->setMenu(deviceMenu);
+    addDeviceButton->setPopupMode(QToolButton::InstantPopup);
+    layout->addWidget(addDeviceButton);
+    setLayout(layout);
 }
 
 @ Both the NI USB 9211 and NI USB 9211A are identical from a configuration
@@ -16067,13 +16067,13 @@ conflicts is left as an exercise for the person attempting to use \pn{}.
 @<Class declarations@>=
 class NiDaqMxBase9211ConfWidget : public BasicDeviceConfigurationWidget
 {
-	Q_OBJECT
-	public:
-		Q_INVOKABLE NiDaqMxBase9211ConfWidget(DeviceTreeModel *device,
-		                                      const QModelIndex &index);
-	private slots:
-		void addChannel();
-		void updateDeviceId(const QString &newId);
+    Q_OBJECT
+    public:
+        Q_INVOKABLE NiDaqMxBase9211ConfWidget(DeviceTreeModel *device,
+                                              const QModelIndex &index);
+    private slots:
+        void addChannel();
+        void updateDeviceId(const QString &newId);
 };
 
 @ There are two controls required in a configuration widget for this device.
@@ -16085,33 +16085,33 @@ the maximum clock rate from the channels defined.
 @<NiDaqMxBase9211ConfWidget implementation@>=
 NiDaqMxBase9211ConfWidget::NiDaqMxBase9211ConfWidget(DeviceTreeModel *model,
                                                      const QModelIndex &index)
-	: BasicDeviceConfigurationWidget(model, index)
+    : BasicDeviceConfigurationWidget(model, index)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
-	QHBoxLayout *deviceIdLayout = new QHBoxLayout;
-	QLabel *label = new QLabel(tr("Device ID:"));
-	QLineEdit *deviceId = new QLineEdit;
-	deviceIdLayout->addWidget(label);
-	deviceIdLayout->addWidget(deviceId);
-	QPushButton *addChannelButton = new QPushButton(tr("Add Channel"));
-	layout->addLayout(deviceIdLayout);
-	layout->addWidget(addChannelButton);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "deviceID")
-		{
-			deviceId->setText(node.attribute("value", "Dev1"));
-			break;
-		}
-	}
-	updateDeviceId(deviceId->text());
-	connect(addChannelButton, SIGNAL(clicked()),
-	        this, SLOT(addChannel()));
-	connect(deviceId, SIGNAL(textEdited(QString)),
-	        this, SLOT(updateDeviceId(QString)));
-	setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout;
+    QHBoxLayout *deviceIdLayout = new QHBoxLayout;
+    QLabel *label = new QLabel(tr("Device ID:"));
+    QLineEdit *deviceId = new QLineEdit;
+    deviceIdLayout->addWidget(label);
+    deviceIdLayout->addWidget(deviceId);
+    QPushButton *addChannelButton = new QPushButton(tr("Add Channel"));
+    layout->addLayout(deviceIdLayout);
+    layout->addWidget(addChannelButton);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "deviceID")
+        {
+            deviceId->setText(node.attribute("value", "Dev1"));
+            break;
+        }
+    }
+    updateDeviceId(deviceId->text());
+    connect(addChannelButton, SIGNAL(clicked()),
+            this, SLOT(addChannel()));
+    connect(deviceId, SIGNAL(textEdited(QString)),
+            this, SLOT(updateDeviceId(QString)));
+    setLayout(layout);
 }
 
 @ Updating the attribute tag under the reference element associated with the
@@ -16121,7 +16121,7 @@ appropriate name value pair.
 @<NiDaqMxBase9211ConfWidget implementation@>=
 void NiDaqMxBase9211ConfWidget::updateDeviceId(const QString &newId)
 {
-	updateAttribute("deviceID", newId);
+    updateAttribute("deviceID", newId);
 }
 
 @ Adding channels is just like adding any other sort of node.
@@ -16129,7 +16129,7 @@ void NiDaqMxBase9211ConfWidget::updateDeviceId(const QString &newId)
 @<NiDaqMxBase9211ConfWidget implementation@>=
 void NiDaqMxBase9211ConfWidget::addChannel()
 {
-	insertChildNode(tr("Thermocouple channel"), "ni9211seriestc");
+    insertChildNode(tr("Thermocouple channel"), "ni9211seriestc");
 }
 
 @ Finally, we need a configuration widget to handle our thermocouple channels.
@@ -16153,14 +16153,14 @@ use of such a module.
 @<Class declarations@>=
 class Ni9211TcConfWidget : public BasicDeviceConfigurationWidget
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		Q_INVOKABLE@,@, Ni9211TcConfWidget(DeviceTreeModel *device,
-		                               const QModelIndex &index);
-	@[private slots@]:@/
-		void updateThermocoupleType(const QString &type);
-		void updateColumnName(const QString &name);
-		void updateHidden(bool hidden);
+    @[Q_OBJECT@]@;
+    public:@/
+        Q_INVOKABLE@,@, Ni9211TcConfWidget(DeviceTreeModel *device,
+                                       const QModelIndex &index);
+    @[private slots@]:@/
+        void updateThermocoupleType(const QString &type);
+        void updateColumnName(const QString &name);
+        void updateHidden(bool hidden);
 };
 
 @ This follows the same pattern of previous device configuration widgets. The
@@ -16171,49 +16171,49 @@ appropriately.
 @<Ni9211TcConfWidget implementation@>=
 Ni9211TcConfWidget::Ni9211TcConfWidget(DeviceTreeModel *model,
                                        const QModelIndex &index) :
-	BasicDeviceConfigurationWidget(model, index)
+    BasicDeviceConfigurationWidget(model, index)
 {
-	QFormLayout *layout = new QFormLayout;
-	QLineEdit *columnName = new QLineEdit;
-	layout->addRow(tr("Column Name:"), columnName);
-	QComboBox *typeSelector = new QComboBox;
-	typeSelector->addItem("J");
-	typeSelector->addItem("K");
-	typeSelector->addItem("T");
-	typeSelector->addItem("B");
-	typeSelector->addItem("E");
-	typeSelector->addItem("N");
-	typeSelector->addItem("R");
-	typeSelector->addItem("S");
-	layout->addRow(tr("Thermocouple Type:"), typeSelector);
-	QCheckBox *hideSeries = new QCheckBox("Hide this channel");
-	layout->addRow(hideSeries);
-	setLayout(layout);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "type")
-		{
-			typeSelector->setCurrentIndex(
-				typeSelector->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "columnname")
-		{
-			columnName->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "hidden")
-		{
-			hideSeries->setChecked(node.attribute("value") == "true");
-		}
-	}
-	updateThermocoupleType(typeSelector->currentText());
-	updateColumnName(columnName->text());
-	updateHidden(hideSeries->isChecked());
-	connect(typeSelector, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateThermocoupleType(QString)));
-	connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
-	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *columnName = new QLineEdit;
+    layout->addRow(tr("Column Name:"), columnName);
+    QComboBox *typeSelector = new QComboBox;
+    typeSelector->addItem("J");
+    typeSelector->addItem("K");
+    typeSelector->addItem("T");
+    typeSelector->addItem("B");
+    typeSelector->addItem("E");
+    typeSelector->addItem("N");
+    typeSelector->addItem("R");
+    typeSelector->addItem("S");
+    layout->addRow(tr("Thermocouple Type:"), typeSelector);
+    QCheckBox *hideSeries = new QCheckBox("Hide this channel");
+    layout->addRow(hideSeries);
+    setLayout(layout);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "type")
+        {
+            typeSelector->setCurrentIndex(
+                typeSelector->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "columnname")
+        {
+            columnName->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "hidden")
+        {
+            hideSeries->setChecked(node.attribute("value") == "true");
+        }
+    }
+    updateThermocoupleType(typeSelector->currentText());
+    updateColumnName(columnName->text());
+    updateHidden(hideSeries->isChecked());
+    connect(typeSelector, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updateThermocoupleType(QString)));
+    connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
+    connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 }
 
 @ Two slots are used to pass configuration changes back to the underlying XML
@@ -16222,17 +16222,17 @@ representation.
 @<Ni9211TcConfWidget implementation@>=
 void Ni9211TcConfWidget::updateThermocoupleType(const QString &type)
 {
-	updateAttribute("type", type);
+    updateAttribute("type", type);
 }
 
 void Ni9211TcConfWidget::updateColumnName(const QString &name)
 {
-	updateAttribute("columnname", name);
+    updateAttribute("columnname", name);
 }
 
 void Ni9211TcConfWidget::updateHidden(bool hidden)
 {
-	updateAttribute("hidden", hidden ? "true" : "false");
+    updateAttribute("hidden", hidden ? "true" : "false");
 }
 
 @ These three widgets need to be registered so the configuration widget can
@@ -16240,11 +16240,11 @@ instantiate them when the nodes are selected.
 
 @<Register device configuration widgets@>=
 app.registerDeviceConfigurationWidget("nidaqmxbase",
-	NiDaqMxBaseDriverConfWidget::staticMetaObject);
+    NiDaqMxBaseDriverConfWidget::staticMetaObject);
 app.registerDeviceConfigurationWidget("nidaqmxbase9211series",
-	NiDaqMxBase9211ConfWidget::staticMetaObject);
+    NiDaqMxBase9211ConfWidget::staticMetaObject);
 app.registerDeviceConfigurationWidget("ni9211seriestc",
-	Ni9211TcConfWidget::staticMetaObject);
+    Ni9211TcConfWidget::staticMetaObject);
 
 @ Furthermore, we should create the NodeInserter objects for adding top level
 nodes to the configuration. Preferably we would only allow top level nodes to
@@ -16253,7 +16253,7 @@ be inserted when all prerequisite software is available.
 @<Register top level device configuration nodes@>=
 NodeInserter *inserter = new NodeInserter(tr("NI DAQmx Base Device"),
                                           tr("NI DAQmx Base"),
-										  "nidaqmxbase", NULL);
+                                          "nidaqmxbase", NULL);
 topLevelNodeInserters.append(inserter);
 
 @** Configuration of NI-DAQmx devices.
@@ -16269,10 +16269,10 @@ Base devices, starting with a widget for adding child device nodes.
 @<Class declarations@>=
 class NiDaqMxDriverConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:
-		@[Q_INVOKABLE@]@, NiDaqMxDriverConfWidget(DeviceTreeModel *model,
-		                                          const QModelIndex &index);
+    @[Q_OBJECT@]@;
+    public:
+        @[Q_INVOKABLE@]@, NiDaqMxDriverConfWidget(DeviceTreeModel *model,
+                                                  const QModelIndex &index);
 };
 
 @ Under our driver node we want to have the ability to insert device specific
@@ -16283,24 +16283,24 @@ NiDaqMxDriverConfWidget::NiDaqMxDriverConfWidget(DeviceTreeModel *model,
                                                  const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QHBoxLayout *layout = new QHBoxLayout;
-	QToolButton *addDeviceButton = new QToolButton;
-	addDeviceButton->setText(tr("Add Device"));
-	NodeInserter *add9211a = new NodeInserter("NI USB 9211A", "NI USB 9211A",
-	                                          "nidaqmx9211series");
-	NodeInserter *addtc01 = new NodeInserter("NI USB TC01", "NI USB TC01",
-	                                         "nidaqmxtc01");
-	connect(add9211a, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	connect(addtc01, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	QMenu *deviceMenu = new QMenu;
-	deviceMenu->addAction(add9211a);
-	deviceMenu->addAction(addtc01);
-	addDeviceButton->setMenu(deviceMenu);
-	addDeviceButton->setPopupMode(QToolButton::InstantPopup);
-	layout->addWidget(addDeviceButton);
-	setLayout(layout);
+    QHBoxLayout *layout = new QHBoxLayout;
+    QToolButton *addDeviceButton = new QToolButton;
+    addDeviceButton->setText(tr("Add Device"));
+    NodeInserter *add9211a = new NodeInserter("NI USB 9211A", "NI USB 9211A",
+                                              "nidaqmx9211series");
+    NodeInserter *addtc01 = new NodeInserter("NI USB TC01", "NI USB TC01",
+                                             "nidaqmxtc01");
+    connect(add9211a, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(addtc01, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    QMenu *deviceMenu = new QMenu;
+    deviceMenu->addAction(add9211a);
+    deviceMenu->addAction(addtc01);
+    addDeviceButton->setMenu(deviceMenu);
+    addDeviceButton->setPopupMode(QToolButton::InstantPopup);
+    layout->addWidget(addDeviceButton);
+    setLayout(layout);
 }
 
 @ Devices based on the 9211 module are essentially the same aside from device
@@ -16310,13 +16310,13 @@ devices when using NI-DAQmx Base.
 @<Class declarations@>=
 class NiDaqMx9211ConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, NiDaqMx9211ConfWidget(DeviceTreeModel *model,
-		                                        const QModelIndex &index);
-	@[private slots@]:@/
-		void addChannel();
-		void updateDeviceId(const QString &newId);
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, NiDaqMx9211ConfWidget(DeviceTreeModel *model,
+                                                const QModelIndex &index);
+    @[private slots@]:@/
+        void addChannel();
+        void updateDeviceId(const QString &newId);
 };
 
 @ Implementation is essentially identical to the NI-DAQmx Base class. It is
@@ -16332,40 +16332,40 @@ NiDaqMx9211ConfWidget::NiDaqMx9211ConfWidget(DeviceTreeModel *model,
                                              const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
-	QHBoxLayout *deviceIdLayout = new QHBoxLayout;
-	QLabel *label = new QLabel(tr("Device ID:"));
-	QLineEdit *deviceId = new QLineEdit;
-	deviceIdLayout->addWidget(label);
-	deviceIdLayout->addWidget(deviceId);
-	QPushButton *addChannelButton = new QPushButton(tr("Add Channel"));
-	layout->addLayout(deviceIdLayout);
-	layout->addWidget(addChannelButton);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "deviceID")
-		{
-			deviceId->setText(node.attribute("value","Dev1"));
-			break;
-		}
-	}
-	updateDeviceId(deviceId->text());
-	connect(addChannelButton, SIGNAL(clicked()), this, SLOT(addChannel()));
-	connect(deviceId, SIGNAL(textEdited(QString)),
-	        this, SLOT(updateDeviceId(QString)));
-	setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout;
+    QHBoxLayout *deviceIdLayout = new QHBoxLayout;
+    QLabel *label = new QLabel(tr("Device ID:"));
+    QLineEdit *deviceId = new QLineEdit;
+    deviceIdLayout->addWidget(label);
+    deviceIdLayout->addWidget(deviceId);
+    QPushButton *addChannelButton = new QPushButton(tr("Add Channel"));
+    layout->addLayout(deviceIdLayout);
+    layout->addWidget(addChannelButton);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "deviceID")
+        {
+            deviceId->setText(node.attribute("value","Dev1"));
+            break;
+        }
+    }
+    updateDeviceId(deviceId->text());
+    connect(addChannelButton, SIGNAL(clicked()), this, SLOT(addChannel()));
+    connect(deviceId, SIGNAL(textEdited(QString)),
+            this, SLOT(updateDeviceId(QString)));
+    setLayout(layout);
 }
 
 void NiDaqMx9211ConfWidget::updateDeviceId(const QString &newId)
 {
-	updateAttribute("deviceID", newId);
+    updateAttribute("deviceID", newId);
 }
 
 void NiDaqMx9211ConfWidget::addChannel()
 {
-	insertChildNode(tr("Thermocouple channel"), "ni9211seriestc");
+    insertChildNode(tr("Thermocouple channel"), "ni9211seriestc");
 }
 
 @ There is no need to create a configuration widget specific to the 9211 module
@@ -16379,15 +16379,15 @@ requiring another node.
 @<Class declarations@>=
 class NiDaqMxTc01ConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, NiDaqMxTc01ConfWidget(DeviceTreeModel *model,
-		                                        const QModelIndex &index);
-	@[private slots@]:@/
-		void updateDeviceId(const QString &newId);
-		void updateThermocoupleType(const QString &type);
-		void updateColumnName(const QString &name);
-		void updateHidden(bool hidden);
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, NiDaqMxTc01ConfWidget(DeviceTreeModel *model,
+                                                const QModelIndex &index);
+    @[private slots@]:@/
+        void updateDeviceId(const QString &newId);
+        void updateThermocoupleType(const QString &type);
+        void updateColumnName(const QString &name);
+        void updateHidden(bool hidden);
 };
 
 @ The implementation is similar to the other configuration widgets.
@@ -16397,73 +16397,73 @@ NiDaqMxTc01ConfWidget::NiDaqMxTc01ConfWidget(DeviceTreeModel *model,
                                              const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QFormLayout *layout = new QFormLayout;
-	QLineEdit *deviceId = new QLineEdit;
-	layout->addRow(tr("Device ID:"), deviceId);
-	QLineEdit *columnName = new QLineEdit;
-	layout->addRow(tr("Column Name:"), columnName);
-	QComboBox *typeSelector = new QComboBox;
-	typeSelector->addItem("J");
-	typeSelector->addItem("K");
-	typeSelector->addItem("T");
-	typeSelector->addItem("B");
-	typeSelector->addItem("E");
-	typeSelector->addItem("N");
-	typeSelector->addItem("R");
-	typeSelector->addItem("S");
-	layout->addRow(tr("Thermocouple Type:"), typeSelector);
-	QCheckBox *hideSeries = new QCheckBox(tr("Hide this channel"));
-	layout->addRow(hideSeries);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "deviceID")
-		{
-			deviceId->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "type")
-		{
-			typeSelector->setCurrentIndex(typeSelector->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "columnname")
-		{
-			columnName->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "hidden")
-		{
-			hideSeries->setChecked(node.attribute("value") == "true");
-		}
-	}
-	updateDeviceId(deviceId->text());
-	updateThermocoupleType(typeSelector->currentText());
-	updateColumnName(columnName->text());
-	updateHidden(hideSeries->isChecked());
-	connect(deviceId, SIGNAL(textEdited(QString)), this, SLOT(updateDeviceId(QString)));
-	connect(typeSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateThermocoupleType(QString)));
-	connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
-	setLayout(layout);
-	connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *deviceId = new QLineEdit;
+    layout->addRow(tr("Device ID:"), deviceId);
+    QLineEdit *columnName = new QLineEdit;
+    layout->addRow(tr("Column Name:"), columnName);
+    QComboBox *typeSelector = new QComboBox;
+    typeSelector->addItem("J");
+    typeSelector->addItem("K");
+    typeSelector->addItem("T");
+    typeSelector->addItem("B");
+    typeSelector->addItem("E");
+    typeSelector->addItem("N");
+    typeSelector->addItem("R");
+    typeSelector->addItem("S");
+    layout->addRow(tr("Thermocouple Type:"), typeSelector);
+    QCheckBox *hideSeries = new QCheckBox(tr("Hide this channel"));
+    layout->addRow(hideSeries);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "deviceID")
+        {
+            deviceId->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "type")
+        {
+            typeSelector->setCurrentIndex(typeSelector->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "columnname")
+        {
+            columnName->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "hidden")
+        {
+            hideSeries->setChecked(node.attribute("value") == "true");
+        }
+    }
+    updateDeviceId(deviceId->text());
+    updateThermocoupleType(typeSelector->currentText());
+    updateColumnName(columnName->text());
+    updateHidden(hideSeries->isChecked());
+    connect(deviceId, SIGNAL(textEdited(QString)), this, SLOT(updateDeviceId(QString)));
+    connect(typeSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateThermocoupleType(QString)));
+    connect(columnName, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
+    setLayout(layout);
+    connect(hideSeries, SIGNAL(toggled(bool)), this, SLOT(updateHidden(bool)));
 }
 
 void NiDaqMxTc01ConfWidget::updateDeviceId(const QString &newId)
 {
-	updateAttribute("deviceID", newId);
+    updateAttribute("deviceID", newId);
 }
 
 void NiDaqMxTc01ConfWidget::updateThermocoupleType(const QString &type)
 {
-	updateAttribute("type", type);
+    updateAttribute("type", type);
 }
 
 void NiDaqMxTc01ConfWidget::updateColumnName(const QString &name)
 {
-	updateAttribute("columnname", name);
+    updateAttribute("columnname", name);
 }
 
 void NiDaqMxTc01ConfWidget::updateHidden(bool hidden)
 {
-	updateAttribute("hidden", hidden ? "true" : "false");
+    updateAttribute("hidden", hidden ? "true" : "false");
 }
 
 @ These configuration widgets need to be registered so they can be instantiated
@@ -16510,40 +16510,40 @@ configuration.
 @<Class declarations@>=
 class PortSelector : public QComboBox
 {
-	Q_OBJECT
-	public:
-		PortSelector(QWidget *parent = NULL);
-	private slots:
-		void addDevice(QextPortInfo port);
-	private:
-		QextSerialEnumerator *lister;
+    Q_OBJECT
+    public:
+        PortSelector(QWidget *parent = NULL);
+    private slots:
+        void addDevice(QextPortInfo port);
+    private:
+        QextSerialEnumerator *lister;
 };
 
 @ The implementation is trivial.
 
 @<PortSelector implementation@>=
 PortSelector::PortSelector(QWidget *parent) : QComboBox(parent),
-	lister(new QextSerialEnumerator)
+    lister(new QextSerialEnumerator)
 {
-	QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
-	QextPortInfo port;
-	foreach(port, ports)
-	{
+    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
+    QextPortInfo port;
+    foreach(port, ports)
+    {
 #ifdef Q_OS_WIN32
-		addItem(port.portName);
+        addItem(port.portName);
 #else
-		addItem(port.physName);
+        addItem(port.physName);
 #endif
-	}
-	lister->setUpNotifications();
-	connect(lister, SIGNAL(deviceDiscovered(QextPortInfo)),
-	        this, SLOT(addDevice(QextPortInfo)));
-	setEditable(true);
+    }
+    lister->setUpNotifications();
+    connect(lister, SIGNAL(deviceDiscovered(QextPortInfo)),
+            this, SLOT(addDevice(QextPortInfo)));
+    setEditable(true);
 }
 
 void PortSelector::addDevice(QextPortInfo port)
 {
-	addItem(port.portName);
+    addItem(port.portName);
 }
 
 @ Next is a widget which allows selecting the baud rate. Only rates supported
@@ -16558,56 +16558,56 @@ populate the combo box based on the values in that |enum|.
 @<Class declarations@>=
 class BaudSelector : public QComboBox
 {
-	Q_OBJECT
-	Q_ENUMS(BaudRateType)
-	public:
-		BaudSelector(QWidget *parent = NULL);
-		enum BaudRateType
-		{
+    Q_OBJECT
+    Q_ENUMS(BaudRateType)
+    public:
+        BaudSelector(QWidget *parent = NULL);
+        enum BaudRateType
+        {
 #if defined(Q_OS_UNIX) || defined(qdoc)
-			BAUD50 = 50,                //POSIX ONLY
-			BAUD75 = 75,                //POSIX ONLY
-			BAUD134 = 134,              //POSIX ONLY
-			BAUD150 = 150,              //POSIX ONLY
-			BAUD200 = 200,              //POSIX ONLY
-			BAUD1800 = 1800,            //POSIX ONLY
+            BAUD50 = 50,                //POSIX ONLY
+            BAUD75 = 75,                //POSIX ONLY
+            BAUD134 = 134,              //POSIX ONLY
+            BAUD150 = 150,              //POSIX ONLY
+            BAUD200 = 200,              //POSIX ONLY
+            BAUD1800 = 1800,            //POSIX ONLY
 #if defined(B76800) || defined(qdoc)
-			BAUD76800 = 76800,          //POSIX ONLY
+            BAUD76800 = 76800,          //POSIX ONLY
 #endif
 #if (defined(B230400) && defined(B4000000)) || defined(qdoc)
-			BAUD230400 = 230400,        //POSIX ONLY
-			BAUD460800 = 460800,        //POSIX ONLY
-			BAUD500000 = 500000,        //POSIX ONLY
-			BAUD576000 = 576000,        //POSIX ONLY
-			BAUD921600 = 921600,        //POSIX ONLY
-			BAUD1000000 = 1000000,      //POSIX ONLY
-			BAUD1152000 = 1152000,      //POSIX ONLY
-			BAUD1500000 = 1500000,      //POSIX ONLY
-			BAUD2000000 = 2000000,      //POSIX ONLY
-			BAUD2500000 = 2500000,      //POSIX ONLY
-			BAUD3000000 = 3000000,      //POSIX ONLY
-			BAUD3500000 = 3500000,      //POSIX ONLY
-			BAUD4000000 = 4000000,      //POSIX ONLY
+            BAUD230400 = 230400,        //POSIX ONLY
+            BAUD460800 = 460800,        //POSIX ONLY
+            BAUD500000 = 500000,        //POSIX ONLY
+            BAUD576000 = 576000,        //POSIX ONLY
+            BAUD921600 = 921600,        //POSIX ONLY
+            BAUD1000000 = 1000000,      //POSIX ONLY
+            BAUD1152000 = 1152000,      //POSIX ONLY
+            BAUD1500000 = 1500000,      //POSIX ONLY
+            BAUD2000000 = 2000000,      //POSIX ONLY
+            BAUD2500000 = 2500000,      //POSIX ONLY
+            BAUD3000000 = 3000000,      //POSIX ONLY
+            BAUD3500000 = 3500000,      //POSIX ONLY
+            BAUD4000000 = 4000000,      //POSIX ONLY
 #endif
 #endif
 #if defined(Q_OS_WIN) || defined(qdoc)
-			BAUD14400 = 14400,          //WINDOWS ONLY
-			BAUD56000 = 56000,          //WINDOWS ONLY
-			BAUD128000 = 128000,        //WINDOWS ONLY
-			BAUD256000 = 256000,        //WINDOWS ONLY
+            BAUD14400 = 14400,          //WINDOWS ONLY
+            BAUD56000 = 56000,          //WINDOWS ONLY
+            BAUD128000 = 128000,        //WINDOWS ONLY
+            BAUD256000 = 256000,        //WINDOWS ONLY
 #endif
-			BAUD110 = 110,
-			BAUD300 = 300,
-			BAUD600 = 600,
-			BAUD1200 = 1200,
-			BAUD2400 = 2400,
-			BAUD4800 = 4800,
-			BAUD9600 = 9600,
-			BAUD19200 = 19200,
-			BAUD38400 = 38400,
-			BAUD57600 = 57600,
-			BAUD115200 = 115200
-		};
+            BAUD110 = 110,
+            BAUD300 = 300,
+            BAUD600 = 600,
+            BAUD1200 = 1200,
+            BAUD2400 = 2400,
+            BAUD4800 = 4800,
+            BAUD9600 = 9600,
+            BAUD19200 = 19200,
+            BAUD38400 = 38400,
+            BAUD57600 = 57600,
+            BAUD115200 = 115200
+        };
 };
 
 @ As the |enum| values are identical to the baud rates represented, we only
@@ -16616,12 +16616,12 @@ the numeric values, ignoring the names which are rather ugly.
 @<BaudSelector implementation@>=
 BaudSelector::BaudSelector(QWidget *parent) : QComboBox(parent)
 {
-	QMetaObject meta = BaudSelector::staticMetaObject;
-	QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("BaudRateType"));
-	for(int i = 0; i < type.keyCount(); i++)
-	{
-		addItem(QString("%1").arg(type.value(i)));
-	}
+    QMetaObject meta = BaudSelector::staticMetaObject;
+    QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("BaudRateType"));
+    for(int i = 0; i < type.keyCount(); i++)
+    {
+        addItem(QString("%1").arg(type.value(i)));
+    }
 }
 
 @ This same technique is used in a widget for selecting parity.
@@ -16629,20 +16629,20 @@ BaudSelector::BaudSelector(QWidget *parent) : QComboBox(parent)
 @<Class declarations@>=
 class ParitySelector : public QComboBox
 {
-	Q_OBJECT
-	Q_ENUMS(ParityType)
-	public:
-		ParitySelector(QWidget *parent = NULL);
-		enum ParityType
-		{
-			PAR_NONE,
-			PAR_ODD,
-			PAR_EVEN,
+    Q_OBJECT
+    Q_ENUMS(ParityType)
+    public:
+        ParitySelector(QWidget *parent = NULL);
+        enum ParityType
+        {
+            PAR_NONE,
+            PAR_ODD,
+            PAR_EVEN,
 #if defined(Q_OS_WIN) || defined(qdoc)
-			PAR_MARK,               //WINDOWS ONLY
+            PAR_MARK,               //WINDOWS ONLY
 #endif
-			PAR_SPACE
-		};
+            PAR_SPACE
+        };
 };
 
 @ Implementation is similar to |BaudSelector| but as the values have no
@@ -16654,12 +16654,12 @@ should be reconsidered later.
 @<ParitySelector implementation@>=
 ParitySelector::ParitySelector(QWidget *parent) : QComboBox(parent)
 {
-	QMetaObject meta = ParitySelector::staticMetaObject;
-	QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("ParityType"));
-	for(int i = 0; i < type.keyCount(); i++)
-	{
-		addItem(QString(type.key(i)), QVariant(type.value(i)));
-	}
+    QMetaObject meta = ParitySelector::staticMetaObject;
+    QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("ParityType"));
+    for(int i = 0; i < type.keyCount(); i++)
+    {
+        addItem(QString(type.key(i)), QVariant(type.value(i)));
+    }
 }
 
 @ Similarly, we have a widget for selecting a method for flow control.
@@ -16667,16 +16667,16 @@ ParitySelector::ParitySelector(QWidget *parent) : QComboBox(parent)
 @<Class declarations@>=
 class FlowSelector : public QComboBox
 {
-	@[Q_OBJECT@]@;
-	@[Q_ENUMS(FlowType)@]@;
-	public:@/
-		FlowSelector(QWidget *parent = NULL);
-		enum FlowType
-		{
-			FLOW_OFF,
-			FLOW_HARDWARE,
-			FLOW_XONXOFF
-		};
+    @[Q_OBJECT@]@;
+    @[Q_ENUMS(FlowType)@]@;
+    public:@/
+        FlowSelector(QWidget *parent = NULL);
+        enum FlowType
+        {
+            FLOW_OFF,
+            FLOW_HARDWARE,
+            FLOW_XONXOFF
+        };
 };
 
 @ Implementation follows the same pattern as in |ParitySelector|.
@@ -16684,12 +16684,12 @@ class FlowSelector : public QComboBox
 @<FlowSelector implementation@>=
 FlowSelector::FlowSelector(QWidget *parent) : QComboBox(parent)
 {
-	QMetaObject meta = FlowSelector::staticMetaObject;
-	QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("FlowType"));
-	for(int i = 0; i < type.keyCount(); i++)
-	{
-		addItem(QString(type.key(i)), QVariant(type.value(i)));
-	}
+    QMetaObject meta = FlowSelector::staticMetaObject;
+    QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("FlowType"));
+    for(int i = 0; i < type.keyCount(); i++)
+    {
+        addItem(QString(type.key(i)), QVariant(type.value(i)));
+    }
 }
 
 @ We assume that the number of data bits will always be 8, though it may be
@@ -16700,18 +16700,18 @@ specifying the number of stop bits.
 @<Class declarations@>=
 class StopSelector : public QComboBox
 {
-	@[Q_OBJECT@]@;
-	@[Q_ENUMS(StopBitsType)@]@;
-	public:@/
-		StopSelector(QWidget *parent = NULL);
-		enum StopBitsType
-		{
-			STOP_1,
+    @[Q_OBJECT@]@;
+    @[Q_ENUMS(StopBitsType)@]@;
+    public:@/
+        StopSelector(QWidget *parent = NULL);
+        enum StopBitsType
+        {
+            STOP_1,
 #if defined(Q_OS_WIN) || defined(qdoc)
-			STOP_1_5,	//WINDOWS ONLY
+            STOP_1_5,	//WINDOWS ONLY
 #endif
-			STOP_2
-		};
+            STOP_2
+        };
 };
 
 @ Implementation should be familiar by now.
@@ -16719,12 +16719,12 @@ class StopSelector : public QComboBox
 @<StopSelector implementation@>=
 StopSelector::StopSelector(QWidget *parent) : QComboBox(parent)
 {
-	QMetaObject meta = StopSelector::staticMetaObject;
-	QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("StopBitsType"));
-	for(int i = 0; i < type.keyCount(); i++)
-	{
-		addItem(QString(type.key(i)), QVariant(type.value(i)));
-	}
+    QMetaObject meta = StopSelector::staticMetaObject;
+    QMetaEnum type = meta.enumerator(meta.indexOfEnumerator("StopBitsType"));
+    for(int i = 0; i < type.keyCount(); i++)
+    {
+        addItem(QString(type.key(i)), QVariant(type.value(i)));
+    }
 }
 
 @** Configuration of Serial Devices Using Modbus RTU.
@@ -16753,13 +16753,13 @@ four digit hexadecimal value.
 @<Class declarations@>=
 class ShortHexSpinBox : public QSpinBox
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		ShortHexSpinBox(QWidget *parent = NULL);
-		virtual QValidator::State validate(QString &input, int &pos) const;@/
-	protected:@/
-		virtual int valueFromText(const QString &text) const;
-		virtual QString textFromValue(int value) const;@/
+    @[Q_OBJECT@]@;
+    public:@/
+        ShortHexSpinBox(QWidget *parent = NULL);
+        virtual QValidator::State validate(QString &input, int &pos) const;@/
+    protected:@/
+        virtual int valueFromText(const QString &text) const;
+        virtual QString textFromValue(int value) const;@/
 };
 
 @ For this we can set some new defaults in the constructor and must override
@@ -16768,41 +16768,41 @@ three methods.
 @<ShortHexSpinBox implementation@>=
 ShortHexSpinBox::ShortHexSpinBox(QWidget *parent) : QSpinBox(parent)
 {
-	setMinimum(0);
-	setMaximum(0xFFFF);
-	setPrefix("0x");
-	setMinimumWidth(65);
+    setMinimum(0);
+    setMaximum(0xFFFF);
+    setPrefix("0x");
+    setMinimumWidth(65);
 }
 
 QValidator::State ShortHexSpinBox::validate(QString &input, int &) const
 {
-	if(input.size() == 2)
-	{
-		return QValidator::Intermediate;
-	}
-	bool okay;
-	input.toInt(&okay, 16);
-	if(okay)
-	{
-		return QValidator::Acceptable;
-	}
-	return QValidator::Invalid;
+    if(input.size() == 2)
+    {
+        return QValidator::Intermediate;
+    }
+    bool okay;
+    input.toInt(&okay, 16);
+    if(okay)
+    {
+        return QValidator::Acceptable;
+    }
+    return QValidator::Invalid;
 }
 
 int ShortHexSpinBox::valueFromText(const QString &text) const
 {
-	return text.toInt(NULL, 16);
+    return text.toInt(NULL, 16);
 }
 
 QString ShortHexSpinBox::textFromValue(int value) const
 {
-	QString retval;
-	retval.setNum(value, 16);
-	while(retval.size() < 4)
-	{
-		retval.prepend("0");
-	}
-	return retval.toUpper();
+    QString retval;
+    retval.setNum(value, 16);
+    while(retval.size() < 4)
+    {
+        retval.prepend("0");
+    }
+    return retval.toUpper();
 }
 
 @** Configuration Widgets for Modbus RTU Devices.
@@ -16815,16 +16815,16 @@ provide the connection details which will be shared by all devices on the bus.
 @<Class declarations@>=
 class ModbusRtuPortConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:
-		@[Q_INVOKABLE@]@, ModbusRtuPortConfWidget(DeviceTreeModel *model,
-		                                          const QModelIndex &index);
-	@[private slots@]:@/
-		void updatePort(const QString &newPort);
-		void updateBaudRate(const QString &newRate);
-		void updateParity(const QString &newParity);
-		void updateFlowControl(const QString &newFlow);
-		void updateStopBits(const QString &newStopBits);
+    @[Q_OBJECT@]@;
+    public:
+        @[Q_INVOKABLE@]@, ModbusRtuPortConfWidget(DeviceTreeModel *model,
+                                                  const QModelIndex &index);
+    @[private slots@]:@/
+        void updatePort(const QString &newPort);
+        void updateBaudRate(const QString &newRate);
+        void updateParity(const QString &newParity);
+        void updateFlowControl(const QString &newFlow);
+        void updateStopBits(const QString &newStopBits);
 };
 
 @ Aside from the extra information compared with other configuration widgets
@@ -16835,106 +16835,106 @@ ModbusRtuPortConfWidget::ModbusRtuPortConfWidget(DeviceTreeModel *model,
                                                  const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QFormLayout *layout = new QFormLayout;
-	QToolButton *addDeviceButton = new QToolButton;
-	addDeviceButton->setText(tr("Add Device"));
-	NodeInserter *addModbusRtuDevice = new NodeInserter("Modbus RTU Device",
-	                                                    "Modbus RTU Device",
-														"modbusrtudevice");
-	connect(addModbusRtuDevice, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	QMenu *deviceMenu = new QMenu;
-	deviceMenu->addAction(addModbusRtuDevice);
-	addDeviceButton->setMenu(deviceMenu);
-	addDeviceButton->setPopupMode(QToolButton::InstantPopup);
-	layout->addRow(QString(), addDeviceButton);
-	PortSelector *port = new PortSelector;
-	layout->addRow(tr("Port:"), port);
-	connect(port, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updatePort(QString)));
-	connect(port, SIGNAL(editTextChanged(QString)),
-	        this, SLOT(updatePort(QString)));
-	BaudSelector *rate = new BaudSelector;
-	layout->addRow(tr("Baud:"), rate);
-	connect(rate, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateBaudRate(QString)));
-	ParitySelector *parity = new ParitySelector;
-	layout->addRow(tr("Parity:"), parity);
-	connect(parity, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateParity(QString)));
-	FlowSelector *flow = new FlowSelector;
-	layout->addRow(tr("Flow Control:"), flow);
-	connect(flow, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateFlowControl(QString)));
-	StopSelector *stop = new StopSelector;
-	layout->addRow(tr("Stop Bits:"), stop);
-	connect(stop, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateStopBits(QString)));
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "port")
-		{
-			int j = port->findText(node.attribute("value"));
-			if(j >= 0)
-			{
-				port->setCurrentIndex(j);
-			}
-			else
-			{
-				port->insertItem(0, node.attribute("value"));
-				port->setCurrentIndex(0);
-			}
-		}
-		else if(node.attribute("name") == "baudrate")
-		{
-			rate->setCurrentIndex(rate->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "parity")
-		{
-			parity->setCurrentIndex(parity->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "flowcontrol")
-		{
-			flow->setCurrentIndex(flow->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "stopbits")
-		{
-			stop->setCurrentIndex(stop->findText(node.attribute("value")));
-		}
-	}
-	updatePort(port->currentText());
-	updateBaudRate(rate->currentText());
-	updateParity(parity->currentText());
-	updateFlowControl(flow->currentText());
-	updateStopBits(stop->currentText());
-	setLayout(layout);
+    QFormLayout *layout = new QFormLayout;
+    QToolButton *addDeviceButton = new QToolButton;
+    addDeviceButton->setText(tr("Add Device"));
+    NodeInserter *addModbusRtuDevice = new NodeInserter("Modbus RTU Device",
+                                                        "Modbus RTU Device",
+                                                        "modbusrtudevice");
+    connect(addModbusRtuDevice, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    QMenu *deviceMenu = new QMenu;
+    deviceMenu->addAction(addModbusRtuDevice);
+    addDeviceButton->setMenu(deviceMenu);
+    addDeviceButton->setPopupMode(QToolButton::InstantPopup);
+    layout->addRow(QString(), addDeviceButton);
+    PortSelector *port = new PortSelector;
+    layout->addRow(tr("Port:"), port);
+    connect(port, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updatePort(QString)));
+    connect(port, SIGNAL(editTextChanged(QString)),
+            this, SLOT(updatePort(QString)));
+    BaudSelector *rate = new BaudSelector;
+    layout->addRow(tr("Baud:"), rate);
+    connect(rate, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updateBaudRate(QString)));
+    ParitySelector *parity = new ParitySelector;
+    layout->addRow(tr("Parity:"), parity);
+    connect(parity, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updateParity(QString)));
+    FlowSelector *flow = new FlowSelector;
+    layout->addRow(tr("Flow Control:"), flow);
+    connect(flow, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updateFlowControl(QString)));
+    StopSelector *stop = new StopSelector;
+    layout->addRow(tr("Stop Bits:"), stop);
+    connect(stop, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updateStopBits(QString)));
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "port")
+        {
+            int j = port->findText(node.attribute("value"));
+            if(j >= 0)
+            {
+                port->setCurrentIndex(j);
+            }
+            else
+            {
+                port->insertItem(0, node.attribute("value"));
+                port->setCurrentIndex(0);
+            }
+        }
+        else if(node.attribute("name") == "baudrate")
+        {
+            rate->setCurrentIndex(rate->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "parity")
+        {
+            parity->setCurrentIndex(parity->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "flowcontrol")
+        {
+            flow->setCurrentIndex(flow->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "stopbits")
+        {
+            stop->setCurrentIndex(stop->findText(node.attribute("value")));
+        }
+    }
+    updatePort(port->currentText());
+    updateBaudRate(rate->currentText());
+    updateParity(parity->currentText());
+    updateFlowControl(flow->currentText());
+    updateStopBits(stop->currentText());
+    setLayout(layout);
 }
 
 void ModbusRtuPortConfWidget::updatePort(const QString &newPort)
 {
-	updateAttribute("port", newPort);
+    updateAttribute("port", newPort);
 }
 
 void ModbusRtuPortConfWidget::updateBaudRate(const QString &newRate)
 {
-	updateAttribute("baudrate", newRate);
+    updateAttribute("baudrate", newRate);
 }
 
 void ModbusRtuPortConfWidget::updateParity(const QString &newParity)
 {
-	updateAttribute("parity", newParity);
+    updateAttribute("parity", newParity);
 }
 
 void ModbusRtuPortConfWidget::updateFlowControl(const QString &newFlow)
 {
-	updateAttribute("flowcontrol", newFlow);
+    updateAttribute("flowcontrol", newFlow);
 }
 
 void ModbusRtuPortConfWidget::updateStopBits(const QString &newStopBits)
 {
-	updateAttribute("stopbits", newStopBits);
+    updateAttribute("stopbits", newStopBits);
 }
 
 @ From here we need to provide a widget for configuring a particular device.
@@ -16966,23 +16966,23 @@ device exposes these details in a way that is incompatible with my assumptions.
 @<Class declarations@>=
 class ModbusRtuDeviceConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, ModbusRtuDeviceConfWidget(DeviceTreeModel *model,
-		                                            const QModelIndex &index);
-	@[private slots@]:@/
-		void updateStationNumber(int newStation);
-		void updateFixedUnit(bool newFixed);
-		void updateFixedDecimal(bool newFixed);
-		void updateUnit(const QString &newUnit);
-		void updateUnitAddress(int newAddress);
-		void updateValueF(int newValue);
-		void updateValueC(int newValue);
-		void updatePrecisionAddress(int newAddress);
-		void updatePrecisionValue(int newValue);
-	private:@/
-		QStackedLayout *unitSpecificationLayout;
-		QStackedLayout *decimalSpecificationLayout;
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, ModbusRtuDeviceConfWidget(DeviceTreeModel *model,
+                                                    const QModelIndex &index);
+    @[private slots@]:@/
+        void updateStationNumber(int newStation);
+        void updateFixedUnit(bool newFixed);
+        void updateFixedDecimal(bool newFixed);
+        void updateUnit(const QString &newUnit);
+        void updateUnitAddress(int newAddress);
+        void updateValueF(int newValue);
+        void updateValueC(int newValue);
+        void updatePrecisionAddress(int newAddress);
+        void updatePrecisionValue(int newValue);
+    private:@/
+        QStackedLayout *unitSpecificationLayout;
+        QStackedLayout *decimalSpecificationLayout;
 };
 
 @ This widget has a number of differences from previous configuration widgets.
@@ -16997,221 +16997,221 @@ other widgets already seen.
 ModbusRtuDeviceConfWidget::ModbusRtuDeviceConfWidget(DeviceTreeModel *model,
                                                      const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
-	unitSpecificationLayout(new QStackedLayout),
-	decimalSpecificationLayout(new QStackedLayout)
+    unitSpecificationLayout(new QStackedLayout),
+    decimalSpecificationLayout(new QStackedLayout)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
-	QToolButton *addChannelButton = new QToolButton;
-	addChannelButton->setText(tr("Add Channel"));
-	NodeInserter *addTemperaturePV = new NodeInserter("Temperature Process Value",
-	                                                  "Temperature Process Value",
-													  "modbustemperaturepv");
-	NodeInserter *addTemperatureSV = new NodeInserter("Temperature Set Value",
-	                                                  "Temperature Set Value",
-													  "modbustemperaturesv");
-	connect(addTemperaturePV, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	connect(addTemperatureSV, SIGNAL(triggered(QString, QString)),
-	        this, SLOT(insertChildNode(QString, QString)));
-	QMenu *channelMenu = new QMenu;
-	channelMenu->addAction(addTemperaturePV);
-	channelMenu->addAction(addTemperatureSV);
-	addChannelButton->setMenu(channelMenu);
-	addChannelButton->setPopupMode(QToolButton::InstantPopup);
-	layout->addWidget(addChannelButton);
-	QHBoxLayout *stationLayout = new QHBoxLayout;
-	QLabel *stationLabel = new QLabel(tr("Station:"));
-	QSpinBox *stationNumber = new QSpinBox;
-	stationNumber->setMinimum(0);
-	stationNumber->setMaximum(255);
-	stationLayout->addWidget(stationLabel);
-	stationLayout->addWidget(stationNumber);
-	layout->addLayout(stationLayout);
-	QCheckBox *fixedUnit = new QCheckBox(tr("Fixed Temperature Unit"));
-	layout->addWidget(fixedUnit);
-	QWidget *fixedUnitPlaceholder = new QWidget(this);
-	QHBoxLayout *fixedUnitLayout = new QHBoxLayout;
-	QLabel *fixedUnitLabel = new QLabel(tr("Temperature Unit:"));
-	QComboBox *fixedUnitSelector = new QComboBox;
-	fixedUnitSelector->addItem("Fahrenheit");
-	fixedUnitSelector->addItem("Celsius");
-	fixedUnitLayout->addWidget(fixedUnitLabel);
-	fixedUnitLayout->addWidget(fixedUnitSelector);
-	fixedUnitPlaceholder->setLayout(fixedUnitLayout);
-	unitSpecificationLayout->addWidget(fixedUnitPlaceholder);
-	QWidget *queriedUnitPlaceholder = new QWidget(this);
-	QFormLayout *queriedUnitLayout = new QFormLayout;
-	ShortHexSpinBox *unitAddress = new ShortHexSpinBox;
-	queriedUnitLayout->addRow(tr("Function 0x03 Unit Address:"), unitAddress);
-	QSpinBox *valueF = new QSpinBox;
-	valueF->setMinimum(0);
-	valueF->setMaximum(65535);
-	queriedUnitLayout->addRow(tr("Value for Fahrenheit"), valueF);
-	QSpinBox *valueC = new QSpinBox;
-	valueC->setMinimum(0);
-	valueC->setMaximum(65535);
-	queriedUnitLayout->addRow(tr("Value for Celsius"), valueC);
-	queriedUnitPlaceholder->setLayout(queriedUnitLayout);
-	unitSpecificationLayout->addWidget(queriedUnitPlaceholder);
-	layout->addLayout(unitSpecificationLayout);
-	QCheckBox *fixedPrecision = new QCheckBox(tr("Fixed Precision"));
-	layout->addWidget(fixedPrecision);
-	QWidget *fixedPrecisionPlaceholder = new QWidget(this);
-	QFormLayout *fixedPrecisionLayout = new QFormLayout;
-	QSpinBox *fixedPrecisionValue = new QSpinBox;
-	fixedPrecisionValue->setMinimum(0);
-	fixedPrecisionValue->setMaximum(9);
-	fixedPrecisionLayout->addRow("Places after the decimal point:",
-	                             fixedPrecisionValue);
-	fixedPrecisionPlaceholder->setLayout(fixedPrecisionLayout);
-	decimalSpecificationLayout->addWidget(fixedPrecisionPlaceholder);
-	QWidget *queriedPrecisionPlaceholder = new QWidget(this);
-	QFormLayout *queriedPrecisionLayout = new QFormLayout;
-	ShortHexSpinBox *precisionAddress = new ShortHexSpinBox;
-	queriedPrecisionLayout->addRow("Function 0x03 Decimal Position Address:",
-	                                    precisionAddress);
-	queriedPrecisionPlaceholder->setLayout(queriedPrecisionLayout);
-	decimalSpecificationLayout->addWidget(queriedPrecisionPlaceholder);
-	layout->addLayout(decimalSpecificationLayout);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "station")
-		{
-			stationNumber->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "fixedunit")
-		{
-			if(node.attribute("value") == "true")
-			{
-				fixedUnit->setCheckState(Qt::Checked);
-			}
-			else if(node.attribute("value") == "false")
-			{
-				fixedUnit->setCheckState(Qt::Unchecked);
-			}
-		}
-		else if(node.attribute("name") == "fixedprecision")
-		{
-			fixedPrecisionValue->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "unit")
-		{
-			fixedUnitSelector->setCurrentIndex(fixedUnitSelector->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "unitaddress")
-		{
-			unitAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "fvalue")
-		{
-			valueF->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "cvalue")
-		{
-			valueC->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "precisionaddress")
-		{
-			precisionAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "precision")
-		{
-			fixedPrecisionValue->setValue(node.attribute("value").toInt());
-		}
-	}
-	updateStationNumber(stationNumber->value());
-	updateFixedUnit(fixedUnit->isChecked());
-	updateFixedDecimal(fixedPrecision->isChecked());
-	updateUnit(fixedUnitSelector->currentText());
-	updateUnitAddress(unitAddress->value());
-	updateValueF(valueF->value());
-	updateValueC(valueC->value());
-	updatePrecisionAddress(precisionAddress->value());
-	updatePrecisionValue(fixedPrecisionValue->value());
-	connect(stationNumber, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateStationNumber(int)));
-	connect(fixedUnitSelector, SIGNAL(currentIndexChanged(QString)),
-	        this, SLOT(updateUnit(QString)));
-	connect(unitAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateUnitAddress(int)));
-	connect(valueF, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateValueF(int)));
-	connect(valueC, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateValueC(int)));
-	connect(fixedUnit, SIGNAL(toggled(bool)),
-	        this, SLOT(updateFixedUnit(bool)));
-	connect(fixedPrecision, SIGNAL(toggled(bool)),
-	        this, SLOT(updateFixedDecimal(bool)));
-	connect(fixedPrecisionValue, SIGNAL(valueChanged(int)),
-	        this, SLOT(updatePrecisionValue(int)));
-	connect(precisionAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updatePrecisionAddress(int)));
-	setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout;
+    QToolButton *addChannelButton = new QToolButton;
+    addChannelButton->setText(tr("Add Channel"));
+    NodeInserter *addTemperaturePV = new NodeInserter("Temperature Process Value",
+                                                      "Temperature Process Value",
+                                                      "modbustemperaturepv");
+    NodeInserter *addTemperatureSV = new NodeInserter("Temperature Set Value",
+                                                      "Temperature Set Value",
+                                                      "modbustemperaturesv");
+    connect(addTemperaturePV, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(addTemperatureSV, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    QMenu *channelMenu = new QMenu;
+    channelMenu->addAction(addTemperaturePV);
+    channelMenu->addAction(addTemperatureSV);
+    addChannelButton->setMenu(channelMenu);
+    addChannelButton->setPopupMode(QToolButton::InstantPopup);
+    layout->addWidget(addChannelButton);
+    QHBoxLayout *stationLayout = new QHBoxLayout;
+    QLabel *stationLabel = new QLabel(tr("Station:"));
+    QSpinBox *stationNumber = new QSpinBox;
+    stationNumber->setMinimum(0);
+    stationNumber->setMaximum(255);
+    stationLayout->addWidget(stationLabel);
+    stationLayout->addWidget(stationNumber);
+    layout->addLayout(stationLayout);
+    QCheckBox *fixedUnit = new QCheckBox(tr("Fixed Temperature Unit"));
+    layout->addWidget(fixedUnit);
+    QWidget *fixedUnitPlaceholder = new QWidget(this);
+    QHBoxLayout *fixedUnitLayout = new QHBoxLayout;
+    QLabel *fixedUnitLabel = new QLabel(tr("Temperature Unit:"));
+    QComboBox *fixedUnitSelector = new QComboBox;
+    fixedUnitSelector->addItem("Fahrenheit");
+    fixedUnitSelector->addItem("Celsius");
+    fixedUnitLayout->addWidget(fixedUnitLabel);
+    fixedUnitLayout->addWidget(fixedUnitSelector);
+    fixedUnitPlaceholder->setLayout(fixedUnitLayout);
+    unitSpecificationLayout->addWidget(fixedUnitPlaceholder);
+    QWidget *queriedUnitPlaceholder = new QWidget(this);
+    QFormLayout *queriedUnitLayout = new QFormLayout;
+    ShortHexSpinBox *unitAddress = new ShortHexSpinBox;
+    queriedUnitLayout->addRow(tr("Function 0x03 Unit Address:"), unitAddress);
+    QSpinBox *valueF = new QSpinBox;
+    valueF->setMinimum(0);
+    valueF->setMaximum(65535);
+    queriedUnitLayout->addRow(tr("Value for Fahrenheit"), valueF);
+    QSpinBox *valueC = new QSpinBox;
+    valueC->setMinimum(0);
+    valueC->setMaximum(65535);
+    queriedUnitLayout->addRow(tr("Value for Celsius"), valueC);
+    queriedUnitPlaceholder->setLayout(queriedUnitLayout);
+    unitSpecificationLayout->addWidget(queriedUnitPlaceholder);
+    layout->addLayout(unitSpecificationLayout);
+    QCheckBox *fixedPrecision = new QCheckBox(tr("Fixed Precision"));
+    layout->addWidget(fixedPrecision);
+    QWidget *fixedPrecisionPlaceholder = new QWidget(this);
+    QFormLayout *fixedPrecisionLayout = new QFormLayout;
+    QSpinBox *fixedPrecisionValue = new QSpinBox;
+    fixedPrecisionValue->setMinimum(0);
+    fixedPrecisionValue->setMaximum(9);
+    fixedPrecisionLayout->addRow("Places after the decimal point:",
+                                 fixedPrecisionValue);
+    fixedPrecisionPlaceholder->setLayout(fixedPrecisionLayout);
+    decimalSpecificationLayout->addWidget(fixedPrecisionPlaceholder);
+    QWidget *queriedPrecisionPlaceholder = new QWidget(this);
+    QFormLayout *queriedPrecisionLayout = new QFormLayout;
+    ShortHexSpinBox *precisionAddress = new ShortHexSpinBox;
+    queriedPrecisionLayout->addRow("Function 0x03 Decimal Position Address:",
+                                        precisionAddress);
+    queriedPrecisionPlaceholder->setLayout(queriedPrecisionLayout);
+    decimalSpecificationLayout->addWidget(queriedPrecisionPlaceholder);
+    layout->addLayout(decimalSpecificationLayout);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "station")
+        {
+            stationNumber->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "fixedunit")
+        {
+            if(node.attribute("value") == "true")
+            {
+                fixedUnit->setCheckState(Qt::Checked);
+            }
+            else if(node.attribute("value") == "false")
+            {
+                fixedUnit->setCheckState(Qt::Unchecked);
+            }
+        }
+        else if(node.attribute("name") == "fixedprecision")
+        {
+            fixedPrecisionValue->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "unit")
+        {
+            fixedUnitSelector->setCurrentIndex(fixedUnitSelector->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "unitaddress")
+        {
+            unitAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "fvalue")
+        {
+            valueF->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "cvalue")
+        {
+            valueC->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "precisionaddress")
+        {
+            precisionAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "precision")
+        {
+            fixedPrecisionValue->setValue(node.attribute("value").toInt());
+        }
+    }
+    updateStationNumber(stationNumber->value());
+    updateFixedUnit(fixedUnit->isChecked());
+    updateFixedDecimal(fixedPrecision->isChecked());
+    updateUnit(fixedUnitSelector->currentText());
+    updateUnitAddress(unitAddress->value());
+    updateValueF(valueF->value());
+    updateValueC(valueC->value());
+    updatePrecisionAddress(precisionAddress->value());
+    updatePrecisionValue(fixedPrecisionValue->value());
+    connect(stationNumber, SIGNAL(valueChanged(int)),
+            this, SLOT(updateStationNumber(int)));
+    connect(fixedUnitSelector, SIGNAL(currentIndexChanged(QString)),
+            this, SLOT(updateUnit(QString)));
+    connect(unitAddress, SIGNAL(valueChanged(int)),
+            this, SLOT(updateUnitAddress(int)));
+    connect(valueF, SIGNAL(valueChanged(int)),
+            this, SLOT(updateValueF(int)));
+    connect(valueC, SIGNAL(valueChanged(int)),
+            this, SLOT(updateValueC(int)));
+    connect(fixedUnit, SIGNAL(toggled(bool)),
+            this, SLOT(updateFixedUnit(bool)));
+    connect(fixedPrecision, SIGNAL(toggled(bool)),
+            this, SLOT(updateFixedDecimal(bool)));
+    connect(fixedPrecisionValue, SIGNAL(valueChanged(int)),
+            this, SLOT(updatePrecisionValue(int)));
+    connect(precisionAddress, SIGNAL(valueChanged(int)),
+            this, SLOT(updatePrecisionAddress(int)));
+    setLayout(layout);
 }
 
 void ModbusRtuDeviceConfWidget::updateStationNumber(int newStation)
 {
-	updateAttribute("station", QString("%1").arg(newStation));
+    updateAttribute("station", QString("%1").arg(newStation));
 }
 
 void ModbusRtuDeviceConfWidget::updateFixedUnit(bool newFixed)
 {
-	if(newFixed)
-	{
-		unitSpecificationLayout->setCurrentIndex(0);
-		updateAttribute("fixedunit", "true");
-	}
-	else
-	{
-		unitSpecificationLayout->setCurrentIndex(1);
-		updateAttribute("fixedunit", "false");
-	}
+    if(newFixed)
+    {
+        unitSpecificationLayout->setCurrentIndex(0);
+        updateAttribute("fixedunit", "true");
+    }
+    else
+    {
+        unitSpecificationLayout->setCurrentIndex(1);
+        updateAttribute("fixedunit", "false");
+    }
 }
 
 void ModbusRtuDeviceConfWidget::updateFixedDecimal(bool newFixed)
 {
-	if(newFixed)
-	{
-		decimalSpecificationLayout->setCurrentIndex(0);
-		updateAttribute("fixedprecision", "true");
-	}
-	else
-	{
-		decimalSpecificationLayout->setCurrentIndex(1);
-		updateAttribute("fixedprecision", "false");
-	}
+    if(newFixed)
+    {
+        decimalSpecificationLayout->setCurrentIndex(0);
+        updateAttribute("fixedprecision", "true");
+    }
+    else
+    {
+        decimalSpecificationLayout->setCurrentIndex(1);
+        updateAttribute("fixedprecision", "false");
+    }
 }
 
 void ModbusRtuDeviceConfWidget::updateUnit(const QString &newUnit)
 {
-	updateAttribute("unit", newUnit);
+    updateAttribute("unit", newUnit);
 }
 
 void ModbusRtuDeviceConfWidget::updateUnitAddress(int newAddress)
 {
-	updateAttribute("unitaddress", QString("%1").arg(newAddress));
+    updateAttribute("unitaddress", QString("%1").arg(newAddress));
 }
 
 void ModbusRtuDeviceConfWidget::updateValueF(int newValue)
 {
-	updateAttribute("fvalue", QString("%1").arg(newValue));
+    updateAttribute("fvalue", QString("%1").arg(newValue));
 }
 
 void ModbusRtuDeviceConfWidget::updateValueC(int newValue)
 {
-	updateAttribute("cvalue", QString("%1").arg(newValue));
+    updateAttribute("cvalue", QString("%1").arg(newValue));
 }
 
 void ModbusRtuDeviceConfWidget::updatePrecisionAddress(int newAddress)
 {
-	updateAttribute("precisionaddress", QString("%1").arg(newAddress));
+    updateAttribute("precisionaddress", QString("%1").arg(newAddress));
 }
 
 void ModbusRtuDeviceConfWidget::updatePrecisionValue(int newValue)
 {
-	updateAttribute("precision", QString("%1").arg(newValue));
+    updateAttribute("precision", QString("%1").arg(newValue));
 }
 
 @ Initial Modbus RTU support is very limited and only considers temperature
@@ -17225,12 +17225,12 @@ from.
 @<Class declarations@>=
 class ModbusRtuDeviceTPvConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@/
-	public:@/
-		@[Q_INVOKABLE@]@, ModbusRtuDeviceTPvConfWidget(DeviceTreeModel *model,
-		                                               const QModelIndex &index);
-	@[private slots@]:@/
-		void updateAddress(int newAddress);
+    @[Q_OBJECT@]@/
+    public:@/
+        @[Q_INVOKABLE@]@, ModbusRtuDeviceTPvConfWidget(DeviceTreeModel *model,
+                                                       const QModelIndex &index);
+    @[private slots@]:@/
+        void updateAddress(int newAddress);
 };
 
 @ This requires only a single field to store the address to query the current
@@ -17241,27 +17241,27 @@ ModbusRtuDeviceTPvConfWidget::ModbusRtuDeviceTPvConfWidget(DeviceTreeModel *mode
                                                            const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QFormLayout *layout = new QFormLayout;
-	ShortHexSpinBox *address = new ShortHexSpinBox;
-	layout->addRow(tr("Function 0x04 Process Value Address"), address);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "address")
-		{
-			address->setValue(node.attribute("value").toInt());
-			break;
-		}
-	}
-	updateAddress(address->value());
-	connect(address, SIGNAL(valueChanged(int)), this, SLOT(updateAddress(int)));
-	setLayout(layout);
+    QFormLayout *layout = new QFormLayout;
+    ShortHexSpinBox *address = new ShortHexSpinBox;
+    layout->addRow(tr("Function 0x04 Process Value Address"), address);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "address")
+        {
+            address->setValue(node.attribute("value").toInt());
+            break;
+        }
+    }
+    updateAddress(address->value());
+    connect(address, SIGNAL(valueChanged(int)), this, SLOT(updateAddress(int)));
+    setLayout(layout);
 }
 
 void ModbusRtuDeviceTPvConfWidget::updateAddress(int newAddress)
 {
-	updateAttribute("address", QString("%1").arg(newAddress));
+    updateAttribute("address", QString("%1").arg(newAddress));
 }
 
 @ Set values are slightly more complicated as we may want either a fixed range
@@ -17271,20 +17271,20 @@ is here that hasn'@q'@>t been seen elsewhere.
 @<Class declarations@>=
 class ModbusRtuDeviceTSvConfWidget : public BasicDeviceConfigurationWidget@/
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		Q_INVOKABLE@, ModbusRtuDeviceTSvConfWidget(DeviceTreeModel *model,
-		                                               const QModelIndex &index);
-	@[private slots@]:@/
-		void updateReadAddress(int newAddress);
-		void updateWriteAddress(int newAddress);
-		void updateFixedRange(bool fixed);
-		void updateLower(const QString &lower);
-		void updateUpper(const QString &upper);
-		void updateLowerAddress(int newAddress);
-		void updateUpperAddress(int newAddress);@/
-	private:@/
-		QStackedLayout *boundsLayout;
+    @[Q_OBJECT@]@;
+    public:@/
+        Q_INVOKABLE@, ModbusRtuDeviceTSvConfWidget(DeviceTreeModel *model,
+                                                       const QModelIndex &index);
+    @[private slots@]:@/
+        void updateReadAddress(int newAddress);
+        void updateWriteAddress(int newAddress);
+        void updateFixedRange(bool fixed);
+        void updateLower(const QString &lower);
+        void updateUpper(const QString &upper);
+        void updateLowerAddress(int newAddress);
+        void updateUpperAddress(int newAddress);@/
+    private:@/
+        QStackedLayout *boundsLayout;
 };
 
 @ Upper and lower bounds when operating on a fixed range are still subject to
@@ -17297,139 +17297,139 @@ ModbusRtuDeviceTSvConfWidget::ModbusRtuDeviceTSvConfWidget(DeviceTreeModel *mode
                                                            const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index), boundsLayout(new QStackedLayout)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
-	QFormLayout *addressLayout = new QFormLayout;
-	ShortHexSpinBox *readAddress = new ShortHexSpinBox;
-	ShortHexSpinBox *writeAddress = new ShortHexSpinBox;
-	addressLayout->addRow(tr("Function 0x04 Read Set Value Address:"), readAddress);
-	addressLayout->addRow(tr("Function 0x06 Write Set Value Address:"), writeAddress);
-	layout->addLayout(addressLayout);
-	QCheckBox *fixedRange = new QCheckBox(tr("Fixed Set Value Range"));
-	layout->addWidget(fixedRange);
-	QWidget *queriedRangePlaceholder = new QWidget(this);
-	QFormLayout *queriedRangeLayout = new QFormLayout;
-	ShortHexSpinBox *lowerAddress = new ShortHexSpinBox;
-	ShortHexSpinBox *upperAddress = new ShortHexSpinBox;
-	queriedRangeLayout->addRow(tr("Function 0x03 Minimum Set Value Address"),
-	                           lowerAddress);
-	queriedRangeLayout->addRow(tr("Function 0x03 Maximum Set Value Address"),
-	                           upperAddress);
-	queriedRangePlaceholder->setLayout(queriedRangeLayout);
-	boundsLayout->addWidget(queriedRangePlaceholder);
-	QWidget *fixedRangePlaceholder = new QWidget(this);
-	QFormLayout *fixedRangeLayout = new QFormLayout;
-	QLineEdit *fixedLower = new QLineEdit;
-	QLineEdit *fixedUpper = new QLineEdit;
-	fixedRangeLayout->addRow(tr("Minimum Set Value:"), fixedLower);
-	fixedRangeLayout->addRow(tr("Maximum Set Value:"), fixedUpper);
-	fixedRangePlaceholder->setLayout(fixedRangeLayout);
-	boundsLayout->addWidget(fixedRangePlaceholder);
-	layout->addLayout(boundsLayout);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "readaddress")
-		{
-			readAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "writeaddress")
-		{
-			writeAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "fixedrange")
-		{
-			if(node.attribute("value") == "true")
-			{
-				fixedRange->setCheckState(Qt::Checked);
-			}
-			else if(node.attribute("value") == "false")
-			{
-				fixedRange->setCheckState(Qt::Unchecked);
-			}
-		}
-		else if(node.attribute("name") == "fixedlower")
-		{
-			fixedLower->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "fixedupper")
-		{
-			fixedUpper->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "loweraddress")
-		{
-			lowerAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "upperaddress")
-		{
-			upperAddress->setValue(node.attribute("value").toInt());
-		}
-	}
-	updateReadAddress(readAddress->value());
-	updateWriteAddress(writeAddress->value());
-	updateFixedRange(fixedRange->isChecked());
-	updateLower(fixedLower->text());
-	updateUpper(fixedUpper->text());
-	updateLowerAddress(lowerAddress->value());
-	updateUpperAddress(upperAddress->value());
-	connect(readAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateReadAddress(int)));
-	connect(writeAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateWriteAddress(int)));
-	connect(fixedRange, SIGNAL(toggled(bool)), this, SLOT(updateFixedRange(bool)));
-	connect(fixedLower, SIGNAL(textChanged(QString)),
-	        this, SLOT(updateLower(QString)));
-	connect(fixedUpper, SIGNAL(textChanged(QString)),
-	        this, SLOT(updateUpper(QString)));
-	connect(lowerAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateLowerAddress(int)));
-	connect(upperAddress, SIGNAL(valueChanged(int)),
-	        this, SLOT(updateUpperAddress(int)));
-	setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout;
+    QFormLayout *addressLayout = new QFormLayout;
+    ShortHexSpinBox *readAddress = new ShortHexSpinBox;
+    ShortHexSpinBox *writeAddress = new ShortHexSpinBox;
+    addressLayout->addRow(tr("Function 0x04 Read Set Value Address:"), readAddress);
+    addressLayout->addRow(tr("Function 0x06 Write Set Value Address:"), writeAddress);
+    layout->addLayout(addressLayout);
+    QCheckBox *fixedRange = new QCheckBox(tr("Fixed Set Value Range"));
+    layout->addWidget(fixedRange);
+    QWidget *queriedRangePlaceholder = new QWidget(this);
+    QFormLayout *queriedRangeLayout = new QFormLayout;
+    ShortHexSpinBox *lowerAddress = new ShortHexSpinBox;
+    ShortHexSpinBox *upperAddress = new ShortHexSpinBox;
+    queriedRangeLayout->addRow(tr("Function 0x03 Minimum Set Value Address"),
+                               lowerAddress);
+    queriedRangeLayout->addRow(tr("Function 0x03 Maximum Set Value Address"),
+                               upperAddress);
+    queriedRangePlaceholder->setLayout(queriedRangeLayout);
+    boundsLayout->addWidget(queriedRangePlaceholder);
+    QWidget *fixedRangePlaceholder = new QWidget(this);
+    QFormLayout *fixedRangeLayout = new QFormLayout;
+    QLineEdit *fixedLower = new QLineEdit;
+    QLineEdit *fixedUpper = new QLineEdit;
+    fixedRangeLayout->addRow(tr("Minimum Set Value:"), fixedLower);
+    fixedRangeLayout->addRow(tr("Maximum Set Value:"), fixedUpper);
+    fixedRangePlaceholder->setLayout(fixedRangeLayout);
+    boundsLayout->addWidget(fixedRangePlaceholder);
+    layout->addLayout(boundsLayout);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "readaddress")
+        {
+            readAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "writeaddress")
+        {
+            writeAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "fixedrange")
+        {
+            if(node.attribute("value") == "true")
+            {
+                fixedRange->setCheckState(Qt::Checked);
+            }
+            else if(node.attribute("value") == "false")
+            {
+                fixedRange->setCheckState(Qt::Unchecked);
+            }
+        }
+        else if(node.attribute("name") == "fixedlower")
+        {
+            fixedLower->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "fixedupper")
+        {
+            fixedUpper->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "loweraddress")
+        {
+            lowerAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "upperaddress")
+        {
+            upperAddress->setValue(node.attribute("value").toInt());
+        }
+    }
+    updateReadAddress(readAddress->value());
+    updateWriteAddress(writeAddress->value());
+    updateFixedRange(fixedRange->isChecked());
+    updateLower(fixedLower->text());
+    updateUpper(fixedUpper->text());
+    updateLowerAddress(lowerAddress->value());
+    updateUpperAddress(upperAddress->value());
+    connect(readAddress, SIGNAL(valueChanged(int)),
+            this, SLOT(updateReadAddress(int)));
+    connect(writeAddress, SIGNAL(valueChanged(int)),
+            this, SLOT(updateWriteAddress(int)));
+    connect(fixedRange, SIGNAL(toggled(bool)), this, SLOT(updateFixedRange(bool)));
+    connect(fixedLower, SIGNAL(textChanged(QString)),
+            this, SLOT(updateLower(QString)));
+    connect(fixedUpper, SIGNAL(textChanged(QString)),
+            this, SLOT(updateUpper(QString)));
+    connect(lowerAddress, SIGNAL(valueChanged(int)),
+            this, SLOT(updateLowerAddress(int)));
+    connect(upperAddress, SIGNAL(valueChanged(int)),
+            this, SLOT(updateUpperAddress(int)));
+    setLayout(layout);
 }
 
 void ModbusRtuDeviceTSvConfWidget::updateReadAddress(int newAddress)
 {
-	updateAttribute("readaddress", QString("%1").arg(newAddress));
+    updateAttribute("readaddress", QString("%1").arg(newAddress));
 }
 
 void ModbusRtuDeviceTSvConfWidget::updateWriteAddress(int newAddress)
 {
-	updateAttribute("writeaddress", QString("%1").arg(newAddress));
+    updateAttribute("writeaddress", QString("%1").arg(newAddress));
 }
 
 void ModbusRtuDeviceTSvConfWidget::updateFixedRange(bool fixed)
 {
-	if(fixed)
-	{
-		updateAttribute("fixedrange", "true");
-		boundsLayout->setCurrentIndex(1);
-	}
-	else
-	{
-		updateAttribute("fixedrange", "false");
-		boundsLayout->setCurrentIndex(0);
-	}
+    if(fixed)
+    {
+        updateAttribute("fixedrange", "true");
+        boundsLayout->setCurrentIndex(1);
+    }
+    else
+    {
+        updateAttribute("fixedrange", "false");
+        boundsLayout->setCurrentIndex(0);
+    }
 }
 
 void ModbusRtuDeviceTSvConfWidget::updateLower(const QString &lower)
 {
-	updateAttribute("fixedlower", lower);
+    updateAttribute("fixedlower", lower);
 }
 
 void ModbusRtuDeviceTSvConfWidget::updateUpper(const QString &upper)
 {
-	updateAttribute("fixedupper", upper);
+    updateAttribute("fixedupper", upper);
 }
 
 void ModbusRtuDeviceTSvConfWidget::updateLowerAddress(int newAddress)
 {
-	updateAttribute("loweraddress", QString("%1").arg(newAddress));
+    updateAttribute("loweraddress", QString("%1").arg(newAddress));
 }
 
 void ModbusRtuDeviceTSvConfWidget::updateUpperAddress(int newAddress)
 {
-	updateAttribute("upperaddress", QString("%1").arg(newAddress));
+    updateAttribute("upperaddress", QString("%1").arg(newAddress));
 }
 
 @ The configuration widgets need to be registered.
@@ -17465,12 +17465,12 @@ text and the annotation text.
 @<Class declarations@>=
 class AnnotationButtonConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, AnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index);
-	@[private slots@]:@/
-		void updateButtonText(const QString &text);
-		void updateAnnotationText(const QString &text);
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, AnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index);
+    @[private slots@]:@/
+        void updateButtonText(const QString &text);
+        void updateAnnotationText(const QString &text);
 };
 
 @ The constructor sets up the controls for editing this data.
@@ -17479,29 +17479,29 @@ class AnnotationButtonConfWidget : public BasicDeviceConfigurationWidget
 AnnotationButtonConfWidget::AnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QFormLayout *layout = new QFormLayout;
-	QLineEdit *buttonTextEdit = new QLineEdit;
-	QLineEdit *annotationTextEdit = new QLineEdit;
-	layout->addRow(tr("Button Text:"), buttonTextEdit);
-	layout->addRow(tr("Annotation Text:"), annotationTextEdit);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "buttontext")
-		{
-			buttonTextEdit->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "annotationtext")
-		{
-			annotationTextEdit->setText(node.attribute("value"));
-		}
-	}
-	updateButtonText(buttonTextEdit->text());
-	updateAnnotationText(annotationTextEdit->text());
-	connect(buttonTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateButtonText(QString)));
-	connect(annotationTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateAnnotationText(QString)));
-	setLayout(layout);
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *buttonTextEdit = new QLineEdit;
+    QLineEdit *annotationTextEdit = new QLineEdit;
+    layout->addRow(tr("Button Text:"), buttonTextEdit);
+    layout->addRow(tr("Annotation Text:"), annotationTextEdit);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "buttontext")
+        {
+            buttonTextEdit->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "annotationtext")
+        {
+            annotationTextEdit->setText(node.attribute("value"));
+        }
+    }
+    updateButtonText(buttonTextEdit->text());
+    updateAnnotationText(annotationTextEdit->text());
+    connect(buttonTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateButtonText(QString)));
+    connect(annotationTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateAnnotationText(QString)));
+    setLayout(layout);
 }
 
 @ The slots are implemented trivially.
@@ -17509,12 +17509,12 @@ AnnotationButtonConfWidget::AnnotationButtonConfWidget(DeviceTreeModel *model, c
 @<AnnotationButtonConfWidget implementation@>=
 void AnnotationButtonConfWidget::updateButtonText(const QString &text)
 {
-	updateAttribute("buttontext", text);
+    updateAttribute("buttontext", text);
 }
 
 void AnnotationButtonConfWidget::updateAnnotationText(const QString &text)
 {
-	updateAttribute("annotationtext", text);
+    updateAttribute("annotationtext", text);
 }
 
 @ The control must be registered.
@@ -17533,12 +17533,12 @@ reinitialization of the logging view.
 @<Class declarations@>=
 class ReconfigurableAnnotationButtonConfWidget : public BasicDeviceConfigurationWidget@/
 {@/
-	@[Q_OBJECT@]@;
-	public:@/
-		Q_INVOKABLE ReconfigurableAnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index);
-	@[private slots@]:@/
-		void updateButtonText(const QString &text);
-		void updateAnnotationText(const QString &text);
+    @[Q_OBJECT@]@;
+    public:@/
+        Q_INVOKABLE ReconfigurableAnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index);
+    @[private slots@]:@/
+        void updateButtonText(const QString &text);
+        void updateAnnotationText(const QString &text);
 };
 
 @ The key difference in implementation is the addition of some documentation on
@@ -17548,43 +17548,43 @@ how to specify a numeric placeholder in the annotation text.
 ReconfigurableAnnotationButtonConfWidget::ReconfigurableAnnotationButtonConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QFormLayout *layout = new QFormLayout;
-	QLineEdit *buttonTextEdit = new QLineEdit;
-	QLineEdit *annotationTextEdit = new QLineEdit;
-	layout->addRow(tr("Button Text:"), buttonTextEdit);
-	layout->addRow(tr("Annotation Text:"), annotationTextEdit);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "buttontext")
-		{
-			buttonTextEdit->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "annotationtext")
-		{
-			annotationTextEdit->setText(node.attribute("value"));
-		}
-	}
-	updateButtonText(buttonTextEdit->text());
-	updateAnnotationText(annotationTextEdit->text());
-	connect(buttonTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateButtonText(QString)));
-	connect(annotationTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateAnnotationText(QString)));
-	QTextEdit *documentation = new QTextEdit;
-	documentation->setHtml(tr("If the <b>Annotation Text</b> contains <tt>%1</tt>, this will be replaced in the annotation with a number that increments each time the button is pressed."));
-	documentation->setReadOnly(true);
-	layout->addRow("", documentation);
-	setLayout(layout);
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *buttonTextEdit = new QLineEdit;
+    QLineEdit *annotationTextEdit = new QLineEdit;
+    layout->addRow(tr("Button Text:"), buttonTextEdit);
+    layout->addRow(tr("Annotation Text:"), annotationTextEdit);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "buttontext")
+        {
+            buttonTextEdit->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "annotationtext")
+        {
+            annotationTextEdit->setText(node.attribute("value"));
+        }
+    }
+    updateButtonText(buttonTextEdit->text());
+    updateAnnotationText(annotationTextEdit->text());
+    connect(buttonTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateButtonText(QString)));
+    connect(annotationTextEdit, SIGNAL(textEdited(QString)), this, SLOT(updateAnnotationText(QString)));
+    QTextEdit *documentation = new QTextEdit;
+    documentation->setHtml(tr("If the <b>Annotation Text</b> contains <tt>%1</tt>, this will be replaced in the annotation with a number that increments each time the button is pressed."));
+    documentation->setReadOnly(true);
+    layout->addRow("", documentation);
+    setLayout(layout);
 }
 
 void ReconfigurableAnnotationButtonConfWidget::updateButtonText(const QString &text)
 {
-	updateAttribute("buttontext", text);
+    updateAttribute("buttontext", text);
 }
 
 void ReconfigurableAnnotationButtonConfWidget::updateAnnotationText(const QString &text)
 {
-	updateAttribute("annotationtext", text);
+    updateAttribute("annotationtext", text);
 }
 
 @ The control must be registered as usual.
@@ -17607,16 +17607,16 @@ be configurable.
 @<Class declarations@>=
 class NoteSpinConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, NoteSpinConfWidget(DeviceTreeModel *model, const QModelIndex &index);
-	@[private slots@]:@/
-		void updateLabel(const QString &text);
-		void updateMinimum(const QString &minimum);
-		void updateMaximum(const QString &maximum);
-		void updatePrecision(int precision);
-		void updatePretext(const QString &text);
-		void updatePosttext(const QString &text);
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, NoteSpinConfWidget(DeviceTreeModel *model, const QModelIndex &index);
+    @[private slots@]:@/
+        void updateLabel(const QString &text);
+        void updateMinimum(const QString &minimum);
+        void updateMaximum(const QString &maximum);
+        void updatePrecision(int precision);
+        void updatePretext(const QString &text);
+        void updatePosttext(const QString &text);
 };
 
 @ There is nothing new in the implementation of note.
@@ -17625,93 +17625,93 @@ class NoteSpinConfWidget : public BasicDeviceConfigurationWidget
 NoteSpinConfWidget::NoteSpinConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index)
 {
-	QFormLayout *layout = new QFormLayout;
-	QLineEdit *labelEdit = new QLineEdit;
-	layout->addRow(tr("Control Label: "), labelEdit);
-	QLineEdit *minimumEdit = new QLineEdit;
-	layout->addRow(tr("Minimum Value: "), minimumEdit);
-	QLineEdit *maximumEdit = new QLineEdit;
-	layout->addRow(tr("Maximum Value: "), maximumEdit);
-	QSpinBox *precisionEdit = new QSpinBox;
-	precisionEdit->setMinimum(0);
-	precisionEdit->setMaximum(9);
-	layout->addRow(tr("Precision"), precisionEdit);
-	QLineEdit *pretext = new QLineEdit;
-	layout->addRow(tr("Prefix text"), pretext);
-	QLineEdit *posttext = new QLineEdit;
-	layout->addRow(tr("Suffix text"), posttext);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "label")
-		{
-			labelEdit->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "minimum")
-		{
-			minimumEdit->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "maximum")
-		{
-			maximumEdit->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "precision")
-		{
-			precisionEdit->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "pretext")
-		{
-			pretext->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "posttext")
-		{
-			posttext->setText(node.attribute("value"));
-		}
-	}
-	updateLabel(labelEdit->text());
-	updateMinimum(minimumEdit->text());
-	updateMaximum(maximumEdit->text());
-	updatePrecision(precisionEdit->value());
-	updatePretext(pretext->text());
-	updatePosttext(posttext->text());
-	connect(labelEdit, SIGNAL(textEdited(QString)), this, SLOT(updateLabel(QString)));
-	connect(minimumEdit, SIGNAL(textEdited(QString)), this, SLOT(updateMinimum(QString)));
-	connect(maximumEdit, SIGNAL(textEdited(QString)), this, SLOT(updateMaximum(QString)));
-	connect(precisionEdit, SIGNAL(valueChanged(int)), this, SLOT(updatePrecision(int)));
-	connect(pretext, SIGNAL(textEdited(QString)), this, SLOT(updatePretext(QString)));
-	connect(posttext, SIGNAL(textEdited(QString)), this, SLOT(updatePosttext(QString)));
-	setLayout(layout);
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *labelEdit = new QLineEdit;
+    layout->addRow(tr("Control Label: "), labelEdit);
+    QLineEdit *minimumEdit = new QLineEdit;
+    layout->addRow(tr("Minimum Value: "), minimumEdit);
+    QLineEdit *maximumEdit = new QLineEdit;
+    layout->addRow(tr("Maximum Value: "), maximumEdit);
+    QSpinBox *precisionEdit = new QSpinBox;
+    precisionEdit->setMinimum(0);
+    precisionEdit->setMaximum(9);
+    layout->addRow(tr("Precision"), precisionEdit);
+    QLineEdit *pretext = new QLineEdit;
+    layout->addRow(tr("Prefix text"), pretext);
+    QLineEdit *posttext = new QLineEdit;
+    layout->addRow(tr("Suffix text"), posttext);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "label")
+        {
+            labelEdit->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "minimum")
+        {
+            minimumEdit->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "maximum")
+        {
+            maximumEdit->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "precision")
+        {
+            precisionEdit->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "pretext")
+        {
+            pretext->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "posttext")
+        {
+            posttext->setText(node.attribute("value"));
+        }
+    }
+    updateLabel(labelEdit->text());
+    updateMinimum(minimumEdit->text());
+    updateMaximum(maximumEdit->text());
+    updatePrecision(precisionEdit->value());
+    updatePretext(pretext->text());
+    updatePosttext(posttext->text());
+    connect(labelEdit, SIGNAL(textEdited(QString)), this, SLOT(updateLabel(QString)));
+    connect(minimumEdit, SIGNAL(textEdited(QString)), this, SLOT(updateMinimum(QString)));
+    connect(maximumEdit, SIGNAL(textEdited(QString)), this, SLOT(updateMaximum(QString)));
+    connect(precisionEdit, SIGNAL(valueChanged(int)), this, SLOT(updatePrecision(int)));
+    connect(pretext, SIGNAL(textEdited(QString)), this, SLOT(updatePretext(QString)));
+    connect(posttext, SIGNAL(textEdited(QString)), this, SLOT(updatePosttext(QString)));
+    setLayout(layout);
 }
 
 void NoteSpinConfWidget::updateLabel(const QString &text)
 {
-	updateAttribute("label", text);
+    updateAttribute("label", text);
 }
 
 void NoteSpinConfWidget::updateMinimum(const QString &minimum)
 {
-	updateAttribute("minimum", minimum);
+    updateAttribute("minimum", minimum);
 }
 
 void NoteSpinConfWidget::updateMaximum(const QString &maximum)
 {
-	updateAttribute("maximum", maximum);
+    updateAttribute("maximum", maximum);
 }
 
 void NoteSpinConfWidget::updatePrecision(int precision)
 {
-	updateAttribute("precision", QString("%1").arg(precision));
+    updateAttribute("precision", QString("%1").arg(precision));
 }
 
 void NoteSpinConfWidget::updatePretext(const QString &text)
 {
-	updateAttribute("pretext", text);
+    updateAttribute("pretext", text);
 }
 
 void NoteSpinConfWidget::updatePosttext(const QString &text)
 {
-	updateAttribute("posttext", text);
+    updateAttribute("posttext", text);
 }
 
 @ Configuration widget registration is as usual.
@@ -17732,60 +17732,60 @@ on the |DAQ| class but extended to support additional functionality.
 @<Class declarations@>=
 class ModbusRTUDevice : public QObject
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		ModbusRTUDevice(DeviceTreeModel *model, const QModelIndex &index);
-		~ModbusRTUDevice();
-		void queueMessage(QByteArray request, QObject *object, const char *callback);
-		@[Q_INVOKABLE@,@, double@]@, SVLower();@t\2\2@>@/
-		@[Q_INVOKABLE@,@, double@]@, SVUpper();@t\2\2@>@/
-		@[Q_INVOKABLE@,@, int@]@, decimals();@t\2\2@>@/
-		QList<Channel*> channels;@/
-	@[public slots@]:@/
-		void outputSV(double sv);@/
-	signals:@/
-		void SVLowerChanged(double);
-		void SVUpperChanged(double);
-		void SVDecimalChanged(int);
-		void queueEmpty();@/
-	@[private slots@]:@/
-		void dataAvailable();
-		void sendNextMessage();
-		void decimalResponse(QByteArray response);
-		void unitResponse(QByteArray response);
-		void svlResponse(QByteArray response);
-		void svuResponse(QByteArray response);
-		void requestMeasurement();
-		void mResponse(QByteArray response);
-		void ignore(QByteArray response);
-		void timeout();@/
-	private:@/
-		QextSerialPort *port;
-		QByteArray responseBuffer;
-		QList<QByteArray> messageQueue;
-		QList<QObject *> retObjQueue;
-		QList<char *> callbackQueue;
-		quint16 calculateCRC(QByteArray data);
-		QTimer *messageDelayTimer;
-		QTimer *commTimeout;
-		int delayTime;
-		char station;
-		int decimalPosition;
-		int valueF;
-		int valueC;
-		bool unitIsF;
-		double outputSVLower;
-		double outputSVUpper;
-		QByteArray outputSVStub;
-		QByteArray pvStub;
-		QByteArray svStub;
-		QByteArray mStub;
-		quint16 pvaddress;
-		quint16 svaddress;
-		bool svenabled;
-		bool readingsv;
-		double savedpv;
-		bool waiting;
+    @[Q_OBJECT@]@;
+    public:@/
+        ModbusRTUDevice(DeviceTreeModel *model, const QModelIndex &index);
+        ~ModbusRTUDevice();
+        void queueMessage(QByteArray request, QObject *object, const char *callback);
+        @[Q_INVOKABLE@,@, double@]@, SVLower();@t\2\2@>@/
+        @[Q_INVOKABLE@,@, double@]@, SVUpper();@t\2\2@>@/
+        @[Q_INVOKABLE@,@, int@]@, decimals();@t\2\2@>@/
+        QList<Channel*> channels;@/
+    @[public slots@]:@/
+        void outputSV(double sv);@/
+    signals:@/
+        void SVLowerChanged(double);
+        void SVUpperChanged(double);
+        void SVDecimalChanged(int);
+        void queueEmpty();@/
+    @[private slots@]:@/
+        void dataAvailable();
+        void sendNextMessage();
+        void decimalResponse(QByteArray response);
+        void unitResponse(QByteArray response);
+        void svlResponse(QByteArray response);
+        void svuResponse(QByteArray response);
+        void requestMeasurement();
+        void mResponse(QByteArray response);
+        void ignore(QByteArray response);
+        void timeout();@/
+    private:@/
+        QextSerialPort *port;
+        QByteArray responseBuffer;
+        QList<QByteArray> messageQueue;
+        QList<QObject *> retObjQueue;
+        QList<char *> callbackQueue;
+        quint16 calculateCRC(QByteArray data);
+        QTimer *messageDelayTimer;
+        QTimer *commTimeout;
+        int delayTime;
+        char station;
+        int decimalPosition;
+        int valueF;
+        int valueC;
+        bool unitIsF;
+        double outputSVLower;
+        double outputSVUpper;
+        QByteArray outputSVStub;
+        QByteArray pvStub;
+        QByteArray svStub;
+        QByteArray mStub;
+        quint16 pvaddress;
+        quint16 svaddress;
+        bool svenabled;
+        bool readingsv;
+        double savedpv;
+        bool waiting;
 };
 
 @ The constructor reads its configuration from the configuration sub-tree of the
@@ -17800,251 +17800,251 @@ immediately upon construction.
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &index)
 : QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
-	waiting(@[false@])@/
+    waiting(@[false@])@/
 {@/
 qDebug() << "Initializing Modbus RTU Device";
-	QDomElement portReferenceElement = model->referenceElement(model->data(index,
-		Qt::UserRole).toString());
-	QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
-	QDomElement node;
-	QVariantMap attributes;
-	for(int i = 0; i < portConfigData.size(); i++)
-	{
-		node = portConfigData.at(i).toElement();
-		attributes.insert(node.attribute("name"), node.attribute("value"));
-	}
-	port = new QextSerialPort(attributes.value("port").toString(),
-	                          QextSerialPort::EventDriven);
-	int baudRate = attributes.value("baud").toInt();
-	port->setBaudRate((BaudRateType)baudRate);
-	double temp = ((double)(1) / (double)(baudRate)) * 48;
-	delayTime = (int)(temp * 3000);
-	messageDelayTimer->setSingleShot(true);
-	commTimeout->setSingleShot(true);
-	connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
-	connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
-	port->setDataBits(DATA_8);
-	port->setParity((ParityType)attributes.value("parity").toInt());
-	port->setStopBits((StopBitsType)attributes.value("stop").toInt());
-	port->setFlowControl((FlowType)attributes.value("flow").toInt());
-	connect(port, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
-	port->open(QIODevice::ReadWrite);
-	station = (char)attributes.value("station").toInt();
-	if(attributes.value("decimalQuery") == "true")
-	{
-		decimalPosition = 0;
-		QByteArray message;
-		message.append(station);
-		message.append((char)0x03);
-		quint16 address = (quint16)attributes.value("decimalAddress").toInt();
-		char *addressBytes = (char*)&address;
-		message.append(addressBytes[1]);
-		message.append(addressBytes[0]);
-		message.append((char)0x00);
-		message.append((char)0x01);
-		queueMessage(message, this, "decimalResponse(QByteArray)");
-	}
-	else
-	{
-		decimalPosition = attributes.value("decimalPosition").toInt();
-	}
-	valueF = attributes.value("valueF").toInt();
-	valueC = attributes.value("valueC").toInt();
-	if(attributes.value("unitQuery") == "true")
-	{
-		QByteArray message;
-		message.append(station);
-		message.append((char)0x03);
-		quint16 address = (quint16)attributes.value("unitAddress").toInt();
-		char *addressBytes = (char*)&address;
-		message.append(addressBytes[1]);
-		message.append(addressBytes[0]);
-		message.append((char)0x00);
-		message.append((char)0x01);
-		queueMessage(message, this, "unitResponse(QByteArray)");
-	}
-	else
-	{
-		if(attributes.value("fixedUnit") == "Celsius")
-		{
-			unitIsF = @[false@];
-		}
-	}
-	if(attributes.value("sVWritable") == "true")
-	{
-		if(attributes.value("deviceLimit") == "true")
-		{
-			QByteArray lmessage;
-			lmessage.append(station);
-			lmessage.append((char)0x03);
-			quint16 laddress = (quint16)attributes.value("sVLowerAddr").toInt();
-			char *addressBytes = (char*)&laddress;
-			lmessage.append(addressBytes[1]);
-			lmessage.append(addressBytes[0]);
-			lmessage.append((char)0x00);
-			lmessage.append((char)0x01);
-			queueMessage(lmessage, this, "svlResponse(QByteArray)");
-			QByteArray umessage;
-			umessage.append(station);
-			umessage.append((char)0x03);
-			quint16 uaddress = (quint16)attributes.value("sVUpperAddr").toInt();
-			addressBytes = (char*)&uaddress;
-			umessage.append(addressBytes[1]);
-			umessage.append(addressBytes[0]);
-			umessage.append((char)0x00);
-			umessage.append((char)0x01);
-			queueMessage(umessage, this, "svuResponse(QByteArray)");
-		}
-		else
-		{
-			outputSVLower = attributes.value("sVLower").toDouble();
-			outputSVUpper = attributes.value("sVUpper").toDouble();
-		}
-		outputSVStub.append(station);
-		outputSVStub.append((char)0x06);
-		quint16 address = (quint16)attributes.value("sVOutputAddr").toInt();
-		char *addressBytes = (char*)&address;
-		outputSVStub.append(addressBytes[1]);
-		outputSVStub.append(addressBytes[0]);
-	}
-	Channel *pv = new Channel;
-	channels.append(pv);
-	pvStub.append(station);
-	pvStub.append((char)0x04);
-	pvaddress = (quint16)attributes.value("pVAddress").toInt();
-	char *pvac = (char*)&pvaddress;
-	pvStub.append(pvac[1]);
-	pvStub.append(pvac[0]);
-	pvStub.append((char)0x00);
-	pvStub.append((char)0x01);
-	svenabled = attributes.value("sVEnabled").toBool();
-	if(svenabled)
-	{
-		Channel *sv = new Channel;
-		channels.append(sv);
-		svStub.append(station);
-		svStub.append((char)0x04);
-		svaddress = (quint16)attributes.value("sVReadAddress").toInt();
-		char *svac = (char*)&svaddress;
-		svStub.append(svac[1]);
-		svStub.append(svac[0]);
-		svStub.append((char)0x00);
-		svStub.append((char)0x01);
-		if(svaddress - pvaddress == 1)
-		{
-			mStub.append(station);
-			mStub.append((char)0x04);
-			mStub.append(pvac[1]);
-			mStub.append(pvac[0]);
-			mStub.append((char)0x00);
-			mStub.append((char)0x02);
-		}
-	}
-	connect(this, SIGNAL(queueEmpty()), this, SLOT(requestMeasurement()));
-	requestMeasurement();
+    QDomElement portReferenceElement = model->referenceElement(model->data(index,
+        Qt::UserRole).toString());
+    QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
+    QDomElement node;
+    QVariantMap attributes;
+    for(int i = 0; i < portConfigData.size(); i++)
+    {
+        node = portConfigData.at(i).toElement();
+        attributes.insert(node.attribute("name"), node.attribute("value"));
+    }
+    port = new QextSerialPort(attributes.value("port").toString(),
+                              QextSerialPort::EventDriven);
+    int baudRate = attributes.value("baud").toInt();
+    port->setBaudRate((BaudRateType)baudRate);
+    double temp = ((double)(1) / (double)(baudRate)) * 48;
+    delayTime = (int)(temp * 3000);
+    messageDelayTimer->setSingleShot(true);
+    commTimeout->setSingleShot(true);
+    connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
+    connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
+    port->setDataBits(DATA_8);
+    port->setParity((ParityType)attributes.value("parity").toInt());
+    port->setStopBits((StopBitsType)attributes.value("stop").toInt());
+    port->setFlowControl((FlowType)attributes.value("flow").toInt());
+    connect(port, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
+    port->open(QIODevice::ReadWrite);
+    station = (char)attributes.value("station").toInt();
+    if(attributes.value("decimalQuery") == "true")
+    {
+        decimalPosition = 0;
+        QByteArray message;
+        message.append(station);
+        message.append((char)0x03);
+        quint16 address = (quint16)attributes.value("decimalAddress").toInt();
+        char *addressBytes = (char*)&address;
+        message.append(addressBytes[1]);
+        message.append(addressBytes[0]);
+        message.append((char)0x00);
+        message.append((char)0x01);
+        queueMessage(message, this, "decimalResponse(QByteArray)");
+    }
+    else
+    {
+        decimalPosition = attributes.value("decimalPosition").toInt();
+    }
+    valueF = attributes.value("valueF").toInt();
+    valueC = attributes.value("valueC").toInt();
+    if(attributes.value("unitQuery") == "true")
+    {
+        QByteArray message;
+        message.append(station);
+        message.append((char)0x03);
+        quint16 address = (quint16)attributes.value("unitAddress").toInt();
+        char *addressBytes = (char*)&address;
+        message.append(addressBytes[1]);
+        message.append(addressBytes[0]);
+        message.append((char)0x00);
+        message.append((char)0x01);
+        queueMessage(message, this, "unitResponse(QByteArray)");
+    }
+    else
+    {
+        if(attributes.value("fixedUnit") == "Celsius")
+        {
+            unitIsF = @[false@];
+        }
+    }
+    if(attributes.value("sVWritable") == "true")
+    {
+        if(attributes.value("deviceLimit") == "true")
+        {
+            QByteArray lmessage;
+            lmessage.append(station);
+            lmessage.append((char)0x03);
+            quint16 laddress = (quint16)attributes.value("sVLowerAddr").toInt();
+            char *addressBytes = (char*)&laddress;
+            lmessage.append(addressBytes[1]);
+            lmessage.append(addressBytes[0]);
+            lmessage.append((char)0x00);
+            lmessage.append((char)0x01);
+            queueMessage(lmessage, this, "svlResponse(QByteArray)");
+            QByteArray umessage;
+            umessage.append(station);
+            umessage.append((char)0x03);
+            quint16 uaddress = (quint16)attributes.value("sVUpperAddr").toInt();
+            addressBytes = (char*)&uaddress;
+            umessage.append(addressBytes[1]);
+            umessage.append(addressBytes[0]);
+            umessage.append((char)0x00);
+            umessage.append((char)0x01);
+            queueMessage(umessage, this, "svuResponse(QByteArray)");
+        }
+        else
+        {
+            outputSVLower = attributes.value("sVLower").toDouble();
+            outputSVUpper = attributes.value("sVUpper").toDouble();
+        }
+        outputSVStub.append(station);
+        outputSVStub.append((char)0x06);
+        quint16 address = (quint16)attributes.value("sVOutputAddr").toInt();
+        char *addressBytes = (char*)&address;
+        outputSVStub.append(addressBytes[1]);
+        outputSVStub.append(addressBytes[0]);
+    }
+    Channel *pv = new Channel;
+    channels.append(pv);
+    pvStub.append(station);
+    pvStub.append((char)0x04);
+    pvaddress = (quint16)attributes.value("pVAddress").toInt();
+    char *pvac = (char*)&pvaddress;
+    pvStub.append(pvac[1]);
+    pvStub.append(pvac[0]);
+    pvStub.append((char)0x00);
+    pvStub.append((char)0x01);
+    svenabled = attributes.value("sVEnabled").toBool();
+    if(svenabled)
+    {
+        Channel *sv = new Channel;
+        channels.append(sv);
+        svStub.append(station);
+        svStub.append((char)0x04);
+        svaddress = (quint16)attributes.value("sVReadAddress").toInt();
+        char *svac = (char*)&svaddress;
+        svStub.append(svac[1]);
+        svStub.append(svac[0]);
+        svStub.append((char)0x00);
+        svStub.append((char)0x01);
+        if(svaddress - pvaddress == 1)
+        {
+            mStub.append(station);
+            mStub.append((char)0x04);
+            mStub.append(pvac[1]);
+            mStub.append(pvac[0]);
+            mStub.append((char)0x00);
+            mStub.append((char)0x02);
+        }
+    }
+    connect(this, SIGNAL(queueEmpty()), this, SLOT(requestMeasurement()));
+    requestMeasurement();
 }
 
 double ModbusRTUDevice::SVLower()
 {
-	return outputSVLower;
+    return outputSVLower;
 }
 
 double ModbusRTUDevice::SVUpper()
 {
-	return outputSVUpper;
+    return outputSVUpper;
 }
 
 int ModbusRTUDevice::decimals()
 {
-	return decimalPosition;
+    return decimalPosition;
 }
 
 void ModbusRTUDevice::decimalResponse(QByteArray response)
 {
-	quint16 temp;
-	char *tchar = (char*)&temp;
-	tchar[1] = response.at(3);
-	tchar[0] = response.at(4);
-	decimalPosition = temp;
-	emit SVDecimalChanged(decimalPosition);
-	qDebug() << "Received decimal response";
+    quint16 temp;
+    char *tchar = (char*)&temp;
+    tchar[1] = response.at(3);
+    tchar[0] = response.at(4);
+    decimalPosition = temp;
+    emit SVDecimalChanged(decimalPosition);
+    qDebug() << "Received decimal response";
 }
 
 void ModbusRTUDevice::unitResponse(QByteArray response)
 {
-	quint16 temp;
-	char *tchar = (char*)&temp;
-	tchar[1] = response.at(3);
-	tchar[0] = response.at(4);
-	int value = temp;
-	if(value == valueF)
-	{
-		unitIsF = @[true@];
-	}
-	else
-	{
-		unitIsF = @[false@];
-	}
-	qDebug() << "Received unit response";
+    quint16 temp;
+    char *tchar = (char*)&temp;
+    tchar[1] = response.at(3);
+    tchar[0] = response.at(4);
+    int value = temp;
+    if(value == valueF)
+    {
+        unitIsF = @[true@];
+    }
+    else
+    {
+        unitIsF = @[false@];
+    }
+    qDebug() << "Received unit response";
 }
 
 void ModbusRTUDevice::svlResponse(QByteArray response)
 {
-	quint16 temp;
-	char *tchar = (char*)&temp;
-	tchar[1] = response.at(3);
-	tchar[0] = response.at(4);
-	outputSVLower = (double)temp;
-	for(int i = 0; i < decimalPosition; i++)
-	{
-		outputSVLower /= 10;
-	}
-	emit SVLowerChanged(outputSVLower);
-	qDebug() << "Received set value lower bound response";
+    quint16 temp;
+    char *tchar = (char*)&temp;
+    tchar[1] = response.at(3);
+    tchar[0] = response.at(4);
+    outputSVLower = (double)temp;
+    for(int i = 0; i < decimalPosition; i++)
+    {
+        outputSVLower /= 10;
+    }
+    emit SVLowerChanged(outputSVLower);
+    qDebug() << "Received set value lower bound response";
 }
 
 void ModbusRTUDevice::svuResponse(QByteArray response)
 {
-	quint16 temp;
-	char *tchar = (char*)&temp;
-	tchar[1] = response.at(3);
-	tchar[0] = response.at(4);
-	outputSVUpper = (double)temp;
-	for(int i = 0; i < decimalPosition; i++)
-	{
-		outputSVUpper /= 10;
-	}
-	emit SVUpperChanged(outputSVUpper);
-	qDebug() << "Received set value upper bound response";
+    quint16 temp;
+    char *tchar = (char*)&temp;
+    tchar[1] = response.at(3);
+    tchar[0] = response.at(4);
+    outputSVUpper = (double)temp;
+    for(int i = 0; i < decimalPosition; i++)
+    {
+        outputSVUpper /= 10;
+    }
+    emit SVUpperChanged(outputSVUpper);
+    qDebug() << "Received set value upper bound response";
 }
 
 void ModbusRTUDevice::requestMeasurement()
 {
-	if(mStub.length() > 0)
-	{
-		queueMessage(mStub, this, "mResponse(QByteArray)");
-	}
-	else
-	{
-		queueMessage(pvStub, this, "mResponse(QByteArray)");
-		if(svenabled)
-		{
-			queueMessage(svStub, this, "mResponse(QByteArray)");
-		}
-	}
+    if(mStub.length() > 0)
+    {
+        queueMessage(mStub, this, "mResponse(QByteArray)");
+    }
+    else
+    {
+        queueMessage(pvStub, this, "mResponse(QByteArray)");
+        if(svenabled)
+        {
+            queueMessage(svStub, this, "mResponse(QByteArray)");
+        }
+    }
 }
 
 void ModbusRTUDevice::mResponse(QByteArray response)
 {
-	QTime time = QTime::currentTime();
-	if(response.at(2) == 0x04)
-	{
-		@<Process PV and SV@>@;
-	}
-	else
-	{
-		@<Process PV or SV@>@;
-	}
+    QTime time = QTime::currentTime();
+    if(response.at(2) == 0x04)
+    {
+        @<Process PV and SV@>@;
+    }
+    else
+    {
+        @<Process PV or SV@>@;
+    }
 }
 
 @ There are two ways that we might request measurement data. All of the
@@ -18065,13 +18065,13 @@ double pvOut = (double)pv;
 double svOut = (double)sv;
 for(int i = 0; i < decimalPosition; i++)
 {
-	pvOut /= 10;
-	svOut /= 10;
+    pvOut /= 10;
+    svOut /= 10;
 }
 if(!unitIsF)
 {
-	pvOut = pvOut * 9 / 5 + 32;
-	svOut = svOut * 9 / 5 + 32;
+    pvOut = pvOut * 9 / 5 + 32;
+    svOut = svOut * 9 / 5 + 32;
 }
 Measurement pvm(pvOut, time, Units::Fahrenheit);
 Measurement svm(svOut, time, Units::Fahrenheit);
@@ -18090,32 +18090,32 @@ valueBytes[0] = response.at(4);
 double valueOut = (double)value;
 for(int i = 0; i < decimalPosition; i++)
 {
-	valueOut /= 10;
+    valueOut /= 10;
 }
 if(!unitIsF)
 {
-	valueOut = valueOut * 9 / 5 + 32;
+    valueOut = valueOut * 9 / 5 + 32;
 }
 if(!svenabled)
 {
-	Measurement vm(valueOut, time, Units::Fahrenheit);
-	channels.at(0)->input(vm);
+    Measurement vm(valueOut, time, Units::Fahrenheit);
+    channels.at(0)->input(vm);
 }
 else
 {
-	if(readingsv)
-	{
-		Measurement pvm(savedpv, time, Units::Fahrenheit);
-		Measurement svm(valueOut, time, Units::Fahrenheit);
-		channels.at(0)->input(pvm);
-		channels.at(1)->input(svm);
-		readingsv = false;
-	}
-	else
-	{
-		savedpv = valueOut;
-		readingsv = true;
-	}
+    if(readingsv)
+    {
+        Measurement pvm(savedpv, time, Units::Fahrenheit);
+        Measurement svm(valueOut, time, Units::Fahrenheit);
+        channels.at(0)->input(pvm);
+        channels.at(1)->input(svm);
+        readingsv = false;
+    }
+    else
+    {
+        savedpv = valueOut;
+        readingsv = true;
+    }
 }
 
 @ The destructor should close the port.
@@ -18123,9 +18123,9 @@ else
 @<ModbusRTUDevice implementation@>=
 ModbusRTUDevice::~ModbusRTUDevice()
 {
-	commTimeout->stop();
-	messageDelayTimer->stop();
-	port->close();
+    commTimeout->stop();
+    messageDelayTimer->stop();
+    port->close();
 }
 
 @ When data is available it should be read into a buffer. The start of the
@@ -18150,33 +18150,33 @@ command will be sent again once the message delay timer is finished.
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::dataAvailable()
 {
-	if(messageDelayTimer->isActive())
-	{
-		messageDelayTimer->stop();
-	}
-	responseBuffer.append(port->readAll());
-	@<Check Modbus RTU message size@>@;
-	commTimeout->stop();
-	if(calculateCRC(responseBuffer) == 0)
-	{
-		QObject *object = retObjQueue.at(0);
-		char *method = callbackQueue.at(0);
-		QMetaMethod metamethod = @| object->metaObject()->
-			method(object->metaObject()->
-				indexOfMethod(@|QMetaObject::normalizedSignature(method)));
-		metamethod.invoke(object, Qt::QueuedConnection,
-		                  Q_ARG(QByteArray, responseBuffer));
-		messageQueue.removeAt(0);
-		retObjQueue.removeAt(0);
-		callbackQueue.removeAt(0);
-	}
-	else
-	{
-		qDebug() << "CRC failed";
-	}
-	messageDelayTimer->start(delayTime);
-	waiting = @[false@];
-	responseBuffer.clear();
+    if(messageDelayTimer->isActive())
+    {
+        messageDelayTimer->stop();
+    }
+    responseBuffer.append(port->readAll());
+    @<Check Modbus RTU message size@>@;
+    commTimeout->stop();
+    if(calculateCRC(responseBuffer) == 0)
+    {
+        QObject *object = retObjQueue.at(0);
+        char *method = callbackQueue.at(0);
+        QMetaMethod metamethod = @| object->metaObject()->
+            method(object->metaObject()->
+                indexOfMethod(@|QMetaObject::normalizedSignature(method)));
+        metamethod.invoke(object, Qt::QueuedConnection,
+                          Q_ARG(QByteArray, responseBuffer));
+        messageQueue.removeAt(0);
+        retObjQueue.removeAt(0);
+        callbackQueue.removeAt(0);
+    }
+    else
+    {
+        qDebug() << "CRC failed";
+    }
+    messageDelayTimer->start(delayTime);
+    waiting = @[false@];
+    responseBuffer.clear();
 }
 
 @ In Modbus RTU, a response message starts with one byte identifying the device
@@ -18196,35 +18196,35 @@ bytes in length.
 @<Check Modbus RTU message size@>=
 if(responseBuffer.size() < 5)
 {
-	return;
+    return;
 }
 switch(responseBuffer.at(1))
 {
-	case 0x01:
-	case 0x02:
-		if(responseBuffer.size() < 6)
-		{
-			return;
-		}
-		responseBuffer = responseBuffer.left(6);
-		break;
-	case 0x03:
-	case 0x04:
-		if(responseBuffer.size() < 5 + responseBuffer.at(2))
-		{
-			return;
-		}
-		responseBuffer = responseBuffer.left(5 + responseBuffer.at(2));
-		break;
-	case 0x05:
-	case 0x06:
-	case 0x10:
-		if(responseBuffer.size() < 8)
-		{
-			return;
-		}
-		responseBuffer = responseBuffer.left(8);
-		break;
+    case 0x01:
+    case 0x02:
+        if(responseBuffer.size() < 6)
+        {
+            return;
+        }
+        responseBuffer = responseBuffer.left(6);
+        break;
+    case 0x03:
+    case 0x04:
+        if(responseBuffer.size() < 5 + responseBuffer.at(2))
+        {
+            return;
+        }
+        responseBuffer = responseBuffer.left(5 + responseBuffer.at(2));
+        break;
+    case 0x05:
+    case 0x06:
+    case 0x10:
+        if(responseBuffer.size() < 8)
+        {
+            return;
+        }
+        responseBuffer = responseBuffer.left(8);
+        break;
 }
 
 @ When sending and receiving messages, it is necessary to calculate a 16 bit
@@ -18238,7 +18238,7 @@ other value indicates an error.
 @<ModbusRTUDevice implementation@>=
 quint16 ModbusRTUDevice::calculateCRC(QByteArray data)
 {
-	quint16 retval = 0xFFFF;
+    quint16 retval = 0xFFFF;
     int i = 0;
     while(i < data.size())
     {
@@ -18270,47 +18270,47 @@ sent to.
 void ModbusRTUDevice::queueMessage(QByteArray request, QObject *object,
                                    const char *callback)
 {
-	messageQueue.append(request);
-	retObjQueue.append(object);
-	callbackQueue.append(const_cast<char*>(callback));
-	if(messageQueue.size() == 1 && !(messageDelayTimer->isActive()))
-	{
-		sendNextMessage();
-	}
+    messageQueue.append(request);
+    retObjQueue.append(object);
+    callbackQueue.append(const_cast<char*>(callback));
+    if(messageQueue.size() == 1 && !(messageDelayTimer->isActive()))
+    {
+        sendNextMessage();
+    }
 }
 
 void ModbusRTUDevice::sendNextMessage()
 {
-	if(messageQueue.size() > 0 && !waiting)
-	{
-		QByteArray message = messageQueue.at(0);
-		quint16 crc = calculateCRC(message);
-		char *check = (char*)&crc;
-		message.append(check[0]);
-		message.append(check[1]);
-		port->write(message);
-		commTimeout->start(2000);
-		messageDelayTimer->start(delayTime);
-		waiting = @[true@];
-	}
-	else
-	{
-		emit queueEmpty();
-	}
+    if(messageQueue.size() > 0 && !waiting)
+    {
+        QByteArray message = messageQueue.at(0);
+        quint16 crc = calculateCRC(message);
+        char *check = (char*)&crc;
+        message.append(check[0]);
+        message.append(check[1]);
+        port->write(message);
+        commTimeout->start(2000);
+        messageDelayTimer->start(delayTime);
+        waiting = @[true@];
+    }
+    else
+    {
+        emit queueEmpty();
+    }
 }
 
 void ModbusRTUDevice::outputSV(double value)
 {
-	for(int i = 0; i < decimalPosition; i++)
-	{
-		value *= 10;
-	}
-	quint16 outval = (quint16)value;
-	QByteArray message(outputSVStub);
-	char *valBytes = (char*)&outval;
-	message.append(valBytes[1]);
-	message.append(valBytes[0]);
-	queueMessage(message, this, "ignore(QByteArray)");
+    for(int i = 0; i < decimalPosition; i++)
+    {
+        value *= 10;
+    }
+    quint16 outval = (quint16)value;
+    QByteArray message(outputSVStub);
+    char *valBytes = (char*)&outval;
+    message.append(valBytes[1]);
+    message.append(valBytes[0]);
+    queueMessage(message, this, "ignore(QByteArray)");
 }
 
 @ We don'@q'@>t care about the response when sending a new SV.
@@ -18318,7 +18318,7 @@ void ModbusRTUDevice::outputSV(double value)
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::ignore(QByteArray)
 {
-	return;
+    return;
 }
 
 @ Sometimes a communications failure will occur in which a response to a
@@ -18331,10 +18331,10 @@ this should be configurable and smaller values may well be acceptable.
 @<ModbusRTUDevice implementation@>=
 void ModbusRTUDevice::timeout()
 {
-	qDebug() << "Communications timeout.";
-	responseBuffer.clear();
-	waiting = false;
-	messageDelayTimer->start();
+    qDebug() << "Communications timeout.";
+    responseBuffer.clear();
+    waiting = false;
+    messageDelayTimer->start();
 }
 
 @ This class must be exposed to the host environment.
@@ -18359,21 +18359,21 @@ handle initialization.
 @<Functions for scripting@>=
 QScriptValue constructModbusRTUDevice(QScriptContext *context, QScriptEngine *engine)
 {
-	QScriptValue object;
-	if(context->argumentCount() == 2)
-	{
-		object = engine->newQObject(new ModbusRTUDevice(argument<DeviceTreeModel *>(0, context),
-		                                                argument<QModelIndex>(1, context)),
-									QScriptEngine::ScriptOwnership);
-		setModbusRTUDeviceProperties(object, engine);
-	}
-	else
-	{
-		context->throwError("Incorrect number of arguments passed to "@|
-			"ModbusRTUDevice constructor. This takes the configuration model "@|
-			"and an index.");
-	}
-	return object;
+    QScriptValue object;
+    if(context->argumentCount() == 2)
+    {
+        object = engine->newQObject(new ModbusRTUDevice(argument<DeviceTreeModel *>(0, context),
+                                                        argument<QModelIndex>(1, context)),
+                                    QScriptEngine::ScriptOwnership);
+        setModbusRTUDeviceProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+            "ModbusRTUDevice constructor. This takes the configuration model "@|
+            "and an index.");
+    }
+    return object;
 }
 
 @ The host environment needs a way to gain access to the channel objects.
@@ -18381,32 +18381,32 @@ QScriptValue constructModbusRTUDevice(QScriptContext *context, QScriptEngine *en
 @<Functions for scripting@>=
 QScriptValue ModbusRTUDevice_pVChannel(QScriptContext *context, QScriptEngine *engine)
 {
-	ModbusRTUDevice *self = getself<ModbusRTUDevice *>(context);
-	QScriptValue object;
-	if(self)
-	{
-		if(self->channels.size() > 0)
-		{
-			object = engine->newQObject(self->channels.at(0));
-			setChannelProperties(object, engine);
-		}
-	}
-	return object;
+    ModbusRTUDevice *self = getself<ModbusRTUDevice *>(context);
+    QScriptValue object;
+    if(self)
+    {
+        if(self->channels.size() > 0)
+        {
+            object = engine->newQObject(self->channels.at(0));
+            setChannelProperties(object, engine);
+        }
+    }
+    return object;
 }
 
 QScriptValue ModbusRTUDevice_sVChannel(QScriptContext *context, QScriptEngine *engine)
 {
-	ModbusRTUDevice *self = getself<ModbusRTUDevice *>(context);
-	QScriptValue object;
-	if(self)
-	{
-		if(self->channels.size() > 1)
-		{
-			object = engine->newQObject(self->channels.at(1));
-			setChannelProperties(object, engine);
-		}
-	}
-	return object;
+    ModbusRTUDevice *self = getself<ModbusRTUDevice *>(context);
+    QScriptValue object;
+    if(self)
+    {
+        if(self->channels.size() > 1)
+        {
+            object = engine->newQObject(self->channels.at(1));
+            setChannelProperties(object, engine);
+        }
+    }
+    return object;
 }
 
 @ These methods are set as properties when the object is created.
@@ -18414,9 +18414,9 @@ QScriptValue ModbusRTUDevice_sVChannel(QScriptContext *context, QScriptEngine *e
 @<Functions for scripting@>=
 void setModbusRTUDeviceProperties(QScriptValue value, QScriptEngine *engine)
 {
-	setQObjectProperties(value, engine);
-	value.setProperty("pVChannel", engine->newFunction(ModbusRTUDevice_pVChannel));
-	value.setProperty("sVChannel", engine->newFunction(ModbusRTUDevice_sVChannel));
+    setQObjectProperties(value, engine);
+    value.setProperty("pVChannel", engine->newFunction(ModbusRTUDevice_pVChannel));
+    value.setProperty("sVChannel", engine->newFunction(ModbusRTUDevice_sVChannel));
 }
 
 @* Modbus RTU device configuration widget.
@@ -18435,65 +18435,65 @@ after such a change.
 @<Class declarations@>=
 class ModbusConfigurator : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		Q_INVOKABLE@,@, ModbusConfigurator(DeviceTreeModel *model, const QModelIndex &index);@/
-	@[private slots@]:@/
-		void updatePort(const QString &newPort);
-		void updateBaudRate(const QString &newRate);
-		void updateParity(const QString &newParity);
-		void updateFlowControl(const QString &newFlow);
-		void updateStopBits(const QString &newStopBits);
-		void updateStation(int station);
-		void updateFixedDecimal(bool fixed);
-		void updateDecimalAddress(int address);
-		void updateDecimalPosition(int position);
-		void updateFixedUnit(bool fixed);
-		void updateUnitAddress(int address);
-		void updateValueForF(int value);
-		void updateValueForC(int value);
-		void updateUnit(const QString &newUnit);
-		void updatePVAddress(int address);
-		void updateSVEnabled(bool enabled);
-		void updateSVReadAddress(int address);
-		void updateDeviceLimit(bool query);
-		void updateSVLowerAddress(int address);
-		void updateSVUpperAddress(int address);
-		void updateSVLower(double value);
-		void updateSVUpper(double value);
-		void updateSVWritable(bool canWriteSV);
-		void updateSVWriteAddress(int address);
-		void updatePVColumnName(const QString &name);
-		void updateSVColumnName(const QString &name);
-		void updatePVHidden(bool hidden);
-		void updateSVHidden(bool hidden);@/
-	private:@/
-		PortSelector *port;
-		BaudSelector *baud;
-		ParitySelector *parity;
-		FlowSelector *flow;
-		StopSelector *stop;
-		QSpinBox *station;
-		QCheckBox *decimalQuery;
-		ShortHexSpinBox *decimalAddress;
-		QSpinBox *decimalPosition;
-		QCheckBox *unitQuery;
-		ShortHexSpinBox *unitAddress;
-		QSpinBox *valueF;
-		QSpinBox *valueC;
-		QComboBox *fixedUnit;
-		ShortHexSpinBox *pVAddress;
-		QCheckBox *sVEnabled;
-		ShortHexSpinBox *sVReadAddress;
-		QCheckBox *deviceLimit;
-		ShortHexSpinBox *sVLowerAddr;
-		ShortHexSpinBox *sVUpperAddr;
-		QDoubleSpinBox *sVLower;
-		QDoubleSpinBox *sVUpper;
-		QCheckBox *sVWritable;
-		ShortHexSpinBox *sVOutputAddr;
-		QLineEdit *pVColumnName;
-		QLineEdit *sVColumnName;
+    @[Q_OBJECT@]@;
+    public:@/
+        Q_INVOKABLE@,@, ModbusConfigurator(DeviceTreeModel *model, const QModelIndex &index);@/
+    @[private slots@]:@/
+        void updatePort(const QString &newPort);
+        void updateBaudRate(const QString &newRate);
+        void updateParity(const QString &newParity);
+        void updateFlowControl(const QString &newFlow);
+        void updateStopBits(const QString &newStopBits);
+        void updateStation(int station);
+        void updateFixedDecimal(bool fixed);
+        void updateDecimalAddress(int address);
+        void updateDecimalPosition(int position);
+        void updateFixedUnit(bool fixed);
+        void updateUnitAddress(int address);
+        void updateValueForF(int value);
+        void updateValueForC(int value);
+        void updateUnit(const QString &newUnit);
+        void updatePVAddress(int address);
+        void updateSVEnabled(bool enabled);
+        void updateSVReadAddress(int address);
+        void updateDeviceLimit(bool query);
+        void updateSVLowerAddress(int address);
+        void updateSVUpperAddress(int address);
+        void updateSVLower(double value);
+        void updateSVUpper(double value);
+        void updateSVWritable(bool canWriteSV);
+        void updateSVWriteAddress(int address);
+        void updatePVColumnName(const QString &name);
+        void updateSVColumnName(const QString &name);
+        void updatePVHidden(bool hidden);
+        void updateSVHidden(bool hidden);@/
+    private:@/
+        PortSelector *port;
+        BaudSelector *baud;
+        ParitySelector *parity;
+        FlowSelector *flow;
+        StopSelector *stop;
+        QSpinBox *station;
+        QCheckBox *decimalQuery;
+        ShortHexSpinBox *decimalAddress;
+        QSpinBox *decimalPosition;
+        QCheckBox *unitQuery;
+        ShortHexSpinBox *unitAddress;
+        QSpinBox *valueF;
+        QSpinBox *valueC;
+        QComboBox *fixedUnit;
+        ShortHexSpinBox *pVAddress;
+        QCheckBox *sVEnabled;
+        ShortHexSpinBox *sVReadAddress;
+        QCheckBox *deviceLimit;
+        ShortHexSpinBox *sVLowerAddr;
+        ShortHexSpinBox *sVUpperAddr;
+        QDoubleSpinBox *sVLower;
+        QDoubleSpinBox *sVUpper;
+        QCheckBox *sVWritable;
+        ShortHexSpinBox *sVOutputAddr;
+        QLineEdit *pVColumnName;
+        QLineEdit *sVColumnName;
 };
 
 @ Implementation.
@@ -18501,453 +18501,453 @@ class ModbusConfigurator : public BasicDeviceConfigurationWidget
 @<ModbusConfigurator implementation@>=
 ModbusConfigurator::ModbusConfigurator(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
-	port(new PortSelector), baud(new BaudSelector), parity(new ParitySelector),
-	flow(new FlowSelector), stop(new StopSelector), station(new QSpinBox),
-	decimalQuery(new QCheckBox(tr("Enable"))),
-	decimalAddress(new ShortHexSpinBox), decimalPosition(new QSpinBox),
-	unitQuery(new QCheckBox(tr("Enable"))),
-	unitAddress(new ShortHexSpinBox), valueF(new QSpinBox),
-	valueC(new QSpinBox), fixedUnit(new QComboBox),
-	pVAddress(new ShortHexSpinBox),
-	sVEnabled(new QCheckBox(tr("Enable"))),
-	sVReadAddress(new ShortHexSpinBox),
-	deviceLimit(new QCheckBox(tr("Enable"))),
-	sVLowerAddr(new ShortHexSpinBox), sVUpperAddr(new ShortHexSpinBox),
-	sVLower(new QDoubleSpinBox), sVUpper(new QDoubleSpinBox),
-	sVWritable(new QCheckBox(tr("Enable"))),
-	sVOutputAddr(new ShortHexSpinBox),
-	pVColumnName(new QLineEdit), sVColumnName(new QLineEdit)
+    port(new PortSelector), baud(new BaudSelector), parity(new ParitySelector),
+    flow(new FlowSelector), stop(new StopSelector), station(new QSpinBox),
+    decimalQuery(new QCheckBox(tr("Enable"))),
+    decimalAddress(new ShortHexSpinBox), decimalPosition(new QSpinBox),
+    unitQuery(new QCheckBox(tr("Enable"))),
+    unitAddress(new ShortHexSpinBox), valueF(new QSpinBox),
+    valueC(new QSpinBox), fixedUnit(new QComboBox),
+    pVAddress(new ShortHexSpinBox),
+    sVEnabled(new QCheckBox(tr("Enable"))),
+    sVReadAddress(new ShortHexSpinBox),
+    deviceLimit(new QCheckBox(tr("Enable"))),
+    sVLowerAddr(new ShortHexSpinBox), sVUpperAddr(new ShortHexSpinBox),
+    sVLower(new QDoubleSpinBox), sVUpper(new QDoubleSpinBox),
+    sVWritable(new QCheckBox(tr("Enable"))),
+    sVOutputAddr(new ShortHexSpinBox),
+    pVColumnName(new QLineEdit), sVColumnName(new QLineEdit)
 {
-	QHBoxLayout *layout = new QHBoxLayout;
-	QWidget *form = new QWidget;
-	QHBoxLayout *masterLayout = new QHBoxLayout;
-	QVBoxLayout *portAndDeviceLayout = new QVBoxLayout;
-	QVBoxLayout *seriesLayout = new QVBoxLayout;
-	QFormLayout *serialSection = new QFormLayout;
-	serialSection->addRow(QString(tr("Port:")), port);
-	serialSection->addRow(QString(tr("Baud rate:")), baud);
-	serialSection->addRow(QString(tr("Parity:")), parity);
-	serialSection->addRow(QString(tr("Flow control:")), flow);
-	serialSection->addRow(QString(tr("Stop bits:")), stop);
-	QGroupBox *serialSectionBox = new QGroupBox(tr("Serial Port Configuration"));
-	serialSectionBox->setLayout(serialSection);
-	portAndDeviceLayout->addWidget(serialSectionBox);
-	QFormLayout *deviceSection = new QFormLayout;
-	station->setMinimum(1);
-	station->setMaximum(255);
-	decimalPosition->setMinimum(0);
-	decimalPosition->setMaximum(9);
-	valueF->setMinimum(0);
-	valueF->setMaximum(0xFFFF);
-	valueC->setMinimum(0);
-	valueC->setMaximum(0xFFFF);
-	fixedUnit->addItem(tr("Fahrenheit"), QVariant(QString("F")));
-	fixedUnit->addItem(tr("Celsius"), QVariant(QString("C")));
-	deviceSection->addRow(tr("Station:"), station);
-	deviceSection->addRow(tr("Decimal position from device:"), decimalQuery);
-	deviceSection->addRow(tr("Decimal position relative address:"), decimalAddress);
-	deviceSection->addRow(tr("Fixed decimal position:"), decimalPosition);
-	deviceSection->addRow(tr("Measurement unit from device:"), unitQuery);
-	deviceSection->addRow(tr("Current unit relative address:"), unitAddress);
-	deviceSection->addRow(tr("Value for Fahrenheit:"), valueF);
-	deviceSection->addRow(tr("Value for Celsius:"), valueC);
-	deviceSection->addRow(tr("Fixed unit:"), fixedUnit);
-	QGroupBox *deviceSectionBox = new QGroupBox(tr("Device Configuration"));
-	deviceSectionBox->setLayout(deviceSection);
-	portAndDeviceLayout->addWidget(deviceSectionBox);
-	QFormLayout *pVSection = new QFormLayout;
-	pVSection->addRow(tr("Value relative address:"), pVAddress);
-	pVSection->addRow(tr("PV column name:"), pVColumnName);
-	QCheckBox *pVHideBox = new QCheckBox(tr("Hide this channel"));
-	pVSection->addRow(pVHideBox);
-	QGroupBox *processValueBox = new QGroupBox(tr("Process Value"));
-	processValueBox->setLayout(pVSection);
-	seriesLayout->addWidget(processValueBox);
-	QFormLayout *sVSection = new QFormLayout;
-	sVLower->setDecimals(1);
-	sVLower->setMinimum(0.0);
-	sVLower->setMaximum(999.9);
-	sVUpper->setDecimals(1);
-	sVUpper->setMinimum(0.0);
-	sVUpper->setMaximum(999.9);
-	sVSection->addRow(tr("Set value:"), sVEnabled);
-	sVSection->addRow(tr("Read relative address:"), sVReadAddress);
-	sVSection->addRow(tr("SV column name:"), sVColumnName);
-	sVSection->addRow(tr("Limits from device:"), deviceLimit);
-	sVSection->addRow(tr("Lower limit relative address:"), sVLowerAddr);
-	sVSection->addRow(tr("Upper limit relative address:"), sVUpperAddr);
-	sVSection->addRow(tr("Lower limit:"), sVLower);
-	sVSection->addRow(tr("Upper limit:"), sVUpper);
-	sVSection->addRow(tr("Output set value:"), sVWritable);
-	sVSection->addRow(tr("Output relative address:"), sVOutputAddr);
-	QCheckBox *sVHideBox = new QCheckBox(tr("Hide this channel"));
-	sVSection->addRow(sVHideBox);
-	QGroupBox *setValueBox = new QGroupBox(tr("Set Value"));
-	setValueBox->setLayout(sVSection);
-	seriesLayout->addWidget(setValueBox);
-	masterLayout->addLayout(portAndDeviceLayout);
-	masterLayout->addLayout(seriesLayout);
-	form->setLayout(masterLayout);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "port")
-		{
-			QString portname = node.attribute("value");
-			int idx = port->findText(portname);
-			if(idx >= 0)
-			{
-				port->setCurrentIndex(idx);
-			}
-			else
-			{
-				port->addItem(portname);
-			}
-		}
-		else if(node.attribute("name") == "baud")
-		{
-			baud->setCurrentIndex(baud->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "parity")
-		{
-			parity->setCurrentIndex(parity->findData(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "flow")
-		{
-			flow->setCurrentIndex(flow->findData(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "stop")
-		{
-			stop->setCurrentIndex(stop->findData(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "station")
-		{
-			station->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "decimalQuery")
-		{
-			if(node.attribute("value") == "true")
-			{
-				decimalQuery->setChecked(true);
-			}
-			else
-			{
-				decimalQuery->setChecked(false);
-			}
-		}
-		else if(node.attribute("name") == "decimalAddress")
-		{
-			decimalAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "decimalPosition")
-		{
-			decimalPosition->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "unitQuery")
-		{
-			if(node.attribute("value") == "true")
-			{
-				unitQuery->setChecked(true);
-			}
-			else
-			{
-				unitQuery->setChecked(false);
-			}
-		}
-		else if(node.attribute("name") == "unitAddress")
-		{
-			unitAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "valueF")
-		{
-			valueF->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "valueC")
-		{
-			valueC->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "fixedUnit")
-		{
-			fixedUnit->setCurrentIndex(fixedUnit->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "pVAddress")
-		{
-			pVAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "sVEnabled")
-		{
-			if(node.attribute("value") == "true")
-			{
-				sVEnabled->setChecked(true);
-			}
-			else
-			{
-				sVEnabled->setChecked(false);
-			}
-		}
-		else if(node.attribute("name") == "sVReadAddress")
-		{
-			sVReadAddress->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "deviceLimit")
-		{
-			if(node.attribute("value") == "true")
-			{
-				deviceLimit->setChecked(true);
-			}
-			else
-			{
-				deviceLimit->setChecked(false);
-			}
-		}
-		else if(node.attribute("name") == "sVLowerAddr")
-		{
-			sVLowerAddr->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "sVUpperAddr")
-		{
-			sVUpperAddr->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "sVLower")
-		{
-			sVLower->setValue(node.attribute("value").toDouble());
-		}
-		else if(node.attribute("name") == "sVUpper")
-		{
-			sVUpper->setValue(node.attribute("value").toDouble());
-		}
-		else if(node.attribute("name") == "sVWritable")
-		{
-			if(node.attribute("value") == "true")
-			{
-				sVWritable->setChecked(true);
-			}
-			else
-			{
-				sVWritable->setChecked(false);
-			}
-		}
-		else if(node.attribute("name") == "sVOutputAddr")
-		{
-			sVOutputAddr->setValue(node.attribute("value").toInt());
-		}
-		else if(node.attribute("name") == "pvcolname")
-		{
-			pVColumnName->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "svcolname")
-		{
-			sVColumnName->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "pvhidden")
-		{
-			pVHideBox->setChecked(node.attribute("value") == "true");
-		}
-		else if(node.attribute("name") == "svhidden")
-		{
-			sVHideBox->setChecked(node.attribute("value") == "true");
-		}
-	}
-	updatePort(port->currentText());
-	updateBaudRate(baud->currentText());
-	updateParity(parity->itemData(parity->currentIndex()).toString());
-	updateFlowControl(flow->itemData(flow->currentIndex()).toString());
-	updateStopBits(stop->itemData(stop->currentIndex()).toString());
-	updateStation(station->value());
-	updateFixedDecimal(decimalQuery->isChecked());
-	updateDecimalAddress(decimalAddress->value());
-	updateDecimalPosition(decimalPosition->value());
-	updateFixedUnit(unitQuery->isChecked());
-	updateUnitAddress(unitAddress->value());
-	updateValueForF(valueF->value());
-	updateValueForC(valueC->value());
-	updateUnit(fixedUnit->currentText());
-	updatePVAddress(pVAddress->value());
-	updateSVEnabled(sVEnabled->isChecked());
-	updateSVReadAddress(sVReadAddress->value());
-	updateDeviceLimit(deviceLimit->isChecked());
-	updateSVLowerAddress(sVLowerAddr->value());
-	updateSVUpperAddress(sVUpperAddr->value());
-	updateSVLower(sVLower->value());
-	updateSVUpper(sVUpper->value());
-	updateSVWritable(sVWritable->isChecked());
-	updateSVWriteAddress(sVOutputAddr->value());
-	updatePVColumnName(pVColumnName->text());
-	updateSVColumnName(sVColumnName->text());
-	updatePVHidden(pVHideBox->isChecked());
-	updateSVHidden(sVHideBox->isChecked());
-	connect(port, SIGNAL(currentIndexChanged(QString)), this, SLOT(updatePort(QString)));
-	connect(port, SIGNAL(editTextChanged(QString)), this, SLOT(updatePort(QString)));
-	connect(baud, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateBaudRate(QString)));
-	connect(parity, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateParity(QString)));
-	connect(flow, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateFlowControl(QString)));
-	connect(stop, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateStopBits(QString)));
-	connect(station, SIGNAL(valueChanged(int)), this, SLOT(updateStation(int)));
-	connect(decimalQuery, SIGNAL(toggled(bool)), this, SLOT(updateFixedDecimal(bool)));
-	connect(decimalAddress, SIGNAL(valueChanged(int)), this, SLOT(updateDecimalAddress(int)));
-	connect(decimalPosition, SIGNAL(valueChanged(int)), this, SLOT(updateDecimalPosition(int)));
-	connect(unitQuery, SIGNAL(toggled(bool)), this, SLOT(updateFixedUnit(bool)));
-	connect(unitAddress, SIGNAL(valueChanged(int)), this, SLOT(updateUnitAddress(int)));
-	connect(valueF, SIGNAL(valueChanged(int)), this, SLOT(updateValueForF(int)));
-	connect(valueC, SIGNAL(valueChanged(int)), this, SLOT(updateValueForC(int)));
-	connect(fixedUnit, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateUnit(QString)));
-	connect(pVAddress, SIGNAL(valueChanged(int)), this, SLOT(updatePVAddress(int)));
-	connect(sVEnabled, SIGNAL(toggled(bool)), this, SLOT(updateSVEnabled(bool)));
-	connect(sVReadAddress, SIGNAL(valueChanged(int)), this, SLOT(updateSVReadAddress(int)));
-	connect(deviceLimit, SIGNAL(toggled(bool)), this, SLOT(updateDeviceLimit(bool)));
-	connect(sVLowerAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVLowerAddress(int)));
-	connect(sVUpperAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVUpperAddress(int)));
-	connect(sVLower, SIGNAL(valueChanged(double)), this, SLOT(updateSVLower(double)));
-	connect(sVUpper, SIGNAL(valueChanged(double)), this, SLOT(updateSVUpper(double)));
-	connect(sVWritable, SIGNAL(toggled(bool)), this, SLOT(updateSVWritable(bool)));
-	connect(sVOutputAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVWriteAddress(int)));
-	connect(pVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updatePVColumnName(QString)));
-	connect(sVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updateSVColumnName(QString)));
-	connect(pVHideBox, SIGNAL(toggled(bool)), this, SLOT(updatePVHidden(bool)));
-	connect(sVHideBox, SIGNAL(toggled(bool)), this, SLOT(updateSVHidden(bool)));
-	layout->addWidget(form);
-	setLayout(layout);
+    QHBoxLayout *layout = new QHBoxLayout;
+    QWidget *form = new QWidget;
+    QHBoxLayout *masterLayout = new QHBoxLayout;
+    QVBoxLayout *portAndDeviceLayout = new QVBoxLayout;
+    QVBoxLayout *seriesLayout = new QVBoxLayout;
+    QFormLayout *serialSection = new QFormLayout;
+    serialSection->addRow(QString(tr("Port:")), port);
+    serialSection->addRow(QString(tr("Baud rate:")), baud);
+    serialSection->addRow(QString(tr("Parity:")), parity);
+    serialSection->addRow(QString(tr("Flow control:")), flow);
+    serialSection->addRow(QString(tr("Stop bits:")), stop);
+    QGroupBox *serialSectionBox = new QGroupBox(tr("Serial Port Configuration"));
+    serialSectionBox->setLayout(serialSection);
+    portAndDeviceLayout->addWidget(serialSectionBox);
+    QFormLayout *deviceSection = new QFormLayout;
+    station->setMinimum(1);
+    station->setMaximum(255);
+    decimalPosition->setMinimum(0);
+    decimalPosition->setMaximum(9);
+    valueF->setMinimum(0);
+    valueF->setMaximum(0xFFFF);
+    valueC->setMinimum(0);
+    valueC->setMaximum(0xFFFF);
+    fixedUnit->addItem(tr("Fahrenheit"), QVariant(QString("F")));
+    fixedUnit->addItem(tr("Celsius"), QVariant(QString("C")));
+    deviceSection->addRow(tr("Station:"), station);
+    deviceSection->addRow(tr("Decimal position from device:"), decimalQuery);
+    deviceSection->addRow(tr("Decimal position relative address:"), decimalAddress);
+    deviceSection->addRow(tr("Fixed decimal position:"), decimalPosition);
+    deviceSection->addRow(tr("Measurement unit from device:"), unitQuery);
+    deviceSection->addRow(tr("Current unit relative address:"), unitAddress);
+    deviceSection->addRow(tr("Value for Fahrenheit:"), valueF);
+    deviceSection->addRow(tr("Value for Celsius:"), valueC);
+    deviceSection->addRow(tr("Fixed unit:"), fixedUnit);
+    QGroupBox *deviceSectionBox = new QGroupBox(tr("Device Configuration"));
+    deviceSectionBox->setLayout(deviceSection);
+    portAndDeviceLayout->addWidget(deviceSectionBox);
+    QFormLayout *pVSection = new QFormLayout;
+    pVSection->addRow(tr("Value relative address:"), pVAddress);
+    pVSection->addRow(tr("PV column name:"), pVColumnName);
+    QCheckBox *pVHideBox = new QCheckBox(tr("Hide this channel"));
+    pVSection->addRow(pVHideBox);
+    QGroupBox *processValueBox = new QGroupBox(tr("Process Value"));
+    processValueBox->setLayout(pVSection);
+    seriesLayout->addWidget(processValueBox);
+    QFormLayout *sVSection = new QFormLayout;
+    sVLower->setDecimals(1);
+    sVLower->setMinimum(0.0);
+    sVLower->setMaximum(999.9);
+    sVUpper->setDecimals(1);
+    sVUpper->setMinimum(0.0);
+    sVUpper->setMaximum(999.9);
+    sVSection->addRow(tr("Set value:"), sVEnabled);
+    sVSection->addRow(tr("Read relative address:"), sVReadAddress);
+    sVSection->addRow(tr("SV column name:"), sVColumnName);
+    sVSection->addRow(tr("Limits from device:"), deviceLimit);
+    sVSection->addRow(tr("Lower limit relative address:"), sVLowerAddr);
+    sVSection->addRow(tr("Upper limit relative address:"), sVUpperAddr);
+    sVSection->addRow(tr("Lower limit:"), sVLower);
+    sVSection->addRow(tr("Upper limit:"), sVUpper);
+    sVSection->addRow(tr("Output set value:"), sVWritable);
+    sVSection->addRow(tr("Output relative address:"), sVOutputAddr);
+    QCheckBox *sVHideBox = new QCheckBox(tr("Hide this channel"));
+    sVSection->addRow(sVHideBox);
+    QGroupBox *setValueBox = new QGroupBox(tr("Set Value"));
+    setValueBox->setLayout(sVSection);
+    seriesLayout->addWidget(setValueBox);
+    masterLayout->addLayout(portAndDeviceLayout);
+    masterLayout->addLayout(seriesLayout);
+    form->setLayout(masterLayout);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "port")
+        {
+            QString portname = node.attribute("value");
+            int idx = port->findText(portname);
+            if(idx >= 0)
+            {
+                port->setCurrentIndex(idx);
+            }
+            else
+            {
+                port->addItem(portname);
+            }
+        }
+        else if(node.attribute("name") == "baud")
+        {
+            baud->setCurrentIndex(baud->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "parity")
+        {
+            parity->setCurrentIndex(parity->findData(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "flow")
+        {
+            flow->setCurrentIndex(flow->findData(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "stop")
+        {
+            stop->setCurrentIndex(stop->findData(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "station")
+        {
+            station->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "decimalQuery")
+        {
+            if(node.attribute("value") == "true")
+            {
+                decimalQuery->setChecked(true);
+            }
+            else
+            {
+                decimalQuery->setChecked(false);
+            }
+        }
+        else if(node.attribute("name") == "decimalAddress")
+        {
+            decimalAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "decimalPosition")
+        {
+            decimalPosition->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "unitQuery")
+        {
+            if(node.attribute("value") == "true")
+            {
+                unitQuery->setChecked(true);
+            }
+            else
+            {
+                unitQuery->setChecked(false);
+            }
+        }
+        else if(node.attribute("name") == "unitAddress")
+        {
+            unitAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "valueF")
+        {
+            valueF->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "valueC")
+        {
+            valueC->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "fixedUnit")
+        {
+            fixedUnit->setCurrentIndex(fixedUnit->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "pVAddress")
+        {
+            pVAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "sVEnabled")
+        {
+            if(node.attribute("value") == "true")
+            {
+                sVEnabled->setChecked(true);
+            }
+            else
+            {
+                sVEnabled->setChecked(false);
+            }
+        }
+        else if(node.attribute("name") == "sVReadAddress")
+        {
+            sVReadAddress->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "deviceLimit")
+        {
+            if(node.attribute("value") == "true")
+            {
+                deviceLimit->setChecked(true);
+            }
+            else
+            {
+                deviceLimit->setChecked(false);
+            }
+        }
+        else if(node.attribute("name") == "sVLowerAddr")
+        {
+            sVLowerAddr->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "sVUpperAddr")
+        {
+            sVUpperAddr->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "sVLower")
+        {
+            sVLower->setValue(node.attribute("value").toDouble());
+        }
+        else if(node.attribute("name") == "sVUpper")
+        {
+            sVUpper->setValue(node.attribute("value").toDouble());
+        }
+        else if(node.attribute("name") == "sVWritable")
+        {
+            if(node.attribute("value") == "true")
+            {
+                sVWritable->setChecked(true);
+            }
+            else
+            {
+                sVWritable->setChecked(false);
+            }
+        }
+        else if(node.attribute("name") == "sVOutputAddr")
+        {
+            sVOutputAddr->setValue(node.attribute("value").toInt());
+        }
+        else if(node.attribute("name") == "pvcolname")
+        {
+            pVColumnName->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "svcolname")
+        {
+            sVColumnName->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "pvhidden")
+        {
+            pVHideBox->setChecked(node.attribute("value") == "true");
+        }
+        else if(node.attribute("name") == "svhidden")
+        {
+            sVHideBox->setChecked(node.attribute("value") == "true");
+        }
+    }
+    updatePort(port->currentText());
+    updateBaudRate(baud->currentText());
+    updateParity(parity->itemData(parity->currentIndex()).toString());
+    updateFlowControl(flow->itemData(flow->currentIndex()).toString());
+    updateStopBits(stop->itemData(stop->currentIndex()).toString());
+    updateStation(station->value());
+    updateFixedDecimal(decimalQuery->isChecked());
+    updateDecimalAddress(decimalAddress->value());
+    updateDecimalPosition(decimalPosition->value());
+    updateFixedUnit(unitQuery->isChecked());
+    updateUnitAddress(unitAddress->value());
+    updateValueForF(valueF->value());
+    updateValueForC(valueC->value());
+    updateUnit(fixedUnit->currentText());
+    updatePVAddress(pVAddress->value());
+    updateSVEnabled(sVEnabled->isChecked());
+    updateSVReadAddress(sVReadAddress->value());
+    updateDeviceLimit(deviceLimit->isChecked());
+    updateSVLowerAddress(sVLowerAddr->value());
+    updateSVUpperAddress(sVUpperAddr->value());
+    updateSVLower(sVLower->value());
+    updateSVUpper(sVUpper->value());
+    updateSVWritable(sVWritable->isChecked());
+    updateSVWriteAddress(sVOutputAddr->value());
+    updatePVColumnName(pVColumnName->text());
+    updateSVColumnName(sVColumnName->text());
+    updatePVHidden(pVHideBox->isChecked());
+    updateSVHidden(sVHideBox->isChecked());
+    connect(port, SIGNAL(currentIndexChanged(QString)), this, SLOT(updatePort(QString)));
+    connect(port, SIGNAL(editTextChanged(QString)), this, SLOT(updatePort(QString)));
+    connect(baud, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateBaudRate(QString)));
+    connect(parity, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateParity(QString)));
+    connect(flow, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateFlowControl(QString)));
+    connect(stop, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateStopBits(QString)));
+    connect(station, SIGNAL(valueChanged(int)), this, SLOT(updateStation(int)));
+    connect(decimalQuery, SIGNAL(toggled(bool)), this, SLOT(updateFixedDecimal(bool)));
+    connect(decimalAddress, SIGNAL(valueChanged(int)), this, SLOT(updateDecimalAddress(int)));
+    connect(decimalPosition, SIGNAL(valueChanged(int)), this, SLOT(updateDecimalPosition(int)));
+    connect(unitQuery, SIGNAL(toggled(bool)), this, SLOT(updateFixedUnit(bool)));
+    connect(unitAddress, SIGNAL(valueChanged(int)), this, SLOT(updateUnitAddress(int)));
+    connect(valueF, SIGNAL(valueChanged(int)), this, SLOT(updateValueForF(int)));
+    connect(valueC, SIGNAL(valueChanged(int)), this, SLOT(updateValueForC(int)));
+    connect(fixedUnit, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateUnit(QString)));
+    connect(pVAddress, SIGNAL(valueChanged(int)), this, SLOT(updatePVAddress(int)));
+    connect(sVEnabled, SIGNAL(toggled(bool)), this, SLOT(updateSVEnabled(bool)));
+    connect(sVReadAddress, SIGNAL(valueChanged(int)), this, SLOT(updateSVReadAddress(int)));
+    connect(deviceLimit, SIGNAL(toggled(bool)), this, SLOT(updateDeviceLimit(bool)));
+    connect(sVLowerAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVLowerAddress(int)));
+    connect(sVUpperAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVUpperAddress(int)));
+    connect(sVLower, SIGNAL(valueChanged(double)), this, SLOT(updateSVLower(double)));
+    connect(sVUpper, SIGNAL(valueChanged(double)), this, SLOT(updateSVUpper(double)));
+    connect(sVWritable, SIGNAL(toggled(bool)), this, SLOT(updateSVWritable(bool)));
+    connect(sVOutputAddr, SIGNAL(valueChanged(int)), this, SLOT(updateSVWriteAddress(int)));
+    connect(pVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updatePVColumnName(QString)));
+    connect(sVColumnName, SIGNAL(textEdited(QString)), this, SLOT(updateSVColumnName(QString)));
+    connect(pVHideBox, SIGNAL(toggled(bool)), this, SLOT(updatePVHidden(bool)));
+    connect(sVHideBox, SIGNAL(toggled(bool)), this, SLOT(updateSVHidden(bool)));
+    layout->addWidget(form);
+    setLayout(layout);
 }
 
 void ModbusConfigurator::updatePort(const QString &newPort)
 {
-	updateAttribute("port", newPort);
+    updateAttribute("port", newPort);
 }
 
 void ModbusConfigurator::updateBaudRate(const QString &newRate)
 {
-	updateAttribute("baud", newRate);
+    updateAttribute("baud", newRate);
 }
 
 void ModbusConfigurator::updateParity(const QString &)
 {
-	updateAttribute("parity", parity->itemData(parity->currentIndex()).toString());
+    updateAttribute("parity", parity->itemData(parity->currentIndex()).toString());
 }
 
 void ModbusConfigurator::updateFlowControl(const QString &)
 {
-	updateAttribute("flow", flow->itemData(flow->currentIndex()).toString());
+    updateAttribute("flow", flow->itemData(flow->currentIndex()).toString());
 }
 
 void ModbusConfigurator::updateStopBits(const QString &)
 {
-	updateAttribute("stop", stop->itemData(stop->currentIndex()).toString());
+    updateAttribute("stop", stop->itemData(stop->currentIndex()).toString());
 }
 
 void ModbusConfigurator::updateStation(int station)
 {
-	updateAttribute("station", QString("%1").arg(station));
+    updateAttribute("station", QString("%1").arg(station));
 }
 
 void ModbusConfigurator::updateFixedDecimal(bool fixed)
 {
-	updateAttribute("decimalQuery", fixed ? "true" : "false");
+    updateAttribute("decimalQuery", fixed ? "true" : "false");
 }
 
 void ModbusConfigurator::updateDecimalAddress(int address)
 {
-	updateAttribute("decimalAddress", QString("%1").arg(address));
+    updateAttribute("decimalAddress", QString("%1").arg(address));
 }
 
 void ModbusConfigurator::updateDecimalPosition(int position)
 {
-	updateAttribute("decimalPosition", QString("%1").arg(position));
+    updateAttribute("decimalPosition", QString("%1").arg(position));
 }
 
 void ModbusConfigurator::updateFixedUnit(bool fixed)
 {
-	updateAttribute("unitQuery", fixed ? "true" : "false");
+    updateAttribute("unitQuery", fixed ? "true" : "false");
 }
 
 void ModbusConfigurator::updateUnitAddress(int address)
 {
-	updateAttribute("unitAddress", QString("%1").arg(address));
+    updateAttribute("unitAddress", QString("%1").arg(address));
 }
 
 void ModbusConfigurator::updateValueForF(int value)
 {
-	updateAttribute("valueF", QString("%1").arg(value));
+    updateAttribute("valueF", QString("%1").arg(value));
 }
 
 void ModbusConfigurator::updateValueForC(int value)
 {
-	updateAttribute("valueC", QString("%1").arg(value));
+    updateAttribute("valueC", QString("%1").arg(value));
 }
 
 void ModbusConfigurator::updateUnit(const QString &newUnit)
 {
-	updateAttribute("fixedUnit", newUnit);
+    updateAttribute("fixedUnit", newUnit);
 }
 
 void ModbusConfigurator::updatePVAddress(int address)
 {
-	updateAttribute("pVAddress", QString("%1").arg(address));
+    updateAttribute("pVAddress", QString("%1").arg(address));
 }
 
 void ModbusConfigurator::updateSVEnabled(bool enabled)
 {
-	updateAttribute("sVEnabled", enabled ? "true" : "false");
+    updateAttribute("sVEnabled", enabled ? "true" : "false");
 }
 
 void ModbusConfigurator::updateSVReadAddress(int address)
 {
-	updateAttribute("sVReadAddress", QString("%1").arg(address));
+    updateAttribute("sVReadAddress", QString("%1").arg(address));
 }
 
 void ModbusConfigurator::updateDeviceLimit(bool query)
 {
-	updateAttribute("deviceLimit", query ? "true" : "false");
+    updateAttribute("deviceLimit", query ? "true" : "false");
 }
 
 void ModbusConfigurator::updateSVLowerAddress(int address)
 {
-	updateAttribute("sVLowerAddr", QString("%1").arg(address));
+    updateAttribute("sVLowerAddr", QString("%1").arg(address));
 }
 
 void ModbusConfigurator::updateSVUpperAddress(int address)
 {
-	updateAttribute("sVUpperAddr", QString("%1").arg(address));
+    updateAttribute("sVUpperAddr", QString("%1").arg(address));
 }
 
 void ModbusConfigurator::updateSVLower(double value)
 {
-	updateAttribute("sVLower", QString("%1").arg(value));
+    updateAttribute("sVLower", QString("%1").arg(value));
 }
 
 void ModbusConfigurator::updateSVUpper(double value)
 {
-	updateAttribute("sVUpper", QString("%1").arg(value));
+    updateAttribute("sVUpper", QString("%1").arg(value));
 }
 
 void ModbusConfigurator::updateSVWritable(bool canWriteSV)
 {
-	updateAttribute("sVWritable", canWriteSV ? "true" : "false");
+    updateAttribute("sVWritable", canWriteSV ? "true" : "false");
 }
 
 void ModbusConfigurator::updateSVWriteAddress(int address)
 {
-	updateAttribute("sVOutputAddr", QString("%1").arg(address));
+    updateAttribute("sVOutputAddr", QString("%1").arg(address));
 }
 
 void ModbusConfigurator::updatePVColumnName(const QString &name)
 {
-	updateAttribute("pvcolname", name);
+    updateAttribute("pvcolname", name);
 }
 
 void ModbusConfigurator::updateSVColumnName(const QString &name)
 {
-	updateAttribute("svcolname", name);
+    updateAttribute("svcolname", name);
 }
 
 void ModbusConfigurator::updatePVHidden(bool hidden)
 {
-	updateAttribute("pvhidden", hidden ? "true" : "false");
+    updateAttribute("pvhidden", hidden ? "true" : "false");
 }
 
 void ModbusConfigurator::updateSVHidden(bool hidden)
 {
-	updateAttribute("svhidden", hidden ? "true" : "false");
+    updateAttribute("svhidden", hidden ? "true" : "false");
 }
 
 @ This is registered with the configuration system.
@@ -18973,16 +18973,16 @@ logging view.
 @<Class declarations@>=
 class LinearSplineInterpolationConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@/
-	public:@/
-		@[Q_INVOKABLE@]@, LinearSplineInterpolationConfWidget(DeviceTreeModel *model,
-		                                                      const QModelIndex &index);
-	@[private slots@]:@/
-		void updateSourceColumn(const QString &source);
-		void updateDestinationColumn(const QString &dest);
-		void updateKnots();
-	private:@/
-		SaltModel *tablemodel;
+    @[Q_OBJECT@]@/
+    public:@/
+        @[Q_INVOKABLE@]@, LinearSplineInterpolationConfWidget(DeviceTreeModel *model,
+                                                              const QModelIndex &index);
+    @[private slots@]:@/
+        void updateSourceColumn(const QString &source);
+        void updateDestinationColumn(const QString &dest);
+        void updateKnots();
+    private:@/
+        SaltModel *tablemodel;
 };
 
 @ This is configured by specifying a source column name, a destination column
@@ -18993,51 +18993,51 @@ the mapping data, we store each column of the table in its own attribute.
 LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index), tablemodel(new SaltModel(2))
 {
-	QFormLayout *layout = new QFormLayout;
-	QLineEdit *source = new QLineEdit;
-	layout->addRow(tr("Source column name:"), source);
-	QLineEdit *destination = new QLineEdit;
-	layout->addRow(tr("Destination column name:"), destination);
-	tablemodel->setHeaderData(0, Qt::Horizontal, "Input");
-	tablemodel->setHeaderData(1, Qt::Horizontal, "Output");
-	QTableView *mappingTable = new QTableView;
-	mappingTable->setModel(tablemodel);
-	NumericDelegate *delegate = new NumericDelegate;
-	mappingTable->setItemDelegate(delegate);
-	layout->addRow(tr("Mapping data:"), mappingTable);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "source")
-		{
-			source->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "destination")
-		{
-			destination->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "sourcevalues")
-		{
-			@<Convert numeric array literal to list@>@;
-			int column = 0;
-			@<Populate model column from list@>@;
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *source = new QLineEdit;
+    layout->addRow(tr("Source column name:"), source);
+    QLineEdit *destination = new QLineEdit;
+    layout->addRow(tr("Destination column name:"), destination);
+    tablemodel->setHeaderData(0, Qt::Horizontal, "Input");
+    tablemodel->setHeaderData(1, Qt::Horizontal, "Output");
+    QTableView *mappingTable = new QTableView;
+    mappingTable->setModel(tablemodel);
+    NumericDelegate *delegate = new NumericDelegate;
+    mappingTable->setItemDelegate(delegate);
+    layout->addRow(tr("Mapping data:"), mappingTable);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "source")
+        {
+            source->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "destination")
+        {
+            destination->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "sourcevalues")
+        {
+            @<Convert numeric array literal to list@>@;
+            int column = 0;
+            @<Populate model column from list@>@;
 
-		}
-		else if(node.attribute("name") == "destinationvalues")
-		{
-			@<Convert numeric array literal to list@>@;
-			int column = 1;
-			@<Populate model column from list@>@;
-		}
-	}
-	updateSourceColumn(source->text());
-	updateDestinationColumn(destination->text());
-	updateKnots();
-	connect(source, SIGNAL(textEdited(QString)), this, SLOT(updateSourceColumn(QString)));
-	connect(destination, SIGNAL(textEdited(QString)), this, SLOT(updateDestinationColumn(QString)));
-	connect(tablemodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
-	setLayout(layout);
+        }
+        else if(node.attribute("name") == "destinationvalues")
+        {
+            @<Convert numeric array literal to list@>@;
+            int column = 1;
+            @<Populate model column from list@>@;
+        }
+    }
+    updateSourceColumn(source->text());
+    updateDestinationColumn(destination->text());
+    updateKnots();
+    connect(source, SIGNAL(textEdited(QString)), this, SLOT(updateSourceColumn(QString)));
+    connect(destination, SIGNAL(textEdited(QString)), this, SLOT(updateDestinationColumn(QString)));
+    connect(tablemodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateKnots()));
+    setLayout(layout);
 }
 
 @ The saved data will have come from a previous call to
@@ -19048,8 +19048,8 @@ the start and end of the strings and split them back into separate elements.
 QString data = node.attribute("value");
 if(data.length() > 3)
 {
-	data.chop(2);
-	data = data.remove(0, 2);
+    data.chop(2);
+    data = data.remove(0, 2);
 }
 QStringList itemList = data.split(",");
 
@@ -19059,8 +19059,8 @@ model.
 @<Populate model column from list@>=
 for(int i = 0; i < itemList.size(); i++)
 {
-	tablemodel->setData(tablemodel->index(i, column),
-	               QVariant(itemList.at(i).toDouble()),
+    tablemodel->setData(tablemodel->index(i, column),
+                   QVariant(itemList.at(i).toDouble()),
                    Qt::DisplayRole);
 }
 
@@ -19070,18 +19070,18 @@ data with the current data.
 @<LinearSplineInterpolationConfWidget implementation@>=
 void LinearSplineInterpolationConfWidget::updateKnots()
 {
-	updateAttribute("sourcevalues", tablemodel->arrayLiteral(0, Qt::DisplayRole));
-	updateAttribute("destinationvalues", tablemodel->arrayLiteral(1, Qt::DisplayRole));
+    updateAttribute("sourcevalues", tablemodel->arrayLiteral(0, Qt::DisplayRole));
+    updateAttribute("destinationvalues", tablemodel->arrayLiteral(1, Qt::DisplayRole));
 }
 
 void LinearSplineInterpolationConfWidget::updateSourceColumn(const QString &source)
 {
-	updateAttribute("source", source);
+    updateAttribute("source", source);
 }
 
 void LinearSplineInterpolationConfWidget::updateDestinationColumn(const QString &dest)
 {
-	updateAttribute("destination", dest);
+    updateAttribute("destination", dest);
 }
 
 @ The widget is registered with the configuration system.
@@ -19097,15 +19097,15 @@ for matching purposes and the value to match.
 @<Class declarations@>=
 class TranslationConfWidget : public BasicDeviceConfigurationWidget
 {
-	@[Q_OBJECT@]@;
-	public:@/
-		@[Q_INVOKABLE@]@, TranslationConfWidget(DeviceTreeModel *model, const QModelIndex &index);
-	@[private slots@]:@/
-		void updateMatchingColumn(const QString &column);
-		void updateTemperature();
-	private:@/
-		QDoubleSpinBox *temperatureValue;
-		QComboBox *unitSelector;
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, TranslationConfWidget(DeviceTreeModel *model, const QModelIndex &index);
+    @[private slots@]:@/
+        void updateMatchingColumn(const QString &column);
+        void updateTemperature();
+    private:@/
+        QDoubleSpinBox *temperatureValue;
+        QComboBox *unitSelector;
 };
 
 @ The constructor sets up our user interface.
@@ -19113,40 +19113,40 @@ class TranslationConfWidget : public BasicDeviceConfigurationWidget
 @<TranslationConfWidget implementation@>=
 TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
-	temperatureValue(new QDoubleSpinBox), unitSelector(new QComboBox)
+    temperatureValue(new QDoubleSpinBox), unitSelector(new QComboBox)
 {
-	unitSelector->addItem("Fahrenheit");
-	unitSelector->addItem("Celsius");
-	temperatureValue->setMinimum(0);
-	temperatureValue->setMaximum(1000);
-	QFormLayout *layout = new QFormLayout;
-	QLineEdit *column = new QLineEdit;
-	layout->addRow(tr("Column to match:"), column);
-	layout->addRow(tr("Unit:"), unitSelector);
-	layout->addRow(tr("Value:"), temperatureValue);
-	@<Get device configuration data for current node@>@;
-	for(int i = 0; i < configData.size(); i++)
-	{
-		node = configData.at(i).toElement();
-		if(node.attribute("name") == "column")
-		{
-			column->setText(node.attribute("value"));
-		}
-		else if(node.attribute("name") == "unit")
-		{
-			unitSelector->setCurrentIndex(unitSelector->findText(node.attribute("value")));
-		}
-		else if(node.attribute("name") == "value")
-		{
-			temperatureValue->setValue(node.attribute("value").toDouble());
-		}
-	}
-	updateMatchingColumn(column->text());
-	updateTemperature();
-	connect(column, SIGNAL(textEdited(QString)), this, SLOT(updateMatchingColumn(QString)));
-	connect(unitSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTemperature()));
-	connect(temperatureValue, SIGNAL(valueChanged(double)), this, SLOT(updateTemperature()));
-	setLayout(layout);
+    unitSelector->addItem("Fahrenheit");
+    unitSelector->addItem("Celsius");
+    temperatureValue->setMinimum(0);
+    temperatureValue->setMaximum(1000);
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *column = new QLineEdit;
+    layout->addRow(tr("Column to match:"), column);
+    layout->addRow(tr("Unit:"), unitSelector);
+    layout->addRow(tr("Value:"), temperatureValue);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "column")
+        {
+            column->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "unit")
+        {
+            unitSelector->setCurrentIndex(unitSelector->findText(node.attribute("value")));
+        }
+        else if(node.attribute("name") == "value")
+        {
+            temperatureValue->setValue(node.attribute("value").toDouble());
+        }
+    }
+    updateMatchingColumn(column->text());
+    updateTemperature();
+    connect(column, SIGNAL(textEdited(QString)), this, SLOT(updateMatchingColumn(QString)));
+    connect(unitSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTemperature()));
+    connect(temperatureValue, SIGNAL(valueChanged(double)), this, SLOT(updateTemperature()));
+    setLayout(layout);
 }
 
 @ To update the temperature at which to match we save both the values of the
@@ -19156,21 +19156,21 @@ run unit conversions during view initialization.
 @<TranslationConfWidget implementation@>=
 void TranslationConfWidget::updateTemperature()
 {
-	updateAttribute("unit", unitSelector->currentText());
-	updateAttribute("value", QString("%1").arg(temperatureValue->value()));
-	if(unitSelector->currentText() == "Fahrenheit")
-	{
-		updateAttribute("FValue", QString("%1").arg(temperatureValue->value()));
-	}
-	else
-	{
-		updateAttribute("FValue", QString("%1").arg(temperatureValue->value() * 9 / 5 + 32));
-	}
+    updateAttribute("unit", unitSelector->currentText());
+    updateAttribute("value", QString("%1").arg(temperatureValue->value()));
+    if(unitSelector->currentText() == "Fahrenheit")
+    {
+        updateAttribute("FValue", QString("%1").arg(temperatureValue->value()));
+    }
+    else
+    {
+        updateAttribute("FValue", QString("%1").arg(temperatureValue->value() * 9 / 5 + 32));
+    }
 }
 
 void TranslationConfWidget::updateMatchingColumn(const QString &column)
 {
-	updateAttribute("column", column);
+    updateAttribute("column", column);
 }
 
 @ This is registered with the configuration system.

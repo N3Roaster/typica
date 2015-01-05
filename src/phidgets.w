@@ -396,7 +396,7 @@ void PhidgetsTemperatureSensor::start()
 	createDevice(&device);
 	openDevice(device, -1);
 	int error;
-	if(error = waitForOpen(device, 10000))
+	if((error = waitForOpen(device, 10000)))
 	{
 		closeDevice(device);
 		deleteDevice(device);

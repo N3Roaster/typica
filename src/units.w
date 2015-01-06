@@ -41,6 +41,7 @@ class Units: public QObject@/
 
 @(units.cpp@>=
 #include "units.h"
+#include <QtDebug>
 
 @ The |isTemperatureUnit()| method may seem counter-intuitive while the enum
 only contains represenations of temperature measurements, but there are plans
@@ -90,6 +91,9 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)@/
 					break;
 				case Rankine:@/
 					return value + 459.67;
+					break;
+				default:@/
+					qDebug() << "Warning: Non-sensical unit conversion.";
 					break;@t\2@>@/
 			}@/
 			break;
@@ -107,6 +111,9 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)@/
 					break;
 				case Rankine:@/
 					return (value + 273.15) * 9.0 / 5.0;
+					break;
+				default:@/
+					qDebug() << "Warning: Non-sensical unit conversion.";
 					break;@t\2@>@/
 			}@/
 			break;
@@ -124,6 +131,9 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)@/
 					break;
 				case Rankine:@/
 					return value * 9.0 / 5.0;
+					break;
+				default:@/
+					qDebug() << "Warning: Non-sensical unit conversion.";
 					break;@t\2@>@/
 			}@/
 			break;
@@ -141,6 +151,9 @@ double Units::convertTemperature(double value, Unit fromUnit, Unit toUnit)@/
 					break;
 				case Rankine:@/
 					return value;
+					break;
+				default:@/
+					qDebug() << "Warning: Non-sensical unit conversion.";
 					break;@t\2@>@/
 			}@/
 			break;

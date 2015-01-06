@@ -7677,6 +7677,9 @@ void TemperatureDisplay::setValue(Measurement temperature)
                 case Units::Unitless:
                     display(QString("%1").arg(number.setNum(temperature.temperature(), 'f', 0)));
                     break;
+                default:
+					qDebug() << "Warning: Attempting to convert a non-temperature unit to a temperature unit";
+					break;
             }
             break;
     }

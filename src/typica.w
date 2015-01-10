@@ -5717,6 +5717,66 @@ void NumericDelegate::updateEditorGeometry(QWidget *editor,
     editor->setGeometry(option.rect);
 }
 
+@ The same general technique is useful for input to a |QLineEdit|, but there is
+no model backing that widget to preserve multiple data roles. One way to get
+this functionality without too much effort is to abuse |QValidator| to evaluate
+expressions.
+
+@<Class declarations@>=
+class ScriptValidator : public QValidator
+{
+	Q_OBJECT
+	public:
+		ScriptValidator(QValidator *validator, QObject *parent = NULL);
+		void fixup(QString &input) const;
+		QValidator::State validate(QString &input, int &pos) const;
+	private:
+		QValidator *v;
+};
+
+@ The key to this is in the |fixup()| method. Here we over-write input with the
+result of the script evaluation.
+
+@<ScriptValidator implementation@>=
+void ScriptValidator::fixup(QString &input) const
+{
+	QScriptEngine *engine = AppInstance->engine;
+	engine->pushContext();
+	input = engine->evaluate(input).toString();
+	engine->popContext();
+}
+
+@ This validator is intended to be used in conjunction with another one which
+determines if the result of the expression is acceptable. In this case
+|Invalid| is never returned.
+
+@<ScriptValidator implementation@>=
+QValidator::State ScriptValidator::validate(QString &input, int &pos) const
+{
+	if(v)
+	{
+		if(v->validate(input, pos) == QValidator::Acceptable)
+		{
+			return QValidator::Acceptable;
+		}
+	}
+	return QValidator::Intermediate;
+}
+
+@ The constructor is trivial.
+
+@<ScriptValidator implementation@>=
+ScriptValidator::ScriptValidator(QValidator *validator, QObject *parent)
+	: QValidator(parent), v(validator)
+{
+	/* Nothing needs to be done here. */
+}
+
+@ This is included in typica.cpp.
+
+@<Class implementations@>=
+@<ScriptValidator implementation@>
+
 @ Line edits are useful when the user is expected to enter text without a
 predetermined set of values.
 
@@ -5729,6 +5789,9 @@ input is restricted to numeric values. If the value is {\tt "integer"}, input is
 restricted to integer values. Finally, if the value is {\tt "expression"}, input
 is restricted to text which matches a regular expression specified as the value
 of the {\tt expression} attribute.
+
+Note that when integer and numeric validators are specified, these are set for
+a |ScriptValidator| to enable some basic expression evaluation.
 
 @<Functions for scripting@>=
 void addLineToLayout(QDomElement element, QStack<QWidget *> *,@|
@@ -5750,11 +5813,11 @@ void addLineToLayout(QDomElement element, QStack<QWidget *> *,@|
     {
         if(element.attribute("validator") == "numeric")
         {
-            widget->setValidator(new QDoubleValidator(NULL));
+            widget->setValidator(new ScriptValidator(new QDoubleValidator));
         }
         else if(element.attribute("validator") == "integer")
         {
-            widget->setValidator(new QIntValidator(NULL));
+            widget->setValidator(new ScriptValidator(new QIntValidator));
         }
         else if(element.attribute("validator") == "expression" &&
                 element.hasAttribute("expression"))

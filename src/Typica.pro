@@ -9,7 +9,7 @@ QT += xmlpatterns
 QT += scripttools
 QT += webkit
 
-include(3rdparty/qextserialport/src/qextserialport.pri)
+CONFIG += extserialport
 
 TEMPLATE = app
 TARGET =

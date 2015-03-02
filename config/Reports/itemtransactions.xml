@@ -47,7 +47,10 @@
 				output.writeStartElement("head");
 				output.writeTextElement("title", "Item Transactions");
 				output.writeStartElement("script");
-				output.writeAttribute("src", "Scripts/d3.min.js");
+				var scriptFile = new QFile(QSettings.value("config") + "/Scripts/d3.min.js");
+				scriptFile.open(1);
+				output.writeCDATA(scriptFile.readToString());
+				scriptFile.close();
 				output.writeEndElement();
 				output.writeStartElement("style");
 				output.writeAttribute("type", "text/css");
@@ -167,7 +170,10 @@
 					output.writeTextElement("script", chartData);
 					
 					output.writeStartElement("script");
-					output.writeAttribute("src", "Scripts/greenusechart.js");
+					scriptFile = new QFile(QSettings.value("config") + "/Scripts/greenusechart.js");
+					scriptFile.open(1);
+					output.writeCDATA(scriptFile.readToString());
+					scriptFile.close();
 					output.writeEndElement();
 					
 					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))) FROM item_history(:item)");

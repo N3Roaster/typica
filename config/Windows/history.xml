@@ -21,6 +21,7 @@
 			}
 			dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
 			dateQuery.invalidate();
+			dateSelect.currentIndex = QSettings.value("script/history/dateIndex", 6);
 			var table = findChildObject(this, 'table');
 			table.openEntryRow.connect(function(arg) {
 				var details = createWindow("batchDetails");
@@ -35,6 +36,9 @@
 				table.hideColumn(1);
 			}
 			dateSelect.rangeUpdated.connect(function() {
+				if(dateSelect.currentIndex != 24) { // Custom date range
+					QSettings.setValue("script/history/dateIndex", dateSelect.currentIndex);
+				}
 				refresh();
 			});
 			refresh();

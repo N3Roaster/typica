@@ -41,10 +41,12 @@ access to the ISO 8601 string representation of these dates is provided.
 class DateRangeSelector : public QWidget
 {
 	@[Q_OBJECT@]@;
+	Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex)@/
 	public:@/
 		DateRangeSelector(QWidget *parent = NULL);
 		void setCustomRange(QVariant range);
-		Q_INVOKABLE QVariant currentRange();@/
+		Q_INVOKABLE QVariant currentRange();
+		int currentIndex();@/
 	@[public slots@]:@/
 		void setCurrentIndex(int index);
 		void setLifetimeRange(QString startDate, QString endDate);
@@ -79,7 +81,9 @@ class DateRangeSelector : public QWidget
 @<CustomDateRangePopup implementation@>
 @<DateRangeSelector implementation@>
 
+#if 0
 #include "moc_daterangeselector.cpp"
+#endif
 
 @ The custom range pop up is represented as a separate class which is not to be
 instantiated except by |DateRangeSelector|.
@@ -403,12 +407,17 @@ QVariant DateRangeSelector::currentRange()
 	return quickSelector->itemData(lastIndex);
 }
 
-@ Similarly, a method is provided to set the current index of the combo box.
+@ Methods are provided to get and set the current index of the combo box.
 
 @<DateRangeSelector implementation@>=
 void DateRangeSelector::setCurrentIndex(int index)
 {
 	quickSelector->setCurrentIndex(index);
+}
+
+int DateRangeSelector::currentIndex()
+{
+	return quickSelector->currentIndex();
 }
 
 @ The Lifetime range is handled somewhat differently from other ranges as there

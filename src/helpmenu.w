@@ -52,10 +52,12 @@ HelpMenu::HelpMenu() : QMenu()
 	aboutTypicaAction->setObjectName("aboutTypicaAction");
 	addAction(aboutTypicaAction);
 	connect(aboutTypicaAction, SIGNAL(triggered()), this, SLOT(displayAboutTypica()));
+#if 0
 	QAction *licenseAction = new QAction(tr("License Information"), this);
 	licenseAction->setObjectName("licenseAction");
 	addAction(licenseAction);
 	connect(licenseAction, SIGNAL(triggered()), this, SLOT(displayLicenseWindow()));
+#endif
 }
 
 @ When "About Typica" is selected from the menu, we display an about box. This

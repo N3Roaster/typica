@@ -31,7 +31,7 @@
 				var dateRange = dateSelect.currentRange();
 				var startDate = "'"+dateRange[0]+"'";
 				var endDate = "'"+dateRange[dateRange.length - 1]+"'";
-				var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration, annotation FROM roasting_log WHERE time >= " + startDate + "::date AND time < " + endDate + "::date + interval '1 day' ORDER BY time DESC";
+				var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, CASE WHEN unroasted_total_quantity = 0 THEN NULL ELSE ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) END AS weight_loss, duration, annotation FROM roasting_log WHERE time >= " + startDate + "::date AND time < " + endDate + "::date + interval '1 day' ORDER BY time DESC";
 				table.setQuery(q);
 				table.hideColumn(1);
 			}

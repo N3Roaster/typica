@@ -612,6 +612,19 @@
 					scale.open(3);
 					window.scales.push(scale);
 				}
+                                else if(driverReference.driver == "coolingtimer")
+                                {
+                                    var coolingTimer = new TimerDisplay;
+                                    coolingTimer.setDisplayFormat("mm:ss");
+                                    var decorator = new WidgetDecorator(coolingTimer, configModel.data(driverIndex, 0), 2);
+                                    indicatorPanel.addWidget(decorator);
+                                    coolingTimer.setTimerMode(1);
+                                    coolingTimer.setAutoReset(true);
+                                    var timeValue = new QTime();
+                                    timeValue = timeValue.fromString(driverReference.reset, "mm:ss");
+                                    coolingTimer.setResetValue(timeValue);
+                                    stop.clicked.connect(coolingTimer.startTimer);
+                                }
 			}
 		}
 		for(var i = 1; i < tabControls.length; i++)

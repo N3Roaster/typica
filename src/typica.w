@@ -10673,6 +10673,8 @@ if(s > QTime(0, 0, 0))@/
         s = nt;
         emit valueChanged(s);
     }
+} else {
+    stopTimer();
 }
 
 @ The clock mode is the simplest case as it just needs to find out if the time
@@ -10867,6 +10869,7 @@ void TimerDisplay::updateDisplay()
 QScriptValue constructTimerDisplay(QScriptContext *context,
                                    QScriptEngine *engine);
 void setTimerDisplayProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue TimerDisplay_setTimerMode(QScriptContext *context, QScriptEngine *engine);
 
 @ The engine must be informed of the script constructor.
 
@@ -10888,6 +10891,36 @@ QScriptValue constructTimerDisplay(QScriptContext *, QScriptEngine *engine)
 void setTimerDisplayProperties(QScriptValue value, QScriptEngine *engine)
 {
     setQLCDNumberProperties(value, engine);
+    value.setProperty("setTimerMode", engine->newFunction(TimerDisplay_setTimerMode));
+}
+
+@ A new feature in \pn{} 1.6.4 benefits from having the ability to set the
+timer mode from a script. Rather than exposing the |enum| responsible for this
+to the host environment, a new function is provided to allow integer based
+setting.
+
+@<Functions for scripting@>=
+QScriptValue TimerDisplay_setTimerMode(QScriptContext *context, QScriptEngine *)
+{
+    TimerDisplay *self = getself<TimerDisplay *>(context);
+    if(self)
+    {
+        switch(argument<int>(0, context))
+        {
+            case 0:
+                self->setMode(TimerDisplay::CountUp);
+                break;
+            case 1:
+                self->setMode(TimerDisplay::CountDown);
+                break;
+            case 2:
+                self->setMode(TimerDisplay::Clock);
+                break;
+            default:
+                break;
+        }
+    }
+    return QScriptValue();
 }
 
 
@@ -16004,6 +16037,24 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
     @<Add annotation control node inserters@>@;
     addAnnotationControlButton->setMenu(annotationMenu);
     layout->addWidget(addAnnotationControlButton);
+    
+    QPushButton *timersButton = new QPushButton(tr("Extra Timers"));
+    QMenu *timersMenu = new QMenu;
+    NodeInserter *coolingTimerInserter = new NodeInserter(tr("Cooling Timer"), tr("Cooling Timer"), "coolingtimer");
+    NodeInserter *rangeTimerInserter = new NodeInserter(tr("Range Timer"), tr("Range Timer"), "rangetimer");
+    NodeInserter *multirangeTimerInserter = new NodeInserter(tr("Multi-Range Timer"), tr("Multi-Range Timer"), "multirangetimer");
+    timersMenu->addAction(coolingTimerInserter);
+    timersMenu->addAction(rangeTimerInserter);
+    timersMenu->addAction(multirangeTimerInserter);
+    connect(coolingTimerInserter, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(rangeTimerInserter, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    connect(multirangeTimerInserter, SIGNAL(triggered(QString, QString)),
+            this, SLOT(insertChildNode(QString, QString)));
+    timersButton->setMenu(timersMenu);
+    layout->addWidget(timersButton);
+    
     QPushButton *advancedButton = new QPushButton(tr("Advanced Features"));
     QMenu *advancedMenu = new QMenu;
     NodeInserter *linearsplineinserter = new NodeInserter(tr("Linear Spline Interpolated Series"), tr("Linear Spline Interpolated Series"), "linearspline");
@@ -16015,6 +16066,7 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
     @<Add node inserters to advanced features menu@>@;
     advancedButton->setMenu(advancedMenu);
     layout->addWidget(advancedButton);
+    
     QHBoxLayout *idLayout = new QHBoxLayout;
     QLabel *idLabel = new QLabel(tr("Machine ID for database:"));
     idLayout->addWidget(idLabel);
@@ -19154,6 +19206,72 @@ void LinearSplineInterpolationConfWidget::updateDestinationColumn(const QString 
 
 @<Register device configuration widgets@>=
 app.registerDeviceConfigurationWidget("linearspline", LinearSplineInterpolationConfWidget::staticMetaObject);
+
+@* Additional Timers.
+
+\noindent \pn{} 1.6.4 adds support for more timer indicators than just the
+default batch timer. Three new timer types are supported. The first is a
+cooling timer. This is a timer that is initially set to 0, but at the end of a
+batch this is set to a configured time and starts counting down. There are no
+data logging requirements and this is purely a convenience feature, but one
+that supports product and personnel safety best practices as it helps to
+eliminate the practice of a person reaching into the cooling tray as it
+agitates to test if the coffee has cooled.
+
+@<Class declarations@>=
+class CoolingTimerConfWidget : public BasicDeviceConfigurationWidget
+{
+    @[Q_OBJECT@]@/
+    public:@/
+        @[Q_INVOKABLE@]@, CoolingTimerConfWidget(DeviceTreeModel *model,
+                                                 const QModelIndex &index);
+    @[private slots@]:@/
+        void updateResetTime(QTime time);
+};
+
+@ The only configurable detail is the vaue the timer should reset to. For this
+a |QTimeEdit| is fine.
+
+@<CoolingTimerConfWidget implementation@>=
+CoolingTimerConfWidget::CoolingTimerConfWidget(DeviceTreeModel *model,
+                                               const QModelIndex &index)
+: BasicDeviceConfigurationWidget(model, index)
+{
+    QHBoxLayout *layout = new QHBoxLayout;
+    QLabel *label = new QLabel(tr("Cooling Time: "));
+    QTimeEdit *editor = new QTimeEdit;
+    editor->setDisplayFormat("mm:ss");
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "reset")
+        {
+            editor->setTime(QTime::fromString(node.attribute("value"), "mm:ss"));
+        }
+    }
+    updateResetTime(editor->time());
+    connect(editor, SIGNAL(timeChanged(QTime)),
+            this, SLOT(updateResetTime(QTime)));
+    layout->addWidget(label);
+    layout->addWidget(editor);
+    setLayout(layout);
+}
+
+void CoolingTimerConfWidget::updateResetTime(QTime time)
+{
+    updateAttribute("reset", time.toString("mm:ss"));
+}
+
+@ The widget is registered with the configuration system.
+@<Register device configuration widgets@>=
+app.registerDeviceConfigurationWidget("coolingtimer",
+CoolingTimerConfWidget::staticMetaObject);
+
+@ The implementation chunk for now is in the main source file.
+
+@<Class implementations@>=
+@<CoolingTimerConfWidget implementation@>
 
 @* Profile Translation Configuration Widget.
 

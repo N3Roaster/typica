@@ -10554,6 +10554,7 @@ Q_PROPERTY(bool running READ isRunning)@/
 Q_PROPERTY(QTime resetValue READ resetValue WRITE setResetValue)@/
 Q_PROPERTY(QString displayFormat READ displayFormat WRITE setDisplayFormat)@/
 Q_PROPERTY(bool autoReset READ autoReset WRITE setAutoReset)@/
+Q_PROPERTY(QString value READ value)@/
 
 @ A number of private variables are used to implement this class.
 
@@ -19272,6 +19273,267 @@ CoolingTimerConfWidget::staticMetaObject);
 
 @<Class implementations@>=
 @<CoolingTimerConfWidget implementation@>
+
+@ The other two timer types are intended for measuring ranges of interest
+within a batch. These have more configuration options. First is the range
+timer. Someone setting this up needs to decide how the timer is started.
+Sensible options include starting the timer at the start of the batch,
+starting the timer when a button is pressed, or starting the timer when a set
+point is reached on the ascent of a named data series. Stopping the timer is
+also a configurable concern. This will be stopped at the end of the batch,
+but it might be stopped sooner on reaching some threshold or when a button is
+pressed. There are also questions of how the information is persisted with the
+roasting records.
+
+@<Class declarations@>=
+class RangeTimerConfWidget : public BasicDeviceConfigurationWidget
+{
+    @[Q_OBJECT@]@;
+    public:@/
+        @[Q_INVOKABLE@]@, RangeTimerConfWidget(DeviceTreeModel *model, const QModelIndex &index);
+    @[private slots@]:@/
+        void updateStartButtonText(const QString &text);
+        void updateStopButtonText(const QString &text);
+        void updateStartColumnName(const QString &text);
+        void updateStopColumnName(const QString &text);
+        void updateStartValue(const QString &text);
+        void updateStopValue(const QString &text);
+        void updateStartTrigger(int option);
+        void updateStopTrigger(int option);
+};
+
+@ The constructor sets up controls for configuring these details.
+
+@<RangeTimerConfWidget implementation@>=
+RangeTimerConfWidget::RangeTimerConfWidget(DeviceTreeModel *model, const QModelIndex &index)
+: BasicDeviceConfigurationWidget(model, index)
+{
+    QVBoxLayout *layout = new QVBoxLayout;
+    
+    QGroupBox *startConfigurationGroup = new QGroupBox(tr("Start trigger"));
+    QRadioButton *startBatchOption = new QRadioButton(tr("Start of batch"));
+    QRadioButton *buttonOption = new QRadioButton(tr("Manual"));
+    QRadioButton *thresholdOption = new QRadioButton(tr("At temperature"));
+    QButtonGroup *startOptionGroup = new QButtonGroup;
+    startOptionGroup->addButton(startBatchOption, 1);
+    startOptionGroup->addButton(buttonOption, 2);
+    startOptionGroup->addButton(thresholdOption, 3);
+    startBatchOption->setChecked(true);
+    QGridLayout *startOptions = new QGridLayout;
+    startOptions->addWidget(startBatchOption, 0, 0);
+    startOptions->addWidget(buttonOption, 1, 0);
+    startOptions->addWidget(thresholdOption, 2, 0);
+    QLabel *buttonTextLabel = new QLabel(tr("Button Text: "));
+    QLineEdit *buttonTextEdit = new QLineEdit;
+    QHBoxLayout *buttonTextOptions = new QHBoxLayout;
+    buttonTextOptions->addWidget(buttonTextLabel);
+    buttonTextOptions->addWidget(buttonTextEdit);
+    startOptions->addLayout(buttonTextOptions, 1, 1);
+    QFormLayout *thresholdOptions = new QFormLayout;
+    QLineEdit *startColumnName = new QLineEdit;
+    QLineEdit *startValue = new QLineEdit;
+    thresholdOptions->addRow(tr("Column Name: "), startColumnName);
+    thresholdOptions->addRow(tr("Value: "), startValue);
+    startOptions->addLayout(thresholdOptions, 2, 1);
+    startConfigurationGroup->setLayout(startOptions);
+    layout->addWidget(startConfigurationGroup);
+    
+    QGroupBox *stopConfigurationGroup = new QGroupBox(tr("Stop trigger"));
+    QRadioButton *stopBatchOption = new QRadioButton(tr("End of batch"));
+    QRadioButton *stopButtonOption = new QRadioButton(tr("Manual"));
+    QRadioButton *stopThresholdOption = new QRadioButton(tr("At temperature"));
+    QButtonGroup *stopOptionGroup = new QButtonGroup;
+    stopOptionGroup->addButton(stopBatchOption, 1);
+    stopOptionGroup->addButton(stopButtonOption, 2);
+    stopOptionGroup->addButton(stopThresholdOption, 3);
+    stopBatchOption->setChecked(true);
+    QGridLayout *stopOptions = new QGridLayout;
+    stopOptions->addWidget(stopBatchOption, 0, 0);
+    stopOptions->addWidget(stopButtonOption, 1, 0);
+    stopOptions->addWidget(stopThresholdOption, 2, 0);
+    QLabel *stopButtonLabel = new QLabel(tr("Button Text: "));
+    QLineEdit *stopButtonEdit = new QLineEdit;
+    QHBoxLayout *stopButtonTextOptions = new QHBoxLayout;
+    stopButtonTextOptions->addWidget(stopButtonLabel);
+    stopButtonTextOptions->addWidget(stopButtonEdit);
+    stopOptions->addLayout(stopButtonTextOptions, 1, 1);
+    QLineEdit *stopColumnName = new QLineEdit;
+    QLineEdit *stopValue = new QLineEdit;
+    QFormLayout *stopThresholdOptions = new QFormLayout;
+    stopThresholdOptions->addRow(tr("Column Name: "), stopColumnName);
+    stopThresholdOptions->addRow(tr("Value: "), stopValue);
+    stopOptions->addLayout(stopThresholdOptions, 2, 1);
+    stopConfigurationGroup->setLayout(stopOptions);
+    layout->addWidget(stopConfigurationGroup);
+    
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "startbuttontext")
+        {
+            buttonTextEdit->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "stopbuttontext")
+        {
+            stopButtonEdit->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "startcolumnname")
+        {
+            startColumnName->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "stopcolumnname")
+        {
+            stopColumnName->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "startvalue")
+        {
+            startValue->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "stopvalue")
+        {
+            stopValue->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "starttrigger")
+        {
+            if(node.attribute("value") == "batch")
+            {
+                startBatchOption->setChecked(true);
+            }
+            else if(node.attribute("value") == "manual")
+            {
+                buttonOption->setChecked(true);
+            }
+            else if(node.attribute("value") == "value")
+            {
+                thresholdOption->setChecked(true);
+            }
+        }
+        else if(node.attribute("name") == "stoptrigger")
+        {
+            if(node.attribute("value") == "batch")
+            {
+                stopBatchOption->setChecked(true);
+            }
+            else if(node.attribute("value") == "manual")
+            {
+                stopButtonOption->setChecked(true);
+            }
+            else if(node.attribute("value") == "value")
+            {
+                stopThresholdOption->setChecked(true);
+            }
+        }
+    }
+    updateStartButtonText(buttonTextEdit->text());
+    updateStopButtonText(stopButtonEdit->text());
+    updateStartColumnName(startColumnName->text());
+    updateStopColumnName(stopColumnName->text());
+    updateStartValue(startValue->text());
+    updateStopValue(stopValue->text());
+    updateStartTrigger(startOptionGroup->checkedId());
+    updateStopTrigger(stopOptionGroup->checkedId());
+    
+    setLayout(layout);
+    
+    connect(buttonTextEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(updateStartButtonText(QString)));
+    connect(stopButtonEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(updateStopButtonText(QString)));
+    connect(startColumnName, SIGNAL(textChanged(QString)),
+            this, SLOT(updateStartColumnName(QString)));
+    connect(stopColumnName, SIGNAL(textChanged(QString)),
+            this, SLOT(updateStopColumnName(QString)));
+    connect(startValue, SIGNAL(textChanged(QString)),
+            this, SLOT(updateStartValue(QString)));
+    connect(stopValue, SIGNAL(textChanged(QString)),
+            this, SLOT(updateStopValue(QString)));
+    connect(startOptionGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(updateStartTrigger(int)));
+    connect(stopOptionGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(updateStopTrigger(int)));
+}
+
+@ Small methods update the configuration as usual.
+
+@<RangeTimerConfWidget implementation@>=
+void RangeTimerConfWidget::updateStartButtonText(const QString &text)
+{
+    updateAttribute("startbuttontext", text);
+}
+
+void RangeTimerConfWidget::updateStopButtonText(const QString &text)
+{
+    updateAttribute("stopbuttontext", text);
+}
+
+void RangeTimerConfWidget::updateStartColumnName(const QString &text)
+{
+    updateAttribute("startcolumnname", text);
+}
+
+void RangeTimerConfWidget::updateStopColumnName(const QString &text)
+{
+    updateAttribute("stopcolumnname", text);
+}
+
+void RangeTimerConfWidget::updateStartValue(const QString &text)
+{
+    updateAttribute("startvalue", text);
+}
+
+void RangeTimerConfWidget::updateStopValue(const QString &text)
+{
+    updateAttribute("stopvalue", text);
+}
+
+void RangeTimerConfWidget::updateStartTrigger(int option)
+{
+    switch(option)
+    {
+        case 1:
+            updateAttribute("starttrigger", "batch");
+            break;
+        case 2:
+            updateAttribute("starttrigger", "manual");
+            break;
+        case 3:
+            updateAttribute("starttrigger", "value");
+            break;
+        default:
+            break;
+    }
+}
+
+void RangeTimerConfWidget::updateStopTrigger(int option)
+{
+    switch(option)
+    {
+        case 1:
+            updateAttribute("stoptrigger", "batch");
+            break;
+        case 2:
+            updateAttribute("stoptrigger", "manual");
+            break;
+        case 3:
+            updateAttribute("stoptrigger", "value");
+            break;
+        default:
+            break;
+    }
+}
+
+
+
+@ The widget is registered with the configuration system.
+@<Register device configuration widgets@>=
+app.registerDeviceConfigurationWidget("rangetimer",
+RangeTimerConfWidget::staticMetaObject);
+
+@ The implementation chunk for now is in the main source file.
+
+@<Class implementations@>=
+@<RangeTimerConfWidget implementation@>
 
 @* Profile Translation Configuration Widget.
 

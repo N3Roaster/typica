@@ -15,6 +15,7 @@
 			var units = findChildObject(this, 'units');
 			units.addItem("bag");
 			units.addItem("lb");
+			units.addItem("kg");
 			var items = findChildObject(this, 'item');
 			var status = findChildObject(this, 'current');
 			var q = "SELECT quantity FROM items WHERE id = ";
@@ -25,7 +26,9 @@
 			var text = items.currentText;
 			text = text + " Current inventory: ";
 			text = text + query.value(0);
-			text = text + " pounds (";
+			text = text + " pounds ("
+			text = text + Number(query.value(0)) / 2.2;
+			text = text + " Kg (";
 			q = "SELECT ";
 			q = q + query.value(0);
 			q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
@@ -45,7 +48,10 @@
 				q = q + ", ";
 				if(units.currentText == "lb") {
 					q = q + value.text;
-				} else {
+				} else if (units.currentText == "kg") {
+					q = q + (value.text * 2.2);
+				}
+				else {
 					q = q + value.text;
 					q = q + " * (SELECT conversion FROM lb_bag_conversion WHERE item = ";
 					q = q + items.currentData();
@@ -83,7 +89,9 @@
 				var text = items.currentText;
 				text = text + " Current inventory: ";
 				text = text + query.value(0);
-				text = text + " pounds (";
+				text = text + " pounds ";
+				text = text + Number(query.value(0)) / 2.2;
+				text = text + " Kg (";
 				q = "SELECT ";
 				q = q + query.value(0);
 				q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";

@@ -1130,7 +1130,7 @@
                 var file = new QFile(filename);
                 log.clearOutputColumns();
 				channelSkip = 0;
-				for(var i = 0; i < columnNames.length - channelSkip; i++)
+				for(var i = 0; i < channels.length; i++)
 				{
 					if(channelVisibility[i]) {
 						if(channelType[i] == "T") {

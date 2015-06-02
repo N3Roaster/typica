@@ -1,4 +1,4 @@
-/*649:*/
+/*655:*/
 #line 30 "./daterangeselector.w"
 
 
@@ -9,8 +9,8 @@
 #ifndef TypicaDateRangeSelectorHeader
 #define TypicaDateRangeSelectorHeader
 
-/*651:*/
-#line 87 "./daterangeselector.w"
+/*657:*/
+#line 91 "./daterangeselector.w"
 
 class CustomDateRangePopup:public QWidget
 {
@@ -31,17 +31,19 @@ QCalendarWidget*endDateSelector;
 QPushButton*applyButton;
 };
 
-/*:651*/
+/*:657*/
 #line 39 "./daterangeselector.w"
 
 
 class DateRangeSelector:public QWidget
 {
 Q_OBJECT
+Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex)
 public:
 DateRangeSelector(QWidget*parent= NULL);
 void setCustomRange(QVariant range);
 Q_INVOKABLE QVariant currentRange();
+int currentIndex();
 public slots:
 void setCurrentIndex(int index);
 void setLifetimeRange(QString startDate,QString endDate);
@@ -60,4 +62,4 @@ int lastIndex;
 
 #endif
 
-/*:649*/
+/*:655*/

@@ -204,6 +204,67 @@ int NumericDelegate::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         return _id;
     return _id;
 }
+static const uint qt_meta_data_ScriptValidator[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       0,    0, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_ScriptValidator[] = {
+    "ScriptValidator\0"
+};
+
+void ScriptValidator::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData ScriptValidator::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject ScriptValidator::staticMetaObject = {
+    { &QValidator::staticMetaObject, qt_meta_stringdata_ScriptValidator,
+      qt_meta_data_ScriptValidator, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &ScriptValidator::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *ScriptValidator::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *ScriptValidator::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_ScriptValidator))
+        return static_cast<void*>(const_cast< ScriptValidator*>(this));
+    return QValidator::qt_metacast(_clname);
+}
+
+int ScriptValidator::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QValidator::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    return _id;
+}
 static const uint qt_meta_data_DAQ[] = {
 
  // content:
@@ -1839,7 +1900,7 @@ static const uint qt_meta_data_TimerDisplay[] = {
        0,       // classname
        0,    0, // classinfo
       18,   14, // methods
-       6,  104, // properties
+       7,  104, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
@@ -1874,6 +1935,7 @@ static const uint qt_meta_data_TimerDisplay[] = {
      370,  333, 0x0f095103,
      389,  381, 0x0a095103,
      403,  357, 0x01095103,
+     120,  381, 0x0a095001,
 
        0        // eod
 };
@@ -1968,8 +2030,9 @@ int TimerDisplay::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 3: *reinterpret_cast< QTime*>(_v) = resetValue(); break;
         case 4: *reinterpret_cast< QString*>(_v) = displayFormat(); break;
         case 5: *reinterpret_cast< bool*>(_v) = autoReset(); break;
+        case 6: *reinterpret_cast< QString*>(_v) = value(); break;
         }
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::WriteProperty) {
         void *_v = _a[0];
         switch (_id) {
@@ -1979,19 +2042,19 @@ int TimerDisplay::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 4: setDisplayFormat(*reinterpret_cast< QString*>(_v)); break;
         case 5: setAutoReset(*reinterpret_cast< bool*>(_v)); break;
         }
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::ResetProperty) {
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::QueryPropertyDesignable) {
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::QueryPropertyScriptable) {
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::QueryPropertyStored) {
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::QueryPropertyEditable) {
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::QueryPropertyUser) {
-        _id -= 6;
+        _id -= 7;
     }
 #endif // QT_NO_PROPERTIES
     return _id;
@@ -6705,6 +6768,279 @@ int LinearSplineInterpolationConfWidget::qt_metacall(QMetaObject::Call _c, int _
         if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
         _id -= 3;
+    }
+    return _id;
+}
+static const uint qt_meta_data_CoolingTimerConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       1,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   19, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      29,   24,   23,   23, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+      64,   52,   23,   23, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_CoolingTimerConfWidget[] = {
+    "CoolingTimerConfWidget\0\0time\0"
+    "updateResetTime(QTime)\0model,index\0"
+    "CoolingTimerConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void CoolingTimerConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { CoolingTimerConfWidget *_r = new CoolingTimerConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        CoolingTimerConfWidget *_t = static_cast<CoolingTimerConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateResetTime((*reinterpret_cast< QTime(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData CoolingTimerConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject CoolingTimerConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_CoolingTimerConfWidget,
+      qt_meta_data_CoolingTimerConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &CoolingTimerConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *CoolingTimerConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *CoolingTimerConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_CoolingTimerConfWidget))
+        return static_cast<void*>(const_cast< CoolingTimerConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int CoolingTimerConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 1)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 1;
+    }
+    return _id;
+}
+static const uint qt_meta_data_RangeTimerConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       8,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   54, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      27,   22,   21,   21, 0x08,
+      58,   22,   21,   21, 0x08,
+      88,   22,   21,   21, 0x08,
+     119,   22,   21,   21, 0x08,
+     149,   22,   21,   21, 0x08,
+     175,   22,   21,   21, 0x08,
+     207,  200,   21,   21, 0x08,
+     231,  200,   21,   21, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+     266,  254,   21,   21, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_RangeTimerConfWidget[] = {
+    "RangeTimerConfWidget\0\0text\0"
+    "updateStartButtonText(QString)\0"
+    "updateStopButtonText(QString)\0"
+    "updateStartColumnName(QString)\0"
+    "updateStopColumnName(QString)\0"
+    "updateStartValue(QString)\0"
+    "updateStopValue(QString)\0option\0"
+    "updateStartTrigger(int)\0updateStopTrigger(int)\0"
+    "model,index\0"
+    "RangeTimerConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void RangeTimerConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { RangeTimerConfWidget *_r = new RangeTimerConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        RangeTimerConfWidget *_t = static_cast<RangeTimerConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateStartButtonText((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->updateStopButtonText((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->updateStartColumnName((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 3: _t->updateStopColumnName((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->updateStartValue((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: _t->updateStopValue((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 6: _t->updateStartTrigger((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 7: _t->updateStopTrigger((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData RangeTimerConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject RangeTimerConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_RangeTimerConfWidget,
+      qt_meta_data_RangeTimerConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &RangeTimerConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *RangeTimerConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *RangeTimerConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_RangeTimerConfWidget))
+        return static_cast<void*>(const_cast< RangeTimerConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int RangeTimerConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 8)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 8;
+    }
+    return _id;
+}
+static const uint qt_meta_data_MultiRangeTimerConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       2,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   24, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      32,   27,   26,   26, 0x08,
+      58,   26,   26,   26, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+      88,   76,   26,   26, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_MultiRangeTimerConfWidget[] = {
+    "MultiRangeTimerConfWidget\0\0text\0"
+    "updateColumnName(QString)\0updateRangeData()\0"
+    "model,index\0"
+    "MultiRangeTimerConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void MultiRangeTimerConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { MultiRangeTimerConfWidget *_r = new MultiRangeTimerConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        MultiRangeTimerConfWidget *_t = static_cast<MultiRangeTimerConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateColumnName((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->updateRangeData(); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData MultiRangeTimerConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject MultiRangeTimerConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_MultiRangeTimerConfWidget,
+      qt_meta_data_MultiRangeTimerConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &MultiRangeTimerConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *MultiRangeTimerConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *MultiRangeTimerConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_MultiRangeTimerConfWidget))
+        return static_cast<void*>(const_cast< MultiRangeTimerConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int MultiRangeTimerConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 2)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 2;
     }
     return _id;
 }

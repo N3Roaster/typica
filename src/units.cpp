@@ -1,10 +1,11 @@
-/*264:*/
+/*269:*/
 #line 42 "./units.w"
 
 #include "units.h"
+#include <QtDebug> 
 
-/*:264*//*265:*/
-#line 52 "./units.w"
+/*:269*//*270:*/
+#line 53 "./units.w"
 
 bool Units::isTemperatureUnit(Unit unit)
 {
@@ -14,8 +15,8 @@ unit==Kelvin||
 unit==Rankine);
 }
 
-/*:265*//*266:*/
-#line 70 "./units.w"
+/*:270*//*271:*/
+#line 71 "./units.w"
 
 double Units::convertTemperature(double value,Unit fromUnit,Unit toUnit)
 {
@@ -40,6 +41,9 @@ break;
 case Rankine:
 return value+459.67;
 break;
+default:
+qDebug()<<"Warning: Non-sensical unit conversion.";
+break;
 }
 break;
 case Celsius:
@@ -56,6 +60,9 @@ return value+273.15;
 break;
 case Rankine:
 return(value+273.15)*9.0/5.0;
+break;
+default:
+qDebug()<<"Warning: Non-sensical unit conversion.";
 break;
 }
 break;
@@ -74,6 +81,9 @@ break;
 case Rankine:
 return value*9.0/5.0;
 break;
+default:
+qDebug()<<"Warning: Non-sensical unit conversion.";
+break;
 }
 break;
 case Rankine:
@@ -91,6 +101,9 @@ break;
 case Rankine:
 return value;
 break;
+default:
+qDebug()<<"Warning: Non-sensical unit conversion.";
+break;
 }
 break;
 default:
@@ -100,8 +113,8 @@ break;
 return 0;
 }
 
-/*:266*//*267:*/
-#line 156 "./units.w"
+/*:271*//*272:*/
+#line 169 "./units.w"
 
 double Units::convertRelativeTemperature(double value,Unit fromUnit,Unit toUnit)
 {
@@ -198,8 +211,8 @@ break;
 return 0;
 }
 
-/*:267*//*268:*/
-#line 254 "./units.w"
+/*:272*//*273:*/
+#line 267 "./units.w"
 
 double Units::convertWeight(double value,Unit fromUnit,Unit toUnit)
 {
@@ -303,4 +316,4 @@ unit==Ounce||
 unit==Gram);
 }
 
-/*:268*/
+/*:273*/

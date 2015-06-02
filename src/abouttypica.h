@@ -1,4 +1,4 @@
-/*259:*/
+/*264:*/
 #line 14 "./abouttypica.w"
 
 #include <QMainWindow> 
@@ -17,4 +17,4 @@ AboutTypica();
 
 #endif
 
-/*:259*/
+/*:264*/

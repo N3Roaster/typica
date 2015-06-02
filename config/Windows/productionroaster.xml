@@ -67,6 +67,7 @@
 		var roasterIndex = roasterlist.currentIndex;
 		var channels = new Array();
 		var annotationButtons = new Array();
+                var rangetimers = new Array();
 		var nidevices = new Array();
 		var dataqsdkdevices = new Array();
 		var jsdevices = new Array();
@@ -614,7 +615,7 @@
 				}
                                 else if(driverReference.driver == "coolingtimer")
                                 {
-                                    var coolingTimer = new TimerDisplay;
+                                    var coolingTimer = new TimerDisplay();
                                     coolingTimer.setDisplayFormat("mm:ss");
                                     var decorator = new WidgetDecorator(coolingTimer, configModel.data(driverIndex, 0), 2);
                                     indicatorPanel.addWidget(decorator);
@@ -624,6 +625,138 @@
                                     timeValue = timeValue.fromString(driverReference.reset, "mm:ss");
                                     coolingTimer.setResetValue(timeValue);
                                     stop.clicked.connect(coolingTimer.startTimer);
+                                }
+                                else if(driverReference.driver == "rangetimer")
+                                {
+                                    rangetimers.push(new TimerDisplay());
+                                    var rangeTimer = rangetimers[rangetimers.length - 1];
+                                    rangeTimer.setDisplayFormat("mm:ss");
+                                    var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
+                                    indicatorPanel.addWidget(decorator);
+                                    stop.clicked.connect(rangeTimer.stopTimer);
+                                    start.clicked.connect(rangeTimer.reset);
+                                    if(driverReference.starttrigger == "batch")
+                                    {
+                                        start.clicked.connect(rangeTimer.startTimer);
+                                    }
+                                    else if(driverReference.starttrigger == "manual")
+                                    {
+                                        var startButton = new AnnotationButton(driverReference.startbuttontext);
+                                        startButton.clicked.connect(rangeTimer.startTimer);
+                                        annotationPanel.addWidget(startButton);
+                                        tabControls.push(button);
+                                    }
+                                    else if(driverReference.starttrigger == "value")
+                                    {
+                                        var startTrigger = new ThresholdDetector();
+                                        startTrigger.setThreshold(Number(driverReference.startvalue));
+                                        var scope = new Object;
+                                        scope.invoke = function() {
+                                            if(timer.running && !(arguments.callee.rangeTimer.running))
+                                            {
+                                                arguments.callee.rangeTimer.startTimer();
+                                            }
+                                        };
+                                        scope.invoke.rangeTimer = rangeTimer;
+                                        startTrigger.timeForValue.connect(scope.invoke);
+                                        for(var j = 0; j < columnNames.length; j++)
+                                        {
+                                            if(columnNames[j] == driverReference.startcolumnname)
+                                            {
+                                                channels[j].newData.connect(startTrigger.newMeasurement);
+                                            }
+                                        }
+                                    }
+                                    stop.clicked.connect(rangeTimer.stopTimer)
+                                    if(driverReference.stoptrigger == "manual")
+                                    {
+                                        var stopButton = new AnnotationButton(driverReference.stopbuttontext);
+                                        stopButton.clicked.connect(rangeTimer.stopTimer);
+                                        annotationPanel.addWidget(stopButton);
+                                        tabControls.push(button);
+                                    }
+                                    else if(driverReference.stoptrigger == "value")
+                                    {
+                                        var stopTrigger = new ThresholdDetector();
+                                        stopTrigger.setThreshold(Number(driverReference.stopvalue));
+                                        stopTrigger.timeForValue.connect(rangeTimer.stopTimer);
+                                        for(var j = 0; j < columnNames.length; j++)
+                                        {
+                                            if(columnNames[j] == driverReference.stopcolumnname)
+                                            {
+                                                channels[j].newData.connect(stopTrigger.newMeasurement);
+                                            }
+                                        }
+                                    }
+                                    rangeTimer.reportingName = configModel.data(driverIndex, 0);
+                                    rangeTimer.report = function() {
+                                        return "" + this.reportingName + ": " + this.value;
+                                    };
+                                }
+                                else if(driverReference.driver = "multirangetimer")
+                                {
+                                    var rangeTimer = new TimerDisplay();
+                                    rangeTimer.setDisplayFormat("mm:ss");
+                                    var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
+                                    indicatorPanel.addWidget(decorator);
+                                    var rangenames = driverReference.rangenames;
+                                    var endtemps = driverReference.endtemps;
+                                    var names = rangenames.slice(2, rangenames.length - 2).split(", ");
+                                    rangeTimer.rangeNames = new Array();
+                                    for(var j = 0; j < names.length; j++)
+                                    {
+                                        var name = names[j].slice(1, names[j].length - 1);
+                                        rangeTimer.rangeNames.push(name);
+                                    }
+                                    rangeTimer.rangeEnds = new Array();
+                                    var ends = endtemps.slice(2, endtemps.length - 2).split(", ");
+                                    for(var j = 0; j < ends.length; j++)
+                                    {
+                                        rangeTimer.rangeEnds.push(Number(ends[j]));
+                                    }
+                                    rangeTimer.currentRange = 0;
+                                    rangeTimer.results = new Array();
+                                    rangeTimer.trigger = new ThresholdDetector();
+                                    for(var j = 0; j < columnNames.length; j++)
+                                    {
+                                        if(columnNames[j] == driverReference.trigger)
+                                        {
+                                            channels[j].newData.connect(rangeTimer.trigger.newMeasurement);
+                                        }
+                                    }
+                                    rangeTimer.startRanges = function() {
+                                        arguments.callee.timer.currentRange = 0;
+                                        arguments.callee.timer.results.splice(0, arguments.callee.timer.results.length);
+                                        arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[0]);
+                                    };
+                                    rangeTimer.startRanges.timer = rangeTimer;
+                                    start.clicked.connect(rangeTimer.startTimer);
+                                    start.clicked.connect(rangeTimer.startRanges);
+                                    rangeTimer.transition = function() {
+                                        arguments.callee.timer.stopTimer();
+                                        arguments.callee.timer.results.push(arguments.callee.timer.value);
+                                        arguments.callee.timer.reset();
+                                        arguments.callee.timer.startTimer();
+                                        arguments.callee.timer.currentRange++;
+                                        if(arguments.callee.timer.currentRange <= arguments.callee.timer.rangeEnds.length)
+                                        {
+                                            arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[arguments.callee.timer.currentRange]);
+                                        }
+                                    };
+                                    rangeTimer.transition.timer = rangeTimer;
+                                    rangeTimer.trigger.timeForValue.connect(rangeTimer.transition);
+                                    stop.clicked.connect(rangeTimer.transition);
+                                    stop.clicked.connect(rangeTimer.stopTimer);
+                                    rangeTimer.report = function() {
+                                        var retval = "";
+                                        for(var j = 0; j < arguments.callee.timer.results.length; j++)
+                                        {
+                                            retval += arguments.callee.timer.rangeNames[j] + ": " + arguments.callee.timer.results[j] + "\n";
+                                        }
+                                        return retval;
+                                    };
+                                    rangeTimer.report.timer = rangeTimer;
+                                    rangetimers.push(rangeTimer);
                                 }
 			}
 		}
@@ -818,6 +951,11 @@
 				log.addOutputAnnotationColumn(lc + channels.length - channelSkip);
                 var filename = log.saveTemporary();
                 currentBatchInfo.tempData = filename;
+                var notes = findChildObject(currentBatchInfo, 'annotation');
+                for(var i = 0; i < rangetimers.length; i++)
+                {
+                    notes.append(rangetimers[i].report());
+                }
                 currentBatchInfo.raise();
                 currentBatchInfo.activateWindow();
             }

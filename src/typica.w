@@ -4155,6 +4155,7 @@ QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *)
     return QScriptValue();
 }
 
+
 @** Application Configuration.
 
 \noindent While \pn{} is intended as a data logging application, the diversity
@@ -19176,10 +19177,10 @@ QStringList itemList = data.split(",");
 model.
 
 @<Populate model column from list@>=
-for(int i = 0; i < itemList.size(); i++)
+for(int j = 0; j < itemList.size(); j++)
 {
-    tablemodel->setData(tablemodel->index(i, column),
-                   QVariant(itemList.at(i).toDouble()),
+    tablemodel->setData(tablemodel->index(j, column),
+                   QVariant(itemList.at(j).toDouble()),
                    Qt::DisplayRole);
 }
 
@@ -19523,8 +19524,6 @@ void RangeTimerConfWidget::updateStopTrigger(int option)
     }
 }
 
-
-
 @ The widget is registered with the configuration system.
 @<Register device configuration widgets@>=
 app.registerDeviceConfigurationWidget("rangetimer",
@@ -19534,6 +19533,107 @@ RangeTimerConfWidget::staticMetaObject);
 
 @<Class implementations@>=
 @<RangeTimerConfWidget implementation@>
+
+@ The multirange timer is a little different. To keep configuration tractible,
+this is slightly less general purpose than the range timer and only supports
+automatic triggering on a single data series.
+
+@<Class declarations@>=
+class MultiRangeTimerConfWidget : public BasicDeviceConfigurationWidget
+{
+    @[Q_OBJECT@]@/
+    public:@/
+        @[Q_INVOKABLE@]@, MultiRangeTimerConfWidget(DeviceTreeModel *model,
+                                                    const QModelIndex &index);
+    @[private slots@]:@/
+        void updateColumnName(const QString &text);
+        void updateRangeData();
+    private:@/
+        SaltModel *tablemodel;
+};
+
+@ These limitations allow a rather small set of controls for configuration. A
+line edit to specify the data series used for automatic triggering and a table
+which specifies the name of the timed range and an ending temperature.
+
+@<MultiRangeTimerConfWidget implementation@>=
+MultiRangeTimerConfWidget::MultiRangeTimerConfWidget(DeviceTreeModel *model,
+                                                     const QModelIndex &index)
+: BasicDeviceConfigurationWidget(model, index), tablemodel(new SaltModel(2))
+{
+    QFormLayout *layout = new QFormLayout;
+    QLineEdit *trigger = new QLineEdit;
+    layout->addRow(tr("Trigger column name:"), trigger);
+    tablemodel->setHeaderData(0, Qt::Horizontal, "Range Name");
+    tablemodel->setHeaderData(1, Qt::Horizontal, "End Temperature");
+    QTableView *rangeTable = new QTableView;
+    rangeTable->setModel(tablemodel);
+    layout->addRow(tr("Range data:"), rangeTable);
+    @<Get device configuration data for current node@>@;
+    for(int i = 0; i < configData.size(); i++)
+    {
+        node = configData.at(i).toElement();
+        if(node.attribute("name") == "trigger")
+        {
+            trigger->setText(node.attribute("value"));
+        }
+        else if(node.attribute("name") == "rangenames")
+        {
+            QString data = node.attribute("value");
+            if(data.length() > 3)
+            {
+                data.chop(2);
+                data = data.remove(0, 2);
+            }
+            QStringList itemList = data.split(", ");
+            for(int j = 0; j < itemList.size(); j++)
+            {
+                QString item = itemList.at(j);
+                item.chop(1);
+                item = item.remove(0, 1);
+                tablemodel->setData(tablemodel->index(j, 0),
+                                    QVariant(item), Qt::DisplayRole);
+            }
+        }
+        else if(node.attribute("name") == "endtemps")
+        {
+            @<Convert numeric array literal to list@>@;
+            int column = 1;
+            @<Populate model column from list@>@;
+        }
+    }
+    updateColumnName(trigger->text());
+    updateRangeData();
+    connect(trigger, SIGNAL(textEdited(QString)), this, SLOT(updateColumnName(QString)));
+    connect(tablemodel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateRangeData()));
+    setLayout(layout);
+}
+
+@ The update mechanisms are reasonably straightforward. Table updates just
+refresh the entire table instead of attempting to be clever about updating only
+the element that changed.
+
+@<MultiRangeTimerConfWidget implementation@>=
+void MultiRangeTimerConfWidget::updateRangeData()
+{
+    updateAttribute("rangenames", tablemodel->quotedArrayLiteral(0, Qt::DisplayRole));
+    updateAttribute("endtemps", tablemodel->arrayLiteral(1, Qt::DisplayRole));
+}
+
+void MultiRangeTimerConfWidget::updateColumnName(const QString &text)
+{
+    updateAttribute("trigger", text);
+}
+
+@ The widget is registered with the configuration system.
+@<Register device configuration widgets@>=
+app.registerDeviceConfigurationWidget("multirangetimer",
+MultiRangeTimerConfWidget::staticMetaObject);
+
+@ The implementation is in the main source file.
+
+@<Class implementations@>=
+@<MultiRangeTimerConfWidget implementation@>
 
 @* Profile Translation Configuration Widget.
 

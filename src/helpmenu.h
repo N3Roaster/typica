@@ -13,6 +13,7 @@ public:
 HelpMenu();
 public slots:
 void displayAboutTypica();
+void displayLicenseWindow();
 };
 
 #endif

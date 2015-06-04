@@ -6598,7 +6598,8 @@ void DAQImplementation::measure()@t\2@>@/
             {
                 for(int j = 0; j < channels; j++)@/
                 {
-                    Measurement measure(buffer[@,j+(i*channels)], time,
+					double measuredValue = buffer[j+(i*channels)];
+                    Measurement measure(measuredValue, time,
                                         unitMap[j]);
                     channelMap[@,j]->input(measure);
                 }

@@ -7,23 +7,52 @@ body {
 h1 {
 	font-size: 24px;
 }
-#topbanner {
+.topbanner {
 	background-color: rgb(235,239,249);
 	height: 96px;
 	margin-bottom: 2px;
 }
-#topbanner a {
+.topbanner a {
 	text-decoration: none;
 	color: black;
 }
-#topbanner img {
+.topbanner img {
 	float: left;
 }
-#topbanner h1 {
+.topbanner h1 {
 	padding-top: 20px;
 	padding-bottom: 0px;
 	margin-bottom: 0px;
 }
+
+.nbg {
+	width: 100%;
+	background-color: rgb(237, 227, 192);
+	margin-left: -20px;
+	padding-right: 80px;
+	overflow-x: hidden;
+}
+
+.nextversion {
+	margin-left: 20px;
+}
+
+.nextbanner {
+	height: 96px;
+	margin-bottom: 2px;
+}
+
+.nextbanner img {
+	float: left;
+	margin-left: 10px;
+}
+
+.nextbanner h1 {
+	padding-top: 20px;
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+}
+
 h2 {
 	font-size: 20px;
 	padding-top: 0px;

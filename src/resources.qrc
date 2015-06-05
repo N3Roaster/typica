@@ -30,5 +30,6 @@
         <file>resources/icons/tango/scalable/apps/office-calendar.svg</file>
         <file>resources/html/licenses/typica.html</file>
         <file>resources/html/licenses/tango.html</file>
+        <file>resources/html/typica2logo96.png</file>
     </qresource>
 </RCC>

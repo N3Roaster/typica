@@ -1,6 +1,7 @@
 define(`__PageStart', `<html><head>
 	<title>Typica - Data for Coffee Roasters</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+ifdef(`__TwitterCard', `__TwitterCard')
 	</head><body><div id="page"><div id="topmatter">
 	__SiteBanner
 	__NavigationMenu

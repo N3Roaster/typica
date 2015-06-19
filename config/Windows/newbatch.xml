@@ -201,6 +201,7 @@
                                 }
                                 displayValue -= change;
                             }
+                            var bagCount = (displayValue / bagConversion).toFixed(2);
                             switch(unitBox.currentIndex)
                             {
                                 case 0:
@@ -213,7 +214,6 @@
                                     displayValue = convertFromPounds(displayValue, "oz");
                                     break;
                             }
-                            var bagCount = (displayValue / bagConversion).toFixed(2);
                             displayValue = "" + displayValue + " (" + bagCount + " bags)";
                             if(table.data(r, 2, 0) != displayValue)
                             {

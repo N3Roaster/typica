@@ -82,7 +82,7 @@
 						weights = sqlToArray(recipeQuantities[i]);
 						proportions = new Array();
 						quantitySum = weights.reduce(function(p, c) {
-							return p + c;
+							return Number(p) + Number(c);
 						});
 						for(var j = 0; j < weights.length; j++) {
 							proportions.push(weights[j]/quantitySum);
@@ -93,7 +93,7 @@
 							query.bind(":id", greens[j]);
 							query.exec();
 							if(query.next()) {
-								partialSum += query.value(0);
+								partialSum += Number(query.value(0));
 							} else {
 								print("Error 3");
 							}

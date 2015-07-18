@@ -1,0 +1,190 @@
+<window id="remindersreport">
+	<reporttitle>Production:->Reminders</reporttitle>
+    <layout type="vertical">
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print</item>
+    </menu>
+    <program>
+        <![CDATA[
+            var window = this;
+            this.windowTitle = "Typica - Reminders";
+            var report = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                report.print();
+            });
+            var e = new Array();
+            function populateReminderData() {
+                e = new Array();
+                var query = new QSqlQuery;
+                query.exec("SELECT id, reminder FROM reminders");
+                while(query.next())
+                {
+                    var reminder = JSON.parse(query.value(1));
+                    reminder.dbid = query.value(0);
+                    var start_time = "" + reminder.start_year + "-" + reminder.start_month + "-" + reminder.start_day + " " + reminder.start_time;
+                    if(reminder.condition == "PRODUCTIONWEIGHT")
+                    {
+                        var convert = 1;
+                        var unittext = " Lb";
+                        if(reminder.unit == "KG")
+                        {
+                            convert = 2.2;
+                            unittext = " Kg";
+                        }
+                        var dq = new QSqlQuery;
+                        dq.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE time > :since");
+                        dq.bind(":conversion", convert);
+                        dq.bind(":since", start_time);
+                        dq.exec();
+                        dq.next();
+                        var proportion;
+                        var remain;
+                        if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
+                        {
+                            proportion = 1;
+                            remain = 0;
+                        }
+                        else
+                        {
+                            proportion = Number(dq.value(0)) / reminder.value;
+                            remain = (reminder.value - Number(dq.value(0))).toFixed(0);
+                        }
+                        reminder.completion = proportion;
+                        reminder.detail = remain + unittext;
+                        dq = dq.invalidate();
+                    }
+                    else if(reminder.condition == "DAYS")
+                    {
+                        var dq = new QSqlQuery;
+                        dq.prepare("SELECT 'now'::date - :since::date");
+                        dq.bind(":since", start_time);
+                        dq.exec();
+                        dq.next();
+                        var proportion;
+                        var remain;
+                        if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
+                        {
+                            proportion = 1;
+                            remain = 0;
+                        }
+                        else
+                        {
+                            proportion = Number(dq.value(0)) / reminder.value;
+                            remain = reminder.value - Number(dq.value(0));
+                        }
+                        reminder.completion = proportion;
+                        reminder.detail = remain + " Days";
+                        dq = dq.invalidate();
+                    }
+                    else if(reminder.condition == "PRODUCTIONBATCHES")
+                    {
+                        var dq = new QSqlQuery;
+                        dq.prepare("SELECT count(1) FROM roasting_log WHERE time > :since");
+                        dq.bind(":since", start_time);
+                        dq.exec();
+                        dq.next();
+                        var proportion;
+                        var remain;
+                        if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
+                        {
+                            proportion = 1;
+                            remain = 0;
+                        }
+                        else
+                        {
+                            proportion = Number(dq.value(0)) / reminder.value;
+                            remain = reminder.value - Number(dq.value(0));
+                        }
+                        reminder.completion = proportion;
+                        reminder.detail = remain + " Batches";
+                        dq = dq.invalidate();
+                    }
+                    else if(reminder.condition == "PRODUCTIONHOURS")
+                    {
+                        var dq = new QSqlQuery;
+                        dq.prepare("SELECT extract(epoch FROM (SELECT sum(duration) FROM roasting_log WHERE time > :since) / 3600)");
+                        dq.bind(":since", start_time);
+                        dq.exec();
+                        dq.next();
+                        var proportion;
+                        var remain;
+                        if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
+                        {
+                            proportion = 1;
+                            remain = 0;
+                        }
+                        else
+                        {
+                            proportion = Number(dq.value(0)) / reminder.value;
+                            remain = reminder.value - Number(dq.value(0));
+                        }
+                        reminder.completion = proportion;
+                        reminder.detail = remain.toFixed(1) + " Hours";
+                        dq = dq.invalidate();
+                    }
+                    e[reminder.dbid] = reminder;
+                }
+                query = query.invalidate();
+            }
+            function refresh() {
+                populateReminderData();
+                var passedData = e.filter(function(n){return n.hasOwnProperty("completion")}).sort(function(a,b){return b.completion-a.completion});
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", "Reminders");
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", "Reminders");
+                output.writeStartElement("a");
+                output.writeAttribute("href", "typica://script/0");
+                output.writeStartElement("div");
+                output.writeAttribute("class", "reminder");
+                output.writeStartElement("div");
+                output.writeAttribute("class", "nocolor");
+                output.writeEndElement();
+                output.writeStartElement("span");
+                output.writeAttribute("class", "title");
+                output.writeCDATA("New Reminder");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeTextElement("script", "e = " + JSON.stringify(passedData));
+                var styleFile = new QFile(QSettings.value("config") + "/Scripts/reminders.css");
+                styleFile.open(1);
+                output.writeTextElement("style", styleFile.readToString());
+                styleFile.close();
+                output.writeStartElement("script");
+                scriptFile = new QFile(QSettings.value("config") + "/Scripts/reminders.js");
+                scriptFile.open(1);
+                output.writeCDATA(scriptFile.readToString());
+                scriptFile.close();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                report.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+            var doRefresh = function() {
+                refresh();
+            }
+            report.scriptLinkClicked.connect(function(url) {
+                var reminder = createWindow("editreminder");
+                if(url != "0")
+                {
+                    reminder.loadData(e[url]);
+                }
+                reminder.setRefreshFunction(doRefresh);
+            });
+        ]]>
+    </program>
+</window>

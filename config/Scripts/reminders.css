@@ -1,0 +1,68 @@
+body{
+    background-color: #EDE3C0;
+}
+.reminder{
+    background-color: #EEEEEE;
+    display: block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    max-width: 300px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}
+.green{
+    width: 150px;
+    background-color: #00FF00;
+    height: 10px;
+    display: block;
+}
+.yellow{
+    width: 150px;
+    background-color: #FFFF00;
+    height: 10px;
+    display: block;
+}
+.orange{
+    width: 150px;
+    background-color: #FFA500;
+    height: 10px;
+    display: block;
+}
+.red{
+    width: 150px;
+    background-color: #FF0000;
+    height: 10px;
+    display: block;
+}
+.nocolor{
+    height: 10px;
+    display: block;
+}
+a{
+    text-decoration: none;
+    color: #000000;
+    display: block;
+    max-width: 300px;
+}
+.reminder span{
+    margin-left: 5px;
+    display: block;
+}
+.progress{
+    float: left;
+    color: #708090;
+    font-size: 80%
+}
+.detail{
+    float: right;
+    color: #708090;
+    font-size: 80%
+}
+.clearfix{
+    clear: both;
+}
+.title{
+    margin-bottom: 5px;
+    margin-top: 3px;
+}

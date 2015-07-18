@@ -293,6 +293,12 @@ type="push" />
 			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use (time, item, quantity) VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("UPDATE TypicaFeatures SET version = 4 WHERE feature = 'base-features'");
 		};
+                var DBUpdateReminders = function() {
+                    var query = new QSqlQuery;
+                    query.exec("CREATE TABLE IF NOT EXISTS reminders (id bigserial PRIMARY KEY NOT NULL, reminder text NOT NULL)");
+                    query.exec("UPDATE TypicaFeatures SET version = 5 WHERE feature = 'base-features'");
+                    query = query.invalidate();
+                };
 		
 		query = new QSqlQuery();
 		/* A table keeps track of database versioning information. This table is created
@@ -321,6 +327,10 @@ type="push" />
 			{
 				DBUpdateTriggers();
 			}
+                        if(query.value(2) < 5)
+                        {
+                            DBUpdateReminders();
+                        }
 		}
 		else
 		{

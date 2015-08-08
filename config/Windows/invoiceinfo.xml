@@ -14,9 +14,11 @@
 	<program>
 		<![CDATA[
 			var window = this;
+                        var invoiceID = 0;
 			var table = findChildObject(this, 'itemtable');
 			this.setInvoiceID = function(arg) {
 				window.invoiceID = arg;
+                                invoiceID = arg;
 				window.windowTitle = "Typica - Invoice Details " + arg;
 			};
 			button = findChildObject(this, 'edit');
@@ -43,6 +45,7 @@
 					for(var i = 0; i < 8; i++) {
 						feeWindow.rowData[i] = table.data(arg, i);
 					}
+                                        feeWindow.invoiceID = invoiceID;
 					feeWindow.dataSet();
 				}
 			});

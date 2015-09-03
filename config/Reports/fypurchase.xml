@@ -18,7 +18,7 @@
 			/* Set Lifetime range. */
 			var dateSelect = findChildObject(this, 'dates');
 			var query = new QSqlQuery();
-			query.exec("SELECT concat(EXTRACT(YEAR FROM time::date), '-01-01') FROM purchase WHERE time = (SELECT min(time) FROM purchase) UNION SELECT concat(EXTRACT(YEAR FROM 'now'::date), '-12-31')");
+			query.exec("SELECT concat(EXTRACT(YEAR FROM time::date), '-01-01') FROM purchase WHERE time = (SELECT min(time) FROM purchase) UNION SELECT concat(EXTRACT(YEAR FROM 'now'::date), '-12-31') ORDER BY concat ASC");
 			query.next();
 			var lifetimeStartDate = query.value(0);
 			query.next();

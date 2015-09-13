@@ -314,9 +314,10 @@
 				query.exec();
 				query.next();
 				var roastedId = query.value(0);
-				query.prepare("INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, :unroastedids, NULL, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files)");
+				query.prepare("INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, :unroastedids, :greens, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files)");
 				query.bind(":time", timefield.text);
 				query.bind(":unroastedids", "{" + greenId + "}");
+                                query.bind(":greens", "{" + convertToPounds(parseFloat(green.text), GunitBox.currentText) + "}");
 				query.bind(":green", convertToPounds(parseFloat(green.text), GunitBox.currentText));
 				query.bind(":roastedid", Number(roastedId));
 				query.bind(":roasted", convertToPounds(parseFloat(roasted.text), GunitBox.currentText));

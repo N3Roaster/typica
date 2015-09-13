@@ -45,13 +45,12 @@
                         if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
                         {
                             proportion = 1;
-                            remain = 0;
                         }
                         else
                         {
                             proportion = Number(dq.value(0)) / reminder.value;
-                            remain = (reminder.value - Number(dq.value(0))).toFixed(0);
                         }
+                        remain = (reminder.value - Number(dq.value(0))).toFixed(0);
                         reminder.completion = proportion;
                         reminder.detail = remain + unittext;
                         dq = dq.invalidate();
@@ -68,13 +67,12 @@
                         if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
                         {
                             proportion = 1;
-                            remain = 0;
                         }
                         else
                         {
                             proportion = Number(dq.value(0)) / reminder.value;
-                            remain = reminder.value - Number(dq.value(0));
                         }
+                        remain = reminder.value - Number(dq.value(0));
                         reminder.completion = proportion;
                         reminder.detail = remain + " Days";
                         dq = dq.invalidate();
@@ -91,13 +89,12 @@
                         if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
                         {
                             proportion = 1;
-                            remain = 0;
                         }
                         else
                         {
                             proportion = Number(dq.value(0)) / reminder.value;
-                            remain = reminder.value - Number(dq.value(0));
                         }
+                        remain = reminder.value - Number(dq.value(0));
                         reminder.completion = proportion;
                         reminder.detail = remain + " Batches";
                         dq = dq.invalidate();
@@ -114,13 +111,12 @@
                         if(reminder.value == 0 || (reminder.value < Number(dq.value(0))))
                         {
                             proportion = 1;
-                            remain = 0;
                         }
                         else
                         {
                             proportion = Number(dq.value(0)) / reminder.value;
-                            remain = reminder.value - Number(dq.value(0));
                         }
+                        remain = reminder.value - Number(dq.value(0));
                         reminder.completion = proportion;
                         reminder.detail = remain.toFixed(1) + " Hours";
                         dq = dq.invalidate();

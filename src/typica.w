@@ -6524,10 +6524,21 @@ class DAQImplementation : public QThread@;@/
         DAQImplementation(const QString &driverinfo);
         ~DAQImplementation();
         void run();
-        void measure();
+        bool measure();
         @<Library function pointers@>@;
         @<DAQImplementation member data@>@;
 }@+@t\kern-3pt@>;
+
+@ Starting in \pn{} 1.6.5, \pn{} attempts to recover from certain error
+conditions. To do this, information on channel configuration is saved.
+
+@<Class declarations@>=
+struct NiChannelSpec
+{
+    char *channelName;
+    signed long units;
+    signed long thermocouple;
+};
 
 @ In order to solve some minor problems, NI-DAQmxBase is no longer linked at
 compile time. Rather, this is now linked at runtime through a |QLibrary| object.
@@ -6560,8 +6571,11 @@ unsigned int handle;@/
 int error;
 int channels;
 bool ready;
+bool clockRateSet;
+double clockRate;
 QLibrary driver;
 QVector<Units::Unit> unitMap;
+QList<NiChannelSpec*> channelSpecs;
 
 @ Most of the interesting work associated with the |DAQ| class is handled in
 the |measure()| method of |DAQImplementation|. This function will block until a
@@ -6577,8 +6591,11 @@ With version 1.0.9, time measurement is moved out of the loop, reducing the
 number of calls in cases of more than 1 measurement and ensuring that all
 simultaneously obtained measurements have the same time stamp.
 
+Version 1.6.5 introduces a return value to indicate success. This allows for
+recovery in the event of failure.
+
 @<DAQ Implementation@>=
-void DAQImplementation::measure()@t\2@>@/
+bool DAQImplementation::measure()@t\2@>@/
 @t\4@>{@/
     int samplesRead = 0;
     double buffer[channels];
@@ -6587,7 +6604,8 @@ void DAQImplementation::measure()@t\2@>@/
                  &samplesRead, (signed long)(0));@/
     if(error)@/
     @t\1@>{@/
-        ready = false;@t\2@>@/
+        ready = false;
+        return false;@t\2@>@/
     }
     else@/
     {
@@ -6598,14 +6616,14 @@ void DAQImplementation::measure()@t\2@>@/
             {
                 for(int j = 0; j < channels; j++)@/
                 {
-					double measuredValue = buffer[j+(i*channels)];
-                    Measurement measure(measuredValue, time,
-                                        unitMap[j]);
+                    double measuredValue = buffer[j+(i*channels)];
+                    Measurement measure(measuredValue, time, unitMap[j]);
                     channelMap[@,j]->input(measure);
                 }
             }
         }
     }
+    return true;
 @t\4@>}
 
 @ It was noted that |DAQmxBaseReadAnalogF64()| blocks until it is able to fill
@@ -6620,15 +6638,84 @@ The while loop is controlled by |ready| which is set to |false| when there is an
 error in collecting a measurement or when the user wants to exit the program. It
 could also be set to |false| when the |DAQ| is reconfigured.
 
+Starting in \pn{} 1.6.5 setting up the measurement task is deferred until this
+method.
+
 @<DAQ Implementation@>=
 void DAQImplementation::run()
 {
     setPriority(QThread::TimeCriticalPriority);
+    @<Initialize NI hardware@>@;
     while(ready)
     {
-        measure();
+        if(!measure())
+        {
+            @<Reinitialize NI hardware@>@;
+        }
     }
 }
+
+@ Hardware initialization.
+
+@<Initialize NI hardware@>=
+retry:
+error = createTask(device.toAscii().data(), &handle);
+if(error)
+{
+    clearTask(handle);
+    goto retry;
+}
+NiChannelSpec *currentChannel;
+foreach(currentChannel, channelSpecs)
+{
+    if(useBase)
+    {
+        error = createChannel(handle, currentChannel.channelName, "",
+                              (double)(-1.0), (double)(100.0),
+                              currentChannel.units,
+                              currentChannel.thermocouple,
+                              (signed long)(10200), (double)(0), "");
+    }
+    else
+    {
+        error = createChannel(handle, currentChannel.channelName, "",
+                              (double)(50.0), (double)(500.0),
+                              currentChannel.units,
+                              currentChannel.thermocouple,
+                              (signed long)(10200), (double)(0), "");
+    }
+    if(error)
+    {
+        clearTask(handle);
+        goto retry;
+    }
+}
+if(clockRateSet)
+{
+    error = setClock(handle, "OnboardClock", clockRate,
+                     (signed long)(10280), (unsigned long long)(1));
+    if(error)
+    {
+        clearTask(handle);
+        goto retry;
+    }
+}
+error = startTask(handle);
+if(error)
+{
+    clearTask(handle);
+    goto retry;
+}
+ready = true;
+
+@ If an error occurs while in the measurement loop, an attempt is made to
+safely recover and resume collecting measurements.
+
+@<Reinitialize NI hardware@>=
+stopTask(handle);
+resetDevice(device.toAscii().data());
+clearTask(handle);
+@<Initialize NI hardware@>;
 
 @ When this loop exits, |DAQImplementation| emits a finished signal to indicate
 that the thread is no longer running. This could be due to perfectly normal
@@ -6715,19 +6802,8 @@ time to exit the program.
 @<DAQ Implementation@>=
 void DAQ::start()
 {
-    if(imp->ready)
-    {
-        imp->error = imp->startTask(imp->handle);
-        if(imp->error)
-        {
-            @<Display DAQ Error@>@;
-        }
-        else
-        {
-            connect(imp, SIGNAL(finished()), this, SLOT(threadFinished()));
-            imp->start();
-        }
-    }
+    connect(imp, SIGNAL(finished()), this, SLOT(threadFinished()));
+    imp->start();
 }
 
 void DAQ::stop()
@@ -6763,15 +6839,6 @@ for the setup that follows once a new |DAQ| is created.
 DAQ::DAQ(QString device, const QString &driver) : imp(new DAQImplementation(driver))@/
 @t\4\4@>{@/
     imp->device = device;
-    imp->error = imp->createTask(device.toAscii().data(), &(imp->handle));
-    if(imp->error)@/
-    {
-        @<Display DAQ Error@>@;
-    }
-    else@/
-    @t\1@>{@/
-        imp->ready = true;@t\2@>@/
-    }@/
 @t\4\4@>}
 
 @ Once the |DAQ| is created, one or more channels can be added to that |DAQ|.
@@ -6786,38 +6853,14 @@ Channel* DAQ::newChannel(int units, int thermocouple)
     Channel *retval = new Channel();
     imp->channelMap[imp->channels] = retval;
     imp->unitMap[imp->channels] = (Units::Unit)units;
+    NiChannelSpec *channelSpec = new NiChannelSpec;
+    channelSpec.channelName = QString("%1/ai%2").arg(imp->device).
+                                                 arg(imp->channels).
+                                                 toAscii().data();
+    channelSpec.units = (signed long)(units);
+    channelSpec.thermocouple = (signed long)(thermocouple);
+    imp->channelSpecs.append(channelSpec);
     imp->channels++;
-    if(imp->ready)
-    {
-        if(imp->useBase)
-        {
-            imp->error = imp->createChannel(imp->handle,
-                                        QString("%1/ai%2").arg(imp->device).
-                                                           arg(imp->channels - 1).
-                                                           toAscii().data(),
-                                        "", (double)(-1.0), (double)(100.0),
-                                        (signed long)(units),
-                                        (signed long)(thermocouple),
-                                        (signed long)(10200), (double)(0),
-                                        "");
-        }
-        else
-        {
-            imp->error = imp->createChannel(imp->handle,
-                                        QString("%1/ai%2").arg(imp->device).
-                                                           arg(imp->channels - 1).
-                                                           toAscii().data(),
-                                        "", (double)(50.0), (double)(500.0),
-                                        (signed long)(units),
-                                        (signed long)(thermocouple),
-                                        (signed long)(10200), (double)(0),
-                                        "");
-        }
-        if(imp->error)
-        {
-            @<Display DAQ Error@>@;
-        }
-    }
     return retval;
 }
 
@@ -6832,16 +6875,8 @@ every 251$\pm$1ms with 80\% of measurements spaced 251ms apart.
 @<DAQ Implementation@>=
 void DAQ::setClockRate(double Hz)
 {
-    if(imp->ready)
-    {
-        imp->error = imp->setClock(imp->handle, "OnboardClock", Hz,
-                                   (signed long)(10280), (signed long)(10123),
-                                   (unsigned long long)(1));
-        if(imp->error)
-        {
-            @<Display DAQ Error@>@;
-        }
-    }
+    imp->clockRateSet = true;
+    imp->clockRate = Hz;
 }
 
 @ Before the program exits, the |DAQ| should be deleted. The destructor
@@ -6883,7 +6918,7 @@ the symbols used in \pn{}.
 @<DAQ Implementation@>=
 DAQImplementation::DAQImplementation(const QString &driverinfo)
 : QThread(NULL), channelMap(4), handle(0), error(0), channels(0), ready(false),
-    unitMap(4)@/
+    clockRateSet(false), clockRate(0.0), unitMap(4)@/
 {
     if(driverinfo == "nidaqmxbase")
     {
@@ -12438,6 +12473,7 @@ details, see the Qt Linguist manual.
 
 @<Load translation objects@>=
 QTranslator base;
+qDebug() << "QLocale::system().name()" << QLocale::system().name();
 if(base.load(QString("qt_%1").arg(QLocale::system().name())))
 {
     installTranslator(&base);

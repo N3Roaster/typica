@@ -321,7 +321,7 @@ quickSelector->removeItem(index);
 #line 82 "./daterangeselector.w"
 
 
-#ifdef __linux__
+#ifdef __unix__
 #include "moc_daterangeselector.cpp"
 #endif
 

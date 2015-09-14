@@ -6509,6 +6509,17 @@ class DAQ : public QObject@;@/
         };@t\2@>@/
 }@t\kern-3pt@>;
 
+@ Starting in \pn{} 1.6.5, \pn{} attempts to recover from certain error
+conditions. To do this, information on channel configuration is saved.
+
+@<Class declarations@>=
+struct NiChannelSpec
+{
+    char *channelName;
+    signed long units;
+    signed long thermocouple;
+};
+
 @ The |DAQ| class has as a private member an instance of a class called
 |DAQImplementation|. The two classes together create and run a new thread of
 execution. This thread spends most of its time blocking while waiting for a new
@@ -6523,22 +6534,12 @@ class DAQImplementation : public QThread@;@/
     public:@;
         DAQImplementation(const QString &driverinfo);
         ~DAQImplementation();
+        void initialize();
         void run();
         bool measure();
         @<Library function pointers@>@;
         @<DAQImplementation member data@>@;
 }@+@t\kern-3pt@>;
-
-@ Starting in \pn{} 1.6.5, \pn{} attempts to recover from certain error
-conditions. To do this, information on channel configuration is saved.
-
-@<Class declarations@>=
-struct NiChannelSpec
-{
-    char *channelName;
-    signed long units;
-    signed long thermocouple;
-};
 
 @ In order to solve some minor problems, NI-DAQmxBase is no longer linked at
 compile time. Rather, this is now linked at runtime through a |QLibrary| object.
@@ -6645,7 +6646,7 @@ method.
 void DAQImplementation::run()
 {
     setPriority(QThread::TimeCriticalPriority);
-    @<Initialize NI hardware@>@;
+    initialize();
     while(ready)
     {
         if(!measure())
@@ -6657,56 +6658,59 @@ void DAQImplementation::run()
 
 @ Hardware initialization.
 
-@<Initialize NI hardware@>=
-retry:
-error = createTask(device.toAscii().data(), &handle);
-if(error)
+@<DAQ Implementation@>=
+void DAQImplementation::initialize()
 {
-    clearTask(handle);
-    goto retry;
-}
-NiChannelSpec *currentChannel;
-foreach(currentChannel, channelSpecs)
-{
-    if(useBase)
-    {
-        error = createChannel(handle, currentChannel.channelName, "",
-                              (double)(-1.0), (double)(100.0),
-                              currentChannel.units,
-                              currentChannel.thermocouple,
-                              (signed long)(10200), (double)(0), "");
-    }
-    else
-    {
-        error = createChannel(handle, currentChannel.channelName, "",
-                              (double)(50.0), (double)(500.0),
-                              currentChannel.units,
-                              currentChannel.thermocouple,
-                              (signed long)(10200), (double)(0), "");
-    }
+    retry:
+    error = createTask(device.toAscii().data(), &handle);
     if(error)
     {
         clearTask(handle);
         goto retry;
     }
-}
-if(clockRateSet)
-{
-    error = setClock(handle, "OnboardClock", clockRate,
-                     (signed long)(10280), (unsigned long long)(1));
+    NiChannelSpec *currentChannel;
+    foreach(currentChannel, channelSpecs)
+    {
+        if(useBase)
+        {
+            error = createChannel(handle, currentChannel->channelName, "",
+                                  (double)(-1.0), (double)(100.0),
+                                  currentChannel->units,
+                                  currentChannel->thermocouple,
+                                  (signed long)(10200), (double)(0), "");
+        }
+        else
+        {
+            error = createChannel(handle, currentChannel->channelName, "",
+                                  (double)(50.0), (double)(500.0),
+                                  currentChannel->units,
+                                  currentChannel->thermocouple,
+                                  (signed long)(10200), (double)(0), "");
+        }
+        if(error)
+        {
+            clearTask(handle);
+            goto retry;
+        }
+    }
+    if(clockRateSet)
+    {
+        error = setClock(handle, "OnboardClock", clockRate,
+                         (signed long)(10280), (unsigned long long)(1));
+        if(error)
+        {
+            clearTask(handle);
+            goto retry;
+        }
+    }
+    error = startTask(handle);
     if(error)
     {
         clearTask(handle);
         goto retry;
     }
+    ready = true;
 }
-error = startTask(handle);
-if(error)
-{
-    clearTask(handle);
-    goto retry;
-}
-ready = true;
 
 @ If an error occurs while in the measurement loop, an attempt is made to
 safely recover and resume collecting measurements.
@@ -6715,7 +6719,7 @@ safely recover and resume collecting measurements.
 stopTask(handle);
 resetDevice(device.toAscii().data());
 clearTask(handle);
-@<Initialize NI hardware@>;
+initialize();
 
 @ When this loop exits, |DAQImplementation| emits a finished signal to indicate
 that the thread is no longer running. This could be due to perfectly normal
@@ -6854,11 +6858,11 @@ Channel* DAQ::newChannel(int units, int thermocouple)
     imp->channelMap[imp->channels] = retval;
     imp->unitMap[imp->channels] = (Units::Unit)units;
     NiChannelSpec *channelSpec = new NiChannelSpec;
-    channelSpec.channelName = QString("%1/ai%2").arg(imp->device).
+    channelSpec->channelName = QString("%1/ai%2").arg(imp->device).
                                                  arg(imp->channels).
                                                  toAscii().data();
-    channelSpec.units = (signed long)(units);
-    channelSpec.thermocouple = (signed long)(thermocouple);
+    channelSpec->units = (signed long)(units);
+    channelSpec->thermocouple = (signed long)(thermocouple);
     imp->channelSpecs.append(channelSpec);
     imp->channels++;
     return retval;

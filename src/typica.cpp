@@ -37,16 +37,16 @@
 
 #include "webelement.h"
 
-#line 12418 "./typica.w"
+#line 12422 "./typica.w"
 
 /*:567*//*678:*/
 #line 487 "./daterangeselector.w"
 
 #include "daterangeselector.h"
-#line 14135 "./typica.w"
+#line 14139 "./typica.w"
 
 /*:678*//*786:*/
-#line 16655 "./typica.w"
+#line 16659 "./typica.w"
 
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
@@ -215,7 +215,17 @@ TypeE= 10055
 };
 
 /*:293*//*294:*/
-#line 6519 "./typica.w"
+#line 6515 "./typica.w"
+
+struct NiChannelSpec
+{
+char*channelName;
+signed long units;
+signed long thermocouple;
+};
+
+/*:294*//*295:*/
+#line 6530 "./typica.w"
 
 class DAQImplementation:public QThread
 {
@@ -223,10 +233,11 @@ Q_OBJECT
 public:
 DAQImplementation(const QString&driverinfo);
 ~DAQImplementation();
+void initialize();
 void run();
 bool measure();
 /*296:*/
-#line 6550 "./typica.w"
+#line 6551 "./typica.w"
 
 typedef int(*daqfp)(...);
 daqfp read;
@@ -241,10 +252,10 @@ daqfp resetDevice;
 daqfp waitForMeasurement;
 
 /*:296*/
-#line 6528 "./typica.w"
+#line 6540 "./typica.w"
 
 /*297:*/
-#line 6566 "./typica.w"
+#line 6567 "./typica.w"
 
 bool useBase;
 QString device;
@@ -260,22 +271,12 @@ QVector<Units::Unit> unitMap;
 QList<NiChannelSpec*> channelSpecs;
 
 /*:297*/
-#line 6529 "./typica.w"
+#line 6541 "./typica.w"
 
-};
-
-/*:294*//*295:*/
-#line 6535 "./typica.w"
-
-struct NiChannelSpec
-{
-char*channelName;
-signed long units;
-signed long thermocouple;
 };
 
 /*:295*//*315:*/
-#line 7095 "./typica.w"
+#line 7099 "./typica.w"
 
 class FakeDAQImplementation:public QThread
 {
@@ -304,7 +305,7 @@ Q_INVOKABLE void start();
 };
 
 /*:315*//*322:*/
-#line 7282 "./typica.w"
+#line 7286 "./typica.w"
 
 class Channel:public QObject
 {
@@ -319,7 +320,7 @@ void newData(Measurement);
 };
 
 /*:322*//*326:*/
-#line 7349 "./typica.w"
+#line 7353 "./typica.w"
 
 class LinearCalibrator:public QObject
 {
@@ -361,7 +362,7 @@ bool clamp;
 };
 
 /*:326*//*333:*/
-#line 7545 "./typica.w"
+#line 7549 "./typica.w"
 
 class LinearSplineInterpolator:public QObject
 {
@@ -380,7 +381,7 @@ QList<LinearCalibrator*> *interpolators;
 };
 
 /*:333*//*338:*/
-#line 7681 "./typica.w"
+#line 7685 "./typica.w"
 
 class TemperatureDisplay:public QLCDNumber
 {
@@ -398,7 +399,7 @@ void setRelativeMode(bool relative);
 };
 
 /*:338*//*349:*/
-#line 7900 "./typica.w"
+#line 7904 "./typica.w"
 
 class MeasurementTimeOffset:public QObject
 {
@@ -417,7 +418,7 @@ void measurement(Measurement measure);
 };
 
 /*:349*//*356:*/
-#line 8052 "./typica.w"
+#line 8056 "./typica.w"
 
 class ThresholdDetector:public QObject
 {
@@ -441,7 +442,7 @@ EdgeDirection currentDirection;
 };
 
 /*:356*//*361:*/
-#line 8158 "./typica.w"
+#line 8162 "./typica.w"
 
 class ZeroEmitter:public QObject
 {
@@ -462,7 +463,7 @@ void measurement(Measurement measure,int tempcolumn);
 };
 
 /*:361*//*366:*/
-#line 8252 "./typica.w"
+#line 8256 "./typica.w"
 
 class MeasurementAdapter:public QObject
 {
@@ -479,7 +480,7 @@ void measurement(Measurement measure,int tempcolumn);
 };
 
 /*:366*//*371:*/
-#line 8341 "./typica.w"
+#line 8345 "./typica.w"
 
 class GraphView:public QGraphicsView
 {
@@ -510,14 +511,14 @@ void showC();
 };
 
 /*:371*//*388:*/
-#line 8806 "./typica.w"
+#line 8810 "./typica.w"
 
 class MeasurementModel;
 class ZoomLog:public QTableView
 {
 Q_OBJECT
 /*389:*/
-#line 8855 "./typica.w"
+#line 8859 "./typica.w"
 
 MeasurementModel*model_ms;
 MeasurementModel*model_1s;
@@ -535,7 +536,7 @@ QList<int> saveNoteCols;
 QList<int> currentColumnSet;
 
 /*:389*/
-#line 8811 "./typica.w"
+#line 8815 "./typica.w"
 
 void switchLOD(MeasurementModel*m);
 private slots:
@@ -576,7 +577,7 @@ virtual void showEvent(QShowEvent*event);
 };
 
 /*:388*//*414:*/
-#line 9551 "./typica.w"
+#line 9555 "./typica.w"
 
 class MeasurementList;
 class MeasurementModel:public QAbstractItemModel
@@ -617,7 +618,7 @@ void rowChanged(int);
 };
 
 /*:414*//*415:*/
-#line 9595 "./typica.w"
+#line 9599 "./typica.w"
 
 class MeasurementList:public QVariantList
 {
@@ -627,7 +628,7 @@ bool operator==(const MeasurementList&other)const;
 };
 
 /*:415*//*441:*/
-#line 10253 "./typica.w"
+#line 10257 "./typica.w"
 
 class AnnotationButton:public QPushButton
 {
@@ -650,7 +651,7 @@ int notecolumn);
 };
 
 /*:441*//*449:*/
-#line 10378 "./typica.w"
+#line 10382 "./typica.w"
 
 class AnnotationSpinBox:public QDoubleSpinBox
 {
@@ -676,13 +677,13 @@ int notecolumn);
 };
 
 /*:449*//*457:*/
-#line 10537 "./typica.w"
+#line 10541 "./typica.w"
 
 class TimerDisplay:public QLCDNumber
 {
 Q_OBJECT
 /*458:*/
-#line 10587 "./typica.w"
+#line 10591 "./typica.w"
 
 Q_PROPERTY(QTime seconds READ seconds WRITE setTimer)
 Q_PROPERTY(TimerMode mode READ mode WRITE setMode)
@@ -693,7 +694,7 @@ Q_PROPERTY(bool autoReset READ autoReset WRITE setAutoReset)
 Q_PROPERTY(QString value READ value)
 
 /*:458*/
-#line 10541 "./typica.w"
+#line 10545 "./typica.w"
 
 private slots:
 void updateTime();
@@ -732,7 +733,7 @@ void valueChanged(QTime);
 void runStateChanged(bool);
 private:
 /*459:*/
-#line 10598 "./typica.w"
+#line 10602 "./typica.w"
 
 QTime s;
 QTime r;
@@ -748,12 +749,12 @@ QTime relative;
 QTime base;
 
 /*:459*/
-#line 10578 "./typica.w"
+#line 10582 "./typica.w"
 
 };
 
 /*:457*//*480:*/
-#line 10990 "./typica.w"
+#line 10994 "./typica.w"
 
 class PackLayout:public QLayout
 {
@@ -778,7 +779,7 @@ QLayoutItem*takeAt(int index);
 };
 
 /*:480*//*493:*/
-#line 11268 "./typica.w"
+#line 11272 "./typica.w"
 
 class SceneButton:public QGraphicsScene
 {
@@ -793,7 +794,7 @@ void clicked(QPoint pos);
 };
 
 /*:493*//*495:*/
-#line 11310 "./typica.w"
+#line 11314 "./typica.w"
 
 class WidgetDecorator:public QWidget
 {
@@ -812,7 +813,7 @@ void setTextColor(QColor color);
 };
 
 /*:495*//*506:*/
-#line 11485 "./typica.w"
+#line 11489 "./typica.w"
 
 class LogEditWindow:public QMainWindow
 {
@@ -844,7 +845,7 @@ LogEditWindow();
 };
 
 /*:506*//*520:*/
-#line 11793 "./typica.w"
+#line 11797 "./typica.w"
 
 class XMLOutput:public QObject
 {
@@ -867,7 +868,7 @@ bool output();
 };
 
 /*:520*//*527:*/
-#line 12029 "./typica.w"
+#line 12033 "./typica.w"
 
 class XMLInput:public QObject
 {
@@ -888,7 +889,7 @@ void lastColumn(int);
 };
 
 /*:527*//*538:*/
-#line 12283 "./typica.w"
+#line 12287 "./typica.w"
 
 class CSVOutput
 {
@@ -910,7 +911,7 @@ bool output();
 };
 
 /*:538*//*568:*/
-#line 12426 "./typica.w"
+#line 12430 "./typica.w"
 
 #define AppInstance (qobject_cast<Application *> (qApp))
 
@@ -923,55 +924,55 @@ public:
 Application(int&argc,char**argv);
 QDomDocument*configuration();
 /*710:*/
-#line 14981 "./typica.w"
+#line 14985 "./typica.w"
 
 QDomDocument deviceConfiguration();
 
 /*:710*//*743:*/
-#line 15654 "./typica.w"
+#line 15658 "./typica.w"
 
 void registerDeviceConfigurationWidget(QString driver,QMetaObject widget);
 QWidget*deviceConfigurationWidget(DeviceTreeModel*model,
 const QModelIndex&index);
 
 /*:743*//*748:*/
-#line 15758 "./typica.w"
+#line 15762 "./typica.w"
 
 QList<NodeInserter*> topLevelNodeInserters;
 
 /*:748*/
-#line 12437 "./typica.w"
+#line 12441 "./typica.w"
 
 QSqlDatabase database();
 QScriptEngine*engine;
 public slots:
 /*711:*/
-#line 14988 "./typica.w"
+#line 14992 "./typica.w"
 
 void saveDeviceConfiguration();
 
 /*:711*/
-#line 12441 "./typica.w"
+#line 12445 "./typica.w"
 
 private:
 /*709:*/
-#line 14972 "./typica.w"
+#line 14976 "./typica.w"
 
 QDomDocument deviceConfigurationDocument;
 
 /*:709*//*742:*/
-#line 15648 "./typica.w"
+#line 15652 "./typica.w"
 
 QHash<QString,QMetaObject> deviceConfigurationWidgets;
 
 /*:742*/
-#line 12443 "./typica.w"
+#line 12447 "./typica.w"
 
 QDomDocument conf;
 };
 
 /*:568*//*576:*/
-#line 12569 "./typica.w"
+#line 12573 "./typica.w"
 
 class SaltModel:public QAbstractItemModel
 {
@@ -1004,7 +1005,7 @@ int findData(const QVariant&value,int column,int role= Qt::UserRole);
 };
 
 /*:576*//*592:*/
-#line 12954 "./typica.w"
+#line 12958 "./typica.w"
 
 class SqlComboBox:public QComboBox
 {
@@ -1029,7 +1030,7 @@ void setNullData(QVariant nullData);
 };
 
 /*:592*//*599:*/
-#line 13101 "./typica.w"
+#line 13105 "./typica.w"
 
 class SqlComboBoxDelegate:public QItemDelegate
 {
@@ -1051,7 +1052,7 @@ const QModelIndex&index)const;
 };
 
 /*:599*//*614:*/
-#line 13312 "./typica.w"
+#line 13316 "./typica.w"
 
 class SqlConnectionSetup:public QDialog
 {
@@ -1075,7 +1076,7 @@ QPushButton*connectButton;
 };
 
 /*:614*//*619:*/
-#line 13447 "./typica.w"
+#line 13451 "./typica.w"
 
 class SqlQueryView:public QTableView
 {
@@ -1098,7 +1099,7 @@ void persistColumnResize(int column,int oldsize,int newsize);
 };
 
 /*:619*//*634:*/
-#line 13702 "./typica.w"
+#line 13706 "./typica.w"
 
 class ReportAction:public QAction
 {
@@ -1113,7 +1114,7 @@ QString reportFile;
 };
 
 /*:634*//*646:*/
-#line 13911 "./typica.w"
+#line 13915 "./typica.w"
 
 class ReportTable:public QObject
 {
@@ -1130,7 +1131,7 @@ void refresh();
 };
 
 /*:646*//*679:*/
-#line 14150 "./typica.w"
+#line 14154 "./typica.w"
 
 class FormArray:public QScrollArea
 {
@@ -1152,7 +1153,7 @@ void setMaximumElementHeight(int height);
 };
 
 /*:679*//*689:*/
-#line 14366 "./typica.w"
+#line 14370 "./typica.w"
 
 class ScaleControl:public QGraphicsView
 {
@@ -1160,7 +1161,7 @@ Q_OBJECT
 Q_PROPERTY(double initialValue READ initialValue WRITE setInitialValue)
 Q_PROPERTY(double finalValue READ finalValue WRITE setFinalValue)
 /*690:*/
-#line 14392 "./typica.w"
+#line 14396 "./typica.w"
 
 QGraphicsScene scene;
 QGraphicsPolygonItem initialDecrement;
@@ -1184,7 +1185,7 @@ bool finalSet;
 bool scaleDown;
 
 /*:690*/
-#line 14372 "./typica.w"
+#line 14376 "./typica.w"
 
 public:
 ScaleControl();
@@ -1203,7 +1204,7 @@ virtual void mouseReleaseEvent(QMouseEvent*event);
 };
 
 /*:689*//*701:*/
-#line 14689 "./typica.w"
+#line 14693 "./typica.w"
 
 class IntensityControl:public QGraphicsView
 {
@@ -1236,7 +1237,7 @@ virtual void mouseReleaseEvent(QMouseEvent*event);
 };
 
 /*:701*//*717:*/
-#line 15077 "./typica.w"
+#line 15081 "./typica.w"
 
 class DeviceTreeModelNode
 {
@@ -1256,7 +1257,7 @@ DeviceTreeModelNode*parentItem;
 };
 
 /*:717*//*719:*/
-#line 15152 "./typica.w"
+#line 15156 "./typica.w"
 
 class DeviceTreeModel:public QAbstractItemModel
 {
@@ -1288,12 +1289,12 @@ QDomNode treeRoot;
 };
 
 /*:719*//*738:*/
-#line 15606 "./typica.w"
+#line 15610 "./typica.w"
 
 Q_DECLARE_METATYPE(QModelIndex)
 
 /*:738*//*746:*/
-#line 15713 "./typica.w"
+#line 15717 "./typica.w"
 
 class NodeInserter:public QAction
 {
@@ -1311,7 +1312,7 @@ QString driverString;
 };
 
 /*:746*//*749:*/
-#line 15768 "./typica.w"
+#line 15772 "./typica.w"
 
 class DeviceConfigurationWindow:public QWidget
 {
@@ -1332,7 +1333,7 @@ QScrollArea*configArea;
 };
 
 /*:749*//*758:*/
-#line 15938 "./typica.w"
+#line 15942 "./typica.w"
 
 class BasicDeviceConfigurationWidget:public QWidget
 {
@@ -1349,7 +1350,7 @@ QModelIndex currentNode;
 };
 
 /*:758*//*762:*/
-#line 16023 "./typica.w"
+#line 16027 "./typica.w"
 
 class RoasterConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1362,7 +1363,7 @@ void updateRoasterId(int id);
 };
 
 /*:762*//*767:*/
-#line 16177 "./typica.w"
+#line 16181 "./typica.w"
 
 class NiDaqMxBaseDriverConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1373,7 +1374,7 @@ const QModelIndex&index);
 };
 
 /*:767*//*769:*/
-#line 16223 "./typica.w"
+#line 16227 "./typica.w"
 
 class NiDaqMxBase9211ConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1387,7 +1388,7 @@ void updateDeviceId(const QString&newId);
 };
 
 /*:769*//*773:*/
-#line 16309 "./typica.w"
+#line 16313 "./typica.w"
 
 class Ni9211TcConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1402,7 +1403,7 @@ void updateHidden(bool hidden);
 };
 
 /*:773*//*778:*/
-#line 16425 "./typica.w"
+#line 16429 "./typica.w"
 
 class NiDaqMxDriverConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1413,7 +1414,7 @@ const QModelIndex&index);
 };
 
 /*:778*//*780:*/
-#line 16466 "./typica.w"
+#line 16470 "./typica.w"
 
 class NiDaqMx9211ConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1427,7 +1428,7 @@ void updateDeviceId(const QString&newId);
 };
 
 /*:780*//*782:*/
-#line 16535 "./typica.w"
+#line 16539 "./typica.w"
 
 class NiDaqMxTc01ConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1443,7 +1444,7 @@ void updateHidden(bool hidden);
 };
 
 /*:782*//*787:*/
-#line 16666 "./typica.w"
+#line 16670 "./typica.w"
 
 class PortSelector:public QComboBox
 {
@@ -1457,7 +1458,7 @@ QextSerialEnumerator*lister;
 };
 
 /*:787*//*789:*/
-#line 16714 "./typica.w"
+#line 16718 "./typica.w"
 
 class BaudSelector:public QComboBox
 {
@@ -1514,7 +1515,7 @@ BAUD115200= 115200
 };
 
 /*:789*//*791:*/
-#line 16785 "./typica.w"
+#line 16789 "./typica.w"
 
 class ParitySelector:public QComboBox
 {
@@ -1535,7 +1536,7 @@ PAR_SPACE
 };
 
 /*:791*//*793:*/
-#line 16823 "./typica.w"
+#line 16827 "./typica.w"
 
 class FlowSelector:public QComboBox
 {
@@ -1552,7 +1553,7 @@ FLOW_XONXOFF
 };
 
 /*:793*//*795:*/
-#line 16856 "./typica.w"
+#line 16860 "./typica.w"
 
 class StopSelector:public QComboBox
 {
@@ -1571,7 +1572,7 @@ STOP_2
 };
 
 /*:795*//*798:*/
-#line 16909 "./typica.w"
+#line 16913 "./typica.w"
 
 class ShortHexSpinBox:public QSpinBox
 {
@@ -1585,7 +1586,7 @@ virtual QString textFromValue(int value)const;
 };
 
 /*:798*//*800:*/
-#line 16971 "./typica.w"
+#line 16975 "./typica.w"
 
 class ModbusRtuPortConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1602,7 +1603,7 @@ void updateStopBits(const QString&newStopBits);
 };
 
 /*:800*//*802:*/
-#line 17122 "./typica.w"
+#line 17126 "./typica.w"
 
 class ModbusRtuDeviceConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1626,7 +1627,7 @@ QStackedLayout*decimalSpecificationLayout;
 };
 
 /*:802*//*804:*/
-#line 17381 "./typica.w"
+#line 17385 "./typica.w"
 
 class ModbusRtuDeviceTPvConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1639,7 +1640,7 @@ void updateAddress(int newAddress);
 };
 
 /*:804*//*806:*/
-#line 17427 "./typica.w"
+#line 17431 "./typica.w"
 
 class ModbusRtuDeviceTSvConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1660,7 +1661,7 @@ QStackedLayout*boundsLayout;
 };
 
 /*:806*//*810:*/
-#line 17621 "./typica.w"
+#line 17625 "./typica.w"
 
 class AnnotationButtonConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1673,7 +1674,7 @@ void updateAnnotationText(const QString&text);
 };
 
 /*:810*//*814:*/
-#line 17689 "./typica.w"
+#line 17693 "./typica.w"
 
 class ReconfigurableAnnotationButtonConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1686,7 +1687,7 @@ void updateAnnotationText(const QString&text);
 };
 
 /*:814*//*817:*/
-#line 17763 "./typica.w"
+#line 17767 "./typica.w"
 
 class NoteSpinConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -1765,7 +1766,7 @@ void enableDiagnosticLogging(bool enabled);
 };
 
 /*:835*//*839:*/
-#line 17888 "./typica.w"
+#line 17892 "./typica.w"
 
 class ModbusRTUDevice:public QObject
 {
@@ -1826,7 +1827,7 @@ bool waiting;
 };
 
 /*:839*//*855:*/
-#line 18591 "./typica.w"
+#line 18595 "./typica.w"
 
 class ModbusConfigurator:public BasicDeviceConfigurationWidget
 {
@@ -2054,7 +2055,7 @@ PhidgetHandleOnly deleteDevice;
 };
 
 /*:903*//*916:*/
-#line 19129 "./typica.w"
+#line 19133 "./typica.w"
 
 class LinearSplineInterpolationConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -2071,7 +2072,7 @@ SaltModel*tablemodel;
 };
 
 /*:916*//*922:*/
-#line 19259 "./typica.w"
+#line 19263 "./typica.w"
 
 class CoolingTimerConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -2084,7 +2085,7 @@ void updateResetTime(QTime time);
 };
 
 /*:922*//*926:*/
-#line 19325 "./typica.w"
+#line 19329 "./typica.w"
 
 class RangeTimerConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -2103,7 +2104,7 @@ void updateStopTrigger(int option);
 };
 
 /*:926*//*931:*/
-#line 19577 "./typica.w"
+#line 19581 "./typica.w"
 
 class MultiRangeTimerConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -2119,7 +2120,7 @@ SaltModel*tablemodel;
 };
 
 /*:931*//*936:*/
-#line 19679 "./typica.w"
+#line 19683 "./typica.w"
 
 class TranslationConfWidget:public BasicDeviceConfigurationWidget
 {
@@ -2895,39 +2896,39 @@ QScriptValue Measurement_toScriptValue(QScriptEngine*engine,const Measurement&me
 void Measurement_fromScriptValue(const QScriptValue&value,Measurement&measurement);
 
 /*:287*//*310:*/
-#line 7010 "./typica.w"
+#line 7014 "./typica.w"
 
 QScriptValue constructDAQ(QScriptContext*context,QScriptEngine*engine);
 QScriptValue DAQ_newChannel(QScriptContext*context,QScriptEngine*engine);
 void setDAQProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:310*//*319:*/
-#line 7215 "./typica.w"
+#line 7219 "./typica.w"
 
 QScriptValue constructFakeDAQ(QScriptContext*context,QScriptEngine*engine);
 QScriptValue FakeDAQ_newChannel(QScriptContext*context,QScriptEngine*engine);
 void setFakeDAQProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:319*//*324:*/
-#line 7316 "./typica.w"
+#line 7320 "./typica.w"
 
 void setChannelProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:324*//*330:*/
-#line 7498 "./typica.w"
+#line 7502 "./typica.w"
 
 QScriptValue constructLinearCalibrator(QScriptContext*context,
 QScriptEngine*engine);
 void setLinearCalibratorProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:330*//*335:*/
-#line 7638 "./typica.w"
+#line 7642 "./typica.w"
 
 QScriptValue constructLinearSplineInterpolator(QScriptContext*context,QScriptEngine*engine);
 void setLinearSplineInterpolatorProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:335*//*345:*/
-#line 7843 "./typica.w"
+#line 7847 "./typica.w"
 
 QScriptValue constructTemperatureDisplay(QScriptContext*context,
 QScriptEngine*engine);
@@ -2936,7 +2937,7 @@ QScriptValue TemperatureDisplay_setDisplayUnits(QScriptContext*context,
 QScriptEngine*engine);
 
 /*:345*//*353:*/
-#line 8002 "./typica.w"
+#line 8006 "./typica.w"
 
 QScriptValue constructMeasurementTimeOffset(QScriptContext*context,
 QScriptEngine*engine);
@@ -2944,33 +2945,33 @@ void setMeasurementTimeOffsetProperties(QScriptValue value,
 QScriptEngine*engine);
 
 /*:353*//*358:*/
-#line 8115 "./typica.w"
+#line 8119 "./typica.w"
 
 QScriptValue constructThresholdDetector(QScriptContext*context,QScriptEngine*engine);
 void setThresholdDetectorProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:358*//*363:*/
-#line 8213 "./typica.w"
+#line 8217 "./typica.w"
 
 QScriptValue constructZeroEmitter(QScriptContext*context,
 QScriptEngine*engine);
 void setZeroEmitterProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:363*//*368:*/
-#line 8292 "./typica.w"
+#line 8296 "./typica.w"
 
 QScriptValue constructMeasurementAdapter(QScriptContext*context,
 QScriptEngine*engine);
 void setMeasurementAdapterProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:368*//*385:*/
-#line 8756 "./typica.w"
+#line 8760 "./typica.w"
 
 void setGraphViewProperties(QScriptValue value,QScriptEngine*engine);
 QScriptValue constructGraphView(QScriptContext*context,QScriptEngine*engine);
 
 /*:385*//*408:*/
-#line 9383 "./typica.w"
+#line 9387 "./typica.w"
 
 void setZoomLogProperties(QScriptValue value,QScriptEngine*engine);
 QScriptValue constructZoomLog(QScriptContext*context,QScriptEngine*engine);
@@ -2986,14 +2987,14 @@ QScriptValue ZoomLog_setDisplayUnits(QScriptContext*context,
 QScriptEngine*engine);
 
 /*:408*//*446:*/
-#line 10340 "./typica.w"
+#line 10344 "./typica.w"
 
 QScriptValue constructAnnotationButton(QScriptContext*context,
 QScriptEngine*engine);
 void setAnnotationButtonProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:446*//*454:*/
-#line 10480 "./typica.w"
+#line 10484 "./typica.w"
 
 QScriptValue constructAnnotationSpinBox(QScriptContext*context,
 QScriptEngine*engine);
@@ -3002,7 +3003,7 @@ void setQDoubleSpinBoxProperties(QScriptValue value,QScriptEngine*engine);
 void setQAbstractSpinBoxProperties(QScriptValue value,QScriptEngine*engine);
 
 /*:454*//*475:*/
-#line 10906 "./typica.w"
+#line 10910 "./typica.w"
 
 QScriptValue constructTimerDisplay(QScriptContext*context,
 QScriptEngine*engine);
@@ -3010,20 +3011,20 @@ void setTimerDisplayProperties(QScriptValue value,QScriptEngine*engine);
 QScriptValue TimerDisplay_setTimerMode(QScriptContext*context,QScriptEngine*engine);
 
 /*:475*//*503:*/
-#line 11431 "./typica.w"
+#line 11435 "./typica.w"
 
 void setWidgetDecoratorProperties(QScriptValue value,QScriptEngine*engine);
 QScriptValue constructWidgetDecorator(QScriptContext*context,
 QScriptEngine*engine);
 
 /*:503*//*516:*/
-#line 11714 "./typica.w"
+#line 11718 "./typica.w"
 
 QScriptValue constructLogEditWindow(QScriptContext*context,
 QScriptEngine*engine);
 
 /*:516*//*535:*/
-#line 12241 "./typica.w"
+#line 12245 "./typica.w"
 
 QScriptValue constructXMLInput(QScriptContext*context,QScriptEngine*engine);
 QScriptValue XMLInput_input(QScriptContext*context,QScriptEngine*engine);
@@ -3049,7 +3050,7 @@ QScriptValue constructWebElement(QScriptContext*context,
 QScriptEngine*engine);
 
 /*:560*//*629:*/
-#line 13581 "./typica.w"
+#line 13585 "./typica.w"
 
 void setSqlQueryViewProperties(QScriptValue value,QScriptEngine*engine);
 QScriptValue constructSqlQueryView(QScriptContext*context,
@@ -3060,13 +3061,13 @@ QScriptValue SqlQueryView_setHeaderData(QScriptContext*context,
 QScriptEngine*engine);
 
 /*:629*//*639:*/
-#line 13818 "./typica.w"
+#line 13822 "./typica.w"
 
 void addReportToLayout(QDomElement element,QStack<QWidget*> *widgetStack,
 QStack<QLayout*> *layoutStack);
 
 /*:639*//*655:*/
-#line 14103 "./typica.w"
+#line 14107 "./typica.w"
 
 void setQTextEditProperties(QScriptValue value,QScriptEngine*engine);
 QScriptValue QTextEdit_print(QScriptContext*context,QScriptEngine*engine);
@@ -3079,13 +3080,13 @@ QStack<QWidget*> *widgetStack,
 QStack<QLayout*> *layoutStack);
 
 /*:677*//*686:*/
-#line 14300 "./typica.w"
+#line 14304 "./typica.w"
 
 void addFormArrayToLayout(QDomElement element,QStack<QWidget*> *widgetStack,
 QStack<QLayout*> *layoutStack);
 
 /*:686*//*707:*/
-#line 14884 "./typica.w"
+#line 14888 "./typica.w"
 
 void addScaleControlToLayout(QDomElement element,
 QStack<QWidget*> *widgetStack,
@@ -3095,7 +3096,7 @@ QStack<QWidget*> *widgetStack,
 QStack<QLayout*> *layoutStack);
 
 /*:707*//*733:*/
-#line 15470 "./typica.w"
+#line 15474 "./typica.w"
 
 QScriptValue constructDeviceTreeModel(QScriptContext*context,
 QScriptEngine*engine);
@@ -3109,13 +3110,13 @@ QScriptValue QAbstractItemModel_rowCount(QScriptContext*context,QScriptEngine*en
 QScriptValue QAbstractItemModel_hasChildren(QScriptContext*context,QScriptEngine*engine);
 
 /*:733*//*739:*/
-#line 15612 "./typica.w"
+#line 15616 "./typica.w"
 
 QScriptValue QModelIndex_toScriptValue(QScriptEngine*engine,const QModelIndex&index);
 void QModelIndex_fromScriptValue(const QScriptValue&value,QModelIndex&index);
 
 /*:739*//*755:*/
-#line 15910 "./typica.w"
+#line 15914 "./typica.w"
 
 QScriptValue constructDeviceConfigurationWindow(QScriptContext*context,
 QScriptEngine*engine);
@@ -3126,7 +3127,7 @@ QScriptEngine*engine);
 QScriptValue constructSettingsWindow(QScriptContext*context,QScriptEngine*engine);
 
 /*:826*//*850:*/
-#line 18498 "./typica.w"
+#line 18502 "./typica.w"
 
 QScriptValue constructModbusRTUDevice(QScriptContext*context,QScriptEngine*engine);
 QScriptValue ModbusRTUDevice_pVChannel(QScriptContext*context,QScriptEngine*engine);
@@ -3210,7 +3211,7 @@ void setValueAnnotationProperties(QScriptValue value,QScriptEngine*engine);
 #line 527 "./typica.w"
 
 /*609:*/
-#line 13238 "./typica.w"
+#line 13242 "./typica.w"
 
 void messageFileOutput(QtMsgType type,const char*msg);
 
@@ -3221,7 +3222,7 @@ void messageFileOutput(QtMsgType type,const char*msg);
 #line 537 "./typica.w"
 
 /*747:*/
-#line 15733 "./typica.w"
+#line 15737 "./typica.w"
 
 NodeInserter::NodeInserter(const QString&title,const QString&name,
 const QString&driver,QObject*parent):
@@ -3320,7 +3321,7 @@ this->time(),Units::Rankine);
 #line 539 "./typica.w"
 
 /*298:*/
-#line 6597 "./typica.w"
+#line 6598 "./typica.w"
 
 bool DAQImplementation::measure()
 {
@@ -3354,80 +3355,36 @@ return true;
 }
 
 /*:298*//*299:*/
-#line 6644 "./typica.w"
+#line 6645 "./typica.w"
 
 void DAQImplementation::run()
 {
 setPriority(QThread::TimeCriticalPriority);
-/*300:*/
-#line 6660 "./typica.w"
-
-retry:
-error= createTask(device.toAscii().data(),&handle);
-if(error)
-{
-clearTask(handle);
-goto retry;
-}
-NiChannelSpec*currentChannel;
-foreach(currentChannel,channelSpecs)
-{
-if(useBase)
-{
-error= createChannel(handle,currentChannel.channelName,"",
-(double)(-1.0),(double)(100.0),
-currentChannel.units,
-currentChannel.thermocouple,
-(signed long)(10200),(double)(0),"");
-}
-else
-{
-error= createChannel(handle,currentChannel.channelName,"",
-(double)(50.0),(double)(500.0),
-currentChannel.units,
-currentChannel.thermocouple,
-(signed long)(10200),(double)(0),"");
-}
-if(error)
-{
-clearTask(handle);
-goto retry;
-}
-}
-if(clockRateSet)
-{
-error= setClock(handle,"OnboardClock",clockRate,
-(signed long)(10280),(unsigned long long)(1));
-if(error)
-{
-clearTask(handle);
-goto retry;
-}
-}
-error= startTask(handle);
-if(error)
-{
-clearTask(handle);
-goto retry;
-}
-ready= true;
-
-/*:300*/
-#line 6648 "./typica.w"
-
+initialize();
 while(ready)
 {
 if(!measure())
 {
 /*301:*/
-#line 6714 "./typica.w"
+#line 6718 "./typica.w"
 
 stopTask(handle);
 resetDevice(device.toAscii().data());
 clearTask(handle);
-/*300:*/
-#line 6660 "./typica.w"
+initialize();
 
+/*:301*/
+#line 6654 "./typica.w"
+
+}
+}
+}
+
+/*:299*//*300:*/
+#line 6661 "./typica.w"
+
+void DAQImplementation::initialize()
+{
 retry:
 error= createTask(device.toAscii().data(),&handle);
 if(error)
@@ -3440,18 +3397,18 @@ foreach(currentChannel,channelSpecs)
 {
 if(useBase)
 {
-error= createChannel(handle,currentChannel.channelName,"",
+error= createChannel(handle,currentChannel->channelName,"",
 (double)(-1.0),(double)(100.0),
-currentChannel.units,
-currentChannel.thermocouple,
+currentChannel->units,
+currentChannel->thermocouple,
 (signed long)(10200),(double)(0),"");
 }
 else
 {
-error= createChannel(handle,currentChannel.channelName,"",
+error= createChannel(handle,currentChannel->channelName,"",
 (double)(50.0),(double)(500.0),
-currentChannel.units,
-currentChannel.thermocouple,
+currentChannel->units,
+currentChannel->thermocouple,
 (signed long)(10200),(double)(0),"");
 }
 if(error)
@@ -3477,27 +3434,17 @@ clearTask(handle);
 goto retry;
 }
 ready= true;
-
-/*:300*/
-#line 6718 "./typica.w"
-;
-
-/*:301*/
-#line 6653 "./typica.w"
-
-}
-}
 }
 
-/*:299*//*302:*/
-#line 6726 "./typica.w"
+/*:300*//*302:*/
+#line 6730 "./typica.w"
 
 void DAQ::threadFinished()
 {
 if(imp->error)
 {
 /*303:*/
-#line 6777 "./typica.w"
+#line 6781 "./typica.w"
 
 imp->ready= false;
 QMessageBox warning;
@@ -3512,13 +3459,13 @@ warning.setWindowTitle(QString(PROGRAM_NAME));
 warning.exec();
 
 /*:303*/
-#line 6731 "./typica.w"
+#line 6735 "./typica.w"
 
 }
 }
 
 /*:302*//*304:*/
-#line 6802 "./typica.w"
+#line 6806 "./typica.w"
 
 void DAQ::start()
 {
@@ -3541,7 +3488,7 @@ imp->error= imp->stopTask(imp->handle);
 if(imp->error)
 {
 /*303:*/
-#line 6777 "./typica.w"
+#line 6781 "./typica.w"
 
 imp->ready= false;
 QMessageBox warning;
@@ -3556,14 +3503,14 @@ warning.setWindowTitle(QString(PROGRAM_NAME));
 warning.exec();
 
 /*:303*/
-#line 6823 "./typica.w"
+#line 6827 "./typica.w"
 
 }
 imp->error= imp->clearTask(imp->handle);
 if(imp->error)
 {
 /*303:*/
-#line 6777 "./typica.w"
+#line 6781 "./typica.w"
 
 imp->ready= false;
 QMessageBox warning;
@@ -3578,14 +3525,14 @@ warning.setWindowTitle(QString(PROGRAM_NAME));
 warning.exec();
 
 /*:303*/
-#line 6828 "./typica.w"
+#line 6832 "./typica.w"
 
 }
 }
 }
 
 /*:304*//*305:*/
-#line 6838 "./typica.w"
+#line 6842 "./typica.w"
 
 DAQ::DAQ(QString device,const QString&driver):imp(new DAQImplementation(driver))
 {
@@ -3593,7 +3540,7 @@ imp->device= device;
 }
 
 /*:305*//*306:*/
-#line 6850 "./typica.w"
+#line 6854 "./typica.w"
 
 Channel*DAQ::newChannel(int units,int thermocouple)
 {
@@ -3601,18 +3548,18 @@ Channel*retval= new Channel();
 imp->channelMap[imp->channels]= retval;
 imp->unitMap[imp->channels]= (Units::Unit)units;
 NiChannelSpec*channelSpec= new NiChannelSpec;
-channelSpec.channelName= QString("%1/ai%2").arg(imp->device).
+channelSpec->channelName= QString("%1/ai%2").arg(imp->device).
 arg(imp->channels).
 toAscii().data();
-channelSpec.units= (signed long)(units);
-channelSpec.thermocouple= (signed long)(thermocouple);
+channelSpec->units= (signed long)(units);
+channelSpec->thermocouple= (signed long)(thermocouple);
 imp->channelSpecs.append(channelSpec);
 imp->channels++;
 return retval;
 }
 
 /*:306*//*307:*/
-#line 6875 "./typica.w"
+#line 6879 "./typica.w"
 
 void DAQ::setClockRate(double Hz)
 {
@@ -3621,7 +3568,7 @@ imp->clockRate= Hz;
 }
 
 /*:307*//*308:*/
-#line 6887 "./typica.w"
+#line 6891 "./typica.w"
 
 DAQ::~DAQ()
 {
@@ -3645,7 +3592,7 @@ delete imp;
 }
 
 /*:308*//*309:*/
-#line 6918 "./typica.w"
+#line 6922 "./typica.w"
 
 DAQImplementation::DAQImplementation(const QString&driverinfo)
 :QThread(NULL),channelMap(4),handle(0),error(0),channels(0),ready(false),
@@ -4085,7 +4032,7 @@ driver->unload();
 #line 541 "./typica.w"
 
 /*316:*/
-#line 7127 "./typica.w"
+#line 7131 "./typica.w"
 
 void FakeDAQImplementation::measure()
 {
@@ -4099,7 +4046,7 @@ channelMap[i]->input(measure);
 }
 
 /*:316*//*317:*/
-#line 7141 "./typica.w"
+#line 7145 "./typica.w"
 
 void FakeDAQImplementation::run()
 {
@@ -4122,7 +4069,7 @@ FakeDAQImplementation::~FakeDAQImplementation()
 }
 
 /*:317*//*318:*/
-#line 7166 "./typica.w"
+#line 7170 "./typica.w"
 
 void FakeDAQ::start()
 {
@@ -4172,7 +4119,7 @@ delete imp;
 #line 542 "./typica.w"
 
 /*323:*/
-#line 7297 "./typica.w"
+#line 7301 "./typica.w"
 
 Channel::Channel():QObject(NULL)
 {
@@ -4193,7 +4140,7 @@ emit newData(measurement);
 #line 543 "./typica.w"
 
 /*339:*/
-#line 7702 "./typica.w"
+#line 7706 "./typica.w"
 
 void TemperatureDisplay::setRelativeMode(bool relative)
 {
@@ -4201,7 +4148,7 @@ r= relative;
 }
 
 /*:339*//*340:*/
-#line 7719 "./typica.w"
+#line 7723 "./typica.w"
 
 void TemperatureDisplay::setValue(Measurement temperature)
 {
@@ -4272,7 +4219,7 @@ break;
 }
 
 /*:340*//*341:*/
-#line 7798 "./typica.w"
+#line 7802 "./typica.w"
 
 TemperatureDisplay::TemperatureDisplay(QWidget*parent):
 QLCDNumber(8,parent),unit(Units::Fahrenheit),r(false)
@@ -4282,7 +4229,7 @@ display("---.--'F");
 }
 
 /*:341*//*342:*/
-#line 7814 "./typica.w"
+#line 7818 "./typica.w"
 
 void TemperatureDisplay::invalidate()
 {
@@ -4290,7 +4237,7 @@ display("---.--'F");
 }
 
 /*:342*//*343:*/
-#line 7826 "./typica.w"
+#line 7830 "./typica.w"
 
 void TemperatureDisplay::setDisplayUnits(Units::Unit scale)
 {
@@ -4298,7 +4245,7 @@ unit= scale;
 }
 
 /*:343*//*344:*/
-#line 7834 "./typica.w"
+#line 7838 "./typica.w"
 
 TemperatureDisplay::~TemperatureDisplay()
 {
@@ -4309,7 +4256,7 @@ TemperatureDisplay::~TemperatureDisplay()
 #line 544 "./typica.w"
 
 /*350:*/
-#line 7934 "./typica.w"
+#line 7938 "./typica.w"
 
 void MeasurementTimeOffset::newMeasurement(Measurement measure)
 {
@@ -4323,7 +4270,7 @@ QTime jitComp(epoch.hour(),measure.time().minute(),
 measure.time().second(),measure.time().msec());
 int relTime= jitBase.msecsTo(jitComp);
 /*351:*/
-#line 7968 "./typica.w"
+#line 7972 "./typica.w"
 
 QTime newTime(0,0,0,0);
 newTime= newTime.addMSecs(relTime);
@@ -4336,7 +4283,7 @@ rel.setTime(newTime);
 emit measurement(rel);
 
 /*:351*/
-#line 7946 "./typica.w"
+#line 7950 "./typica.w"
 
 }
 else
@@ -4350,7 +4297,7 @@ else
 {
 int relTime= epoch.msecsTo(measure.time());
 /*351:*/
-#line 7968 "./typica.w"
+#line 7972 "./typica.w"
 
 QTime newTime(0,0,0,0);
 newTime= newTime.addMSecs(relTime);
@@ -4363,7 +4310,7 @@ rel.setTime(newTime);
 emit measurement(rel);
 
 /*:351*/
-#line 7958 "./typica.w"
+#line 7962 "./typica.w"
 
 }
 hasPrevious= true;
@@ -4371,7 +4318,7 @@ previous= measure.time();
 }
 
 /*:350*//*352:*/
-#line 7981 "./typica.w"
+#line 7985 "./typica.w"
 
 MeasurementTimeOffset::MeasurementTimeOffset(QTime zero):epoch(zero),
 previous(0,0,0,0),hasPrevious(false)
@@ -4394,7 +4341,7 @@ hasPrevious= false;
 #line 545 "./typica.w"
 
 /*362:*/
-#line 8179 "./typica.w"
+#line 8183 "./typica.w"
 
 ZeroEmitter::ZeroEmitter(int tempcolumn):QObject(NULL),col(tempcolumn)
 {
@@ -4431,7 +4378,7 @@ emit measurement(cache,col);
 #line 546 "./typica.w"
 
 /*367:*/
-#line 8269 "./typica.w"
+#line 8273 "./typica.w"
 
 MeasurementAdapter::MeasurementAdapter(int tempcolumn):col(tempcolumn)
 {
@@ -4457,7 +4404,7 @@ col= column;
 #line 547 "./typica.w"
 
 /*372:*/
-#line 8391 "./typica.w"
+#line 8395 "./typica.w"
 
 GraphView::GraphView(QWidget*parent):QGraphicsView(parent),
 theScene(new QGraphicsScene),
@@ -4483,7 +4430,7 @@ timeLine->setLine(0,0,0,-500);
 timeLine->hide();
 theScene->addItem(timeLine);
 /*373:*/
-#line 8431 "./typica.w"
+#line 8435 "./typica.w"
 
 QGraphicsLineItem*tempaxis= new QGraphicsLineItem;
 tempaxis->setLine(-10,-500,-10,0);
@@ -4519,10 +4466,10 @@ gridLinesC->append(label);
 }
 
 /*:373*/
-#line 8415 "./typica.w"
+#line 8419 "./typica.w"
 ;
 /*374:*/
-#line 8472 "./typica.w"
+#line 8476 "./typica.w"
 
 QSettings settings;
 if(settings.contains("settings/graph/relative/enable"))
@@ -4569,10 +4516,10 @@ y-= skip;
 }
 
 /*:374*/
-#line 8416 "./typica.w"
+#line 8420 "./typica.w"
 
 /*376:*/
-#line 8549 "./typica.w"
+#line 8553 "./typica.w"
 
 QGraphicsLineItem*timeaxis= new QGraphicsLineItem;
 timeaxis->setLine(0,10,1200,10);
@@ -4589,13 +4536,13 @@ theScene->addItem(label);
 }
 
 /*:376*/
-#line 8417 "./typica.w"
+#line 8421 "./typica.w"
 ;
 fitInView(theScene->sceneRect().adjusted(-50,-50,50,50));
 }
 
 /*:372*//*375:*/
-#line 8519 "./typica.w"
+#line 8523 "./typica.w"
 
 void GraphView::showF()
 {
@@ -4622,7 +4569,7 @@ gridLinesC->at(i)->show();
 }
 
 /*:375*//*377:*/
-#line 8568 "./typica.w"
+#line 8572 "./typica.w"
 
 void GraphView::resizeEvent(QResizeEvent*)
 {
@@ -4630,7 +4577,7 @@ fitInView(theScene->sceneRect().adjusted(-50,-50,50,50));
 }
 
 /*:377*//*378:*/
-#line 8582 "./typica.w"
+#line 8586 "./typica.w"
 
 #define FULLTIMETOINT(t) (t.msec() + (t.second() * 1000) +  (t.minute() * 60 * 1000))
 
@@ -4658,7 +4605,7 @@ offset= translations->value(tempcolumn);
 if(prevPoints->contains(tempcolumn))
 {
 /*380:*/
-#line 8659 "./typica.w"
+#line 8663 "./typica.w"
 
 QGraphicsLineItem*segment= new QGraphicsLineItem;
 QPointF nextPoint(FULLTIMETOINT(measure.time())/1000,measure.temperature());
@@ -4678,7 +4625,7 @@ timeLine->setLine(nextPoint.x()+offset,0,nextPoint.x()+offset,-500);
 }
 
 /*:380*/
-#line 8608 "./typica.w"
+#line 8612 "./typica.w"
 
 if(graphLines->contains(tempcolumn))
 {
@@ -4697,7 +4644,7 @@ graphLines->insert(tempcolumn,newLine);
 else
 {
 /*379:*/
-#line 8644 "./typica.w"
+#line 8648 "./typica.w"
 
 int x= FULLTIMETOINT(measure.time())/1000;
 prevPoints->insert(tempcolumn,QPointF(x,measure.temperature()));
@@ -4707,13 +4654,13 @@ timeLine->setLine(x,0,x,-500);
 }
 
 /*:379*/
-#line 8625 "./typica.w"
+#line 8629 "./typica.w"
 
 }
 }
 
 /*:378*//*381:*/
-#line 8680 "./typica.w"
+#line 8684 "./typica.w"
 
 void GraphView::clear()
 {
@@ -4726,7 +4673,7 @@ translations->clear();
 }
 
 /*:381*//*382:*/
-#line 8694 "./typica.w"
+#line 8698 "./typica.w"
 
 void GraphView::removeSeries(int column)
 {
@@ -4745,7 +4692,7 @@ prevPoints->remove(column);
 }
 
 /*:382*//*383:*/
-#line 8713 "./typica.w"
+#line 8717 "./typica.w"
 
 void GraphView::setSeriesTranslation(int column,double offset)
 {
@@ -4769,7 +4716,7 @@ translations->insert(column,offset);
 }
 
 /*:383*//*384:*/
-#line 8740 "./typica.w"
+#line 8744 "./typica.w"
 
 void GraphView::setTimeIndicatorEnabled(bool enabled)
 {
@@ -4788,14 +4735,14 @@ timeLine->hide();
 #line 548 "./typica.w"
 
 /*390:*/
-#line 8884 "./typica.w"
+#line 8888 "./typica.w"
 
 void ZoomLog::newMeasurement(Measurement measure,int tempcolumn)
 {
 if(measure.time()!=QTime(0,0,0,0))
 {
 /*392:*/
-#line 8958 "./typica.w"
+#line 8962 "./typica.w"
 
 if(lastMeasurement.contains(tempcolumn))
 {
@@ -4816,7 +4763,7 @@ newMeasurement(synthesized,tempcolumn);
 }
 
 /*:392*/
-#line 8889 "./typica.w"
+#line 8893 "./typica.w"
 
 }
 model_ms->newMeasurement(measure,tempcolumn);
@@ -4851,7 +4798,7 @@ model_1m->newMeasurement(adjusted,tempcolumn);
 }
 }
 /*394:*/
-#line 9002 "./typica.w"
+#line 9006 "./typica.w"
 
 if(currentColumnSet.contains(tempcolumn))
 {
@@ -4901,13 +4848,13 @@ lastMeasurement[replicationcolumn]= synthetic;
 }
 
 /*:394*/
-#line 8922 "./typica.w"
+#line 8926 "./typica.w"
 
 }
 else
 {
 /*391:*/
-#line 8934 "./typica.w"
+#line 8938 "./typica.w"
 
 MeasurementModel*m;
 foreach(m,modelSet)
@@ -4916,14 +4863,14 @@ m->newMeasurement(measure,tempcolumn);
 }
 
 /*:391*/
-#line 8926 "./typica.w"
+#line 8930 "./typica.w"
 
 }
 lastMeasurement.insert(tempcolumn,measure);
 }
 
 /*:390*//*393:*/
-#line 8988 "./typica.w"
+#line 8992 "./typica.w"
 
 void ZoomLog::addToCurrentColumnSet(int column)
 {
@@ -4936,7 +4883,7 @@ currentColumnSet.clear();
 }
 
 /*:393*//*395:*/
-#line 9072 "./typica.w"
+#line 9076 "./typica.w"
 
 void ZoomLog::newAnnotation(QString annotation,int tempcolumn,
 int annotationcolumn)
@@ -4957,7 +4904,7 @@ m->newAnnotation(annotation,tempcolumn,annotationcolumn);
 }
 
 /*:395*//*396:*/
-#line 9096 "./typica.w"
+#line 9100 "./typica.w"
 
 void ZoomLog::centerOn(int row)
 {
@@ -4965,7 +4912,7 @@ scrollTo(currentModel->index(row,0),QAbstractItemView::PositionAtCenter);
 }
 
 /*:396*//*397:*/
-#line 9106 "./typica.w"
+#line 9110 "./typica.w"
 
 void ZoomLog::clear()
 {
@@ -4981,7 +4928,7 @@ saveNoteCols.clear();
 }
 
 /*:397*//*398:*/
-#line 9124 "./typica.w"
+#line 9128 "./typica.w"
 
 QVariant ZoomLog::data(int row,int column)const
 {
@@ -4995,7 +4942,7 @@ return model_ms->rowCount();
 }
 
 /*:398*//*399:*/
-#line 9147 "./typica.w"
+#line 9151 "./typica.w"
 
 bool ZoomLog::saveXML(QIODevice*device)
 {
@@ -5030,7 +4977,7 @@ return retval;
 }
 
 /*:399*//*400:*/
-#line 9183 "./typica.w"
+#line 9187 "./typica.w"
 
 bool ZoomLog::saveCSV(QIODevice*device)
 {
@@ -5055,7 +5002,7 @@ return writer.output();
 }
 
 /*:400*//*401:*/
-#line 9212 "./typica.w"
+#line 9216 "./typica.w"
 
 void ZoomLog::switchLOD(MeasurementModel*m)
 {
@@ -5101,7 +5048,7 @@ switchLOD(model_1m);
 }
 
 /*:401*//*402:*/
-#line 9260 "./typica.w"
+#line 9264 "./typica.w"
 
 void ZoomLog::setDisplayUnits(Units::Unit scale)
 {
@@ -5120,7 +5067,7 @@ return model_ms->displayUnits();
 }
 
 /*:402*//*403:*/
-#line 9280 "./typica.w"
+#line 9284 "./typica.w"
 
 QString ZoomLog::lastTime(int series)
 {
@@ -5130,7 +5077,7 @@ return time.toString("h:mm:ss.zzz");
 }
 
 /*:403*//*404:*/
-#line 9290 "./typica.w"
+#line 9294 "./typica.w"
 
 ZoomLog::ZoomLog():QTableView(NULL),model_ms(new MeasurementModel(this)),
 model_1s(new MeasurementModel(this)),model_5s(new MeasurementModel(this)),
@@ -5151,7 +5098,7 @@ this,SLOT(restoreColumnWidths()));
 }
 
 /*:404*//*405:*/
-#line 9313 "./typica.w"
+#line 9317 "./typica.w"
 
 void ZoomLog::setHeaderData(int section,QString text)
 {
@@ -5163,7 +5110,7 @@ m->setHeaderData(section,Qt::Horizontal,QVariant(text));
 }
 
 /*:405*//*406:*/
-#line 9331 "./typica.w"
+#line 9335 "./typica.w"
 
 void ZoomLog::addOutputTemperatureColumn(int column)
 {
@@ -5188,16 +5135,16 @@ saveNoteCols.clear();
 }
 
 /*:406*//*407:*/
-#line 9357 "./typica.w"
+#line 9361 "./typica.w"
 
 void ZoomLog::persistColumnResize(int column,int,int newsize)
 {
 /*622:*/
-#line 13496 "./typica.w"
+#line 13500 "./typica.w"
 
 QSettings settings;
 /*623:*/
-#line 13509 "./typica.w"
+#line 13513 "./typica.w"
 
 QWidget*topLevelWidget= this;
 while(topLevelWidget->parentWidget())
@@ -5206,7 +5153,7 @@ topLevelWidget= topLevelWidget->parentWidget();
 }
 
 /*:623*/
-#line 13498 "./typica.w"
+#line 13502 "./typica.w"
 
 settings.setValue(QString("columnWidths/%1/%2/%3").
 arg(topLevelWidget->objectName()).
@@ -5214,18 +5161,18 @@ arg(objectName()).arg(column),
 QVariant(newsize));
 
 /*:622*/
-#line 9360 "./typica.w"
+#line 9364 "./typica.w"
 
 }
 
 void ZoomLog::restoreColumnWidths()
 {
 /*625:*/
-#line 13529 "./typica.w"
+#line 13533 "./typica.w"
 
 QSettings settings;
 /*623:*/
-#line 13509 "./typica.w"
+#line 13513 "./typica.w"
 
 QWidget*topLevelWidget= this;
 while(topLevelWidget->parentWidget())
@@ -5234,7 +5181,7 @@ topLevelWidget= topLevelWidget->parentWidget();
 }
 
 /*:623*/
-#line 13531 "./typica.w"
+#line 13535 "./typica.w"
 
 QString baseKey= 
 QString("columnWidths/%1/%2").arg(topLevelWidget->objectName()).
@@ -5249,7 +5196,7 @@ setColumnWidth(i,settings.value(key).toInt());
 }
 
 /*:625*/
-#line 9365 "./typica.w"
+#line 9369 "./typica.w"
 
 }
 
@@ -5261,11 +5208,11 @@ QTableView::setVisible(visibility);
 void ZoomLog::showEvent(QShowEvent*)
 {
 /*625:*/
-#line 13529 "./typica.w"
+#line 13533 "./typica.w"
 
 QSettings settings;
 /*623:*/
-#line 13509 "./typica.w"
+#line 13513 "./typica.w"
 
 QWidget*topLevelWidget= this;
 while(topLevelWidget->parentWidget())
@@ -5274,7 +5221,7 @@ topLevelWidget= topLevelWidget->parentWidget();
 }
 
 /*:623*/
-#line 13531 "./typica.w"
+#line 13535 "./typica.w"
 
 QString baseKey= 
 QString("columnWidths/%1/%2").arg(topLevelWidget->objectName()).
@@ -5289,7 +5236,7 @@ setColumnWidth(i,settings.value(key).toInt());
 }
 
 /*:625*/
-#line 9375 "./typica.w"
+#line 9379 "./typica.w"
 
 }
 
@@ -5297,7 +5244,7 @@ setColumnWidth(i,settings.value(key).toInt());
 #line 549 "./typica.w"
 
 /*416:*/
-#line 9608 "./typica.w"
+#line 9612 "./typica.w"
 
 bool MeasurementList::operator<(const MeasurementList&other)const
 {
@@ -5310,7 +5257,7 @@ return this->first().toTime()==other.first().toTime();
 }
 
 /*:416*//*417:*/
-#line 9624 "./typica.w"
+#line 9628 "./typica.w"
 
 QModelIndex MeasurementModel::parent(const QModelIndex&)const
 {
@@ -5318,7 +5265,7 @@ return QModelIndex();
 }
 
 /*:417*//*418:*/
-#line 9634 "./typica.w"
+#line 9638 "./typica.w"
 
 void MeasurementModel::newMeasurement(Measurement measure,int tempcolumn)
 {
@@ -5334,10 +5281,10 @@ MeasurementList*temp;
 temp= new MeasurementList;
 temp->append(QVariant(measure.time()));
 /*419:*/
-#line 9693 "./typica.w"
+#line 9697 "./typica.w"
 
 /*420:*/
-#line 9738 "./typica.w"
+#line 9742 "./typica.w"
 
 QList<MeasurementList*> ::iterator i= lastInsertion;
 bool quickscan= false;
@@ -5377,7 +5324,7 @@ quickscan= true;
 }
 
 /*:420*/
-#line 9694 "./typica.w"
+#line 9698 "./typica.w"
 
 if(quickscan==false)
 {
@@ -5403,7 +5350,7 @@ n= rA;
 }
 
 /*:419*/
-#line 9648 "./typica.w"
+#line 9652 "./typica.w"
 
 MeasurementList*newEntry;
 int insertion;
@@ -5413,7 +5360,7 @@ insertion= entries->indexOf(*i);
 if((*i)->first().toTime()==measure.time())
 {
 /*421:*/
-#line 9780 "./typica.w"
+#line 9784 "./typica.w"
 
 if((*i)->size()<tempcolumn+1)
 {
@@ -5429,13 +5376,13 @@ createIndex(insertion,tempcolumn));
 lastTemperature->insert(tempcolumn,insertion);
 
 /*:421*/
-#line 9656 "./typica.w"
+#line 9660 "./typica.w"
 
 }
 else
 {
 /*422:*/
-#line 9798 "./typica.w"
+#line 9802 "./typica.w"
 
 beginInsertRows(QModelIndex(),insertion,insertion);
 newEntry= new MeasurementList;
@@ -5450,18 +5397,18 @@ endInsertRows();
 lastTemperature->insert(tempcolumn,insertion);
 
 /*:422*/
-#line 9660 "./typica.w"
+#line 9664 "./typica.w"
 
 }
 }
 else
 {
 /*423:*/
-#line 9816 "./typica.w"
+#line 9820 "./typica.w"
 
 insertion= entries->size();
 /*422:*/
-#line 9798 "./typica.w"
+#line 9802 "./typica.w"
 
 beginInsertRows(QModelIndex(),insertion,insertion);
 newEntry= new MeasurementList;
@@ -5476,11 +5423,11 @@ endInsertRows();
 lastTemperature->insert(tempcolumn,insertion);
 
 /*:422*/
-#line 9818 "./typica.w"
+#line 9822 "./typica.w"
 
 
 /*:423*/
-#line 9665 "./typica.w"
+#line 9669 "./typica.w"
 
 }
 if(tempcolumn>=colcount)
@@ -5492,7 +5439,7 @@ delete temp;
 }
 
 /*:418*//*424:*/
-#line 9828 "./typica.w"
+#line 9832 "./typica.w"
 
 void MeasurementModel::newAnnotation(QString annotation,int tempcolumn,
 int annotationColumn)
@@ -5509,7 +5456,7 @@ r= 0;
 if(r==0&&entries->size()==0)
 {
 /*425:*/
-#line 9866 "./typica.w"
+#line 9870 "./typica.w"
 
 beginInsertRows(QModelIndex(),0,0);
 MeasurementList*newEntry= new MeasurementList;
@@ -5518,7 +5465,7 @@ entries->append(newEntry);
 endInsertRows();
 
 /*:425*/
-#line 9843 "./typica.w"
+#line 9847 "./typica.w"
 
 }
 MeasurementList*row= entries->at(r);
@@ -5540,7 +5487,7 @@ colcount= annotationColumn+1;
 }
 
 /*:424*//*426:*/
-#line 9877 "./typica.w"
+#line 9881 "./typica.w"
 
 void MeasurementModel::clear()
 {
@@ -5557,7 +5504,7 @@ reset();
 }
 
 /*:426*//*427:*/
-#line 9910 "./typica.w"
+#line 9914 "./typica.w"
 
 bool MeasurementModel::setData(const QModelIndex&index,
 const QVariant&value,int role)
@@ -5567,7 +5514,7 @@ if(role!=Qt::EditRole&&role!=Qt::DisplayRole)
 return false;
 }
 /*428:*/
-#line 9942 "./typica.w"
+#line 9946 "./typica.w"
 
 bool valid= false;
 if(index.isValid())
@@ -5582,7 +5529,7 @@ valid= true;
 }
 
 /*:428*/
-#line 9918 "./typica.w"
+#line 9922 "./typica.w"
 
 if(!valid)
 {
@@ -5592,7 +5539,7 @@ MeasurementList*row= entries->at(index.row());
 if(index.column()>=row->size())
 {
 /*429:*/
-#line 9959 "./typica.w"
+#line 9963 "./typica.w"
 
 for(int i= row->size()-1;i<index.column();i++)
 {
@@ -5600,13 +5547,13 @@ row->append(QVariant());
 }
 
 /*:429*/
-#line 9926 "./typica.w"
+#line 9930 "./typica.w"
 
 }
 if(index.column()==0)
 {
 /*430:*/
-#line 9974 "./typica.w"
+#line 9978 "./typica.w"
 
 QTime time;
 if(!(time= QTime::fromString(value.toString(),"m:s.z")).isValid())
@@ -5620,10 +5567,10 @@ row= entries->takeAt(index.row());
 row->replace(index.column(),QVariant(time));
 MeasurementList*temp= row;
 /*419:*/
-#line 9693 "./typica.w"
+#line 9697 "./typica.w"
 
 /*420:*/
-#line 9738 "./typica.w"
+#line 9742 "./typica.w"
 
 QList<MeasurementList*> ::iterator i= lastInsertion;
 bool quickscan= false;
@@ -5663,7 +5610,7 @@ quickscan= true;
 }
 
 /*:420*/
-#line 9694 "./typica.w"
+#line 9698 "./typica.w"
 
 if(quickscan==false)
 {
@@ -5689,7 +5636,7 @@ n= rA;
 }
 
 /*:419*/
-#line 9986 "./typica.w"
+#line 9990 "./typica.w"
 
 entries->insert(i,row);
 int newRow= entries->indexOf(*i);
@@ -5703,26 +5650,26 @@ emit dataChanged(index,createIndex(newRow,index.column()));
 }
 
 /*:430*/
-#line 9930 "./typica.w"
+#line 9934 "./typica.w"
 
 }
 else
 {
 /*431:*/
-#line 10000 "./typica.w"
+#line 10004 "./typica.w"
 
 row->replace(index.column(),value);
 emit dataChanged(index,index);
 
 /*:431*/
-#line 9934 "./typica.w"
+#line 9938 "./typica.w"
 
 }
 return true;
 }
 
 /*:427*//*432:*/
-#line 10008 "./typica.w"
+#line 10012 "./typica.w"
 
 MeasurementModel::MeasurementModel(QObject*parent):QAbstractItemModel(parent),
 unit(Units::Fahrenheit),hData(new QStringList),
@@ -5736,7 +5683,7 @@ hData->append(tr("Time"));
 }
 
 /*:432*//*433:*/
-#line 10022 "./typica.w"
+#line 10026 "./typica.w"
 
 MeasurementModel::~MeasurementModel()
 {
@@ -5746,7 +5693,7 @@ delete hData;
 }
 
 /*:433*//*434:*/
-#line 10034 "./typica.w"
+#line 10038 "./typica.w"
 
 int MeasurementModel::rowCount(const QModelIndex&parent)const
 {
@@ -5767,7 +5714,7 @@ return 0;
 }
 
 /*:434*//*435:*/
-#line 10061 "./typica.w"
+#line 10065 "./typica.w"
 
 bool MeasurementModel::setHeaderData(int section,Qt::Orientation orientation,
 const QVariant&value,int)
@@ -5801,7 +5748,7 @@ return false;
 }
 
 /*:435*//*436:*/
-#line 10101 "./typica.w"
+#line 10105 "./typica.w"
 
 void MeasurementModel::setDisplayUnits(Units::Unit scale)
 {
@@ -5816,12 +5763,12 @@ return unit;
 }
 
 /*:436*//*437:*/
-#line 10127 "./typica.w"
+#line 10131 "./typica.w"
 
 QVariant MeasurementModel::data(const QModelIndex&index,int role)const
 {
 /*428:*/
-#line 9942 "./typica.w"
+#line 9946 "./typica.w"
 
 bool valid= false;
 if(index.isValid())
@@ -5836,7 +5783,7 @@ valid= true;
 }
 
 /*:428*/
-#line 10130 "./typica.w"
+#line 10134 "./typica.w"
 
 if(!valid)
 {
@@ -5892,7 +5839,7 @@ return QVariant();
 }
 
 /*:437*//*438:*/
-#line 10186 "./typica.w"
+#line 10190 "./typica.w"
 
 QVariant MeasurementModel::headerData(int section,Qt::Orientation orientation,
 int role)const
@@ -5911,12 +5858,12 @@ return QVariant();
 }
 
 /*:438*//*439:*/
-#line 10213 "./typica.w"
+#line 10217 "./typica.w"
 
 Qt::ItemFlags MeasurementModel::flags(const QModelIndex&index)const
 {
 /*428:*/
-#line 9942 "./typica.w"
+#line 9946 "./typica.w"
 
 bool valid= false;
 if(index.isValid())
@@ -5931,7 +5878,7 @@ valid= true;
 }
 
 /*:428*/
-#line 10216 "./typica.w"
+#line 10220 "./typica.w"
 
 if(valid)
 {
@@ -5941,7 +5888,7 @@ return 0;
 }
 
 /*:439*//*440:*/
-#line 10228 "./typica.w"
+#line 10232 "./typica.w"
 
 QModelIndex MeasurementModel::index(int row,int column,
 const QModelIndex&parent)const
@@ -5963,7 +5910,7 @@ return QModelIndex();
 #line 550 "./typica.w"
 
 /*442:*/
-#line 10279 "./typica.w"
+#line 10283 "./typica.w"
 
 AnnotationButton::AnnotationButton(const QString&text,QWidget*parent):
 QPushButton(text,parent),note(""),tc(0),ac(0),count(0)
@@ -5972,7 +5919,7 @@ connect(this,SIGNAL(clicked()),this,SLOT(annotate()));
 }
 
 /*:442*//*443:*/
-#line 10294 "./typica.w"
+#line 10298 "./typica.w"
 
 void AnnotationButton::annotate()
 {
@@ -5988,7 +5935,7 @@ emit annotation(note,tc,ac);
 }
 
 /*:443*//*444:*/
-#line 10312 "./typica.w"
+#line 10316 "./typica.w"
 
 void AnnotationButton::setTemperatureColumn(int tempcolumn)
 {
@@ -6006,7 +5953,7 @@ note= annotation;
 }
 
 /*:444*//*445:*/
-#line 10331 "./typica.w"
+#line 10335 "./typica.w"
 
 void AnnotationButton::resetCount()
 {
@@ -6017,7 +5964,7 @@ count= 0;
 #line 551 "./typica.w"
 
 /*450:*/
-#line 10414 "./typica.w"
+#line 10418 "./typica.w"
 
 AnnotationSpinBox::AnnotationSpinBox(const QString&pret,
 const QString&postt,
@@ -6030,7 +5977,7 @@ connect(this,SIGNAL(valueChanged(double)),this,SLOT(resetChange()));
 }
 
 /*:450*//*451:*/
-#line 10431 "./typica.w"
+#line 10435 "./typica.w"
 
 void AnnotationSpinBox::resetChange()
 {
@@ -6038,7 +5985,7 @@ change= true;
 }
 
 /*:451*//*452:*/
-#line 10442 "./typica.w"
+#line 10446 "./typica.w"
 
 void AnnotationSpinBox::annotate()
 {
@@ -6051,7 +5998,7 @@ arg(value()).arg(posttext),tc,ac);
 }
 
 /*:452*//*453:*/
-#line 10455 "./typica.w"
+#line 10459 "./typica.w"
 
 void AnnotationSpinBox::setTemperatureColumn(int tempcolumn)
 {
@@ -6077,7 +6024,7 @@ posttext= postt;
 #line 552 "./typica.w"
 
 /*460:*/
-#line 10624 "./typica.w"
+#line 10628 "./typica.w"
 
 TimerDisplay::TimerDisplay(QWidget*parent):QLCDNumber(8,parent),
 s(QTime(0,0,0)),r(QTime(0,0,0)),clock(NULL),m(TimerDisplay::CountUp),
@@ -6097,7 +6044,7 @@ updateDisplay();
 }
 
 /*:460*//*461:*/
-#line 10645 "./typica.w"
+#line 10649 "./typica.w"
 
 void TimerDisplay::updateTime()
 {
@@ -6112,10 +6059,10 @@ switch(m)
 {
 case TimerDisplay::CountUp:
 /*462:*/
-#line 10677 "./typica.w"
+#line 10681 "./typica.w"
 
 /*463:*/
-#line 10690 "./typica.w"
+#line 10694 "./typica.w"
 
 #define TIMETOINT(t) ((t.hour() * 60 * 60) + (t.minute() * 60) + (t.second()))
 
@@ -6125,7 +6072,7 @@ oseconds= TIMETOINT(relative);
 r= cseconds-oseconds;
 
 /*:463*/
-#line 10678 "./typica.w"
+#line 10682 "./typica.w"
 
 nt= nt.addSecs(r);
 if(nt!=s)
@@ -6135,17 +6082,17 @@ emit valueChanged(s);
 }
 
 /*:462*/
-#line 10658 "./typica.w"
+#line 10662 "./typica.w"
 ;
 break;
 case TimerDisplay::CountDown:
 /*464:*/
-#line 10702 "./typica.w"
+#line 10706 "./typica.w"
 
 if(s> QTime(0,0,0))
 {
 /*463:*/
-#line 10690 "./typica.w"
+#line 10694 "./typica.w"
 
 #define TIMETOINT(t) ((t.hour() * 60 * 60) + (t.minute() * 60) + (t.second()))
 
@@ -6155,7 +6102,7 @@ oseconds= TIMETOINT(relative);
 r= cseconds-oseconds;
 
 /*:463*/
-#line 10705 "./typica.w"
+#line 10709 "./typica.w"
 
 bseconds= TIMETOINT(base);
 n= bseconds-r;
@@ -6170,12 +6117,12 @@ stopTimer();
 }
 
 /*:464*/
-#line 10661 "./typica.w"
+#line 10665 "./typica.w"
 ;
 break;
 case TimerDisplay::Clock:
 /*465:*/
-#line 10721 "./typica.w"
+#line 10725 "./typica.w"
 
 time= QTime::currentTime();
 if(time!=s)
@@ -6185,7 +6132,7 @@ emit valueChanged(s);
 }
 
 /*:465*/
-#line 10664 "./typica.w"
+#line 10668 "./typica.w"
 ;
 break;
 default:
@@ -6196,7 +6143,7 @@ updateDisplay();
 }
 
 /*:461*//*466:*/
-#line 10733 "./typica.w"
+#line 10737 "./typica.w"
 
 #define TIMESUBTRACT(t1, t2) (t1.addSecs(-(TIMETOINT(t2))).addSecs(-t2.msec()))
 
@@ -6225,7 +6172,7 @@ emit runStateChanged(true);
 }
 
 /*:466*//*467:*/
-#line 10763 "./typica.w"
+#line 10767 "./typica.w"
 
 void TimerDisplay::stopTimer()
 {
@@ -6238,7 +6185,7 @@ emit runStateChanged(false);
 }
 
 /*:467*//*468:*/
-#line 10776 "./typica.w"
+#line 10780 "./typica.w"
 
 TimerDisplay::~TimerDisplay()
 {
@@ -6246,7 +6193,7 @@ clock.stop();
 }
 
 /*:468*//*469:*/
-#line 10785 "./typica.w"
+#line 10789 "./typica.w"
 
 void TimerDisplay::setCountUpMode()
 {
@@ -6264,7 +6211,7 @@ m= TimerDisplay::Clock;
 }
 
 /*:469*//*470:*/
-#line 10803 "./typica.w"
+#line 10807 "./typica.w"
 
 QString TimerDisplay::value()
 {
@@ -6302,7 +6249,7 @@ return ar;
 }
 
 /*:470*//*471:*/
-#line 10841 "./typica.w"
+#line 10845 "./typica.w"
 
 void TimerDisplay::setTimer(QTime value)
 {
@@ -6336,7 +6283,7 @@ ar= reset;
 }
 
 /*:471*//*472:*/
-#line 10876 "./typica.w"
+#line 10880 "./typica.w"
 
 void TimerDisplay::copyTimer()
 {
@@ -6344,7 +6291,7 @@ QApplication::clipboard()->setText(value());
 }
 
 /*:472*//*473:*/
-#line 10885 "./typica.w"
+#line 10889 "./typica.w"
 
 void TimerDisplay::reset()
 {
@@ -6356,7 +6303,7 @@ updateDisplay();
 }
 
 /*:473*//*474:*/
-#line 10898 "./typica.w"
+#line 10902 "./typica.w"
 
 void TimerDisplay::updateDisplay()
 {
@@ -6367,7 +6314,7 @@ display(value());
 #line 553 "./typica.w"
 
 /*481:*/
-#line 11023 "./typica.w"
+#line 11027 "./typica.w"
 
 int PackLayout::doLayout(const QRect&rect,bool testOnly)const
 {
@@ -6377,7 +6324,7 @@ QLayoutItem*item;
 if(orientation==Qt::Horizontal)
 {
 /*482:*/
-#line 11047 "./typica.w"
+#line 11051 "./typica.w"
 
 foreach(item,itemList)
 {
@@ -6396,13 +6343,13 @@ x= nextX;
 }
 
 /*:482*/
-#line 11031 "./typica.w"
+#line 11035 "./typica.w"
 
 }
 else
 {
 /*483:*/
-#line 11066 "./typica.w"
+#line 11070 "./typica.w"
 
 foreach(item,itemList)
 {
@@ -6421,14 +6368,14 @@ y= nextY;
 }
 
 /*:483*/
-#line 11035 "./typica.w"
+#line 11039 "./typica.w"
 
 }
 return y;
 }
 
 /*:481*//*484:*/
-#line 11090 "./typica.w"
+#line 11094 "./typica.w"
 
 QSize PackLayout::minimumSize()const
 {
@@ -6458,7 +6405,7 @@ return size;
 }
 
 /*:484*//*485:*/
-#line 11122 "./typica.w"
+#line 11126 "./typica.w"
 
 PackLayout::PackLayout(QWidget*parent,int margin,int spacing):
 QLayout(parent)
@@ -6475,7 +6422,7 @@ setOrientation(Qt::Horizontal);
 }
 
 /*:485*//*486:*/
-#line 11140 "./typica.w"
+#line 11144 "./typica.w"
 
 PackLayout::~PackLayout()
 {
@@ -6487,7 +6434,7 @@ delete item;
 }
 
 /*:486*//*487:*/
-#line 11154 "./typica.w"
+#line 11158 "./typica.w"
 
 QLayoutItem*PackLayout::takeAt(int index)
 {
@@ -6502,7 +6449,7 @@ return NULL;
 }
 
 /*:487*//*488:*/
-#line 11170 "./typica.w"
+#line 11174 "./typica.w"
 
 QLayoutItem*PackLayout::itemAt(int index)const
 {
@@ -6517,7 +6464,7 @@ return NULL;
 }
 
 /*:488*//*489:*/
-#line 11193 "./typica.w"
+#line 11197 "./typica.w"
 
 void PackLayout::addItem(QLayoutItem*item)
 {
@@ -6525,7 +6472,7 @@ itemList.append(item);
 }
 
 /*:489*//*490:*/
-#line 11201 "./typica.w"
+#line 11205 "./typica.w"
 
 int PackLayout::count()const
 {
@@ -6533,7 +6480,7 @@ return itemList.size();
 }
 
 /*:490*//*491:*/
-#line 11213 "./typica.w"
+#line 11217 "./typica.w"
 
 Qt::Orientations PackLayout::expandingDirections()const
 {
@@ -6562,7 +6509,7 @@ return minimumSize();
 }
 
 /*:491*//*492:*/
-#line 11244 "./typica.w"
+#line 11248 "./typica.w"
 
 void PackLayout::setOrientation(Qt::Orientations direction)
 {
@@ -6574,7 +6521,7 @@ doLayout(geometry(),false);
 #line 554 "./typica.w"
 
 /*494:*/
-#line 11283 "./typica.w"
+#line 11287 "./typica.w"
 
 SceneButton::SceneButton():QGraphicsScene()
 {
@@ -6595,7 +6542,7 @@ emit clicked(mouseEvent->buttonDownScreenPos(mouseEvent->button()));
 #line 555 "./typica.w"
 
 /*496:*/
-#line 11329 "./typica.w"
+#line 11333 "./typica.w"
 
 WidgetDecorator::WidgetDecorator(QWidget*widget,const QString&labeltext,
 Qt::Orientations orientation,
@@ -6606,7 +6553,7 @@ scene(new SceneButton())
 layout= new PackLayout(this);
 layout->setOrientation(orientation);
 /*497:*/
-#line 11349 "./typica.w"
+#line 11353 "./typica.w"
 
 label->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 label->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -6614,10 +6561,10 @@ label->setFrameShape(QFrame::NoFrame);
 label->setInteractive(true);
 
 /*:497*/
-#line 11338 "./typica.w"
+#line 11342 "./typica.w"
 
 /*498:*/
-#line 11360 "./typica.w"
+#line 11364 "./typica.w"
 
 scene->setBackgroundBrush(Qt::cyan);
 text= scene->addText(labeltext);
@@ -6628,10 +6575,10 @@ text->rotate(270.0);
 label->setScene(scene);
 
 /*:498*/
-#line 11339 "./typica.w"
+#line 11343 "./typica.w"
 
 /*499:*/
-#line 11378 "./typica.w"
+#line 11382 "./typica.w"
 
 if(orientation==Qt::Horizontal)
 {
@@ -6644,10 +6591,10 @@ label->setMaximumHeight((int)(text->boundingRect().height()+1));
 label->centerOn(text);
 
 /*:499*/
-#line 11340 "./typica.w"
+#line 11344 "./typica.w"
 
 /*500:*/
-#line 11393 "./typica.w"
+#line 11397 "./typica.w"
 
 layout->addWidget(label);
 layout->addWidget(widget);
@@ -6663,12 +6610,12 @@ widget->sizeHint().height()+label->sizeHint().height());
 }
 
 /*:500*/
-#line 11341 "./typica.w"
+#line 11345 "./typica.w"
 
 }
 
 /*:496*//*501:*/
-#line 11410 "./typica.w"
+#line 11414 "./typica.w"
 
 void WidgetDecorator::setBackgroundBrush(QBrush background)
 {
@@ -6681,7 +6628,7 @@ text->setDefaultTextColor(color);
 }
 
 /*:501*//*502:*/
-#line 11423 "./typica.w"
+#line 11427 "./typica.w"
 
 WidgetDecorator::~WidgetDecorator()
 {
@@ -6692,7 +6639,7 @@ WidgetDecorator::~WidgetDecorator()
 #line 556 "./typica.w"
 
 /*507:*/
-#line 11522 "./typica.w"
+#line 11526 "./typica.w"
 
 void LogEditWindow::addTheRows()
 {
@@ -6706,7 +6653,7 @@ model->newMeasurement(Measurement(0,endTime->time()),1);
 }
 
 /*:507*//*508:*/
-#line 11536 "./typica.w"
+#line 11540 "./typica.w"
 
 LogEditWindow::LogEditWindow():QMainWindow(NULL),
 centralWidget(new QWidget(NULL)),mainLayout(new PackLayout(0)),
@@ -6725,17 +6672,17 @@ model(new MeasurementModel()),
 log(new QTableView())
 {
 /*509:*/
-#line 11573 "./typica.w"
+#line 11577 "./typica.w"
 
 QSettings settings;
 resize(settings.value("logSize",QSize(620,400)).toSize());
 move(settings.value("logPos",QPoint(200,60)).toPoint());
 
 /*:509*/
-#line 11553 "./typica.w"
+#line 11557 "./typica.w"
 
 /*510:*/
-#line 11586 "./typica.w"
+#line 11590 "./typica.w"
 
 mainLayout->setOrientation(Qt::Vertical);
 addRowsLayout->addSpacing(10);
@@ -6757,10 +6704,10 @@ addRowsLayout->addSpacing(10);
 connect(addRows,SIGNAL(clicked()),this,SLOT(addTheRows()));
 
 /*:510*/
-#line 11554 "./typica.w"
+#line 11558 "./typica.w"
 
 /*511:*/
-#line 11609 "./typica.w"
+#line 11613 "./typica.w"
 
 model->setHeaderData(0,Qt::Horizontal,"Time");
 model->setHeaderData(1,Qt::Horizontal,"Temperature");
@@ -6768,10 +6715,10 @@ model->setHeaderData(2,Qt::Horizontal,"Annotation");
 model->clear();
 
 /*:511*/
-#line 11555 "./typica.w"
+#line 11559 "./typica.w"
 
 /*512:*/
-#line 11618 "./typica.w"
+#line 11622 "./typica.w"
 
 log->setModel(model);
 log->setColumnWidth(0,100);
@@ -6779,7 +6726,7 @@ log->setColumnWidth(1,100);
 log->setColumnWidth(2,100);
 
 /*:512*/
-#line 11556 "./typica.w"
+#line 11560 "./typica.w"
 
 mainLayout->addItem(addRowsLayout);
 mainLayout->addWidget(log);
@@ -6795,7 +6742,7 @@ connect(saveCsv,SIGNAL(triggered()),this,SLOT(saveCSV()));
 }
 
 /*:508*//*513:*/
-#line 11629 "./typica.w"
+#line 11633 "./typica.w"
 
 void LogEditWindow::saveXML()
 {
@@ -6836,7 +6783,7 @@ settings.setValue("lastDirectory",lastDir);
 }
 
 /*:513*//*514:*/
-#line 11672 "./typica.w"
+#line 11676 "./typica.w"
 
 void LogEditWindow::openXML()
 {
@@ -6866,7 +6813,7 @@ settings.setValue("lastDirectory",lastDir);
 }
 
 /*:514*//*515:*/
-#line 11703 "./typica.w"
+#line 11707 "./typica.w"
 
 void LogEditWindow::closeEvent(QCloseEvent*event)
 {
@@ -6880,7 +6827,7 @@ event->accept();
 #line 557 "./typica.w"
 
 /*521:*/
-#line 11818 "./typica.w"
+#line 11822 "./typica.w"
 
 bool XMLOutput::output()
 {
@@ -6893,7 +6840,7 @@ xmlout.writeStartDocument("1.0");
 xmlout.writeDTD("<!DOCTYPE roastlog3.0>");
 xmlout.writeStartElement("roastlog");
 /*522:*/
-#line 11851 "./typica.w"
+#line 11855 "./typica.w"
 
 foreach(int c,temperatureColumns.keys())
 {
@@ -6915,14 +6862,14 @@ xmlout.writeEndElement();
 }
 
 /*:522*/
-#line 11829 "./typica.w"
+#line 11833 "./typica.w"
 
 xmlout.writeStartElement("roast");
 bool oresult;
 for(int i= 0;i<data->rowCount();i++)
 {
 /*523:*/
-#line 11876 "./typica.w"
+#line 11880 "./typica.w"
 
 oresult= false;
 foreach(int c,temperatureColumns.keys())
@@ -6958,12 +6905,12 @@ break;
 }
 
 /*:523*/
-#line 11834 "./typica.w"
+#line 11838 "./typica.w"
 
 if(oresult)
 {
 /*524:*/
-#line 11915 "./typica.w"
+#line 11919 "./typica.w"
 
 xmlout.writeStartElement("tuple");
 xmlout.writeTextElement("time",data->data(data->index(i,time),
@@ -7013,7 +6960,7 @@ xmlout.writeEndElement();
 xmlout.writeEndElement();
 
 /*:524*/
-#line 11837 "./typica.w"
+#line 11841 "./typica.w"
 
 }
 }
@@ -7025,7 +6972,7 @@ return true;
 }
 
 /*:521*//*525:*/
-#line 11965 "./typica.w"
+#line 11969 "./typica.w"
 
 XMLOutput::XMLOutput(MeasurementModel*model,QIODevice*device,int timec)
 :QObject(NULL),data(model),out(device),time(timec)
@@ -7049,7 +6996,7 @@ out= device;
 }
 
 /*:525*//*526:*/
-#line 11994 "./typica.w"
+#line 11998 "./typica.w"
 
 void XMLOutput::addTemperatureColumn(const QString&series,int column)
 {
@@ -7070,7 +7017,7 @@ annotationColumns.insert(column,series);
 #line 558 "./typica.w"
 
 /*528:*/
-#line 12051 "./typica.w"
+#line 12055 "./typica.w"
 
 bool XMLInput::input()
 {
@@ -7083,7 +7030,7 @@ QMap<QString,int> temperatureColumns;
 QMap<QString,int> annotationColumns;
 int nextColumn= firstc;
 /*529:*/
-#line 12082 "./typica.w"
+#line 12086 "./typica.w"
 
 while(!xmlin.isDTD())
 {
@@ -7094,21 +7041,21 @@ if(xmlin.isDTD())
 if(xmlin.text()=="<!DOCTYPE roastlog>")
 {
 /*530:*/
-#line 12104 "./typica.w"
+#line 12108 "./typica.w"
 
 emit newTemperatureColumn(firstc,"Bean");
 emit newAnnotationColumn(firstc+1,"Note");
 emit lastColumn(firstc+1);
 
 /*:530*/
-#line 12091 "./typica.w"
+#line 12095 "./typica.w"
 
 }
 else
 {
 xmlin.readNext();
 /*531:*/
-#line 12113 "./typica.w"
+#line 12117 "./typica.w"
 
 while(xmlin.name()!="roast")
 {
@@ -7139,13 +7086,13 @@ xmlin.readNext();
 emit lastColumn(nextColumn-1);
 
 /*:531*/
-#line 12096 "./typica.w"
+#line 12100 "./typica.w"
 
 }
 }
 
 /*:529*/
-#line 12062 "./typica.w"
+#line 12066 "./typica.w"
 
 QTime timeval= QTime();
 double tempval= 0;
@@ -7155,13 +7102,13 @@ int counter= 0;
 while(!xmlin.atEnd())
 {
 /*532:*/
-#line 12154 "./typica.w"
+#line 12158 "./typica.w"
 
 xmlin.readNext();
 if(xmlin.isStartElement())
 {
 /*533:*/
-#line 12180 "./typica.w"
+#line 12184 "./typica.w"
 
 if(xmlin.name()=="time")
 {
@@ -7202,7 +7149,7 @@ emit annotation(noteval,firstc,column);
 }
 
 /*:533*/
-#line 12158 "./typica.w"
+#line 12162 "./typica.w"
 
 }
 counter++;
@@ -7212,14 +7159,14 @@ QCoreApplication::processEvents();
 }
 
 /*:532*/
-#line 12070 "./typica.w"
+#line 12074 "./typica.w"
 
 }
 return true;
 }
 
 /*:528*//*534:*/
-#line 12221 "./typica.w"
+#line 12225 "./typica.w"
 
 XMLInput::XMLInput(QIODevice*input,int c):
 firstc(c),in(input)
@@ -7241,7 +7188,7 @@ in= device;
 #line 559 "./typica.w"
 
 /*539:*/
-#line 12312 "./typica.w"
+#line 12316 "./typica.w"
 
 bool CSVOutput::output()
 {
@@ -7251,7 +7198,7 @@ return false;
 }
 QTextStream output(out);
 /*540:*/
-#line 12336 "./typica.w"
+#line 12340 "./typica.w"
 
 output<<"Time";
 foreach(int c,temperatureColumns.keys())
@@ -7269,13 +7216,13 @@ output<<','<<annotationColumns.value(c);
 output<<'\n';
 
 /*:540*/
-#line 12320 "./typica.w"
+#line 12324 "./typica.w"
 
 bool oresult;
 for(int i= 0;i<data->rowCount();i++)
 {
 /*523:*/
-#line 11876 "./typica.w"
+#line 11880 "./typica.w"
 
 oresult= false;
 foreach(int c,temperatureColumns.keys())
@@ -7311,12 +7258,12 @@ break;
 }
 
 /*:523*/
-#line 12324 "./typica.w"
+#line 12328 "./typica.w"
 
 if(oresult)
 {
 /*541:*/
-#line 12361 "./typica.w"
+#line 12365 "./typica.w"
 
 output<<data->data(data->index(i,time),Qt::DisplayRole).toString();
 foreach(int c,temperatureColumns.keys())
@@ -7334,7 +7281,7 @@ output<<','<<data->data(data->index(i,c),Qt::DisplayRole).toString();
 output<<'\n';
 
 /*:541*/
-#line 12327 "./typica.w"
+#line 12331 "./typica.w"
 
 }
 }
@@ -7343,7 +7290,7 @@ return true;
 }
 
 /*:539*//*542:*/
-#line 12380 "./typica.w"
+#line 12384 "./typica.w"
 
 CSVOutput::CSVOutput(MeasurementModel*model,QIODevice*device,int timec):
 data(model),out(device),time(timec)
@@ -7386,7 +7333,7 @@ out= device;
 #line 560 "./typica.w"
 
 /*577:*/
-#line 12642 "./typica.w"
+#line 12646 "./typica.w"
 
 QString SaltModel::arrayLiteral(int column,int role)const
 {
@@ -7430,7 +7377,7 @@ return literal;
 }
 
 /*:577*//*578:*/
-#line 12686 "./typica.w"
+#line 12690 "./typica.w"
 
 QModelIndex SaltModel::parent(const QModelIndex&)const
 {
@@ -7438,13 +7385,13 @@ return QModelIndex();
 }
 
 /*:578*//*579:*/
-#line 12705 "./typica.w"
+#line 12709 "./typica.w"
 
 bool SaltModel::setData(const QModelIndex&index,const QVariant&value,
 int role)
 {
 /*580:*/
-#line 12736 "./typica.w"
+#line 12740 "./typica.w"
 
 bool valid= false;
 if(index.isValid())
@@ -7459,7 +7406,7 @@ valid= true;
 }
 
 /*:580*/
-#line 12709 "./typica.w"
+#line 12713 "./typica.w"
 
 if(!valid)
 {
@@ -7469,7 +7416,7 @@ if(index.row()==modelData.size()-1)
 {
 beginInsertRows(QModelIndex(),modelData.size(),modelData.size());
 /*581:*/
-#line 12752 "./typica.w"
+#line 12756 "./typica.w"
 
 QList<QMap<int,QVariant> > newRow;
 QMap<int,QVariant> defaults;
@@ -7480,7 +7427,7 @@ newRow.append(defaults);
 modelData.append(newRow);
 
 /*:581*/
-#line 12717 "./typica.w"
+#line 12721 "./typica.w"
 
 endInsertRows();
 }
@@ -7498,7 +7445,7 @@ return true;
 }
 
 /*:579*//*582:*/
-#line 12763 "./typica.w"
+#line 12767 "./typica.w"
 
 SaltModel::SaltModel(int columns):QAbstractItemModel(),colcount(columns)
 {
@@ -7507,7 +7454,7 @@ for(int i= 0;i<columns;i++)
 hData<<"";
 }
 /*581:*/
-#line 12752 "./typica.w"
+#line 12756 "./typica.w"
 
 QList<QMap<int,QVariant> > newRow;
 QMap<int,QVariant> defaults;
@@ -7518,12 +7465,12 @@ newRow.append(defaults);
 modelData.append(newRow);
 
 /*:581*/
-#line 12770 "./typica.w"
+#line 12774 "./typica.w"
 
 }
 
 /*:582*//*583:*/
-#line 12775 "./typica.w"
+#line 12779 "./typica.w"
 
 SaltModel::~SaltModel()
 {
@@ -7531,7 +7478,7 @@ SaltModel::~SaltModel()
 }
 
 /*:583*//*584:*/
-#line 12785 "./typica.w"
+#line 12789 "./typica.w"
 
 int SaltModel::rowCount(const QModelIndex&parent)const
 {
@@ -7544,7 +7491,7 @@ return(parent==QModelIndex()?colcount:0);
 }
 
 /*:584*//*585:*/
-#line 12798 "./typica.w"
+#line 12802 "./typica.w"
 
 bool SaltModel::setHeaderData(int section,Qt::Orientation orientation,
 const QVariant&value,int)
@@ -7559,12 +7506,12 @@ return false;
 }
 
 /*:585*//*586:*/
-#line 12813 "./typica.w"
+#line 12817 "./typica.w"
 
 QVariant SaltModel::data(const QModelIndex&index,int role)const
 {
 /*580:*/
-#line 12736 "./typica.w"
+#line 12740 "./typica.w"
 
 bool valid= false;
 if(index.isValid())
@@ -7579,7 +7526,7 @@ valid= true;
 }
 
 /*:580*/
-#line 12816 "./typica.w"
+#line 12820 "./typica.w"
 
 if(!valid)
 {
@@ -7602,12 +7549,12 @@ return QVariant();
 }
 
 /*:586*//*587:*/
-#line 12840 "./typica.w"
+#line 12844 "./typica.w"
 
 Qt::ItemFlags SaltModel::flags(const QModelIndex&index)const
 {
 /*580:*/
-#line 12736 "./typica.w"
+#line 12740 "./typica.w"
 
 bool valid= false;
 if(index.isValid())
@@ -7622,7 +7569,7 @@ valid= true;
 }
 
 /*:580*/
-#line 12843 "./typica.w"
+#line 12847 "./typica.w"
 
 if(valid)
 {
@@ -7632,7 +7579,7 @@ return 0;
 }
 
 /*:587*//*588:*/
-#line 12854 "./typica.w"
+#line 12858 "./typica.w"
 
 QModelIndex SaltModel::index(int row,int column,
 const QModelIndex&parent)const
@@ -7648,14 +7595,14 @@ return QModelIndex();
 }
 
 /*:588*//*589:*/
-#line 12872 "./typica.w"
+#line 12876 "./typica.w"
 
 void SaltModel::clear()
 {
 beginResetModel();
 modelData.clear();
 /*581:*/
-#line 12752 "./typica.w"
+#line 12756 "./typica.w"
 
 QList<QMap<int,QVariant> > newRow;
 QMap<int,QVariant> defaults;
@@ -7666,13 +7613,13 @@ newRow.append(defaults);
 modelData.append(newRow);
 
 /*:581*/
-#line 12877 "./typica.w"
+#line 12881 "./typica.w"
 
 endResetModel();
 }
 
 /*:589*//*590:*/
-#line 12886 "./typica.w"
+#line 12890 "./typica.w"
 
 bool SaltModel::removeRows(int row,int count,
 const QModelIndex&parent)
@@ -7691,7 +7638,7 @@ if(modelData.size()==0)
 {
 beginInsertRows(parent,0,0);
 /*581:*/
-#line 12752 "./typica.w"
+#line 12756 "./typica.w"
 
 QList<QMap<int,QVariant> > newRow;
 QMap<int,QVariant> defaults;
@@ -7702,7 +7649,7 @@ newRow.append(defaults);
 modelData.append(newRow);
 
 /*:581*/
-#line 12903 "./typica.w"
+#line 12907 "./typica.w"
 
 endInsertRows();
 }
@@ -7713,7 +7660,7 @@ return false;
 }
 
 /*:590*//*591:*/
-#line 12917 "./typica.w"
+#line 12921 "./typica.w"
 
 int SaltModel::findData(const QVariant&value,int column,int role)
 {
@@ -7737,7 +7684,7 @@ return-1;
 #line 561 "./typica.w"
 
 /*593:*/
-#line 12981 "./typica.w"
+#line 12985 "./typica.w"
 
 SqlComboBox*SqlComboBox::clone(QWidget*parent)
 {
@@ -7751,7 +7698,7 @@ return widget;
 }
 
 /*:593*//*594:*/
-#line 12998 "./typica.w"
+#line 13002 "./typica.w"
 
 void SqlComboBox::showData(bool show)
 {
@@ -7759,7 +7706,7 @@ dataColumnShown= show;
 }
 
 /*:594*//*595:*/
-#line 13012 "./typica.w"
+#line 13016 "./typica.w"
 
 void SqlComboBox::addNullOption()
 {
@@ -7777,7 +7724,7 @@ specialNullData= nullData;
 }
 
 /*:595*//*596:*/
-#line 13035 "./typica.w"
+#line 13039 "./typica.w"
 
 void SqlComboBox::setDataColumn(int column)
 {
@@ -7790,7 +7737,7 @@ displayColumn= column;
 }
 
 /*:596*//*597:*/
-#line 13049 "./typica.w"
+#line 13053 "./typica.w"
 
 void SqlComboBox::addSqlOptions(QString query)
 {
@@ -7818,7 +7765,7 @@ addItem(displayValue,dataValue);
 }
 
 /*:597*//*598:*/
-#line 13085 "./typica.w"
+#line 13089 "./typica.w"
 
 SqlComboBox::SqlComboBox():
 dataColumn(0),displayColumn(0),dataColumnShown(false),
@@ -7836,7 +7783,7 @@ SqlComboBox::~SqlComboBox()
 #line 562 "./typica.w"
 
 /*600:*/
-#line 13124 "./typica.w"
+#line 13128 "./typica.w"
 
 void SqlComboBoxDelegate::setWidget(SqlComboBox*widget)
 {
@@ -7844,7 +7791,7 @@ delegate= widget;
 }
 
 /*:600*//*601:*/
-#line 13133 "./typica.w"
+#line 13137 "./typica.w"
 
 QWidget*SqlComboBoxDelegate::createEditor(QWidget*parent,
 const QStyleOptionViewItem&,
@@ -7854,7 +7801,7 @@ return delegate->clone(parent);
 }
 
 /*:601*//*602:*/
-#line 13144 "./typica.w"
+#line 13148 "./typica.w"
 
 void SqlComboBoxDelegate::setEditorData(QWidget*editor,
 const QModelIndex&index)const
@@ -7866,7 +7813,7 @@ Qt::UserRole).toString()));
 }
 
 /*:602*//*603:*/
-#line 13157 "./typica.w"
+#line 13161 "./typica.w"
 
 void SqlComboBoxDelegate::setModelData(QWidget*editor,
 QAbstractItemModel*model,
@@ -7879,7 +7826,7 @@ model->setData(index,self->currentText(),Qt::DisplayRole);
 }
 
 /*:603*//*604:*/
-#line 13170 "./typica.w"
+#line 13174 "./typica.w"
 
 void SqlComboBoxDelegate::updateEditorGeometry(QWidget*editor,
 const QStyleOptionViewItem&option,
@@ -7889,7 +7836,7 @@ editor->setGeometry(option.rect);
 }
 
 /*:604*//*605:*/
-#line 13181 "./typica.w"
+#line 13185 "./typica.w"
 
 QSize SqlComboBoxDelegate::sizeHint()const
 {
@@ -7897,7 +7844,7 @@ return delegate->sizeHint();
 }
 
 /*:605*//*606:*/
-#line 13189 "./typica.w"
+#line 13193 "./typica.w"
 
 SqlComboBoxDelegate::SqlComboBoxDelegate(QObject*parent)
 :QItemDelegate(parent)
@@ -7909,22 +7856,22 @@ SqlComboBoxDelegate::SqlComboBoxDelegate(QObject*parent)
 #line 563 "./typica.w"
 
 /*569:*/
-#line 12450 "./typica.w"
+#line 12454 "./typica.w"
 
 Application::Application(int&argc,char**argv):QApplication(argc,argv)
 {
 /*570:*/
-#line 12465 "./typica.w"
+#line 12469 "./typica.w"
 
 setOrganizationName("Wilson's Coffee & Tea");
 setOrganizationDomain("wilsonscoffee.com");
 setApplicationName(PROGRAM_NAME);
 
 /*:570*/
-#line 12453 "./typica.w"
+#line 12457 "./typica.w"
 
 /*571:*/
-#line 12474 "./typica.w"
+#line 12478 "./typica.w"
 
 QTranslator base;
 qDebug()<<"QLocale::system().name()"<<QLocale::system().name();
@@ -7939,7 +7886,7 @@ installTranslator(&app);
 }
 
 /*:571*/
-#line 12454 "./typica.w"
+#line 12458 "./typica.w"
 
 /*285:*/
 #line 123 "./measurement.w"
@@ -7947,10 +7894,10 @@ installTranslator(&app);
 qRegisterMetaType<Measurement> ("Measurement");
 
 /*:285*/
-#line 12455 "./typica.w"
+#line 12459 "./typica.w"
 
 /*777:*/
-#line 16409 "./typica.w"
+#line 16413 "./typica.w"
 
 NodeInserter*inserter= new NodeInserter(tr("NI DAQmx Base Device"),
 tr("NI DAQmx Base"),
@@ -7958,7 +7905,7 @@ tr("NI DAQmx Base"),
 topLevelNodeInserters.append(inserter);
 
 /*:777*//*785:*/
-#line 16640 "./typica.w"
+#line 16644 "./typica.w"
 
 #ifdef Q_OS_WIN32
 inserter= new NodeInserter(tr("NI DAQmx Device"),tr("NI DAQmx"),"nidaqmx",NULL);
@@ -7966,7 +7913,7 @@ topLevelNodeInserters.append(inserter);
 #endif
 
 /*:785*//*809:*/
-#line 17603 "./typica.w"
+#line 17607 "./typica.w"
 
 #if 0
 inserter= new NodeInserter(tr("Modbus RTU Port"),tr("Modbus RTU Port"),"modbusrtuport",NULL);
@@ -7974,7 +7921,7 @@ topLevelNodeInserters.append(inserter);
 #endif
 
 /*:809*//*858:*/
-#line 19116 "./typica.w"
+#line 19120 "./typica.w"
 
 inserter= new NodeInserter(tr("Modbus RTU Device"),tr("Modbus RTU Device"),"modbusrtu",NULL);
 topLevelNodeInserters.append(inserter);
@@ -8019,7 +7966,7 @@ inserter= new NodeInserter(tr("DATAQ SDK Device"),tr("DATAQ Device"),
 topLevelNodeInserters.append(inserter);
 #endif
 
-#line 19766 "./typica.w"
+#line 19770 "./typica.w"
 
 #line 1 "./scales.w"
 /*:993*//*1018:*/
@@ -8028,16 +7975,16 @@ topLevelNodeInserters.append(inserter);
 inserter= new NodeInserter(tr("Serial Scale"),tr("Scale"),"scale",NULL);
 topLevelNodeInserters.append(inserter);
 
-#line 19768 "./typica.w"
+#line 19772 "./typica.w"
 
 #line 1 "./valueannotation.w"
 /*:1018*/
-#line 12456 "./typica.w"
+#line 12460 "./typica.w"
 
 }
 
 /*:569*//*573:*/
-#line 12498 "./typica.w"
+#line 12502 "./typica.w"
 
 QDomDocument*Application::configuration()
 {
@@ -8045,7 +7992,7 @@ return&conf;
 }
 
 /*:573*//*574:*/
-#line 12507 "./typica.w"
+#line 12511 "./typica.w"
 
 QSqlDatabase Application::database()
 {
@@ -8060,7 +8007,7 @@ return QSqlDatabase::cloneDatabase(connection,QString(connectionName));
 }
 
 /*:574*//*712:*/
-#line 14993 "./typica.w"
+#line 14997 "./typica.w"
 
 void Application::saveDeviceConfiguration()
 {
@@ -8070,14 +8017,14 @@ QVariant(deviceConfigurationDocument.toByteArray()));
 }
 
 /*:712*//*713:*/
-#line 15005 "./typica.w"
+#line 15009 "./typica.w"
 
 QDomDocument Application::deviceConfiguration()
 {
 if(deviceConfigurationDocument.isNull())
 {
 /*714:*/
-#line 15019 "./typica.w"
+#line 15023 "./typica.w"
 
 QSettings settings;
 QByteArray document= settings.value("DeviceConfiguration").toByteArray();
@@ -8088,7 +8035,7 @@ if(document.length()==0)
 {
 qDebug()<<"Loaded settings length is 0. Creating new configuration.";
 /*715:*/
-#line 15043 "./typica.w"
+#line 15047 "./typica.w"
 
 QFile emptyDocument(":/resources/xml/EmptyDeviceConfiguration.xml");
 emptyDocument.open(QIODevice::ReadOnly);
@@ -8096,14 +8043,14 @@ if(!deviceConfigurationDocument.setContent(&emptyDocument,false,
 &etext,&eline,&ecol))
 {
 /*716:*/
-#line 15060 "./typica.w"
+#line 15064 "./typica.w"
 
 qDebug()<<QString(tr("An error occurred loading device configuration."));
 qDebug()<<QString(tr("Line %1, Column %2")).arg(eline).arg(ecol);
 qDebug()<<etext;
 
 /*:716*/
-#line 15049 "./typica.w"
+#line 15053 "./typica.w"
 
 }
 else
@@ -8112,7 +8059,7 @@ saveDeviceConfiguration();
 }
 
 /*:715*/
-#line 15028 "./typica.w"
+#line 15032 "./typica.w"
 
 }
 else
@@ -8121,17 +8068,17 @@ if(!deviceConfigurationDocument.setContent(document,false,
 &etext,&eline,&ecol))
 {
 /*716:*/
-#line 15060 "./typica.w"
+#line 15064 "./typica.w"
 
 qDebug()<<QString(tr("An error occurred loading device configuration."));
 qDebug()<<QString(tr("Line %1, Column %2")).arg(eline).arg(ecol);
 qDebug()<<etext;
 
 /*:716*/
-#line 15035 "./typica.w"
+#line 15039 "./typica.w"
 
 /*715:*/
-#line 15043 "./typica.w"
+#line 15047 "./typica.w"
 
 QFile emptyDocument(":/resources/xml/EmptyDeviceConfiguration.xml");
 emptyDocument.open(QIODevice::ReadOnly);
@@ -8139,14 +8086,14 @@ if(!deviceConfigurationDocument.setContent(&emptyDocument,false,
 &etext,&eline,&ecol))
 {
 /*716:*/
-#line 15060 "./typica.w"
+#line 15064 "./typica.w"
 
 qDebug()<<QString(tr("An error occurred loading device configuration."));
 qDebug()<<QString(tr("Line %1, Column %2")).arg(eline).arg(ecol);
 qDebug()<<etext;
 
 /*:716*/
-#line 15049 "./typica.w"
+#line 15053 "./typica.w"
 
 }
 else
@@ -8155,20 +8102,20 @@ saveDeviceConfiguration();
 }
 
 /*:715*/
-#line 15036 "./typica.w"
+#line 15040 "./typica.w"
 
 }
 }
 
 /*:714*/
-#line 15010 "./typica.w"
+#line 15014 "./typica.w"
 
 }
 return deviceConfigurationDocument;
 }
 
 /*:713*//*744:*/
-#line 15661 "./typica.w"
+#line 15665 "./typica.w"
 
 void Application::registerDeviceConfigurationWidget(QString driver,
 QMetaObject widget)
@@ -8177,7 +8124,7 @@ deviceConfigurationWidgets.insert(driver,widget);
 }
 
 /*:744*//*745:*/
-#line 15677 "./typica.w"
+#line 15681 "./typica.w"
 
 QWidget*Application::deviceConfigurationWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -8206,7 +8153,7 @@ return editor;
 #line 564 "./typica.w"
 
 /*615:*/
-#line 13336 "./typica.w"
+#line 13340 "./typica.w"
 
 SqlConnectionSetup::SqlConnectionSetup():
 formLayout(new QFormLayout),driver(new QComboBox),hostname(new QLineEdit),
@@ -8239,7 +8186,7 @@ SqlConnectionSetup::~SqlConnectionSetup()
 }
 
 /*:615*//*616:*/
-#line 13370 "./typica.w"
+#line 13374 "./typica.w"
 
 void SqlConnectionSetup::testConnection()
 {
@@ -8275,7 +8222,7 @@ tr("Failed to connect to database."));
 #line 565 "./typica.w"
 
 /*620:*/
-#line 13472 "./typica.w"
+#line 13476 "./typica.w"
 
 SqlQueryView::SqlQueryView(QWidget*parent):QTableView(parent)
 {
@@ -8287,16 +8234,16 @@ this,SLOT(persistColumnResize(int,int,int)));
 }
 
 /*:620*//*621:*/
-#line 13487 "./typica.w"
+#line 13491 "./typica.w"
 
 void SqlQueryView::persistColumnResize(int column,int,int newsize)
 {
 /*622:*/
-#line 13496 "./typica.w"
+#line 13500 "./typica.w"
 
 QSettings settings;
 /*623:*/
-#line 13509 "./typica.w"
+#line 13513 "./typica.w"
 
 QWidget*topLevelWidget= this;
 while(topLevelWidget->parentWidget())
@@ -8305,7 +8252,7 @@ topLevelWidget= topLevelWidget->parentWidget();
 }
 
 /*:623*/
-#line 13498 "./typica.w"
+#line 13502 "./typica.w"
 
 settings.setValue(QString("columnWidths/%1/%2/%3").
 arg(topLevelWidget->objectName()).
@@ -8313,21 +8260,21 @@ arg(objectName()).arg(column),
 QVariant(newsize));
 
 /*:622*/
-#line 13490 "./typica.w"
+#line 13494 "./typica.w"
 
 }
 
 /*:621*//*624:*/
-#line 13519 "./typica.w"
+#line 13523 "./typica.w"
 
 void SqlQueryView::showEvent(QShowEvent*event)
 {
 /*625:*/
-#line 13529 "./typica.w"
+#line 13533 "./typica.w"
 
 QSettings settings;
 /*623:*/
-#line 13509 "./typica.w"
+#line 13513 "./typica.w"
 
 QWidget*topLevelWidget= this;
 while(topLevelWidget->parentWidget())
@@ -8336,7 +8283,7 @@ topLevelWidget= topLevelWidget->parentWidget();
 }
 
 /*:623*/
-#line 13531 "./typica.w"
+#line 13535 "./typica.w"
 
 QString baseKey= 
 QString("columnWidths/%1/%2").arg(topLevelWidget->objectName()).
@@ -8351,13 +8298,13 @@ setColumnWidth(i,settings.value(key).toInt());
 }
 
 /*:625*/
-#line 13522 "./typica.w"
+#line 13526 "./typica.w"
 
 event->accept();
 }
 
 /*:624*//*626:*/
-#line 13546 "./typica.w"
+#line 13550 "./typica.w"
 
 void SqlQueryView::openRow(const QModelIndex&index)
 {
@@ -8366,7 +8313,7 @@ emit openEntryRow(index.row());
 }
 
 /*:626*//*627:*/
-#line 13555 "./typica.w"
+#line 13559 "./typica.w"
 
 void SqlQueryView::setQuery(const QString&query)
 {
@@ -8384,7 +8331,7 @@ return model()->setHeaderData(section,orientation,value,role);
 }
 
 /*:627*//*628:*/
-#line 13573 "./typica.w"
+#line 13577 "./typica.w"
 
 QVariant SqlQueryView::data(int row,int column,int role)
 {
@@ -8430,7 +8377,7 @@ return q;
 #line 567 "./typica.w"
 
 /*647:*/
-#line 13930 "./typica.w"
+#line 13934 "./typica.w"
 
 ReportTable::ReportTable(QTextFrame*frame,QDomElement description):
 area(frame),configuration(description)
@@ -8444,7 +8391,7 @@ ReportTable::~ReportTable()
 }
 
 /*:647*//*648:*/
-#line 13946 "./typica.w"
+#line 13950 "./typica.w"
 
 void ReportTable::bind(QString placeholder,QVariant value)
 {
@@ -8452,12 +8399,12 @@ bindings.insert(placeholder,value);
 }
 
 /*:648*//*649:*/
-#line 13956 "./typica.w"
+#line 13960 "./typica.w"
 
 void ReportTable::refresh()
 {
 /*650:*/
-#line 13977 "./typica.w"
+#line 13981 "./typica.w"
 
 QTextCursor cursor= area->firstCursorPosition();
 while(cursor<area->lastCursorPosition())
@@ -8467,14 +8414,14 @@ cursor.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor);
 cursor.removeSelectedText();
 
 /*:650*/
-#line 13959 "./typica.w"
+#line 13963 "./typica.w"
 
 int rows= 1;
 int columns= 1;
 int currentRow= 0;
 QTextTable*table= cursor.insertTable(rows,columns);
 /*651:*/
-#line 13990 "./typica.w"
+#line 13994 "./typica.w"
 
 QTextTableFormat format= table->format();
 format.setBorderStyle(QTextFrameFormat::BorderStyle_None);
@@ -8488,10 +8435,10 @@ format.setAlignment(Qt::AlignHCenter);
 table->setFormat(format);
 
 /*:651*/
-#line 13964 "./typica.w"
+#line 13968 "./typica.w"
 
 /*652:*/
-#line 14004 "./typica.w"
+#line 14008 "./typica.w"
 
 QDomNodeList children= configuration.childNodes();
 for(int i= 0;i<children.count();i++)
@@ -8505,7 +8452,7 @@ currentElement= current.toElement();
 if(currentElement.tagName()=="query")
 {
 /*653:*/
-#line 14031 "./typica.w"
+#line 14035 "./typica.w"
 
 SqlQueryConnection h;
 QSqlQuery*query= h.operator->();
@@ -8540,13 +8487,13 @@ cursor.insertText(query->value(j).toString());
 }while(query->next());
 
 /*:653*/
-#line 14016 "./typica.w"
+#line 14020 "./typica.w"
 
 }
 else if(currentElement.tagName()=="row")
 {
 /*654:*/
-#line 14071 "./typica.w"
+#line 14075 "./typica.w"
 
 table->appendRows(1);
 currentRow++;
@@ -8577,14 +8524,14 @@ currentColumn++;
 }
 
 /*:654*/
-#line 14020 "./typica.w"
+#line 14024 "./typica.w"
 
 }
 }
 }
 
 /*:652*/
-#line 13965 "./typica.w"
+#line 13969 "./typica.w"
 
 if(rows> 1)
 {
@@ -8596,7 +8543,7 @@ table->removeRows(0,1);
 #line 568 "./typica.w"
 
 /*680:*/
-#line 14175 "./typica.w"
+#line 14179 "./typica.w"
 
 FormArray::FormArray(QDomElement description):configuration(description),
 maxwidth(-1),maxheight(-1)
@@ -8606,7 +8553,7 @@ itemContainer.setLayout(&itemLayout);
 }
 
 /*:680*//*681:*/
-#line 14192 "./typica.w"
+#line 14196 "./typica.w"
 
 void FormArray::addElements(int copies)
 {
@@ -8653,7 +8600,7 @@ itemContainer.setMinimumWidth(widget->sizeHint().width()+50);
 }
 
 /*:681*//*682:*/
-#line 14242 "./typica.w"
+#line 14246 "./typica.w"
 
 QWidget*FormArray::elementAt(int index)
 {
@@ -8669,7 +8616,7 @@ return NULL;
 }
 
 /*:682*//*683:*/
-#line 14259 "./typica.w"
+#line 14263 "./typica.w"
 
 void FormArray::removeAllElements()
 {
@@ -8684,7 +8631,7 @@ itemContainer.setMinimumHeight(0);
 }
 
 /*:683*//*684:*/
-#line 14275 "./typica.w"
+#line 14279 "./typica.w"
 
 int FormArray::elements()
 {
@@ -8692,7 +8639,7 @@ return itemLayout.count();
 }
 
 /*:684*//*685:*/
-#line 14286 "./typica.w"
+#line 14290 "./typica.w"
 
 void FormArray::setMaximumElementWidth(int width)
 {
@@ -8708,7 +8655,7 @@ maxheight= height;
 #line 569 "./typica.w"
 
 /*691:*/
-#line 14417 "./typica.w"
+#line 14421 "./typica.w"
 
 ScaleControl::ScaleControl():QGraphicsView(NULL,NULL),nonScoredValue(-1),
 scoredValue(-1),initialSet(false),finalSet(false),scaleDown(false)
@@ -8780,7 +8727,7 @@ setMinimumSize(sizeHint());
 }
 
 /*:691*//*692:*/
-#line 14490 "./typica.w"
+#line 14494 "./typica.w"
 
 QSize ScaleControl::sizeHint()const
 {
@@ -8788,7 +8735,7 @@ return QSize(140,30);
 }
 
 /*:692*//*693:*/
-#line 14499 "./typica.w"
+#line 14503 "./typica.w"
 
 void ScaleControl::setInitialValue(double value)
 {
@@ -8825,7 +8772,7 @@ emit finalChanged(value);
 }
 
 /*:693*//*694:*/
-#line 14536 "./typica.w"
+#line 14540 "./typica.w"
 
 double ScaleControl::initialValue(void)
 {
@@ -8838,12 +8785,12 @@ return scoredValue;
 }
 
 /*:694*//*695:*/
-#line 14557 "./typica.w"
+#line 14561 "./typica.w"
 
 void ScaleControl::mousePressEvent(QMouseEvent*event)
 {
 /*696:*/
-#line 14569 "./typica.w"
+#line 14573 "./typica.w"
 
 if(event->button()!=Qt::LeftButton)
 {
@@ -8852,19 +8799,19 @@ return;
 }
 
 /*:696*/
-#line 14560 "./typica.w"
+#line 14564 "./typica.w"
 
 scaleDown= true;
 event->accept();
 }
 
 /*:695*//*697:*/
-#line 14580 "./typica.w"
+#line 14584 "./typica.w"
 
 void ScaleControl::mouseReleaseEvent(QMouseEvent*event)
 {
 /*696:*/
-#line 14569 "./typica.w"
+#line 14573 "./typica.w"
 
 if(event->button()!=Qt::LeftButton)
 {
@@ -8873,7 +8820,7 @@ return;
 }
 
 /*:696*/
-#line 14583 "./typica.w"
+#line 14587 "./typica.w"
 
 if(!scaleDown)
 {
@@ -8883,7 +8830,7 @@ return;
 scaleDown= false;
 QPointF sceneCoordinate= mapToScene(event->x(),event->y());
 /*698:*/
-#line 14605 "./typica.w"
+#line 14609 "./typica.w"
 
 if(sceneCoordinate.x()>=0&&sceneCoordinate.x()<=10)
 {
@@ -8908,10 +8855,10 @@ return;
 }
 
 /*:698*/
-#line 14591 "./typica.w"
+#line 14595 "./typica.w"
 
 /*699:*/
-#line 14631 "./typica.w"
+#line 14635 "./typica.w"
 
 else if(sceneCoordinate.x()>=122&&sceneCoordinate.x()<=132)
 {
@@ -8936,10 +8883,10 @@ return;
 }
 
 /*:699*/
-#line 14592 "./typica.w"
+#line 14596 "./typica.w"
 
 /*700:*/
-#line 14657 "./typica.w"
+#line 14661 "./typica.w"
 
 double relativeX= sceneCoordinate.x()-16;
 if(initialSet)
@@ -8962,7 +8909,7 @@ return;
 }
 
 /*:700*/
-#line 14593 "./typica.w"
+#line 14597 "./typica.w"
 
 event->ignore();
 return;
@@ -8972,7 +8919,7 @@ return;
 #line 570 "./typica.w"
 
 /*702:*/
-#line 14723 "./typica.w"
+#line 14727 "./typica.w"
 
 IntensityControl::IntensityControl():QGraphicsView(NULL,NULL),theValue(-1),
 valueSet(false),scaleDown(false)
@@ -9027,7 +8974,7 @@ setMaximumSize(sizeHint());
 }
 
 /*:702*//*703:*/
-#line 14778 "./typica.w"
+#line 14782 "./typica.w"
 
 QSize IntensityControl::sizeHint()const
 {
@@ -9035,7 +8982,7 @@ return QSize(25,160);
 }
 
 /*:703*//*704:*/
-#line 14793 "./typica.w"
+#line 14797 "./typica.w"
 
 void IntensityControl::setValue(double val)
 {
@@ -9066,12 +9013,12 @@ return theValue;
 }
 
 /*:704*//*705:*/
-#line 14825 "./typica.w"
+#line 14829 "./typica.w"
 
 void IntensityControl::mousePressEvent(QMouseEvent*event)
 {
 /*696:*/
-#line 14569 "./typica.w"
+#line 14573 "./typica.w"
 
 if(event->button()!=Qt::LeftButton)
 {
@@ -9080,19 +9027,19 @@ return;
 }
 
 /*:696*/
-#line 14828 "./typica.w"
+#line 14832 "./typica.w"
 
 scaleDown= true;
 event->accept();
 }
 
 /*:705*//*706:*/
-#line 14839 "./typica.w"
+#line 14843 "./typica.w"
 
 void IntensityControl::mouseReleaseEvent(QMouseEvent*event)
 {
 /*696:*/
-#line 14569 "./typica.w"
+#line 14573 "./typica.w"
 
 if(event->button()!=Qt::LeftButton)
 {
@@ -9101,7 +9048,7 @@ return;
 }
 
 /*:696*/
-#line 14842 "./typica.w"
+#line 14846 "./typica.w"
 
 if(!scaleDown)
 {
@@ -9143,7 +9090,7 @@ return;
 #line 571 "./typica.w"
 
 /*357:*/
-#line 8077 "./typica.w"
+#line 8081 "./typica.w"
 
 void ThresholdDetector::newMeasurement(Measurement measure)
 {
@@ -9184,7 +9131,7 @@ currentDirection= direction;
 #line 572 "./typica.w"
 
 /*788:*/
-#line 16680 "./typica.w"
+#line 16684 "./typica.w"
 
 PortSelector::PortSelector(QWidget*parent):QComboBox(parent),
 lister(new QextSerialEnumerator)
@@ -9214,7 +9161,7 @@ addItem(port.portName);
 #line 573 "./typica.w"
 
 /*790:*/
-#line 16772 "./typica.w"
+#line 16776 "./typica.w"
 
 BaudSelector::BaudSelector(QWidget*parent):QComboBox(parent)
 {
@@ -9230,7 +9177,7 @@ addItem(QString("%1").arg(type.value(i)));
 #line 574 "./typica.w"
 
 /*792:*/
-#line 16810 "./typica.w"
+#line 16814 "./typica.w"
 
 ParitySelector::ParitySelector(QWidget*parent):QComboBox(parent)
 {
@@ -9246,7 +9193,7 @@ addItem(QString(type.key(i)),QVariant(type.value(i)));
 #line 575 "./typica.w"
 
 /*794:*/
-#line 16840 "./typica.w"
+#line 16844 "./typica.w"
 
 FlowSelector::FlowSelector(QWidget*parent):QComboBox(parent)
 {
@@ -9262,7 +9209,7 @@ addItem(QString(type.key(i)),QVariant(type.value(i)));
 #line 576 "./typica.w"
 
 /*796:*/
-#line 16875 "./typica.w"
+#line 16879 "./typica.w"
 
 StopSelector::StopSelector(QWidget*parent):QComboBox(parent)
 {
@@ -9278,7 +9225,7 @@ addItem(QString(type.key(i)),QVariant(type.value(i)));
 #line 577 "./typica.w"
 
 /*856:*/
-#line 18657 "./typica.w"
+#line 18661 "./typica.w"
 
 ModbusConfigurator::ModbusConfigurator(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index),
@@ -9370,7 +9317,7 @@ masterLayout->addLayout(portAndDeviceLayout);
 masterLayout->addLayout(seriesLayout);
 form->setLayout(masterLayout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -9378,7 +9325,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 18747 "./typica.w"
+#line 18751 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -9745,7 +9692,7 @@ updateAttribute("svhidden",hidden?"true":"false");
 #line 578 "./typica.w"
 
 /*799:*/
-#line 16924 "./typica.w"
+#line 16928 "./typica.w"
 
 ShortHexSpinBox::ShortHexSpinBox(QWidget*parent):QSpinBox(parent)
 {
@@ -9790,7 +9737,7 @@ return retval.toUpper();
 #line 579 "./typica.w"
 
 /*840:*/
-#line 17956 "./typica.w"
+#line 17960 "./typica.w"
 
 ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel*model,const QModelIndex&index)
 :QObject(NULL),messageDelayTimer(new QTimer),commTimeout(new QTimer),unitIsF(true),readingsv(false),
@@ -10034,7 +9981,7 @@ QTime time= QTime::currentTime();
 if(response.at(2)==0x04)
 {
 /*841:*/
-#line 18211 "./typica.w"
+#line 18215 "./typica.w"
 
 quint16 pv;
 quint16 sv;
@@ -10062,13 +10009,13 @@ channels.at(0)->input(pvm);
 channels.at(1)->input(svm);
 
 /*:841*/
-#line 18198 "./typica.w"
+#line 18202 "./typica.w"
 
 }
 else
 {
 /*842:*/
-#line 18241 "./typica.w"
+#line 18245 "./typica.w"
 
 quint16 value;
 char*valueBytes= (char*)&value;
@@ -10106,13 +10053,13 @@ readingsv= true;
 }
 
 /*:842*/
-#line 18202 "./typica.w"
+#line 18206 "./typica.w"
 
 }
 }
 
 /*:840*//*843:*/
-#line 18279 "./typica.w"
+#line 18283 "./typica.w"
 
 ModbusRTUDevice::~ModbusRTUDevice()
 {
@@ -10122,7 +10069,7 @@ port->close();
 }
 
 /*:843*//*844:*/
-#line 18306 "./typica.w"
+#line 18310 "./typica.w"
 
 void ModbusRTUDevice::dataAvailable()
 {
@@ -10132,7 +10079,7 @@ messageDelayTimer->stop();
 }
 responseBuffer.append(port->readAll());
 /*845:*/
-#line 18352 "./typica.w"
+#line 18356 "./typica.w"
 
 if(responseBuffer.size()<5)
 {
@@ -10168,7 +10115,7 @@ break;
 }
 
 /*:845*/
-#line 18314 "./typica.w"
+#line 18318 "./typica.w"
 
 commTimeout->stop();
 if(calculateCRC(responseBuffer)==0)
@@ -10194,7 +10141,7 @@ responseBuffer.clear();
 }
 
 /*:844*//*846:*/
-#line 18394 "./typica.w"
+#line 18398 "./typica.w"
 
 quint16 ModbusRTUDevice::calculateCRC(QByteArray data)
 {
@@ -10220,7 +10167,7 @@ return retval;
 }
 
 /*:846*//*847:*/
-#line 18425 "./typica.w"
+#line 18429 "./typica.w"
 
 void ModbusRTUDevice::queueMessage(QByteArray request,QObject*object,
 const char*callback)
@@ -10269,7 +10216,7 @@ queueMessage(message,this,"ignore(QByteArray)");
 }
 
 /*:847*//*848:*/
-#line 18474 "./typica.w"
+#line 18478 "./typica.w"
 
 void ModbusRTUDevice::ignore(QByteArray)
 {
@@ -10277,7 +10224,7 @@ return;
 }
 
 /*:848*//*849:*/
-#line 18487 "./typica.w"
+#line 18491 "./typica.w"
 
 void ModbusRTUDevice::timeout()
 {
@@ -10291,7 +10238,7 @@ messageDelayTimer->start();
 #line 580 "./typica.w"
 
 /*718:*/
-#line 15097 "./typica.w"
+#line 15101 "./typica.w"
 
 DeviceTreeModelNode::DeviceTreeModelNode(QDomNode&node,int row,
 DeviceTreeModelNode*parent)
@@ -10345,7 +10292,7 @@ return NULL;
 #line 581 "./typica.w"
 
 /*720:*/
-#line 15186 "./typica.w"
+#line 15190 "./typica.w"
 
 DeviceTreeModel::DeviceTreeModel(QObject*parent)
 :QAbstractItemModel(parent)
@@ -10378,7 +10325,7 @@ AppInstance,SLOT(saveDeviceConfiguration()));
 }
 
 /*:720*//*721:*/
-#line 15221 "./typica.w"
+#line 15225 "./typica.w"
 
 int DeviceTreeModel::columnCount(const QModelIndex&)const
 {
@@ -10392,7 +10339,7 @@ if(parent.column()> 0)
 return 0;
 }
 /*722:*/
-#line 15240 "./typica.w"
+#line 15244 "./typica.w"
 
 DeviceTreeModelNode*parentItem;
 if(!parent.isValid())
@@ -10405,13 +10352,13 @@ parentItem= static_cast<DeviceTreeModelNode*> (parent.internalPointer());
 }
 
 /*:722*/
-#line 15233 "./typica.w"
+#line 15237 "./typica.w"
 
 return parentItem->node().childNodes().count();
 }
 
 /*:721*//*723:*/
-#line 15254 "./typica.w"
+#line 15258 "./typica.w"
 
 QModelIndex DeviceTreeModel::index(int row,int column,
 const QModelIndex&parent)const
@@ -10421,7 +10368,7 @@ if(!hasIndex(row,column,parent))
 return QModelIndex();
 }
 /*722:*/
-#line 15240 "./typica.w"
+#line 15244 "./typica.w"
 
 DeviceTreeModelNode*parentItem;
 if(!parent.isValid())
@@ -10434,7 +10381,7 @@ parentItem= static_cast<DeviceTreeModelNode*> (parent.internalPointer());
 }
 
 /*:722*/
-#line 15262 "./typica.w"
+#line 15266 "./typica.w"
 
 DeviceTreeModelNode*childItem= parentItem->child(row);
 if(childItem)
@@ -10445,7 +10392,7 @@ return QModelIndex();
 }
 
 /*:723*//*724:*/
-#line 15273 "./typica.w"
+#line 15277 "./typica.w"
 
 QModelIndex DeviceTreeModel::parent(const QModelIndex&child)const
 {
@@ -10464,7 +10411,7 @@ return createIndex(parentItem->row(),0,parentItem);
 }
 
 /*:724*//*725:*/
-#line 15292 "./typica.w"
+#line 15296 "./typica.w"
 
 Qt::ItemFlags DeviceTreeModel::flags(const QModelIndex&index)const
 {
@@ -10476,7 +10423,7 @@ return Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsEditable;
 }
 
 /*:725*//*726:*/
-#line 15307 "./typica.w"
+#line 15311 "./typica.w"
 
 QVariant DeviceTreeModel::data(const QModelIndex&index,int role)const
 {
@@ -10506,7 +10453,7 @@ return QVariant();
 }
 
 /*:726*//*727:*/
-#line 15339 "./typica.w"
+#line 15343 "./typica.w"
 
 bool DeviceTreeModel::setData(const QModelIndex&index,
 const QVariant&value,int)
@@ -10525,14 +10472,14 @@ return true;
 }
 
 /*:727*//*728:*/
-#line 15362 "./typica.w"
+#line 15366 "./typica.w"
 
 void DeviceTreeModel::newNode(const QString&name,const QString&driver,
 const QModelIndex&parent)
 {
 QString referenceID= QUuid::createUuid().toString();
 /*722:*/
-#line 15240 "./typica.w"
+#line 15244 "./typica.w"
 
 DeviceTreeModelNode*parentItem;
 if(!parent.isValid())
@@ -10545,7 +10492,7 @@ parentItem= static_cast<DeviceTreeModelNode*> (parent.internalPointer());
 }
 
 /*:722*/
-#line 15367 "./typica.w"
+#line 15371 "./typica.w"
 
 QDomNode parentNode= parentItem->node();
 int newRowNumber= rowCount(parent);
@@ -10562,12 +10509,12 @@ endInsertRows();
 }
 
 /*:728*//*729:*/
-#line 15385 "./typica.w"
+#line 15389 "./typica.w"
 
 bool DeviceTreeModel::removeRows(int row,int count,const QModelIndex&parent)
 {
 /*722:*/
-#line 15240 "./typica.w"
+#line 15244 "./typica.w"
 
 DeviceTreeModelNode*parentItem;
 if(!parent.isValid())
@@ -10580,7 +10527,7 @@ parentItem= static_cast<DeviceTreeModelNode*> (parent.internalPointer());
 }
 
 /*:722*/
-#line 15388 "./typica.w"
+#line 15392 "./typica.w"
 
 QDomNode parentNode= parentItem->node();
 QDomNodeList childNodes= parentNode.childNodes();
@@ -10618,7 +10565,7 @@ return true;
 }
 
 /*:729*//*730:*/
-#line 15427 "./typica.w"
+#line 15431 "./typica.w"
 
 QDomElement DeviceTreeModel::referenceElement(const QString&id)
 {
@@ -10639,7 +10586,7 @@ return QDomElement();
 }
 
 /*:730*//*731:*/
-#line 15448 "./typica.w"
+#line 15452 "./typica.w"
 
 QVariant DeviceTreeModel::headerData(int,Qt::Orientation,int)const
 {
@@ -10647,7 +10594,7 @@ return QVariant();
 }
 
 /*:731*//*732:*/
-#line 15457 "./typica.w"
+#line 15461 "./typica.w"
 
 DeviceTreeModel::~DeviceTreeModel()
 {
@@ -10658,7 +10605,7 @@ delete root;
 #line 582 "./typica.w"
 
 /*759:*/
-#line 15957 "./typica.w"
+#line 15961 "./typica.w"
 
 BasicDeviceConfigurationWidget::BasicDeviceConfigurationWidget(
 DeviceTreeModel*model,const QModelIndex&index)
@@ -10668,7 +10615,7 @@ DeviceTreeModel*model,const QModelIndex&index)
 }
 
 /*:759*//*760:*/
-#line 15969 "./typica.w"
+#line 15973 "./typica.w"
 
 void BasicDeviceConfigurationWidget::updateAttribute(const QString&name,
 const QString&value)
@@ -10699,7 +10646,7 @@ AppInstance->saveDeviceConfiguration();
 }
 
 /*:760*//*761:*/
-#line 16003 "./typica.w"
+#line 16007 "./typica.w"
 
 void BasicDeviceConfigurationWidget::insertChildNode(const QString&name,
 const QString&driver)
@@ -10711,7 +10658,7 @@ deviceModel->newNode(name,driver,currentNode);
 #line 583 "./typica.w"
 
 /*750:*/
-#line 15801 "./typica.w"
+#line 15805 "./typica.w"
 
 DeviceConfigurationWindow::DeviceConfigurationWindow():QWidget(NULL),
 view(new QTreeView),configArea(new QScrollArea)
@@ -10765,7 +10712,7 @@ this,SLOT(resizeColumn()));
 }
 
 /*:750*//*751:*/
-#line 15856 "./typica.w"
+#line 15860 "./typica.w"
 
 void DeviceConfigurationWindow::addDevice()
 {
@@ -10773,7 +10720,7 @@ model->newNode(tr("New Roaster"),"roaster",QModelIndex());
 }
 
 /*:751*//*752:*/
-#line 15864 "./typica.w"
+#line 15868 "./typica.w"
 
 void DeviceConfigurationWindow::removeNode()
 {
@@ -10787,7 +10734,7 @@ model->removeRow(row,parent);
 }
 
 /*:752*//*753:*/
-#line 15880 "./typica.w"
+#line 15884 "./typica.w"
 
 void DeviceConfigurationWindow::newSelection(const QModelIndex&index)
 {
@@ -10800,7 +10747,7 @@ editor->show();
 }
 
 /*:753*//*754:*/
-#line 15897 "./typica.w"
+#line 15901 "./typica.w"
 
 void DeviceConfigurationWindow::resizeColumn()
 {
@@ -10811,7 +10758,7 @@ view->resizeColumnToContents(0);
 #line 584 "./typica.w"
 
 /*774:*/
-#line 16327 "./typica.w"
+#line 16331 "./typica.w"
 
 Ni9211TcConfWidget::Ni9211TcConfWidget(DeviceTreeModel*model,
 const QModelIndex&index):
@@ -10834,7 +10781,7 @@ QCheckBox*hideSeries= new QCheckBox("Hide this channel");
 layout->addRow(hideSeries);
 setLayout(layout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -10842,7 +10789,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 16348 "./typica.w"
+#line 16352 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -10871,7 +10818,7 @@ connect(hideSeries,SIGNAL(toggled(bool)),this,SLOT(updateHidden(bool)));
 }
 
 /*:774*//*775:*/
-#line 16378 "./typica.w"
+#line 16382 "./typica.w"
 
 void Ni9211TcConfWidget::updateThermocoupleType(const QString&type)
 {
@@ -10892,7 +10839,7 @@ updateAttribute("hidden",hidden?"true":"false");
 #line 585 "./typica.w"
 
 /*770:*/
-#line 16241 "./typica.w"
+#line 16245 "./typica.w"
 
 NiDaqMxBase9211ConfWidget::NiDaqMxBase9211ConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -10908,7 +10855,7 @@ QPushButton*addChannelButton= new QPushButton(tr("Add Channel"));
 layout->addLayout(deviceIdLayout);
 layout->addWidget(addChannelButton);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -10916,7 +10863,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 16255 "./typica.w"
+#line 16259 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -10936,7 +10883,7 @@ setLayout(layout);
 }
 
 /*:770*//*771:*/
-#line 16277 "./typica.w"
+#line 16281 "./typica.w"
 
 void NiDaqMxBase9211ConfWidget::updateDeviceId(const QString&newId)
 {
@@ -10944,7 +10891,7 @@ updateAttribute("deviceID",newId);
 }
 
 /*:771*//*772:*/
-#line 16285 "./typica.w"
+#line 16289 "./typica.w"
 
 void NiDaqMxBase9211ConfWidget::addChannel()
 {
@@ -10955,7 +10902,7 @@ insertChildNode(tr("Thermocouple channel"),"ni9211seriestc");
 #line 586 "./typica.w"
 
 /*768:*/
-#line 16192 "./typica.w"
+#line 16196 "./typica.w"
 
 NiDaqMxBaseDriverConfWidget::NiDaqMxBaseDriverConfWidget(
 DeviceTreeModel*model,const QModelIndex&index):
@@ -10985,7 +10932,7 @@ setLayout(layout);
 #line 587 "./typica.w"
 
 /*635:*/
-#line 13719 "./typica.w"
+#line 13723 "./typica.w"
 
 ReportAction::ReportAction(const QString&fileName,const QString&reportName,
 QObject*parent):
@@ -10995,7 +10942,7 @@ connect(this,SIGNAL(triggered()),this,SLOT(createReport()));
 }
 
 /*:635*//*636:*/
-#line 13735 "./typica.w"
+#line 13739 "./typica.w"
 
 void ReportAction::createReport()
 {
@@ -11066,7 +11013,7 @@ if(element.attribute("type")=="reports")
 if(element.hasAttribute("src"))
 {
 /*633:*/
-#line 13679 "./typica.w"
+#line 13683 "./typica.w"
 
 QSettings settings;
 QString reportDirectory= QString("%1/%2").arg(settings.value("config").
@@ -11084,7 +11031,7 @@ for(int i= 0;i<reportFiles.size();i++)
 {
 QFileInfo reportFile= reportFiles.at(i);
 /*637:*/
-#line 13759 "./typica.w"
+#line 13763 "./typica.w"
 
 QString path= reportFile.absoluteFilePath();
 QFile file(path);
@@ -11103,7 +11050,7 @@ if(!title.isEmpty())
 QStringList hierarchy= title.split(":->");
 QMenu*insertionPoint= menu;
 /*638:*/
-#line 13786 "./typica.w"
+#line 13790 "./typica.w"
 
 for(int j= 0;j<hierarchy.size()-1;j++)
 {
@@ -11129,7 +11076,7 @@ insertionPoint= insertionPoint->addMenu(hierarchy.at(j));
 }
 
 /*:638*/
-#line 13776 "./typica.w"
+#line 13780 "./typica.w"
 
 ReportAction*action= new ReportAction(path,hierarchy.last());
 insertionPoint->addAction(action);
@@ -11138,7 +11085,7 @@ insertionPoint->addAction(action);
 }
 
 /*:637*/
-#line 13695 "./typica.w"
+#line 13699 "./typica.w"
 
 }
 
@@ -11235,7 +11182,7 @@ window->menuBar()->addMenu(helpMenu);
 window->show();
 
 /*:188*/
-#line 13748 "./typica.w"
+#line 13752 "./typica.w"
 
 file.close();
 engine->popContext();
@@ -11312,7 +11259,7 @@ editor->setGeometry(option.rect);
 #line 589 "./typica.w"
 
 /*779:*/
-#line 16437 "./typica.w"
+#line 16441 "./typica.w"
 
 NiDaqMxDriverConfWidget::NiDaqMxDriverConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -11342,7 +11289,7 @@ setLayout(layout);
 #line 590 "./typica.w"
 
 /*781:*/
-#line 16486 "./typica.w"
+#line 16490 "./typica.w"
 
 NiDaqMx9211ConfWidget::NiDaqMx9211ConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -11358,7 +11305,7 @@ QPushButton*addChannelButton= new QPushButton(tr("Add Channel"));
 layout->addLayout(deviceIdLayout);
 layout->addWidget(addChannelButton);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -11366,7 +11313,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 16500 "./typica.w"
+#line 16504 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -11398,7 +11345,7 @@ insertChildNode(tr("Thermocouple channel"),"ni9211seriestc");
 #line 591 "./typica.w"
 
 /*783:*/
-#line 16551 "./typica.w"
+#line 16555 "./typica.w"
 
 NiDaqMxTc01ConfWidget::NiDaqMxTc01ConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -11422,7 +11369,7 @@ layout->addRow(tr("Thermocouple Type:"),typeSelector);
 QCheckBox*hideSeries= new QCheckBox(tr("Hide this channel"));
 layout->addRow(hideSeries);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -11430,7 +11377,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 16573 "./typica.w"
+#line 16577 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -11487,7 +11434,7 @@ updateAttribute("hidden",hidden?"true":"false");
 #line 592 "./typica.w"
 
 /*801:*/
-#line 16989 "./typica.w"
+#line 16993 "./typica.w"
 
 ModbusRtuPortConfWidget::ModbusRtuPortConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -11529,7 +11476,7 @@ layout->addRow(tr("Stop Bits:"),stop);
 connect(stop,SIGNAL(currentIndexChanged(QString)),
 this,SLOT(updateStopBits(QString)));
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -11537,7 +11484,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 17029 "./typica.w"
+#line 17033 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -11609,7 +11556,7 @@ updateAttribute("stopbits",newStopBits);
 #line 593 "./typica.w"
 
 /*803:*/
-#line 17152 "./typica.w"
+#line 17156 "./typica.w"
 
 ModbusRtuDeviceConfWidget::ModbusRtuDeviceConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -11691,7 +11638,7 @@ queriedPrecisionPlaceholder->setLayout(queriedPrecisionLayout);
 decimalSpecificationLayout->addWidget(queriedPrecisionPlaceholder);
 layout->addLayout(decimalSpecificationLayout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -11699,7 +11646,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 17232 "./typica.w"
+#line 17236 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -11845,7 +11792,7 @@ updateAttribute("precision",QString("%1").arg(newValue));
 #line 594 "./typica.w"
 
 /*805:*/
-#line 17395 "./typica.w"
+#line 17399 "./typica.w"
 
 ModbusRtuDeviceTPvConfWidget::ModbusRtuDeviceTPvConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -11855,7 +11802,7 @@ QFormLayout*layout= new QFormLayout;
 ShortHexSpinBox*address= new ShortHexSpinBox;
 layout->addRow(tr("Function 0x04 Process Value Address"),address);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -11863,7 +11810,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 17403 "./typica.w"
+#line 17407 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -11888,7 +11835,7 @@ updateAttribute("address",QString("%1").arg(newAddress));
 #line 595 "./typica.w"
 
 /*807:*/
-#line 17451 "./typica.w"
+#line 17455 "./typica.w"
 
 ModbusRtuDeviceTSvConfWidget::ModbusRtuDeviceTSvConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -11923,7 +11870,7 @@ fixedRangePlaceholder->setLayout(fixedRangeLayout);
 boundsLayout->addWidget(fixedRangePlaceholder);
 layout->addLayout(boundsLayout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -11931,7 +11878,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 17484 "./typica.w"
+#line 17488 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -12043,7 +11990,7 @@ updateAttribute("upperaddress",QString("%1").arg(newAddress));
 #line 596 "./typica.w"
 
 /*763:*/
-#line 16039 "./typica.w"
+#line 16043 "./typica.w"
 
 RoasterConfWidget::RoasterConfWidget(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index)
@@ -12091,7 +12038,7 @@ connect(valueAnnotationInserter,SIGNAL(triggered(QString,QString)),
 this,SLOT(insertChildNode(QString,QString)));
 
 /*:1026*/
-#line 16075 "./typica.w"
+#line 16079 "./typica.w"
 
 addAnnotationControlButton->setMenu(annotationMenu);
 layout->addWidget(addAnnotationControlButton);
@@ -12129,7 +12076,7 @@ connect(rateOfChangeInserter,SIGNAL(triggered(QString,QString)),this,SLOT(insert
 advancedMenu->addAction(rateOfChangeInserter);
 
 /*:952*/
-#line 16104 "./typica.w"
+#line 16108 "./typica.w"
 
 advancedButton->setMenu(advancedMenu);
 layout->addWidget(advancedButton);
@@ -12141,7 +12088,7 @@ QSpinBox*id= new QSpinBox;
 idLayout->addWidget(id);
 layout->addLayout(idLayout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -12149,7 +12096,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 16114 "./typica.w"
+#line 16118 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -12166,7 +12113,7 @@ setLayout(layout);
 }
 
 /*:763*//*765:*/
-#line 16146 "./typica.w"
+#line 16150 "./typica.w"
 
 void RoasterConfWidget::updateRoasterId(int id)
 {
@@ -12177,7 +12124,7 @@ updateAttribute("databaseid",QString("%1").arg(id));
 #line 597 "./typica.w"
 
 /*811:*/
-#line 17634 "./typica.w"
+#line 17638 "./typica.w"
 
 AnnotationButtonConfWidget::AnnotationButtonConfWidget(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index)
@@ -12188,7 +12135,7 @@ QLineEdit*annotationTextEdit= new QLineEdit;
 layout->addRow(tr("Button Text:"),buttonTextEdit);
 layout->addRow(tr("Annotation Text:"),annotationTextEdit);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -12196,7 +12143,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 17643 "./typica.w"
+#line 17647 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -12218,7 +12165,7 @@ setLayout(layout);
 }
 
 /*:811*//*812:*/
-#line 17665 "./typica.w"
+#line 17669 "./typica.w"
 
 void AnnotationButtonConfWidget::updateButtonText(const QString&text)
 {
@@ -12231,7 +12178,7 @@ updateAttribute("annotationtext",text);
 }
 
 /*:812*//*815:*/
-#line 17703 "./typica.w"
+#line 17707 "./typica.w"
 
 ReconfigurableAnnotationButtonConfWidget::ReconfigurableAnnotationButtonConfWidget(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index)
@@ -12242,7 +12189,7 @@ QLineEdit*annotationTextEdit= new QLineEdit;
 layout->addRow(tr("Button Text:"),buttonTextEdit);
 layout->addRow(tr("Annotation Text:"),annotationTextEdit);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -12250,7 +12197,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 17712 "./typica.w"
+#line 17716 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -12289,7 +12236,7 @@ updateAttribute("annotationtext",text);
 #line 598 "./typica.w"
 
 /*818:*/
-#line 17780 "./typica.w"
+#line 17784 "./typica.w"
 
 NoteSpinConfWidget::NoteSpinConfWidget(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index)
@@ -12310,7 +12257,7 @@ layout->addRow(tr("Prefix text"),pretext);
 QLineEdit*posttext= new QLineEdit;
 layout->addRow(tr("Suffix text"),posttext);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -12318,7 +12265,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 17799 "./typica.w"
+#line 17803 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -12397,7 +12344,7 @@ updateAttribute("posttext",text);
 #line 599 "./typica.w"
 
 /*327:*/
-#line 7393 "./typica.w"
+#line 7397 "./typica.w"
 
 LinearCalibrator::LinearCalibrator(QObject*parent):
 QObject(parent),Lo1(0),Lo2(0),Up1(1),Up2(1),sensitivitySetting(0.0),clamp(false)
@@ -12406,7 +12353,7 @@ connect(this,SIGNAL(measurement(Measurement)),this,SIGNAL(newData(Measurement)))
 }
 
 /*:327*//*328:*/
-#line 7407 "./typica.w"
+#line 7411 "./typica.w"
 
 Measurement LinearCalibrator::newMeasurement(Measurement measure)
 {
@@ -12433,7 +12380,7 @@ return adjusted;
 }
 
 /*:328*//*329:*/
-#line 7434 "./typica.w"
+#line 7438 "./typica.w"
 
 double LinearCalibrator::measuredLower()
 {
@@ -12499,7 +12446,7 @@ return sensitivitySetting;
 #line 600 "./typica.w"
 
 /*334:*/
-#line 7567 "./typica.w"
+#line 7571 "./typica.w"
 
 void LinearSplineInterpolator::add_pair(double source,double destination)
 {
@@ -12573,7 +12520,7 @@ return Measurement();
 #line 601 "./typica.w"
 
 /*917:*/
-#line 19148 "./typica.w"
+#line 19152 "./typica.w"
 
 LinearSplineInterpolationConfWidget::LinearSplineInterpolationConfWidget(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index),tablemodel(new SaltModel(2))
@@ -12591,7 +12538,7 @@ NumericDelegate*delegate= new NumericDelegate;
 mappingTable->setItemDelegate(delegate);
 layout->addRow(tr("Mapping data:"),mappingTable);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -12599,7 +12546,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 19164 "./typica.w"
+#line 19168 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -12615,7 +12562,7 @@ destination->setText(node.attribute("value"));
 else if(node.attribute("name")=="sourcevalues")
 {
 /*918:*/
-#line 19203 "./typica.w"
+#line 19207 "./typica.w"
 
 QString data= node.attribute("value");
 if(data.length()> 3)
@@ -12626,11 +12573,11 @@ data= data.remove(0,2);
 QStringList itemList= data.split(",");
 
 /*:918*/
-#line 19178 "./typica.w"
+#line 19182 "./typica.w"
 
 int column= 0;
 /*919:*/
-#line 19215 "./typica.w"
+#line 19219 "./typica.w"
 
 for(int j= 0;j<itemList.size();j++)
 {
@@ -12640,14 +12587,14 @@ Qt::DisplayRole);
 }
 
 /*:919*/
-#line 19180 "./typica.w"
+#line 19184 "./typica.w"
 
 
 }
 else if(node.attribute("name")=="destinationvalues")
 {
 /*918:*/
-#line 19203 "./typica.w"
+#line 19207 "./typica.w"
 
 QString data= node.attribute("value");
 if(data.length()> 3)
@@ -12658,11 +12605,11 @@ data= data.remove(0,2);
 QStringList itemList= data.split(",");
 
 /*:918*/
-#line 19185 "./typica.w"
+#line 19189 "./typica.w"
 
 int column= 1;
 /*919:*/
-#line 19215 "./typica.w"
+#line 19219 "./typica.w"
 
 for(int j= 0;j<itemList.size();j++)
 {
@@ -12672,7 +12619,7 @@ Qt::DisplayRole);
 }
 
 /*:919*/
-#line 19187 "./typica.w"
+#line 19191 "./typica.w"
 
 }
 }
@@ -12686,7 +12633,7 @@ setLayout(layout);
 }
 
 /*:917*//*920:*/
-#line 19226 "./typica.w"
+#line 19230 "./typica.w"
 
 void LinearSplineInterpolationConfWidget::updateKnots()
 {
@@ -12708,7 +12655,7 @@ updateAttribute("destination",dest);
 #line 602 "./typica.w"
 
 /*937:*/
-#line 19695 "./typica.w"
+#line 19699 "./typica.w"
 
 TranslationConfWidget::TranslationConfWidget(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index),
@@ -12724,7 +12671,7 @@ layout->addRow(tr("Column to match:"),column);
 layout->addRow(tr("Unit:"),unitSelector);
 layout->addRow(tr("Value:"),temperatureValue);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -12732,7 +12679,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 19709 "./typica.w"
+#line 19713 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -12759,7 +12706,7 @@ setLayout(layout);
 }
 
 /*:937*//*938:*/
-#line 19738 "./typica.w"
+#line 19742 "./typica.w"
 
 void TranslationConfWidget::updateTemperature()
 {
@@ -12794,7 +12741,7 @@ QFormLayout*layout= new QFormLayout;
 QLineEdit*labelEdit= new QLineEdit;
 layout->addRow(tr("Label Text:"),labelEdit);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -13090,7 +13037,7 @@ layout->addWidget(deviceIdStack);
 QPushButton*addChannelButton= new QPushButton(tr("Add Channel"));
 layout->addWidget(addChannelButton);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -13291,7 +13238,7 @@ calibrationLayout->addLayout(calibrationControlsLayout);
 calibrationLayout->addLayout(calibrationTestLayout);
 layout->addLayout(calibrationLayout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -13569,7 +13516,7 @@ layout->addRow(tr("Stop Bits:"),stop);
 connect(stop,SIGNAL(currentIndexChanged(int)),
 this,SLOT(updateStopBits(int)));
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -13742,7 +13689,7 @@ NumericDelegate*delegate= new NumericDelegate;
 annotationTable->setItemDelegateForColumn(0,delegate);
 layout->addRow(tr("Annotations for values:"),annotationTable);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -13766,7 +13713,7 @@ noteOnStart->setChecked(node.attribute("value")=="true"?true:false);
 else if(node.attribute("name")=="measuredValues")
 {
 /*918:*/
-#line 19203 "./typica.w"
+#line 19207 "./typica.w"
 
 QString data= node.attribute("value");
 if(data.length()> 3)
@@ -13781,7 +13728,7 @@ QStringList itemList= data.split(",");
 
 int column= 0;
 /*919:*/
-#line 19215 "./typica.w"
+#line 19219 "./typica.w"
 
 for(int j= 0;j<itemList.size();j++)
 {
@@ -13946,7 +13893,7 @@ qInstallMsgHandler(0);
 /*:837*/
 #line 61 "./advancedsettings.w"
 
-#line 17881 "./typica.w"
+#line 17885 "./typica.w"
 
 /*:838*//*885:*/
 #line 639 "./unsupportedserial.w"
@@ -13982,7 +13929,7 @@ central->addTab(scriptEditor,tr("Script"));
 dummyLayout->addWidget(central);
 
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -14073,7 +14020,7 @@ channelSettings->setModel(channelSettingsModel);
 layout->addRow(channelSettings);
 setLayout(layout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -14398,7 +14345,7 @@ sampleRate->setSingleStep(40);
 sampleRate->setValue(360);
 
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -14466,7 +14413,7 @@ channel->setMinimum(0);
 channel->setMaximum(3);
 setLayout(layout);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -14701,10 +14648,10 @@ driver.unload();
 
 
 /*:911*//*925:*/
-#line 19311 "./typica.w"
+#line 19315 "./typica.w"
 
 /*923:*/
-#line 19273 "./typica.w"
+#line 19277 "./typica.w"
 
 CoolingTimerConfWidget::CoolingTimerConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -14715,7 +14662,7 @@ QLabel*label= new QLabel(tr("Cooling Time: "));
 QTimeEdit*editor= new QTimeEdit;
 editor->setDisplayFormat("mm:ss");
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -14723,7 +14670,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 19282 "./typica.w"
+#line 19286 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -14747,14 +14694,14 @@ updateAttribute("reset",time.toString("mm:ss"));
 }
 
 /*:923*/
-#line 19312 "./typica.w"
+#line 19316 "./typica.w"
 
 
 /*:925*//*930:*/
-#line 19570 "./typica.w"
+#line 19574 "./typica.w"
 
 /*927:*/
-#line 19344 "./typica.w"
+#line 19348 "./typica.w"
 
 RangeTimerConfWidget::RangeTimerConfWidget(DeviceTreeModel*model,const QModelIndex&index)
 :BasicDeviceConfigurationWidget(model,index)
@@ -14818,7 +14765,7 @@ stopConfigurationGroup->setLayout(stopOptions);
 layout->addWidget(stopConfigurationGroup);
 
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -14826,7 +14773,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 19406 "./typica.w"
+#line 19410 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -14916,7 +14863,7 @@ this,SLOT(updateStopTrigger(int)));
 }
 
 /*:927*//*928:*/
-#line 19496 "./typica.w"
+#line 19500 "./typica.w"
 
 void RangeTimerConfWidget::updateStartButtonText(const QString&text)
 {
@@ -14985,14 +14932,14 @@ break;
 }
 
 /*:928*/
-#line 19571 "./typica.w"
+#line 19575 "./typica.w"
 
 
 /*:930*//*935:*/
-#line 19671 "./typica.w"
+#line 19675 "./typica.w"
 
 /*932:*/
-#line 19595 "./typica.w"
+#line 19599 "./typica.w"
 
 MultiRangeTimerConfWidget::MultiRangeTimerConfWidget(DeviceTreeModel*model,
 const QModelIndex&index)
@@ -15007,7 +14954,7 @@ QTableView*rangeTable= new QTableView;
 rangeTable->setModel(tablemodel);
 layout->addRow(tr("Range data:"),rangeTable);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -15015,7 +14962,7 @@ QDomNodeList configData= referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
 /*:764*/
-#line 19608 "./typica.w"
+#line 19612 "./typica.w"
 
 for(int i= 0;i<configData.size();i++)
 {
@@ -15045,7 +14992,7 @@ QVariant(item),Qt::DisplayRole);
 else if(node.attribute("name")=="endtemps")
 {
 /*918:*/
-#line 19203 "./typica.w"
+#line 19207 "./typica.w"
 
 QString data= node.attribute("value");
 if(data.length()> 3)
@@ -15056,11 +15003,11 @@ data= data.remove(0,2);
 QStringList itemList= data.split(",");
 
 /*:918*/
-#line 19636 "./typica.w"
+#line 19640 "./typica.w"
 
 int column= 1;
 /*919:*/
-#line 19215 "./typica.w"
+#line 19219 "./typica.w"
 
 for(int j= 0;j<itemList.size();j++)
 {
@@ -15070,7 +15017,7 @@ Qt::DisplayRole);
 }
 
 /*:919*/
-#line 19638 "./typica.w"
+#line 19642 "./typica.w"
 
 }
 }
@@ -15082,7 +15029,7 @@ setLayout(layout);
 }
 
 /*:932*//*933:*/
-#line 19652 "./typica.w"
+#line 19656 "./typica.w"
 
 void MultiRangeTimerConfWidget::updateRangeData()
 {
@@ -15096,7 +15043,7 @@ updateAttribute("trigger",text);
 }
 
 /*:933*/
-#line 19672 "./typica.w"
+#line 19676 "./typica.w"
 
 
 /*:935*//*953:*/
@@ -15120,7 +15067,7 @@ scaleTime->setMinimum(1);
 scaleTime->setMaximum(300);
 layout->addRow(tr("Scale time:"),scaleTime);
 /*764:*/
-#line 16136 "./typica.w"
+#line 16140 "./typica.w"
 
 QDomElement referenceElement= 
 model->referenceElement(model->data(index,Qt::UserRole).toString());
@@ -15176,7 +15123,7 @@ updateAttribute("scale",seconds);
 /*:950*/
 #line 266 "./rate.w"
 
-#line 19764 "./typica.w"
+#line 19768 "./typica.w"
 
 #line 1 "./dataqsdk.w"
 /*:953*/
@@ -17826,7 +17773,7 @@ if(element.attribute("type")=="reports")
 if(element.hasAttribute("src"))
 {
 /*633:*/
-#line 13679 "./typica.w"
+#line 13683 "./typica.w"
 
 QSettings settings;
 QString reportDirectory= QString("%1/%2").arg(settings.value("config").
@@ -17844,7 +17791,7 @@ for(int i= 0;i<reportFiles.size();i++)
 {
 QFileInfo reportFile= reportFiles.at(i);
 /*637:*/
-#line 13759 "./typica.w"
+#line 13763 "./typica.w"
 
 QString path= reportFile.absoluteFilePath();
 QFile file(path);
@@ -17863,7 +17810,7 @@ if(!title.isEmpty())
 QStringList hierarchy= title.split(":->");
 QMenu*insertionPoint= menu;
 /*638:*/
-#line 13786 "./typica.w"
+#line 13790 "./typica.w"
 
 for(int j= 0;j<hierarchy.size()-1;j++)
 {
@@ -17889,7 +17836,7 @@ insertionPoint= insertionPoint->addMenu(hierarchy.at(j));
 }
 
 /*:638*/
-#line 13776 "./typica.w"
+#line 13780 "./typica.w"
 
 ReportAction*action= new ReportAction(path,hierarchy.last());
 insertionPoint->addAction(action);
@@ -17898,7 +17845,7 @@ insertionPoint->addAction(action);
 }
 
 /*:637*/
-#line 13695 "./typica.w"
+#line 13699 "./typica.w"
 
 }
 
@@ -18073,7 +18020,7 @@ if(element.attribute("type")=="reports")
 if(element.hasAttribute("src"))
 {
 /*633:*/
-#line 13679 "./typica.w"
+#line 13683 "./typica.w"
 
 QSettings settings;
 QString reportDirectory= QString("%1/%2").arg(settings.value("config").
@@ -18091,7 +18038,7 @@ for(int i= 0;i<reportFiles.size();i++)
 {
 QFileInfo reportFile= reportFiles.at(i);
 /*637:*/
-#line 13759 "./typica.w"
+#line 13763 "./typica.w"
 
 QString path= reportFile.absoluteFilePath();
 QFile file(path);
@@ -18110,7 +18057,7 @@ if(!title.isEmpty())
 QStringList hierarchy= title.split(":->");
 QMenu*insertionPoint= menu;
 /*638:*/
-#line 13786 "./typica.w"
+#line 13790 "./typica.w"
 
 for(int j= 0;j<hierarchy.size()-1;j++)
 {
@@ -18136,7 +18083,7 @@ insertionPoint= insertionPoint->addMenu(hierarchy.at(j));
 }
 
 /*:638*/
-#line 13776 "./typica.w"
+#line 13780 "./typica.w"
 
 ReportAction*action= new ReportAction(path,hierarchy.last());
 insertionPoint->addAction(action);
@@ -18145,7 +18092,7 @@ insertionPoint->addAction(action);
 }
 
 /*:637*/
-#line 13695 "./typica.w"
+#line 13699 "./typica.w"
 
 }
 
@@ -19936,7 +19883,7 @@ measurement= value.toVariant().value<Measurement> ();
 #line 6421 "./typica.w"
 
 /*:291*//*312:*/
-#line 7034 "./typica.w"
+#line 7038 "./typica.w"
 
 QScriptValue constructDAQ(QScriptContext*context,QScriptEngine*engine)
 {
@@ -19965,7 +19912,7 @@ return object;
 }
 
 /*:312*//*313:*/
-#line 7064 "./typica.w"
+#line 7068 "./typica.w"
 
 void setDAQProperties(QScriptValue value,QScriptEngine*engine)
 {
@@ -19974,7 +19921,7 @@ value.setProperty("newChannel",engine->newFunction(DAQ_newChannel));
 }
 
 /*:313*//*314:*/
-#line 7074 "./typica.w"
+#line 7078 "./typica.w"
 
 QScriptValue DAQ_newChannel(QScriptContext*context,QScriptEngine*engine)
 {
@@ -19991,7 +19938,7 @@ return object;
 }
 
 /*:314*//*321:*/
-#line 7230 "./typica.w"
+#line 7234 "./typica.w"
 
 QScriptValue constructFakeDAQ(QScriptContext*context,
 QScriptEngine*engine)
@@ -20035,7 +19982,7 @@ return object;
 }
 
 /*:321*//*325:*/
-#line 7321 "./typica.w"
+#line 7325 "./typica.w"
 
 void setChannelProperties(QScriptValue value,QScriptEngine*engine)
 {
@@ -20043,7 +19990,7 @@ setQObjectProperties(value,engine);
 }
 
 /*:325*//*332:*/
-#line 7513 "./typica.w"
+#line 7517 "./typica.w"
 
 QScriptValue constructLinearCalibrator(QScriptContext*,QScriptEngine*engine)
 {
@@ -20058,7 +20005,7 @@ setQObjectProperties(value,engine);
 }
 
 /*:332*//*337:*/
-#line 7651 "./typica.w"
+#line 7655 "./typica.w"
 
 QScriptValue constructLinearSplineInterpolator(QScriptContext*,QScriptEngine*engine)
 {
@@ -20074,7 +20021,7 @@ setQObjectProperties(value,engine);
 
 
 /*:337*//*347:*/
-#line 7860 "./typica.w"
+#line 7864 "./typica.w"
 
 QScriptValue constructTemperatureDisplay(QScriptContext*,
 QScriptEngine*engine)
@@ -20092,7 +20039,7 @@ engine->newFunction(TemperatureDisplay_setDisplayUnits));
 }
 
 /*:347*//*348:*/
-#line 7884 "./typica.w"
+#line 7888 "./typica.w"
 
 QScriptValue TemperatureDisplay_setDisplayUnits(QScriptContext*context,QScriptEngine*)
 {
@@ -20102,7 +20049,7 @@ return QScriptValue();
 }
 
 /*:348*//*355:*/
-#line 8021 "./typica.w"
+#line 8025 "./typica.w"
 
 QScriptValue constructMeasurementTimeOffset(QScriptContext*,
 QScriptEngine*engine)
@@ -20120,7 +20067,7 @@ setQObjectProperties(value,engine);
 }
 
 /*:355*//*360:*/
-#line 8130 "./typica.w"
+#line 8134 "./typica.w"
 
 QScriptValue constructThresholdDetector(QScriptContext*,QScriptEngine*engine)
 {
@@ -20134,7 +20081,7 @@ setQObjectProperties(value,engine);
 }
 
 /*:360*//*365:*/
-#line 8227 "./typica.w"
+#line 8231 "./typica.w"
 
 QScriptValue constructZeroEmitter(QScriptContext*context,
 QScriptEngine*engine)
@@ -20151,7 +20098,7 @@ setQObjectProperties(value,engine);
 }
 
 /*:365*//*370:*/
-#line 8307 "./typica.w"
+#line 8311 "./typica.w"
 
 QScriptValue constructMeasurementAdapter(QScriptContext*context,
 QScriptEngine*engine)
@@ -20168,7 +20115,7 @@ setQObjectProperties(value,engine);
 }
 
 /*:370*//*387:*/
-#line 8769 "./typica.w"
+#line 8773 "./typica.w"
 
 QScriptValue constructGraphView(QScriptContext*,QScriptEngine*engine)
 {
@@ -20183,7 +20130,7 @@ setQGraphicsViewProperties(value,engine);
 }
 
 /*:387*//*410:*/
-#line 9407 "./typica.w"
+#line 9411 "./typica.w"
 
 QScriptValue constructZoomLog(QScriptContext*,QScriptEngine*engine)
 {
@@ -20207,7 +20154,7 @@ value.setProperty("setDisplayUnits",engine->newFunction(ZoomLog_setDisplayUnits)
 }
 
 /*:410*//*411:*/
-#line 9434 "./typica.w"
+#line 9438 "./typica.w"
 
 QScriptValue ZoomLog_saveXML(QScriptContext*context,QScriptEngine*engine)
 {
@@ -20239,7 +20186,7 @@ return QScriptValue(engine,filename);
 }
 
 /*:411*//*412:*/
-#line 9482 "./typica.w"
+#line 9486 "./typica.w"
 
 QScriptValue ZoomLog_saveState(QScriptContext*context,QScriptEngine*)
 {
@@ -20286,7 +20233,7 @@ return QScriptValue(engine,self->lastTime(argument<int> (0,context)));
 }
 
 /*:412*//*413:*/
-#line 9535 "./typica.w"
+#line 9539 "./typica.w"
 
 QScriptValue ZoomLog_setDisplayUnits(QScriptContext*context,QScriptEngine*)
 {
@@ -20296,7 +20243,7 @@ return QScriptValue();
 }
 
 /*:413*//*448:*/
-#line 10355 "./typica.w"
+#line 10359 "./typica.w"
 
 QScriptValue constructAnnotationButton(QScriptContext*context,
 QScriptEngine*engine)
@@ -20313,7 +20260,7 @@ setQPushButtonProperties(value,engine);
 }
 
 /*:448*//*456:*/
-#line 10498 "./typica.w"
+#line 10502 "./typica.w"
 
 QScriptValue constructAnnotationSpinBox(QScriptContext*context,
 QScriptEngine*engine)
@@ -20340,7 +20287,7 @@ setQWidgetProperties(value,engine);
 }
 
 /*:456*//*477:*/
-#line 10921 "./typica.w"
+#line 10925 "./typica.w"
 
 QScriptValue constructTimerDisplay(QScriptContext*,QScriptEngine*engine)
 {
@@ -20356,7 +20303,7 @@ value.setProperty("setTimerMode",engine->newFunction(TimerDisplay_setTimerMode))
 }
 
 /*:477*//*478:*/
-#line 10940 "./typica.w"
+#line 10944 "./typica.w"
 
 QScriptValue TimerDisplay_setTimerMode(QScriptContext*context,QScriptEngine*)
 {
@@ -20383,7 +20330,7 @@ return QScriptValue();
 
 
 /*:478*//*505:*/
-#line 11446 "./typica.w"
+#line 11450 "./typica.w"
 
 QScriptValue constructWidgetDecorator(QScriptContext*context,
 QScriptEngine*engine)
@@ -20412,7 +20359,7 @@ setQWidgetProperties(value,engine);
 }
 
 /*:505*//*518:*/
-#line 11727 "./typica.w"
+#line 11731 "./typica.w"
 
 QScriptValue constructLogEditWindow(QScriptContext*,QScriptEngine*engine)
 {
@@ -20421,7 +20368,7 @@ return object;
 }
 
 /*:518*//*537:*/
-#line 12254 "./typica.w"
+#line 12258 "./typica.w"
 
 QScriptValue constructXMLInput(QScriptContext*context,QScriptEngine*engine)
 {
@@ -20505,7 +20452,7 @@ return object;
 }
 
 /*:563*//*631:*/
-#line 13600 "./typica.w"
+#line 13604 "./typica.w"
 
 QScriptValue constructSqlQueryView(QScriptContext*,QScriptEngine*engine)
 {
@@ -20523,7 +20470,7 @@ value.setProperty("setQuery",engine->newFunction(SqlQueryView_setQuery));
 }
 
 /*:631*//*632:*/
-#line 13618 "./typica.w"
+#line 13622 "./typica.w"
 
 QScriptValue SqlQueryView_setQuery(QScriptContext*context,QScriptEngine*)
 {
@@ -20545,7 +20492,7 @@ return QScriptValue();
 }
 
 /*:632*//*640:*/
-#line 13825 "./typica.w"
+#line 13829 "./typica.w"
 
 void addReportToLayout(QDomElement element,QStack<QWidget*> *,
 QStack<QLayout*> *layoutStack)
@@ -20563,7 +20510,7 @@ defaultFont.setPointSize(11);
 document->setDefaultFont(defaultFont);
 QTextCursor cursor(document);
 /*641:*/
-#line 13848 "./typica.w"
+#line 13852 "./typica.w"
 
 QDomNodeList children= element.childNodes();
 for(int i= 0;i<children.count();i++)
@@ -20575,7 +20522,7 @@ if(current.isElement())
 {
 currentElement= current.toElement();
 /*642:*/
-#line 13865 "./typica.w"
+#line 13869 "./typica.w"
 
 if(currentElement.tagName()=="style")
 {
@@ -20583,7 +20530,7 @@ document->setDefaultStyleSheet(currentElement.text());
 }
 
 /*:642*//*643:*/
-#line 13876 "./typica.w"
+#line 13880 "./typica.w"
 
 if(currentElement.tagName()=="html")
 {
@@ -20591,7 +20538,7 @@ cursor.insertHtml(currentElement.text());
 }
 
 /*:643*//*644:*/
-#line 13886 "./typica.w"
+#line 13890 "./typica.w"
 
 if(currentElement.tagName()=="text")
 {
@@ -20599,7 +20546,7 @@ cursor.insertText(currentElement.text());
 }
 
 /*:644*//*645:*/
-#line 13896 "./typica.w"
+#line 13900 "./typica.w"
 
 if(currentElement.tagName()=="table")
 {
@@ -20613,19 +20560,19 @@ table->setObjectName(currentElement.attribute("id"));
 }
 
 /*:645*/
-#line 13858 "./typica.w"
+#line 13862 "./typica.w"
 
 }
 }
 
 /*:641*/
-#line 13841 "./typica.w"
+#line 13845 "./typica.w"
 
 widget->setDocument(document);
 }
 
 /*:640*//*656:*/
-#line 14109 "./typica.w"
+#line 14113 "./typica.w"
 
 QScriptValue QTextEdit_print(QScriptContext*context,QScriptEngine*)
 {
@@ -20643,7 +20590,7 @@ return QScriptValue();
 }
 
 /*:656*//*657:*/
-#line 14127 "./typica.w"
+#line 14131 "./typica.w"
 
 void setQTextEditProperties(QScriptValue value,QScriptEngine*engine)
 {
@@ -20672,7 +20619,7 @@ layout->addWidget(widget);
 }
 
 /*:676*//*687:*/
-#line 14307 "./typica.w"
+#line 14311 "./typica.w"
 
 void addFormArrayToLayout(QDomElement element,QStack<QWidget*> *,
 QStack<QLayout*> *layoutStack)
@@ -20687,7 +20634,7 @@ layout->addWidget(widget);
 }
 
 /*:687*//*708:*/
-#line 14894 "./typica.w"
+#line 14898 "./typica.w"
 
 void addScaleControlToLayout(QDomElement element,QStack<QWidget*> *,
 QStack<QLayout*> *layoutStack)
@@ -20716,7 +20663,7 @@ layout->addWidget(scale);
 
 
 /*:708*//*734:*/
-#line 15484 "./typica.w"
+#line 15488 "./typica.w"
 
 QScriptValue constructDeviceTreeModel(QScriptContext*,QScriptEngine*engine)
 {
@@ -20726,7 +20673,7 @@ return object;
 }
 
 /*:734*//*736:*/
-#line 15507 "./typica.w"
+#line 15511 "./typica.w"
 
 void setDeviceTreeModelProperties(QScriptValue value,QScriptEngine*engine)
 {
@@ -20745,7 +20692,7 @@ value.setProperty("hasChildren",engine->newFunction(QAbstractItemModel_hasChildr
 }
 
 /*:736*//*737:*/
-#line 15534 "./typica.w"
+#line 15538 "./typica.w"
 
 QScriptValue DeviceTreeModel_referenceElement(QScriptContext*context,
 QScriptEngine*engine)
@@ -20816,7 +20763,7 @@ return QScriptValue(engine,model->hasChildren(index));
 }
 
 /*:737*//*740:*/
-#line 15618 "./typica.w"
+#line 15622 "./typica.w"
 
 QScriptValue QModelIndex_toScriptValue(QScriptEngine*engine,const QModelIndex&index)
 {
@@ -20832,7 +20779,7 @@ index= value.toVariant().value<QModelIndex> ();
 }
 
 /*:740*//*756:*/
-#line 15916 "./typica.w"
+#line 15920 "./typica.w"
 
 QScriptValue constructDeviceConfigurationWindow(QScriptContext*,
 QScriptEngine*engine)
@@ -20851,7 +20798,7 @@ return object;
 }
 
 /*:827*//*852:*/
-#line 18515 "./typica.w"
+#line 18519 "./typica.w"
 
 QScriptValue constructModbusRTUDevice(QScriptContext*context,QScriptEngine*engine)
 {
@@ -20873,7 +20820,7 @@ return object;
 }
 
 /*:852*//*853:*/
-#line 18537 "./typica.w"
+#line 18541 "./typica.w"
 
 QScriptValue ModbusRTUDevice_pVChannel(QScriptContext*context,QScriptEngine*engine)
 {
@@ -20906,7 +20853,7 @@ return object;
 }
 
 /*:853*//*854:*/
-#line 18570 "./typica.w"
+#line 18574 "./typica.w"
 
 void setModbusRTUDeviceProperties(QScriptValue value,QScriptEngine*engine)
 {
@@ -20998,7 +20945,7 @@ return object;
 
 
 
-#line 19121 "./typica.w"
+#line 19125 "./typica.w"
 
 #line 1 "./phidgets.w"
 /*:893*//*914:*/
@@ -21032,7 +20979,7 @@ setChannelProperties(object,engine);
 }
 return object;
 }
-#line 19123 "./typica.w"
+#line 19127 "./typica.w"
 
 /*:915*//*947:*/
 #line 151 "./rate.w"
@@ -21221,13 +21168,13 @@ void setValueAnnotationProperties(QScriptValue value,QScriptEngine*engine)
 {
 setQObjectProperties(value,engine);
 }
-#line 19770 "./typica.w"
+#line 19774 "./typica.w"
 
 /*:1035*/
 #line 530 "./typica.w"
 
 /*610:*/
-#line 13243 "./typica.w"
+#line 13247 "./typica.w"
 
 void messageFileOutput(QtMsgType,const char*msg)
 {
@@ -21241,7 +21188,7 @@ outstream<<msg<<"\r\n";
 #line 531 "./typica.w"
 
 /*607:*/
-#line 13204 "./typica.w"
+#line 13208 "./typica.w"
 
 int main(int argc,char**argv)
 {
@@ -21249,7 +21196,7 @@ int*c= &argc;
 Application app(*c,argv);
 QSettings settings;
 /*608:*/
-#line 13230 "./typica.w"
+#line 13234 "./typica.w"
 
 if(settings.value("settings/advanced/logging",false).toBool())
 {
@@ -21257,10 +21204,10 @@ qInstallMsgHandler(messageFileOutput);
 }
 
 /*:608*/
-#line 13210 "./typica.w"
+#line 13214 "./typica.w"
 
 /*611:*/
-#line 13256 "./typica.w"
+#line 13260 "./typica.w"
 
 QStringList themeSearchPath= QIcon::themeSearchPaths();
 themeSearchPath.append(":/resources/icons/tango");
@@ -21269,10 +21216,10 @@ QIcon::setThemeName(":/resources/icons/tango");
 app.setWindowIcon(QIcon(":/resources/icons/appicons/logo.svg"));
 
 /*:611*/
-#line 13211 "./typica.w"
+#line 13215 "./typica.w"
 
 /*612:*/
-#line 13276 "./typica.w"
+#line 13280 "./typica.w"
 
 QFile entypo(":/resources/fonts/entypo.ttf");
 entypo.open(QIODevice::ReadOnly);
@@ -21285,16 +21232,16 @@ QFontDatabase::addApplicationFont(":/resources/fonts/texgyrepagella-italic.otf")
 QWebSettings::globalSettings()->setFontFamily(QWebSettings::StandardFont,"Tex Gyre Pagella");
 
 /*:612*/
-#line 13212 "./typica.w"
+#line 13216 "./typica.w"
 
 
 /*766:*/
-#line 16155 "./typica.w"
+#line 16159 "./typica.w"
 
 app.registerDeviceConfigurationWidget("roaster",RoasterConfWidget::staticMetaObject);
 
 /*:766*//*776:*/
-#line 16397 "./typica.w"
+#line 16401 "./typica.w"
 
 app.registerDeviceConfigurationWidget("nidaqmxbase",
 NiDaqMxBaseDriverConfWidget::staticMetaObject);
@@ -21304,14 +21251,14 @@ app.registerDeviceConfigurationWidget("ni9211seriestc",
 Ni9211TcConfWidget::staticMetaObject);
 
 /*:776*//*784:*/
-#line 16628 "./typica.w"
+#line 16632 "./typica.w"
 
 app.registerDeviceConfigurationWidget("nidaqmx",NiDaqMxDriverConfWidget::staticMetaObject);
 app.registerDeviceConfigurationWidget("nidaqmx9211series",NiDaqMx9211ConfWidget::staticMetaObject);
 app.registerDeviceConfigurationWidget("nidaqmxtc01",NiDaqMxTc01ConfWidget::staticMetaObject);
 
 /*:784*//*808:*/
-#line 17593 "./typica.w"
+#line 17597 "./typica.w"
 
 app.registerDeviceConfigurationWidget("modbusrtuport",ModbusRtuPortConfWidget::staticMetaObject);
 app.registerDeviceConfigurationWidget("modbusrtudevice",ModbusRtuDeviceConfWidget::staticMetaObject);
@@ -21319,17 +21266,17 @@ app.registerDeviceConfigurationWidget("modbustemperaturepv",ModbusRtuDeviceTPvCo
 app.registerDeviceConfigurationWidget("modbustemperaturesv",ModbusRtuDeviceTSvConfWidget::staticMetaObject);
 
 /*:808*//*813:*/
-#line 17678 "./typica.w"
+#line 17682 "./typica.w"
 
 app.registerDeviceConfigurationWidget("annotationbutton",AnnotationButtonConfWidget::staticMetaObject);
 
 /*:813*//*816:*/
-#line 17748 "./typica.w"
+#line 17752 "./typica.w"
 
 app.registerDeviceConfigurationWidget("reconfigurablebutton",ReconfigurableAnnotationButtonConfWidget::staticMetaObject);
 
 /*:816*//*819:*/
-#line 17875 "./typica.w"
+#line 17879 "./typica.w"
 
 app.registerDeviceConfigurationWidget("annotationspinbox",NoteSpinConfWidget::staticMetaObject);
 
@@ -21339,11 +21286,11 @@ app.registerDeviceConfigurationWidget("annotationspinbox",NoteSpinConfWidget::st
 
 app.registerDeviceConfigurationWidget("freeannotation",
 FreeAnnotationConfWidget::staticMetaObject);
-#line 17879 "./typica.w"
+#line 17883 "./typica.w"
 
 #line 1 "./settings.w"
 /*:823*//*857:*/
-#line 19111 "./typica.w"
+#line 19115 "./typica.w"
 
 app.registerDeviceConfigurationWidget("modbusrtu",ModbusConfigurator::staticMetaObject);
 
@@ -21364,30 +21311,30 @@ app.registerDeviceConfigurationWidget("phidgets1048channel",
 PhidgetTemperatureSensorChannelConfWidget::staticMetaObject);
 
 /*:901*//*921:*/
-#line 19245 "./typica.w"
+#line 19249 "./typica.w"
 
 app.registerDeviceConfigurationWidget("linearspline",LinearSplineInterpolationConfWidget::staticMetaObject);
 
 /*:921*//*924:*/
-#line 19305 "./typica.w"
+#line 19309 "./typica.w"
 
 app.registerDeviceConfigurationWidget("coolingtimer",
 CoolingTimerConfWidget::staticMetaObject);
 
 /*:924*//*929:*/
-#line 19564 "./typica.w"
+#line 19568 "./typica.w"
 
 app.registerDeviceConfigurationWidget("rangetimer",
 RangeTimerConfWidget::staticMetaObject);
 
 /*:929*//*934:*/
-#line 19665 "./typica.w"
+#line 19669 "./typica.w"
 
 app.registerDeviceConfigurationWidget("multirangetimer",
 MultiRangeTimerConfWidget::staticMetaObject);
 
 /*:934*//*939:*/
-#line 19760 "./typica.w"
+#line 19764 "./typica.w"
 
 app.registerDeviceConfigurationWidget("translation",TranslationConfWidget::staticMetaObject);
 
@@ -21416,15 +21363,15 @@ app.registerDeviceConfigurationWidget("valueannotation",
 ValueAnnotationConfWidget::staticMetaObject);
 
 /*:1025*/
-#line 13214 "./typica.w"
+#line 13218 "./typica.w"
 
 /*613:*/
-#line 13293 "./typica.w"
+#line 13297 "./typica.w"
 
 if(settings.value("database/exists","false").toString()=="true")
 {
 /*618:*/
-#line 13415 "./typica.w"
+#line 13419 "./typica.w"
 
 QSqlDatabase database= 
 QSqlDatabase::addDatabase(settings.value("database/driver").toString());
@@ -21443,25 +21390,25 @@ database.close();
 }
 
 /*:618*/
-#line 13296 "./typica.w"
+#line 13300 "./typica.w"
 
 }
 if(settings.value("database/exists","false").toString()=="false")
 {
 /*617:*/
-#line 13406 "./typica.w"
+#line 13410 "./typica.w"
 
 SqlConnectionSetup dialog;
 dialog.exec();
 
 /*:617*/
-#line 13300 "./typica.w"
+#line 13304 "./typica.w"
 
 }
 
 
 /*:613*/
-#line 13215 "./typica.w"
+#line 13219 "./typica.w"
 
 /*179:*/
 #line 4185 "./typica.w"
@@ -21531,7 +21478,7 @@ doc.close();
 
 
 /*:179*/
-#line 13216 "./typica.w"
+#line 13220 "./typica.w"
 
 /*7:*/
 #line 659 "./typica.w"
@@ -21751,7 +21698,7 @@ engine->globalObject().setProperty("Measurement",constructor);
 qScriptRegisterMetaType(engine,Measurement_toScriptValue,Measurement_fromScriptValue);
 
 /*:288*//*311:*/
-#line 7020 "./typica.w"
+#line 7024 "./typica.w"
 
 constructor= engine->newFunction(constructDAQ);
 value= engine->newQMetaObject(&DAQ::staticMetaObject,constructor);
@@ -21762,14 +21709,14 @@ value.setProperty("Rankine",Units::Rankine);
 engine->globalObject().setProperty("DAQ",value);
 
 /*:311*//*320:*/
-#line 7222 "./typica.w"
+#line 7226 "./typica.w"
 
 constructor= engine->newFunction(constructFakeDAQ);
 value= engine->newQMetaObject(&FakeDAQ::staticMetaObject,constructor);
 engine->globalObject().setProperty("FakeDAQ",value);
 
 /*:320*//*331:*/
-#line 7505 "./typica.w"
+#line 7509 "./typica.w"
 
 constructor= engine->newFunction(constructLinearCalibrator);
 value= engine->newQMetaObject(&LinearCalibrator::staticMetaObject,
@@ -21777,14 +21724,14 @@ constructor);
 engine->globalObject().setProperty("LinearCalibrator",value);
 
 /*:331*//*336:*/
-#line 7644 "./typica.w"
+#line 7648 "./typica.w"
 
 constructor= engine->newFunction(constructLinearSplineInterpolator);
 value= engine->newQMetaObject(&LinearSplineInterpolator::staticMetaObject,constructor);
 engine->globalObject().setProperty("LinearSplineInterpolator",value);
 
 /*:336*//*346:*/
-#line 7852 "./typica.w"
+#line 7856 "./typica.w"
 
 constructor= engine->newFunction(constructTemperatureDisplay);
 value= engine->newQMetaObject(&TemperatureDisplay::staticMetaObject,
@@ -21792,7 +21739,7 @@ constructor);
 engine->globalObject().setProperty("TemperatureDisplay",value);
 
 /*:346*//*354:*/
-#line 8010 "./typica.w"
+#line 8014 "./typica.w"
 
 constructor= engine->newFunction(constructMeasurementTimeOffset);
 value= engine->newQMetaObject(&MeasurementTimeOffset::staticMetaObject,
@@ -21800,21 +21747,21 @@ constructor);
 engine->globalObject().setProperty("MeasurementTimeOffset",value);
 
 /*:354*//*359:*/
-#line 8121 "./typica.w"
+#line 8125 "./typica.w"
 
 constructor= engine->newFunction(constructThresholdDetector);
 value= engine->newQMetaObject(&ThresholdDetector::staticMetaObject,constructor);
 engine->globalObject().setProperty("ThresholdDetector",value);
 
 /*:359*//*364:*/
-#line 8220 "./typica.w"
+#line 8224 "./typica.w"
 
 constructor= engine->newFunction(constructZeroEmitter);
 value= engine->newQMetaObject(&ZeroEmitter::staticMetaObject,constructor);
 engine->globalObject().setProperty("ZeroEmitter",value);
 
 /*:364*//*369:*/
-#line 8299 "./typica.w"
+#line 8303 "./typica.w"
 
 constructor= engine->newFunction(constructMeasurementAdapter);
 value= engine->newQMetaObject(&MeasurementAdapter::staticMetaObject,
@@ -21822,21 +21769,21 @@ constructor);
 engine->globalObject().setProperty("MeasurementAdapter",value);
 
 /*:369*//*386:*/
-#line 8762 "./typica.w"
+#line 8766 "./typica.w"
 
 constructor= engine->newFunction(constructGraphView);
 value= engine->newQMetaObject(&GraphView::staticMetaObject,constructor);
 engine->globalObject().setProperty("GraphView",value);
 
 /*:386*//*409:*/
-#line 9399 "./typica.w"
+#line 9403 "./typica.w"
 
 constructor= engine->newFunction(constructZoomLog);
 value= engine->newQMetaObject(&ZoomLog::staticMetaObject,constructor);
 engine->globalObject().setProperty("ZoomLog",value);
 
 /*:409*//*447:*/
-#line 10347 "./typica.w"
+#line 10351 "./typica.w"
 
 constructor= engine->newFunction(constructAnnotationButton);
 value= engine->newQMetaObject(&AnnotationButton::staticMetaObject,
@@ -21844,7 +21791,7 @@ constructor);
 engine->globalObject().setProperty("AnnotationButton",value);
 
 /*:447*//*455:*/
-#line 10489 "./typica.w"
+#line 10493 "./typica.w"
 
 constructor= engine->newFunction(constructAnnotationSpinBox);
 value= engine->newQMetaObject(&AnnotationSpinBox::staticMetaObject,
@@ -21852,28 +21799,28 @@ constructor);
 engine->globalObject().setProperty("AnnotationSpinBox",value);
 
 /*:455*//*476:*/
-#line 10914 "./typica.w"
+#line 10918 "./typica.w"
 
 constructor= engine->newFunction(constructTimerDisplay);
 value= engine->newQMetaObject(&TimerDisplay::staticMetaObject,constructor);
 engine->globalObject().setProperty("TimerDisplay",value);
 
 /*:476*//*504:*/
-#line 11438 "./typica.w"
+#line 11442 "./typica.w"
 
 constructor= engine->newFunction(constructWidgetDecorator);
 value= engine->newQMetaObject(&WidgetDecorator::staticMetaObject,constructor);
 engine->globalObject().setProperty("WidgetDecorator",value);
 
 /*:504*//*517:*/
-#line 11720 "./typica.w"
+#line 11724 "./typica.w"
 
 constructor= engine->newFunction(constructLogEditWindow);
 value= engine->newQMetaObject(&LogEditWindow::staticMetaObject,constructor);
 engine->globalObject().setProperty("LogEditWindow",value);
 
 /*:517*//*536:*/
-#line 12247 "./typica.w"
+#line 12251 "./typica.w"
 
 constructor= engine->newFunction(constructXMLInput);
 value= engine->newQMetaObject(&XMLInput::staticMetaObject,constructor);
@@ -21898,20 +21845,20 @@ constructor= engine->newFunction(constructWebElement);
 engine->globalObject().setProperty("WebElement",constructor);
 
 /*:561*//*572:*/
-#line 12491 "./typica.w"
+#line 12495 "./typica.w"
 
 value= engine->newQObject(AppInstance);
 engine->globalObject().setProperty("Application",value);
 
 /*:572*//*630:*/
-#line 13592 "./typica.w"
+#line 13596 "./typica.w"
 
 constructor= engine->newFunction(constructSqlQueryView);
 value= engine->newQMetaObject(&SqlQueryView::staticMetaObject,constructor);
 engine->globalObject().setProperty("SqlQueryView",value);
 
 /*:630*//*735:*/
-#line 15494 "./typica.w"
+#line 15498 "./typica.w"
 
 constructor= engine->newFunction(constructDeviceTreeModel);
 value= engine->newQMetaObject(&DeviceTreeModel::staticMetaObject,
@@ -21919,12 +21866,12 @@ constructor);
 engine->globalObject().setProperty("DeviceTreeModel",value);
 
 /*:735*//*741:*/
-#line 15634 "./typica.w"
+#line 15638 "./typica.w"
 
 qScriptRegisterMetaType(engine,QModelIndex_toScriptValue,QModelIndex_fromScriptValue);
 
 /*:741*//*757:*/
-#line 15926 "./typica.w"
+#line 15930 "./typica.w"
 
 constructor= engine->newFunction(constructDeviceConfigurationWindow);
 value= engine->newQMetaObject(&DeviceConfigurationWindow::staticMetaObject,
@@ -21940,7 +21887,7 @@ engine->globalObject().setProperty("SettingsWindow",value);
 
 #line 1 "./graphsettings.w"
 /*:828*//*851:*/
-#line 18506 "./typica.w"
+#line 18510 "./typica.w"
 
 constructor= engine->newFunction(constructModbusRTUDevice);
 value= engine->newQMetaObject(&ModbusRTUDevice::staticMetaObject,constructor);
@@ -22024,7 +21971,7 @@ value= engine->newQMetaObject(&ValueAnnotation::staticMetaObject,constructor);
 engine->globalObject().setProperty("ValueAnnotation",value);
 
 /*:1034*/
-#line 13217 "./typica.w"
+#line 13221 "./typica.w"
 
 app.engine= engine;
 /*181:*/
@@ -22069,7 +22016,7 @@ qDebug()<<trace;
 
 
 /*:181*/
-#line 13219 "./typica.w"
+#line 13223 "./typica.w"
 
 
 int retval= app.exec();

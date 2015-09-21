@@ -69,6 +69,9 @@
             unitBox.addItem("oz");
             unitBox.addItem("lb");
             unitBox.currentIndex = (QSettings.value("script/batch_unit", unitBox.findText("lb")));
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/batch_unit", unitBox.currentIndex);
+            });
             var machine = findChildObject(this, "machine");
             machine.setText(selectedRoasterName + " (" + selectedRoasterID + ")");
             var newMenu = findChildObject(this, 'new');

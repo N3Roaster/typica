@@ -1,109 +1,140 @@
 <window id="inventory">
     <layout type="vertical">
         <layout type="horizontal">
+            <sqldrop id="transactiontype" />
+            <stretch />
+        </layout>
+        <layout type="horizontal">
             <sqldrop data="0" display="1" showdata="true" id="item">
                 <query><![CDATA[SELECT id, name FROM coffees WHERE quantity <> 0 ORDER BY name ASC]]></query>
             </sqldrop>
             <line id="quantity" />
             <sqldrop id="units" />
+            <label id="reasonlabel">Reason: </label>
+            <line id="reason" />
+        </layout>
+        <layout type="horizontal">
+            <stretch />
             <button type="push" name="Update" id="update" />
         </layout>
         <textarea id="current" />
     </layout>
     <program>
         <![CDATA[
-			var units = findChildObject(this, 'units');
-			units.addItem("bag");
-			units.addItem("lb");
-			units.addItem("kg");
-			var items = findChildObject(this, 'item');
-			var status = findChildObject(this, 'current');
-			var q = "SELECT quantity FROM items WHERE id = ";
-			q = q + items.currentData();
-			query = new QSqlQuery();
-			query.exec(q);
-			query.next();
-			var text = items.currentText;
-			text = text + " Current inventory: ";
-			text = text + query.value(0);
-			text = text + " pounds ("
-			text = text + Number(query.value(0)) / 2.2;
-			text = text + " Kg (";
-			q = "SELECT ";
-			q = q + query.value(0);
-			q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
-			q = q + items.currentData();
-			q = q + ")";
-			query.exec(q);
-			query.next();
-			text = text + query.value(0);
-			text = text + " bags)";
+            var types = findChildObject(this, 'transactiontype');
+            types.addItem("inventory");
+            types.addItem("loss");
+            var units = findChildObject(this, 'units');
+            units.addItem("bag");
+            units.addItem("lb");
+            units.addItem("kg");
+            var items = findChildObject(this, 'item');
+            var status = findChildObject(this, 'current');
+            var q = "SELECT quantity FROM items WHERE id = ";
+            q = q + items.currentData();
+            query = new QSqlQuery();
+            query.exec(q);
+            query.next();
+            var text = items.currentText;
+            text = text + " Current inventory: ";
+            text = text + query.value(0);
+            text = text + " pounds ("
+            text = text + Number(query.value(0)) / 2.2;
+            text = text + " Kg (";
+            q = "SELECT ";
+            q = q + query.value(0);
+            q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+            q = q + items.currentData();
+            q = q + ")";
+            query.exec(q);
+            query.next();
+            text = text + query.value(0);
+text = text + " bags)";
             query = query.invalidate();
-			status.plainText = text;
-			var button = findChildObject(this, 'update');
-			var value = findChildObject(this, 'quantity');
-			button.clicked.connect(function() {
-				q = "INSERT INTO inventory (time, item, quantity) VALUES ('now', ";
-				q = q + items.currentData();
-				q = q + ", ";
-				if(units.currentText == "lb") {
-					q = q + value.text;
-				} else if (units.currentText == "kg") {
-					q = q + (value.text * 2.2);
-				}
-				else {
-					q = q + value.text;
-					q = q + " * (SELECT conversion FROM lb_bag_conversion WHERE item = ";
-					q = q + items.currentData();
-					q = q + ")";
-				}
-				q = q + ")";
+            status.plainText = text;
+            var button = findChildObject(this, 'update');
+            var value = findChildObject(this, 'quantity');
+            var reason = findChildObject(this, 'reason');
+            var reasonlabel = findChildObject(this, 'reasonlabel');
+            reason.enabled = false;
+            button.clicked.connect(function() {
+                q = "INSERT INTO ";
+                q += (types.currentIndex == 0 ?
+                    "inventory (time, item, quantity)" :
+                    "loss (time, item, quantity, reason)");
+                q += " VALUES ('now', ";
+                q = q + items.currentData();
+                q = q + ", ";
+                if(units.currentText == "lb") {
+                    q = q + value.text;
+                } else if (units.currentText == "kg") {
+                    q = q + (value.text * 2.2);
+                }
+                else {
+                    q = q + value.text;
+                    q = q + " * (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+                    q = q + items.currentData();
+                    q = q + ")";
+                }
+                q += (types.currentIndex == 0 ?
+                    ")" :
+                    ", '" + reason.text + "')");
                 query = new QSqlQuery();
-				query.exec(q);
-				text = items.currentText;
-				q = "SELECT quantity FROM items WHERE id = ";
-				q = q + items.currentData();
-				query.exec(q);
-				query.next();
-				text = text + " Current inventory: ";
-				text = text + query.value(0);
-				text = text + " pounds (";
-				q = "SELECT ";
-				q = q + query.value(0);
-				q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
-				q = q + items.currentData();
-				q = q + ")";
-				query.exec(q);
-				query.next();
-				text = text + query.value(0);
-				text = text + " bags)";
-				status.plainText = text;
+                query.exec(q);
+                text = items.currentText;
+                q = "SELECT quantity FROM items WHERE id = ";
+                q = q + items.currentData();
+                query.exec(q);
+                query.next();
+                text = text + " Current inventory: ";
+                text = text + query.value(0);
+                text = text + " pounds (";
+                q = "SELECT ";
+                q = q + query.value(0);
+                q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+                q = q + items.currentData();
+                q = q + ")";
+                query.exec(q);
+                query.next();
+                text = text + query.value(0);
+                text = text + " bags)";
+                status.plainText = text;
                 query = query.invalidate();
-			});
-			items['currentIndexChanged(int)'].connect(function() {
-				q = "SELECT quantity FROM items WHERE id = ";
-				q = q + items.currentData();
+            });
+            items['currentIndexChanged(int)'].connect(function() {
+                q = "SELECT quantity FROM items WHERE id = ";
+                q = q + items.currentData();
                 query = new QSqlQuery();
-				query.exec(q);
-				query.next();
-				var text = items.currentText;
-				text = text + " Current inventory: ";
-				text = text + query.value(0);
-				text = text + " pounds ";
-				text = text + Number(query.value(0)) / 2.2;
-				text = text + " Kg (";
-				q = "SELECT ";
-				q = q + query.value(0);
-				q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
-				q = q + items.currentData();
-				q = q + ")";
-				query.exec(q);
-				query.next();
-				text = text + query.value(0);
-				text = text + " bags)";
-				status.plainText = text;
+                query.exec(q);
+                query.next();
+                var text = items.currentText;
+                text = text + " Current inventory: ";
+                text = text + query.value(0);
+                text = text + " pounds ";
+                text = text + Number(query.value(0)) / 2.2;
+                text = text + " Kg (";
+                q = "SELECT ";
+                q = q + query.value(0);
+                q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
+                q = q + items.currentData();
+                q = q + ")";
+                query.exec(q);
+                query.next();
+                text = text + query.value(0);
+                text = text + " bags)";
+                status.plainText = text;
                 query = query.invalidate();
-			});
+            });
+            types['currentIndexChanged(int)'].connect(function(typeindex) {
+                switch(typeindex) {
+                    case 0:
+                        reason.enabled = false;
+                        break;
+                    case 1:
+                        reason.enabled = true;
+                        break;
+                }
+            });
         ]]>
     </program>
 </window>

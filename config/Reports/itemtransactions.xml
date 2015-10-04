@@ -176,7 +176,7 @@
 					scriptFile.close();
 					output.writeEndElement();
 					
-					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))) FROM item_history(:item)");
+					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason FROM item_history(:item)");
 					switch(unitBox.currentIndex)
 					{
 						case 0:
@@ -240,6 +240,10 @@
 							output.writeCDATA(query.value(7) + " " + query.value(4));
 							output.writeEndElement();
 							output.writeEndElement();
+                                                } else if(query.value(1) == "LOSS") {
+                                                    output.writeTextElement("td", query.value(9));
+                                                } else if(query.value(1) == "SALE") {
+                                                    output.writeTextElement("td", query.value(8));
 						} else {
 							output.writeTextElement("td", "");
 						}

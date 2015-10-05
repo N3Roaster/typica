@@ -1,6 +1,7 @@
 <window id="inventory">
     <layout type="vertical">
         <layout type="horizontal">
+            <label>Transaction type: </label>
             <sqldrop id="transactiontype" />
             <stretch />
         </layout>
@@ -10,12 +11,19 @@
             </sqldrop>
             <line id="quantity" />
             <sqldrop id="units" />
-            <label id="reasonlabel">Reason: </label>
-            <line id="reason" />
+            <layout type="stack" id="optional">
+                <page />
+                <page>    
+                    <layout type="horizontal">
+                        <label id="reasonlabel">Reason: </label>
+                        <line id="reason" />
+                    </layout>
+                </page>
+            </layout>
         </layout>
         <layout type="horizontal">
-            <stretch />
             <button type="push" name="Update" id="update" />
+            <stretch />
         </layout>
         <textarea id="current" />
     </layout>
@@ -24,34 +32,31 @@
             var types = findChildObject(this, 'transactiontype');
             types.addItem("inventory");
             types.addItem("loss");
+            var optionalDisplay = findChildObject(this, 'optional');
             var units = findChildObject(this, 'units');
             units.addItem("bag");
             units.addItem("lb");
             units.addItem("kg");
             var items = findChildObject(this, 'item');
             var status = findChildObject(this, 'current');
-            var q = "SELECT quantity FROM items WHERE id = ";
-            q = q + items.currentData();
-            query = new QSqlQuery();
-            query.exec(q);
-            query.next();
-            var text = items.currentText;
-            text = text + " Current inventory: ";
-            text = text + query.value(0);
-            text = text + " pounds ("
-            text = text + Number(query.value(0)) / 2.2;
-            text = text + " Kg (";
-            q = "SELECT ";
-            q = q + query.value(0);
-            q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
-            q = q + items.currentData();
-            q = q + ")";
-            query.exec(q);
-            query.next();
-            text = text + query.value(0);
-text = text + " bags)";
-            query = query.invalidate();
-            status.plainText = text;
+            function updateStatus() {
+                query = new QSqlQuery();
+                query.prepare("SELECT quantity, (quantity / 2.2)::numeric(12,3), (quantity / (SELECT conversion FROM lb_bag_conversion WHERE item = :id1))::numeric(12,2) FROM items WHERE id = :id2");
+                query.bind(":id1", items.currentData());
+                query.bind(":id2", items.currentData());
+                query.exec();
+                query.next();
+                var text = items.currentText;
+                text += " Current inventory: ";
+                text += query.value(0);
+                text += " Lb (";
+                text += query.value(1);
+                text += " Kg), ";
+                text += query.value(2);
+                text += (query.value(2) == "1" ? " bag" : " bags");
+                query = query.invalidate();
+                status.plainText = text;
+            }
             var button = findChildObject(this, 'update');
             var value = findChildObject(this, 'quantity');
             var reason = findChildObject(this, 'reason');
@@ -81,60 +86,11 @@ text = text + " bags)";
                     ", '" + reason.text + "')");
                 query = new QSqlQuery();
                 query.exec(q);
-                text = items.currentText;
-                q = "SELECT quantity FROM items WHERE id = ";
-                q = q + items.currentData();
-                query.exec(q);
-                query.next();
-                text = text + " Current inventory: ";
-                text = text + query.value(0);
-                text = text + " pounds (";
-                q = "SELECT ";
-                q = q + query.value(0);
-                q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
-                q = q + items.currentData();
-                q = q + ")";
-                query.exec(q);
-                query.next();
-                text = text + query.value(0);
-                text = text + " bags)";
-                status.plainText = text;
-                query = query.invalidate();
+                updateStatus();
             });
-            items['currentIndexChanged(int)'].connect(function() {
-                q = "SELECT quantity FROM items WHERE id = ";
-                q = q + items.currentData();
-                query = new QSqlQuery();
-                query.exec(q);
-                query.next();
-                var text = items.currentText;
-                text = text + " Current inventory: ";
-                text = text + query.value(0);
-                text = text + " pounds ";
-                text = text + Number(query.value(0)) / 2.2;
-                text = text + " Kg (";
-                q = "SELECT ";
-                q = q + query.value(0);
-                q = q + " / (SELECT conversion FROM lb_bag_conversion WHERE item = ";
-                q = q + items.currentData();
-                q = q + ")";
-                query.exec(q);
-                query.next();
-                text = text + query.value(0);
-                text = text + " bags)";
-                status.plainText = text;
-                query = query.invalidate();
-            });
-            types['currentIndexChanged(int)'].connect(function(typeindex) {
-                switch(typeindex) {
-                    case 0:
-                        reason.enabled = false;
-                        break;
-                    case 1:
-                        reason.enabled = true;
-                        break;
-                }
-            });
+            items['currentIndexChanged(int)'].connect(updateStatus);
+            types['currentIndexChanged(int)'].connect(optionalDisplay.setCurrentIndex);
+            updateStatus();
         ]]>
     </program>
 </window>

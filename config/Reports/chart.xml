@@ -162,7 +162,7 @@
                     query.exec(q);
                     if(query.next())
                     {
-                        curpounds[i] = query.value(0);
+                        curpounds[i] = Number(query.value(0));
                     }
                     else
                     {
@@ -172,7 +172,7 @@
                     query.exec(q);
                     if(query.next())
                     {
-                        prevpounds[i] = query.value(0);
+                        prevpounds[i] = Number(query.value(0));
                     }
                     else
                     {
@@ -347,6 +347,11 @@
                     i += increment;
                 }
                 i = miny2;
+                var stepSize = 0.1;
+                while((maxy2 - miny2) / stepSize > 20)
+                {
+                    stepSize += 0.05;
+                }
                 while(i <= maxy2)
                 {
                     output.writeStartElement("text");
@@ -355,7 +360,7 @@
                     output.writeAttribute("font-size", "12");
                     output.writeCharacters(Number(i*100).toFixed(0)+"%");
                     output.writeEndElement();
-                    i += 0.1;
+                    i += stepSize;
                 }
                 i = 0;
                 while(i <= days-1)

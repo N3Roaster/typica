@@ -2,6 +2,7 @@
 	<reporttitle>Production:->Average Use and Cost by Origin</reporttitle>
     <layout type="vertical">
         <layout type="horizontal">
+            <daterange id="dates" initial="23" /><!-- Lifetime -->
             <label>Sort Order:</label>
             <sqldrop id="sort" />
 			<label>Weight Unit:</label>
@@ -29,18 +30,36 @@
             sortBox.addItem("Avg. Cost Ascending");
             sortBox.addItem("Avg. Cost Descending");
             sortBox.currentIndex = QSettings.value("auco_sort", 0);
-			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
-			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
-			unitBox['currentIndexChanged(int)'].connect(function() {
-				QSettings.setValue("script/report_unit", unitBox.currentIndex);
-				refresh();
-			});
-			var rowData = new Array();
-			var rowIndex;
+            var unitBox = findChildObject(this, 'unit');
+            unitBox.addItem("Kg");
+            unitBox.addItem("Lb");
+            unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/report_unit", unitBox.currentIndex);
+                refresh();
+            });
+            var dateSelect = findChildObject(this, 'dates');
+            var dateQuery = new QSqlQuery;
+            dateQuery.exec("SELECT time::date FROM transactions WHERE time = (SELECT min(time) FROM transactions) OR time = (SELECT max(time) FROM transactions) ORDER BY time ASC");
+            dateQuery.next();
+            var lifetimeStartDate = dateQuery.value(0);
+            var lifetimeEndDate;
+            if(dateQuery.next()) {
+                lifetimeEndDate = dateQuery.value(0);
+            } else {
+                lifetimeEndDate = lifetimeStartDate;
+            }
+            dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+            dateQuery = dateQuery.invalidate();
+            dateSelect.rangeUpdated.connect(refresh);
+            var rowData = new Array();
+            var rowIndex;
             function refresh() {
-				rowIndex = 0;
+                rowData.length = 0;
+                var dateRange = dateSelect.currentRange();
+                var startDate = dateRange[0];
+                var endDate = dateRange[dateRange.length - 1];
+                rowIndex = 0;
                 var buffer = new QBuffer;
                 buffer.open(3);
                 var output = new XmlWriter(buffer);
@@ -52,23 +71,23 @@
                 output.writeTextElement("title", "Recent Use and Cost by Origin");
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Average Use and Cost by Origin");
-				switch(unitBox.currentIndex)
-				{
-					case 0:
-						output.writeTextElement("p", "This is a report of average rate of use in kilograms per day and cost of unroasted coffee.");
-						break;
-					case 1:
-						output.writeTextElement("p", "This is a report of average rate of use in pounds per day and cost of unroasted coffee.");
-						break;
-				}
+                output.writeTextElement("h1", "Average Use and Cost by Origin " + startDate + " - " + endDate);
+                switch(unitBox.currentIndex)
+                {
+                    case 0:
+                        output.writeTextElement("p", "This is a report of average rate of use in kilograms per day and cost of unroasted coffee.");
+                            break;
+                    case 1:
+                        output.writeTextElement("p", "This is a report of average rate of use in pounds per day and cost of unroasted coffee.");
+                    break;
+                }
                 output.writeStartElement("table");
                 output.writeAttribute("rules", "groups");
                 output.writeAttribute("cellpadding", "3px");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
                 output.writeStartElement("th");
-                output.writeAttribute("colspan", "8");
+                output.writeAttribute("colspan", "9");
                 output.writeCharacters("Regular Coffees");
                 output.writeEndElement();
                 output.writeEndElement();
@@ -76,106 +95,109 @@
                 output.writeTextElement("th", "Origin");
                 output.writeTextElement("th", "Avg. Rate");
                 output.writeTextElement("th", "Avg. Cost");
-				output.writeTextElement("th", "Last Cost");
-				output.writeTextElement("th", "Last Purchase Date");
-				output.writeTextElement("th", "Bag Size (min)");
-				output.writeTextElement("th", "Bag Size (max)");
-				output.writeTextElement("th", "Bag Size (mean)");
+                output.writeTextElement("th", "Last Cost");
+                output.writeTextElement("th", "Last Purchase Date");
+                output.writeTextElement("th", "Bag Size (min)");
+                output.writeTextElement("th", "Bag Size (max)");
+                output.writeTextElement("th", "Bag Size (mean)");
+                output.writeTextElement("th", "Purchases");
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
                 var query = new QSqlQuery();
-				var conversion = 1;
-				if(unitBox.currentIndex == 0) {
-					conversion = 2.2;
-				}
-				var orderClause;
-				switch(sortBox.currentIndex)
-				{
-					case 0:
-						orderClause = "origin ASC";
-						break;
-					case 1:
-						orderClause = "origin DESC";
-						break;
-					case 2:
-						orderClause = "rate ASC";
-						break;
-					case 3:
-						orderClause = "rate DESC";
-						break;
-					case 4:
-						orderClause = "cost ASC";
-						break;
-					case 5:
-						orderClause = "cost DESC";
-						break;
-				}
-				query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost, (SELECT avg(cost)*:conversion3 FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin) AND time = (SELECT max(time) FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))), (SELECT max(time)::date FROM purchase WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin)), (SELECT min(conversion)/:conversion4 FROM lb_bag_conversion WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS minbag, (SELECT max(conversion)/:conversion5 FROM lb_bag_conversion WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS maxbag, (SELECT avg(conversion)/:conversion6 FROM lb_bag_conversion WHERE item IN (SELECT id FROM regular_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS meanbag FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) GROUP BY origin ORDER BY " + orderClause);
-				query.bind(":conversion", conversion);
-				query.bind(":conversion2", conversion);
-				query.bind(":conversion3", conversion);
-				query.bind(":conversion4", conversion);
-				query.bind(":conversion5", conversion);
-				query.bind(":conversion6", conversion);
-				query.exec();
+                var conversion = 1;
+                if(unitBox.currentIndex == 0) {
+                    conversion = 2.2;
+                }
+                var orderClause;
+                switch(sortBox.currentIndex)
+                {
+                    case 0:
+                        orderClause = "origin ASC";
+                        break;
+                    case 1:
+                        orderClause = "origin DESC";
+                        break;
+                    case 2:
+                        orderClause = "rate ASC";
+                        break;
+                    case 3:
+                        orderClause = "rate DESC";
+                        break;
+                    case 4:
+                        orderClause = "cost ASC";
+                        break;
+                    case 5:
+                        orderClause = "cost DESC";
+                        break;
+                }
+                query.prepare("WITH q AS (SELECT id, origin, rate/:c1 AS rate, (SELECT cost*:c2 FROM purchase WHERE item = id) AS cost, (SELECT min(time) FROM purchase WHERE item = id) AS purchase_time, (SELECT conversion/:c3 FROM lb_bag_conversion WHERE item = id) AS bag_weight FROM coffee_history WHERE id IN (SELECT id FROM regular_coffees) AND id IN (SELECT item FROM transactions WHERE time >= :startDate AND time < :endDate::date + interval '1 day')) SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, avg(cost)::numeric(10,2) AS cost, (SELECT (cost*:c4)::numeric(10,2) FROM purchase WHERE item = max(q.id)) AS last_cost, max(purchase_time)::date AS last_purchase, min(bag_weight)::numeric(10,2) AS min_weight, max(bag_weight)::numeric(10,2) AS max_weight, avg(bag_weight)::numeric(10,2) AS mean_weight, count(1) AS n FROM q GROUP BY origin ORDER BY " + orderClause);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
+                query.bind(":c3", conversion);
+                query.bind(":c4", conversion);
+                query.bind(":startDate", startDate);
+                query.bind(":endDate", endDate);
+                query.exec();
                 while(query.next())
                 {
                     output.writeStartElement("tr");
-					output.writeAttribute("id", "r" + rowIndex);
-					output.writeStartElement("td");
-					output.writeStartElement("a");
-					output.writeAttribute("href", "typica://script/r" + rowIndex);
-					rowIndex++;
-					rowData.push(query.value(0));
-					output.writeCharacters(query.value(0));
-					output.writeEndElement();
-					output.writeEndElement();
+                    output.writeAttribute("id", "r" + rowIndex);
+                    output.writeStartElement("td");
+                    output.writeStartElement("a");
+                    output.writeAttribute("href", "typica://script/r" + rowIndex);
+                    rowIndex++;
+                    rowData.push(query.value(0));
+                    output.writeCharacters(query.value(0));
+                    output.writeEndElement();
+                    output.writeEndElement();
                     output.writeTextElement("td", query.value(1));
                     output.writeTextElement("td", query.value(2));
-					output.writeTextElement("td", query.value(3));
-					output.writeTextElement("td", query.value(4));
-					output.writeTextElement("td", query.value(5));
-					output.writeTextElement("td", query.value(6));
-					output.writeTextElement("td", query.value(7));
+                    output.writeTextElement("td", query.value(3));
+                    output.writeTextElement("td", query.value(4));
+                    output.writeTextElement("td", query.value(5));
+                    output.writeTextElement("td", query.value(6));
+                    output.writeTextElement("td", query.value(7));
+                    output.writeTextElement("td", query.value(8));
                     output.writeEndElement();
                 }
                 output.writeStartElement("tr");
                 output.writeStartElement("th");
-                output.writeAttribute("colspan", "8");
+                output.writeAttribute("colspan", "9");
                 output.writeCharacters("Decaffeinated Coffees");
                 output.writeEndElement();
                 output.writeEndElement();
-				query.prepare("SELECT DISTINCT origin, (avg(rate)/:conversion)::numeric(10,2) AS rate, (SELECT avg(cost)*:conversion2 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS cost, (SELECT avg(cost)*:conversion3 FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin) AND time = (SELECT max(time) FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))), (SELECT max(time)::date FROM purchase WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin)), (SELECT min(conversion)/:conversion4 FROM lb_bag_conversion WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS minbag, (SELECT max(conversion)/:conversion5 FROM lb_bag_conversion WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS maxbag, (SELECT avg(conversion)/:conversion6 FROM lb_bag_conversion WHERE item IN (SELECT id FROM decaf_coffees WHERE origin = coffee_history.origin))::numeric(10,2) AS meanbag FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) GROUP BY origin ORDER BY " + orderClause);
-				query.bind(":conversion", conversion);
-				query.bind(":conversion2", conversion);
-				query.bind(":conversion3", conversion);
-				query.bind(":conversion4", conversion);
-				query.bind(":conversion5", conversion);
-				query.bind(":conversion6", conversion);
-				query.exec();
+                query.prepare("WITH q AS (SELECT id, origin, rate/:c1 AS rate, (SELECT cost*:c2 FROM purchase WHERE item = id) AS cost, (SELECT min(time) FROM purchase WHERE item = id) AS purchase_time, (SELECT conversion/:c3 FROM lb_bag_conversion WHERE item = id) AS bag_weight FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) AND id IN (SELECT item FROM transactions WHERE time >= :startDate AND time < :endDate::date + interval '1 day')) SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, avg(cost)::numeric(10,2) AS cost, (SELECT (cost*:c4)::numeric(10,2) FROM purchase WHERE item = max(q.id)) AS last_cost, max(purchase_time)::date AS last_purchase, min(bag_weight)::numeric(10,2) AS min_weight, max(bag_weight)::numeric(10,2) AS max_weight, avg(bag_weight)::numeric(10,2) AS mean_weight, count(1) AS n FROM q GROUP BY origin ORDER BY " + orderClause);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
+                query.bind(":c3", conversion);
+                query.bind(":c4", conversion);
+                query.bind(":startDate", startDate);
+                query.bind(":endDate", endDate);
+                query.exec();
                 while(query.next())
                 {
                     output.writeStartElement("tr");
-					output.writeAttribute("id", "d" + rowIndex);
-					output.writeStartElement("td");
-					output.writeStartElement("a");
-					output.writeAttribute("href", "typica://script/d" + rowIndex);
-					rowIndex++;
-					rowData.push(query.value(0));
-					output.writeCharacters(query.value(0));
-					output.writeEndElement();
-					output.writeEndElement();
+                    output.writeAttribute("id", "d" + rowIndex);
+                    output.writeStartElement("td");
+                    output.writeStartElement("a");
+                    output.writeAttribute("href", "typica://script/d" + rowIndex);
+                    rowIndex++;
+                    rowData.push(query.value(0));
+                    output.writeCharacters(query.value(0));
+                    output.writeEndElement();
+                    output.writeEndElement();
                     output.writeTextElement("td", query.value(1));
                     output.writeTextElement("td", query.value(2));
-					output.writeTextElement("td", query.value(3));
-					output.writeTextElement("td", query.value(4));
-					output.writeTextElement("td", query.value(5));
-					output.writeTextElement("td", query.value(6));
-					output.writeTextElement("td", query.value(7));
+                    output.writeTextElement("td", query.value(3));
+                    output.writeTextElement("td", query.value(4));
+                    output.writeTextElement("td", query.value(5));
+                    output.writeTextElement("td", query.value(6));
+                    output.writeTextElement("td", query.value(7));
+                    output.writeTextElement("td", query.value(8));
                     output.writeEndElement();
                 }
-				query = query.invalidate();
+                query = query.invalidate();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
@@ -189,39 +211,53 @@
                 QSettings.setValue("auco_sort", sortBox.currentIndex);
                 refresh();
             });
-			report.scriptLinkClicked.connect(function(url) {
-				var element = new WebElement(report.findFirstElement("#" + url));
-				var regular = url[0] == 'r';
-				var index = url.slice(1, url.length);
-				var tableref;
-				if(regular) {
-					tableref = "regular_coffees";
-				} else {
-					tableref = "decaf_coffees";
-				}
-				var origin = rowData[Number(url.slice(1, url.length))];
-				var details = '<tr><td /><td colspan="6"><table><tr><th>Id</th><th>Name</th><th>Rate</th><th>Inventory</th><th>First Use</th><th>Last Use</th></tr>';
-				var query = new QSqlQuery();
-				query.prepare("SELECT id, name, (rate/:conversion1)::numeric(12,3), (stock/:conversion2)::numeric(12,3), (SELECT min(time)::date FROM use WHERE item = id) AS first_use, (SELECT max(time)::date FROM use WHERE item = id) AS last_use FROM coffee_history WHERE origin = :origin AND id IN (SELECT id FROM " + tableref + ") ORDER BY first_use DESC");
-				var conversion = 1;
-				if(unitBox.currentIndex == 0) {
-					conversion = 2.2;
-				}
-				query.bind(":conversion1", conversion);
-				query.bind(":conversion2", conversion);
-				query.bind(":origin", origin);
-				query.exec();
-				while(query.next()) {
-					details += "<tr>";
-					for(var i = 0; i < 6; i++) {
-						details += "<td>" + query.value(i) + "</td>";
-					}
-					details += "</tr>";
-				}
-				query = query.invalidate();
-				details += "</table></td></tr>";
-				element.appendOutside(details);
-			});
+            report.scriptLinkClicked.connect(function(url) {
+                if(url[0] == 'i') {
+                    url = url.slice(1, url.length);
+                    var itemReport = createReport("itemtransactions.xml");
+                    var sIB = findChildObject(itemReport, 'item');
+                    sIB.currentIndex = sIB.findData(url);
+                    return;
+                }
+                var element = new WebElement(report.findFirstElement("#" + url));
+                var regular = url[0] == 'r';
+                var index = url.slice(1, url.length);
+                var tableref;
+                if(regular) {
+                    tableref = "regular_coffees";
+                } else {
+                    tableref = "decaf_coffees";
+                }
+                var origin = rowData[Number(url.slice(1, url.length))];
+                var details = '<tr><td /><td colspan="6"><table><tr><th>Id</th><th>Name</th><th>Rate</th><th>Cost</th><th>Inventory</th><th>First Use</th><th>Last Use</th></tr>';
+                var query = new QSqlQuery();
+                query.prepare("SELECT id, name, (rate/:conversion1)::numeric(12,3), (SELECT (cost*:conversion2)::numeric(12,2) FROM purchase WHERE item = id), (stock/:conversion3)::numeric(12,3), (SELECT min(time)::date FROM use WHERE item = id) AS first_use, (SELECT max(time)::date FROM use WHERE item = id) AS last_use FROM coffee_history WHERE origin = :origin AND id IN (SELECT id FROM " + tableref + ") AND id IN (SELECT item FROM transactions WHERE time >= :startDate AND time < :endDate::date + interval '1 day') ORDER BY first_use DESC");
+                var conversion = 1;
+                if(unitBox.currentIndex == 0) {
+                    conversion = 2.2;
+                }
+                var dateRange = dateSelect.currentRange();
+                var startDate = dateRange[0];
+                var endDate = dateRange[dateRange.length - 1];
+                query.bind(":conversion1", conversion);
+                query.bind(":conversion2", conversion);
+                query.bind(":conversion3", conversion);
+                query.bind(":origin", origin);
+                query.bind(":startDate", startDate);
+                query.bind(":endDate", endDate);
+                query.exec();
+                while(query.next()) {
+                    details += "<tr>";
+                    details += '<td><a href="typica://script/i' + query.value(0) + '">' + query.value(0) + "</a></td>";
+                    for(var i = 1; i < 7; i++) {
+                        details += "<td>" + query.value(i) + "</td>";
+                    }
+                    details += "</tr>";
+                }
+                query = query.invalidate();
+                details += "</table></td></tr>";
+                element.appendOutside(details);
+            });
         ]]>
     </program>
 </window>

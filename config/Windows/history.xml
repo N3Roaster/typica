@@ -6,6 +6,8 @@
             <label>Approval: </label>
             <sqldrop id="approval" />
             <daterange id="dates" initial="6" /><!-- Last 7 Days -->
+            <label>Weight Unit:</label>
+            <sqldrop id="unit" />
             <stretch />
         </layout>
         <sqlview id="table" />
@@ -26,6 +28,14 @@
             dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
             dateQuery.invalidate();
             dateSelect.currentIndex = QSettings.value("script/history/dateIndex", 6);
+            var unitBox = findChildObject(this, 'unit');
+            unitBox.addItem("Kg");
+            unitBox.addItem("Lb");
+            unitBox.currentIndex = QSettings.value("script/history_unit", 1);
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/history_unit", unitBox.currentIndex);
+                refresh();
+            });
             var batchType = findChildObject(this, 'batchtype');
             batchType.addItem("Any");
             batchType.addItem("Production Roasts");
@@ -77,7 +87,12 @@
                 var dateRange = dateSelect.currentRange();
                 var startDate = "'"+dateRange[0]+"'";
                 var endDate = "'"+dateRange[dateRange.length - 1]+"'";
-                var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, CASE WHEN unroasted_total_quantity = 0 THEN NULL ELSE ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) END AS weight_loss, duration, annotation FROM roasting_log WHERE time >= " + startDate + "::date AND time < " + endDate + "::date + interval '1 day'" + transaction_filter + approval_filter + " ORDER BY time DESC";
+                var conversion = 1;
+                if(unitBox.currentIndex == 0)
+                {
+                    conversion = 2.2;
+                }
+                var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity / " + conversion + " AS green, roasted_quantity  / " + conversion + " AS roasted, CASE WHEN unroasted_total_quantity = 0 THEN NULL ELSE ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) END AS weight_loss, duration, annotation FROM roasting_log WHERE time >= " + startDate + "::date AND time < " + endDate + "::date + interval '1 day'" + transaction_filter + approval_filter + " ORDER BY time DESC";
                 table.setQuery(q);
                 table.hideColumn(1);
             }

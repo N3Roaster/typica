@@ -201,30 +201,32 @@
 					var prev_balance = "0";
 					var prev_prec = 0;
 					var cur_prec = 0;
+                                        var max_prec = 3;
 					while(query.next()) {
 						output.writeStartElement("tr");
 						output.writeAttribute("class", query.value(1));
 						output.writeTextElement("td", query.value(0));
 						output.writeTextElement("td", query.value(1));
+                                                var split = prev_balance.split('.');
+                                                if(split.length > 1) {
+                                                    prev_prec = split[1].length;
+                                                } else {
+                                                    prev_prec = 0;
+                                                }
+                                                split = query.value(2).split('.');
+                                                if(split.length > 1) {
+                                                    cur_prec = split[1].length;
+                                                } else {
+                                                    cur_prec = 0;
+                                                }
+                                                var prec = prev_prec > cur_prec ? prev_prec : cur_prec;
+                                                var prec = (prec > max_prec ? max_prec : prec);
 						if(query.value(1) == "INVENTORY") {
-							var split = prev_balance.split('.');
-							if(split.length > 1) {
-								prev_prec = split[1].length;
-							} else {
-								prev_prec = 0;
-							}
-							split = query.value(2).split('.');
-							if(split.length > 1) {
-								cur_prec = split[1].length;
-							} else {
-								cur_prec = 0;
-							}
-							var prec = prev_prec > cur_prec ? prev_prec : cur_prec;
-							output.writeTextElement("td", (Number(query.value(2)) - Number(prev_balance)).toFixed(prec));
+                                                    output.writeTextElement("td", (Number(query.value(2)) - Number(prev_balance)).toFixed(prec));
 						} else {
-							output.writeTextElement("td", query.value(2));
+                                                    output.writeTextElement("td", (Number(query.value(2)).toFixed(prec)));
 						}
-						output.writeTextElement("td", query.value(3));
+						output.writeTextElement("td", (Number(query.value(3)).toFixed(prec)));
 						prev_balance = query.value(3);
 						if(query.value(1) == "PURCHASE") {
 							output.writeStartElement("td");

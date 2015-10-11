@@ -2,6 +2,10 @@
     <reporttitle>Production:->Production Summary</reporttitle>
     <layout type="vertical">
         <layout type="horizontal">
+            <label>Batch Type: </label>
+            <sqldrop id="batchtype" />
+            <label>Approval: </label>
+            <sqldrop id="approval" />
             <daterange id="dates" initial="9" /><!-- Current Month to Date-->
             <label>Weight Unit:</label>
             <sqldrop id="unit" />
@@ -36,6 +40,24 @@
                 QSettings.setValue("script/report_unit", unitBox.currentIndex);
                 refresh();
             });
+            var batchType = findChildObject(this, 'batchtype');
+            batchType.addItem("Any");
+            batchType.addItem("Production Roasts");
+            batchType.addItem("SampleRoasts");
+            batchType.currentIndex = QSettings.value("script/batchtypefilter", 1);
+            batchType['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/batchtypefilter", batchType.currentIndex);
+                refresh();
+            });
+            var approval = findChildObject(this, 'approval');
+            approval.addItem("Any");
+            approval.addItem("Approved");
+            approval.addItem("Not Approved");
+            approval.currentIndex = QSettings.value("script/approvalfilter", 1);
+            approval['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/approvalfilter", approval.currentIndex);
+                refresh();
+            });
             var view = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
@@ -63,8 +85,32 @@
                     conversion = 2.2;
                     unitText = 'Kg';
                 }
+                var transaction_filter;
+                var approval_filter;
+                switch(batchType.currentIndex) {
+                    case 0:
+                        transaction_filter = "";
+                        break;
+                    case 1:
+                        transaction_filter = " AND transaction_type = 'ROAST'";
+                        break;
+                    case 2:
+                        transaction_filter = " AND transaction_type = 'SAMPLEROAST'";
+                        break;
+                }
+                switch(approval.currentIndex) {
+                    case 0:
+                        approval_filter = "";
+                        break;
+                    case 1:
+                        approval_filter = " AND approval = true";
+                        break;
+                    case 2:
+                        approval_filter = " AND approval = false";
+                        break;
+                }
                 var query = new QSqlQuery();
-                query.prepare("SELECT count(1), sum(unroasted_total_quantity) / :c1, sum(roasted_quantity) / :c2 FROM roasting_log WHERE time >= :sd AND time < :ed ::date + interval '1 day'");
+                query.prepare("SELECT count(1), sum(unroasted_total_quantity) / :c1, sum(roasted_quantity) / :c2 FROM roasting_log WHERE time >= :sd AND time < :ed ::date + interval '1 day'" + transaction_filter + approval_filter);
                 query.bind(":c1", conversion);
                 query.bind(":c2", conversion);
                 query.bind(":sd", startDate);
@@ -75,7 +121,7 @@
                 var unroastedSum = query.value(1);
                 var roastedSum = query.value(2);
                 output.writeTextElement("p", "" + roastedSum + " " + unitText + " roasted from " + unroastedSum + " " + unitText + " green in " + batchesRoasted + " batches.");
-                query.prepare("SELECT time::date AS date, count(1), sum(unroasted_total_quantity) / :c1, sum(roasted_quantity) / :c2 FROM roasting_log WHERE time >= :sd AND time < :ed ::date + interval '1 day' GROUP BY date ORDER BY date ASC");
+                query.prepare("SELECT time::date AS date, count(1), sum(unroasted_total_quantity) / :c1, sum(roasted_quantity) / :c2 FROM roasting_log WHERE time >= :sd AND time < :ed ::date + interval '1 day'" + transaction_filter + approval_filter + " GROUP BY date ORDER BY date ASC");
                 query.bind(":c1", conversion);
                 query.bind(":c2", conversion);
                 query.bind(":sd", startDate);

@@ -2,11 +2,15 @@
 	<reporttitle>Production:->Previous Year Production Comparison</reporttitle>
     <layout type="vertical">
         <layout type="horizontal">
-			<daterange id="dates" initial="19" /><!-- Current Year to Date -->
+            <label>Batch Type: </label>
+            <sqldrop id="batchtype" />
+            <label>Approval: </label>
+            <sqldrop id="approval" />
+            <daterange id="dates" initial="19" /><!-- Current Year to Date -->
             <label>Days to Average</label>
             <line validator="integer" id="days">7</line>
-			<label>Weight Unit:</label>
-			<sqldrop id="unit" />
+            <label>Weight Unit:</label>
+            <sqldrop id="unit" />
             <stretch />
         </layout>
         <webview id="report" />
@@ -17,27 +21,45 @@
     <program>
         <![CDATA[
             this.windowTitle = "Typica - Previous Year Production Comparison";
-			var dateSelect = findChildObject(this, 'dates');
-			dateSelect.removeIndex(23); // Remove Lifetime range
+            var dateSelect = findChildObject(this, 'dates');
+            dateSelect.removeIndex(23); // Remove Lifetime range
             var view = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
                 view.print();
             });
             var avgField = findChildObject(this, 'days');
-			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
-			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
-			unitBox['currentIndexChanged(int)'].connect(function() {
-				QSettings.setValue("script/report_unit", unitBox.currentIndex);
-				refresh();
-			});
+            var unitBox = findChildObject(this, 'unit');
+            unitBox.addItem("Kg");
+            unitBox.addItem("Lb");
+            unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/report_unit", unitBox.currentIndex);
+                refresh();
+            });
+            var batchType = findChildObject(this, 'batchtype');
+            batchType.addItem("Any");
+            batchType.addItem("Production Roasts");
+            batchType.addItem("SampleRoasts");
+            batchType.currentIndex = QSettings.value("script/batchtypefilter", 1);
+            batchType['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/batchtypefilter", batchType.currentIndex);
+                refresh();
+            });
+            var approval = findChildObject(this, 'approval');
+            approval.addItem("Any");
+            approval.addItem("Approved");
+            approval.addItem("Not Approved");
+            approval.currentIndex = QSettings.value("script/approvalfilter", 1);
+            approval['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/approvalfilter", approval.currentIndex);
+                refresh();
+            });
             function refresh() {
-				var conversion = 1;
-				if(unitBox.currentIndex == 0) {
-					conversion = 2.2;
-				}
+                var conversion = 1;
+                if(unitBox.currentIndex == 0) {
+                    conversion = 2.2;
+                }
                 var buffer = new QBuffer;
                 buffer.open(3);
                 var output = new XmlWriter(buffer);
@@ -58,34 +80,58 @@
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
                 output.writeTextElement("th", "Coffee");
-				switch(unitBox.currentIndex) {
-					case 0:
-						output.writeTextElement("th", "Previous (Kg)");
-						output.writeTextElement("th", "Current (Kg)");
-						output.writeTextElement("th", "Change (Kg)");
-						break;
-					case 1:
-						output.writeTextElement("th", "Previous (Lb)");
-						output.writeTextElement("th", "Current (Lb)");
-						output.writeTextElement("th", "Change (Lb)");
-						break;
-				}
+                switch(unitBox.currentIndex) {
+                    case 0:
+                        output.writeTextElement("th", "Previous (Kg)");
+                        output.writeTextElement("th", "Current (Kg)");
+                        output.writeTextElement("th", "Change (Kg)");
+                        break;
+                    case 1:
+                        output.writeTextElement("th", "Previous (Lb)");
+                        output.writeTextElement("th", "Current (Lb)");
+                        output.writeTextElement("th", "Change (Lb)");
+                        break;
+                }
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
                 var query = new QSqlQuery();
                 query.exec("START TRANSACTION");
-				var dateRange = dateSelect.currentRange();
-				var curStartDate = "'"+dateRange[0]+"'";
-				var curEndDate = "'"+dateRange[dateRange.length - 1]+"'";
+                var dateRange = dateSelect.currentRange();
+                var curStartDate = "'"+dateRange[0]+"'";
+                var curEndDate = "'"+dateRange[dateRange.length - 1]+"'";
                 query.exec("SELECT "+curStartDate+"::date - interval '1 year', "+curEndDate+"::date - interval '1 year' + interval '1 day', "+curEndDate+"::date + interval '1 day'");
-				query.next();
+                query.next();
                 curEndDate = "'"+query.value(2)+"'";
                 var prevStartDate = "'"+query.value(0)+"'";
                 var prevEndDate = "'"+query.value(1)+"'";
-                var q = "CREATE TEMPORARY TABLE previous ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS p FROM roasting_log WHERE time > "+prevStartDate+" AND time < "+prevEndDate+" AND roasted_id IS NOT NULL GROUP BY roasted_id";
+                var transaction_filter;
+                var approval_filter;
+                switch(batchType.currentIndex) {
+                    case 0:
+                        transaction_filter = "";
+                        break;
+                    case 1:
+                        transaction_filter = " AND transaction_type = 'ROAST'";
+                        break;
+                    case 2:
+                        transaction_filter = " AND transaction_type = 'SAMPLEROAST'";
+                        break;
+                }
+                switch(approval.currentIndex) {
+                    case 0:
+                        approval_filter = "";
+                        break;
+                    case 1:
+                        approval_filter = " AND approval = true";
+                        break;
+                    case 2:
+                        approval_filter = " AND approval = false";
+                        break;
+                }
+                var q = "CREATE TEMPORARY TABLE previous ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS p FROM roasting_log WHERE time > "+prevStartDate+" AND time < "+prevEndDate+" AND roasted_id IS NOT NULL" + transaction_filter + approval_filter + " GROUP BY roasted_id";
                 query.exec(q);
-                q = "CREATE TEMPORARY TABLE current ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS c FROM roasting_log WHERE time > "+curStartDate+" AND time < "+curEndDate+" AND roasted_id IS NOT NULL GROUP BY roasted_id";
+                q = "CREATE TEMPORARY TABLE current ON COMMIT DROP AS SELECT roasted_id, sum(roasted_quantity) AS c FROM roasting_log WHERE time > "+curStartDate+" AND time < "+curEndDate+" AND roasted_id IS NOT NULL" + transaction_filter + approval_filter + " GROUP BY roasted_id";
                 query.exec(q);
                 query.exec("INSERT INTO previous SELECT roasted_id, 0 FROM current WHERE roasted_id NOT IN (SELECT roasted_id FROM previous)");
                 query.exec("INSERT INTO current SELECT roasted_id, 0 FROM previous WHERE roasted_id NOT IN (SELECT roasted_id FROM current)");
@@ -95,9 +141,9 @@
                 {
                     output.writeStartElement("tr");
                     output.writeTextElement("td", query.value(0));
-					output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
-					output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
-					output.writeTextElement("td", (query.value(3) / conversion).toFixed(2));
+                    output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
+                    output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
+                    output.writeTextElement("td", (query.value(3) / conversion).toFixed(2));
                     output.writeEndElement();
                 }
                 output.writeEndElement();
@@ -105,14 +151,14 @@
                 output.writeTextElement("th", "Totals");
                 query.exec("SELECT sum(p), sum(c), sum(c-p) FROM comp");
                 query.next();
-				output.writeTextElement("td", (query.value(0) / conversion).toFixed(2));
-				output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
-				output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
+                output.writeTextElement("td", (query.value(0) / conversion).toFixed(2));
+                output.writeTextElement("td", (query.value(1) / conversion).toFixed(2));
+                output.writeTextElement("td", (query.value(2) / conversion).toFixed(2));
                 output.writeEndElement();
                 query.exec("ABORT");
                 output.writeEndElement();
-				output.writeStartElement("p");
-				output.writeAttribute("style", "page-break-inside: avoid");
+                output.writeStartElement("p");
+                output.writeAttribute("style", "page-break-inside: avoid");
                 output.writeStartElement("svg");
                 output.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
                 output.writeAttribute("width", "7.5in");
@@ -158,7 +204,7 @@
                     query.exec(q);
                     query.next();
                     dates[i] = query.value(0);
-                    q = "SELECT sum(roasted_quantity) FROM roasting_log WHERE time > "+curStartDate+" AND time < '"+dates[i]+"'";
+                    q = "SELECT sum(roasted_quantity) FROM roasting_log WHERE time > "+curStartDate+" AND time < '"+dates[i]+"'" + transaction_filter + approval_filter;
                     query.exec(q);
                     if(query.next())
                     {
@@ -168,7 +214,7 @@
                     {
                         curpounds[i] = 0;
                     }
-                    q = "SELECT sum(roasted_quantity) FROM roasting_log WHERE time > "+curStartDate+"::date - '1 year'::interval AND time < '"+dates[i]+"'::date - '1 year'::interval";
+                    q = "SELECT sum(roasted_quantity) FROM roasting_log WHERE time > "+curStartDate+"::date - '1 year'::interval AND time < '"+dates[i]+"'::date - '1 year'::interval" + transaction_filter + approval_filter;
                     query.exec(q);
                     if(query.next())
                     {
@@ -204,23 +250,23 @@
                         avgchange[i] = sum / parseInt(avgField.text);
                     }
                 }
-				// Calculate the domain of the primary y axis.
+                // Calculate the domain of the primary y axis.
                 var maxy1 = 0;
-				var increment = 100; // Starting increment is 100 Lb.
-				if(unitBox.currentIndex == 0) {
-					increment = 110; // Starting increment is 50 Kg if Kg is requested.
-				}
+                    var increment = 100; // Starting increment is 100 Lb.
+                    if(unitBox.currentIndex == 0) {
+                        increment = 110; // Starting increment is 50 Kg if Kg is requested.
+                    }
                 while(maxy1 < Math.max(curpounds[days - 1], prevpounds[days - 1]))
                 {
-					maxy1 += increment;
+                    maxy1 += increment;
                 }
-				// Calculate the number of grid lines and loosen spacing if there are too many.
-				var divisions = maxy1 / increment;
-				while(divisions > 10) {
-					increment *= 2;
-					divisions = maxy1 / increment;
-				}
-				// Draw y axis grid lines.
+                // Calculate the number of grid lines and loosen spacing if there are too many.
+                var divisions = maxy1 / increment;
+                while(divisions > 10) {
+                    increment *= 2;
+                    divisions = maxy1 / increment;
+                }
+                // Draw y axis grid lines.
                 var pos = 0;
                 while(pos <= maxy1)
                 {
@@ -231,7 +277,7 @@
                     output.writeAttribute("y2", (450/maxy1)*pos);
                     output.writeAttribute("style", "stroke:rgb(0,0,0);stroke-width:1;");
                     output.writeEndElement();
-					pos += increment;
+                    pos += increment;
                 }
                 var n = Math.min.apply(Math, change);
                 var m = Math.max.apply(Math, change);
@@ -334,15 +380,15 @@
                     output.writeAttribute("x", "0");
                     output.writeAttribute("y", -((450/maxy1)*i)+5);
                     output.writeAttribute("font-size", "12");
-					switch(unitBox.currentIndex) {
-						case 0:
-							output.writeCharacters((i / 2.2).toFixed(0));
-							break;
-						case 1:
-						default:
-							output.writeCharacters(i);
-							break;
-					}
+                    switch(unitBox.currentIndex) {
+                        case 0:
+                            output.writeCharacters((i / 2.2).toFixed(0));
+                            break;
+                        case 1:
+                        default:
+                            output.writeCharacters(i);
+                            break;
+                    }
                     output.writeEndElement();
                     i += increment;
                 }
@@ -427,7 +473,7 @@
                         i = days - 1;
                     }
                 }
-				query = query.invalidate();
+                query = query.invalidate();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(0,0,0)");
                 output.writeAttribute("x", "45");
@@ -439,14 +485,14 @@
                 output.writeAttribute("x", "75");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-				switch(unitBox.currentIndex) {
-					case 0:
-						output.writeCharacters("Previous Year Kg");
-						break;
-					case 1:
-						output.writeCharacters("Previous Year Lb");
-						break;
-				}
+                switch(unitBox.currentIndex) {
+                    case 0:
+                        output.writeCharacters("Previous Year Kg");
+                        break;
+                    case 1:
+                        output.writeCharacters("Previous Year Lb");
+                        break;
+                }
                 output.writeEndElement();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(255,0,0)");
@@ -459,14 +505,14 @@
                 output.writeAttribute("x", "225");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-				switch(unitBox.currentIndex) {
-					case 0:
-						output.writeCharacters("Current Year Kg");
-						break;
-					case 1:
-						output.writeCharacters("Current Year Lb");
-						break;
-				}
+                switch(unitBox.currentIndex) {
+                    case 0:
+                        output.writeCharacters("Current Year Kg");
+                        break;
+                    case 1:
+                        output.writeCharacters("Current Year Lb");
+                        break;
+                }
                 output.writeEndElement();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(0,255,0)");
@@ -498,18 +544,18 @@
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
-				output.writeEndElement();
+                output.writeEndElement();
                 output.writeEndDocument();
                 view.setContent(buffer);
                 buffer.close();
             }
             refresh();
-			dateSelect.rangeUpdated.connect(function() {
-				refresh();
-			});
-			avgField.editingFinished.connect(function() {
-				refresh();
-			});
+            dateSelect.rangeUpdated.connect(function() {
+                refresh();
+            });
+            avgField.editingFinished.connect(function() {
+                refresh();
+            });
         ]]>
     </program>
 </window>

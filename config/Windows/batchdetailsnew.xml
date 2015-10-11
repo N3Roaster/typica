@@ -14,6 +14,13 @@
     <program>
         <![CDATA[
             var window = this;
+            var unit = QSettings.value("script/history_unit", 1);
+            var conversion = 1;
+            if(unit == 0)
+            {
+                conversion = 2.2;
+            }
+            var unitText = (unit == 0 ? "Kg" : "Lb");
             dataView = findChildObject(this, 'view');
             var fileID;
             var target = findChildObject(this, 'target');
@@ -191,13 +198,15 @@
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
                 output.writeTextElement("th", "Green Coffee");
-                output.writeTextElement("th", "Weight (lb)");
+                output.writeTextElement("th", "Weight (" + unitText + ")");
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
                 var query = new QSqlQuery();
-                query.prepare("SELECT unroasted_id, unroasted_quantity, approval, files, annotation, unroasted_total_quantity, roasted_quantity FROM roasting_log WHERE time = :time AND machine = :machine");
+                query.prepare("SELECT unroasted_id, unroasted_quantity, approval, files, annotation, (unroasted_total_quantity/:c1)::numeric(12,3), (roasted_quantity/:c2)::numeric(12,3) FROM roasting_log WHERE time = :time AND machine = :machine");
                 query.bind(":time", batchTime);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
                 machine = table.data(row, 1);
                 query.bind(":machine", machine);
                 query.exec();
@@ -216,7 +225,7 @@
                     output.writeTextElement("td", nameQuery.value(0) + " (" + items[i] + ")");
                     output.writeStartElement("td");
                     output.writeAttribute("align", "center");
-                    output.writeCharacters(quantities[i]);
+                    output.writeCharacters((Number(quantities[i])/conversion).toFixed(3));
                     output.writeEndElement();
                     output.writeEndElement();
                 }

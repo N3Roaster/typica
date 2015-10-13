@@ -95,7 +95,7 @@
                 {
                     searchclause = " AND id IN (SELECT invoice_id FROM invoice_items WHERE item_id IN (SELECT item FROM certifications WHERE certification ~* :p1 UNION SELECT id FROM coffees WHERE origin ~* :p2 UNION SELECT id FROM items WHERE name ~* :p3 UNION SELECT id FROM coffees WHERE reference ~* :p4))";
                 }
-                query.prepare("SELECT id, time::date, vendor, invoice, (SELECT sum(cost) FROM invoice_items WHERE invoice_id = id) AS cost FROM invoices WHERE time >= :sd AND time < :ed::date + interval '1 day'" + vendorclause + searchclause + " ORDER BY time DESC");
+                query.prepare("SELECT id, time::date, vendor, invoice, (SELECT sum(cost) FROM invoice_items WHERE invoice_id = id)::numeric(12,2) AS cost FROM invoices WHERE time >= :sd AND time < :ed::date + interval '1 day'" + vendorclause + searchclause + " ORDER BY time DESC");
                 query.bind(":sd", startDate);
                 query.bind(":ed", endDate);
                 if(vendorclause.length > 0) {
@@ -132,7 +132,7 @@
                 output.writeEmptyElement("td");
                 output.writeEmptyElement("td");
                 output.writeTextElement("th", "Total:");
-                output.writeTextElement("td", cost_sum);
+                output.writeTextElement("td", Number(cost_sum).toFixed(2));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();

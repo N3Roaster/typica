@@ -1,0 +1,147 @@
+<window id="invoicereport">
+    <reporttitle>Purchase:->Invoices</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <daterange id="dates" initial="23" /><!-- Lifetime -->
+            <label>Vendor: </label>
+            <sqldrop id="vendor" />
+            <label>Search: </label>
+            <line id="search" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print...</item>
+    </menu>
+    <program>
+        <![CDATA[
+            var vendor = findChildObject(this, "vendor");
+            vendor.addItem("Any");
+            var query = new QSqlQuery();
+            query.exec("SELECT DISTINCT vendor FROM invoices");
+            while(query.next()) {
+                vendor.addItem(query.value(0));
+            }
+            vendor['currentIndexChanged(int)'].connect(refresh);
+            var dateSelect = findChildObject(this, 'dates');
+            query.exec("SELECT time::date FROM invoices WHERE time = (SELECT min(time) FROM invoices) OR time = (SELECT max(time) FROM invoices) ORDER BY time ASC");
+            query.next();
+            var lifetimeStartDate = query.value(0);
+            var lifetimeEndDate;
+            if(query.next()) {
+                lifetimeEndDate = query.value(0);
+            } else {
+                lifetimeEndDate = lifetimeStartDate;
+            }
+            dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+            dateSelect.rangeUpdated.connect(refresh);
+            query = query.invalidate();
+            var search = findChildObject(this, "search");
+            search.editingFinished.connect(refresh);
+            var view = findChildObject(this, "report");
+            view.scriptLinkClicked.connect(function(url) {
+                var info = createWindow("invoiceinfo");
+                info.setInvoiceID(url);
+                var invquery = new QSqlQuery();
+                invquery.exec("SELECT time, invoice, vendor FROM invoices WHERE id = " + url);
+                invquery.next();
+                var timefield = findChildObject(info, 'date');
+                timefield.text = invquery.value(0);
+                var vendorfield = findChildObject(info, 'vendor');
+                vendorfield.text = invquery.value(2);
+                var invoicefield = findChildObject(info, 'invoice');
+                invoicefield.text = invquery.value(1);
+                var itemtable = findChildObject(info, 'itemtable');
+                itemtable.setQuery("SELECT record_type, item_id, description, (SELECT reference FROM items WHERE id = item_id) AS reference, (SELECT cost FROM purchase WHERE item = item_id) AS unit_cost, (SELECT quantity FROM purchase WHERE item = item_id) AS quantity, ((SELECT quantity FROM purchase WHERE item = item_id)/(SELECT conversion FROM lb_bag_conversion WHERE item = item_id))::numeric(12,2) AS sacks, cost FROM invoice_items WHERE invoice_id = " + url + " AND record_type = 'PURCHASE' UNION SELECT record_type, NULL, description, NULL, NULL, NULL, NULL, cost FROM invoice_items WHERE invoice_id = " + url + " AND record_type = 'FEE' ORDER BY item_id");
+                invquery = invquery.invalidate();
+            });
+            function refresh() {
+                var dateRange = dateSelect.currentRange();
+                var startDate = dateRange[0];
+                var endDate = dateRange[dateRange.length - 1];
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", "Invoices");
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", "Invoices " + startDate + " - " + endDate);
+                output.writeStartElement("table");
+                output.writeAttribute("style", "page-break-after: auto; text-align: left");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Date");
+                output.writeTextElement("th", "Vendor");
+                output.writeTextElement("th", "Invoice");
+                output.writeTextElement("th", "Cost");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+                var query = new QSqlQuery();
+                var vendorclause = "";
+                if(vendor.currentIndex > 0) {
+                    vendorclause = " AND vendor = :vendor";
+                }
+                var searchclause = "";
+                if(search.text.length > 0)
+                {
+                    searchclause = " AND id IN (SELECT invoice_id FROM invoice_items WHERE item_id IN (SELECT item FROM certifications WHERE certification ~* :p1 UNION SELECT id FROM coffees WHERE origin ~* :p2 UNION SELECT id FROM items WHERE name ~* :p3 UNION SELECT id FROM coffees WHERE reference ~* :p4))";
+                }
+                query.prepare("SELECT id, time::date, vendor, invoice, (SELECT sum(cost) FROM invoice_items WHERE invoice_id = id) AS cost FROM invoices WHERE time >= :sd AND time < :ed::date + interval '1 day'" + vendorclause + searchclause + " ORDER BY time DESC");
+                query.bind(":sd", startDate);
+                query.bind(":ed", endDate);
+                if(vendorclause.length > 0) {
+                    query.bind(":vendor", vendor.currentText);
+                }
+                if(searchclause.length > 0)
+                {
+                    var pattern = ".*" + search.text + ".*";
+                    query.bind(":p1", pattern);
+                    query.bind(":p2", pattern);
+                    query.bind(":p3", pattern);
+                    query.bind(":p4", pattern);
+                }
+                query.exec();
+                var cost_sum = 0;
+                while(query.next()) {
+                    output.writeStartElement("tr");
+                    output.writeStartElement("td");
+                    output.writeStartElement("a");
+                    output.writeAttribute("href", "typica://script/" + query.value(0));
+                    output.writeCharacters(query.value(1));
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    for(var i = 2; i <= 4; i++) {
+                        output.writeTextElement("td", query.value(i));
+                    }
+                    output.writeEndElement();
+                    cost_sum += Number(query.value(4));
+                }
+                query = query.invalidate();
+                output.writeEndElement();
+                output.writeStartElement("tfoot");
+                output.writeStartElement("tr");
+                output.writeEmptyElement("td");
+                output.writeEmptyElement("td");
+                output.writeTextElement("th", "Total:");
+                output.writeTextElement("td", cost_sum);
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                view.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+        ]]>
+    </program>

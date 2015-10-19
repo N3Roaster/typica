@@ -65,11 +65,6 @@ type="push" />
 		</row>
 		<row>
 			<column>
-				<button name="Invoice List" id="invoicelist" type="push" />
-			</column>
-		</row>
-		<row>
-			<column>
 				<button name="Enter Green Coffee Sales" id="greensales" type="push" />
 			</column>
 		</row>

@@ -74,36 +74,32 @@ type="push" />
 		<item id="resetconnection">Forget Connection Details</item>
 	</menu>
     <program>
-		var window = this;
-		var navigationwindow = window;
-		window.loggingWindow = undefined;
-		var roasterlist = findChildObject(this, 'machineselector');
-		var model = new DeviceTreeModel;
-		roasterlist.setModel(model);
-		roasterlist.currentIndex = QSettings.value("machineSelection", 0);
-		roasterlist['currentIndexChanged(int)'].connect(function() {
-			QSettings.setValue("machineSelection", roasterlist.currentIndex);
-		});
-		var resetdbconnection = findChildObject(this, 'resetconnection');
-		resetdbconnection.triggered.connect(function() {
-			QSettings.setValue("database/exists", false);
-			QSettings.setValue("database/hostname", "");
-			QSettings.setValue("database/dbname", "");
-			QSettings.setValue("database/user", "");
-			QSettings.setValue("database/password", "");
-		});
-		var profilehistory = findChildObject(this, 'profilehistory');
-		profilehistory.clicked.connect(function() {
-			createWindow("profilehistory");
-		});
-		var greensalesbutton = findChildObject(this, 'greensales');
-		greensalesbutton.clicked.connect(function() {
-			createWindow("greensales");
-		});
-		var invoicesbutton = findChildObject(this, 'invoicelist');
-		invoicesbutton.clicked.connect(function() {
-			createWindow("invoicelist");
-		});
+        var window = this;
+        var navigationwindow = window;
+        window.loggingWindow = undefined;
+        var roasterlist = findChildObject(this, 'machineselector');
+        var model = new DeviceTreeModel;
+        roasterlist.setModel(model);
+        roasterlist.currentIndex = QSettings.value("machineSelection", 0);
+        roasterlist['currentIndexChanged(int)'].connect(function() {
+            QSettings.setValue("machineSelection", roasterlist.currentIndex);
+        });
+        var resetdbconnection = findChildObject(this, 'resetconnection');
+        resetdbconnection.triggered.connect(function() {
+            QSettings.setValue("database/exists", false);
+            QSettings.setValue("database/hostname", "");
+            QSettings.setValue("database/dbname", "");
+            QSettings.setValue("database/user", "");
+            QSettings.setValue("database/password", "");
+        });
+        var profilehistory = findChildObject(this, 'profilehistory');
+        profilehistory.clicked.connect(function() {
+                createWindow("profilehistory");
+        });
+        var greensalesbutton = findChildObject(this, 'greensales');
+        greensalesbutton.clicked.connect(function() {
+                createWindow("greensales");
+        });
         var sumcup = findChildObject(this, 'sumcupping');
         sumcup.clicked.connect(function() {
             var sessionlist = createWindow("finsessionlist");

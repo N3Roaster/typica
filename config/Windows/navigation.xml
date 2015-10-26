@@ -23,6 +23,11 @@
 				<button name="Manage Roasted Coffee Items" id="newroasted" type="push" />
 			</column>
 		</row>
+                <row>
+                    <column>
+                        <button name="Edit Roasting Specification" id="roastspec" type="push" />
+                    </column>
+                </row>
 		<row>
 			<column>
 				<button name="Update Inventory" id="inventory" type="push" />
@@ -131,6 +136,10 @@ type="push" />
         history.clicked.connect(function() {
             var histwindow = createWindow("history");
             histwindow.windowTitle = "Typica - Batch Log";
+        });
+        var roastspecbutton = findChildObject(this, 'roastspec');
+        roastspecbutton.clicked.connect(function() {
+            var specwindow = createWindow("roastspec");
         });
         var gbutton = findChildObject(this, 'green');
         gbutton.clicked.connect(function() {
@@ -290,7 +299,13 @@ type="push" />
                     query.exec("UPDATE TypicaFeatures SET version = 5 WHERE feature = 'base-features'");
                     query = query.invalidate();
                 };
-		
+		var DBUpdateSpecification = function() {
+                    var query = new QSqlQuery;
+                    query.exec("CREATE TABLE IF NOT EXISTS roasting_specification (\"time\" timestamp without time zone NOT NULL, item bigint NOT NULL, loss numeric, tolerance numeric, notes text)");
+                    query.exec("UPDATE TypicaFeatures SET version = 6 WHERE feature = 'base-features'");
+                    query = query.invalidate();
+                };
+                
 		query = new QSqlQuery();
 		/* A table keeps track of database versioning information. This table is created
 		   if required. */
@@ -301,27 +316,31 @@ type="push" />
 		query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'base-features'");
 		if(query.next())
 		{
-			if(query.value(2) < 1)
-			{
-				DBCreateBase();
-			}
-			if(query.value(2) < 2)
-			{
-				DBUpdateMultiUser();
-				DBUpdateHistory();
-			}
-			if(query.value(2) < 3)
-			{
-				DBUpdateNotifications();
-			}
-			if(query.value(2) < 4)
-			{
-				DBUpdateTriggers();
-			}
-                        if(query.value(2) < 5)
-                        {
-                            DBUpdateReminders();
-                        }
+                    if(query.value(2) < 1)
+                    {
+                            DBCreateBase();
+                    }
+                    if(query.value(2) < 2)
+                    {
+                            DBUpdateMultiUser();
+                            DBUpdateHistory();
+                    }
+                    if(query.value(2) < 3)
+                    {
+                            DBUpdateNotifications();
+                    }
+                    if(query.value(2) < 4)
+                    {
+                            DBUpdateTriggers();
+                    }
+                    if(query.value(2) < 5)
+                    {
+                        DBUpdateReminders();
+                    }
+                    if(query.value(2) < 6)
+                    {
+                        DBUpdateSpecification();
+                    }
 		}
 		else
 		{

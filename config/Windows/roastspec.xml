@@ -1,0 +1,78 @@
+<window id="roastspec">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Coffee:</label>
+            <sqldrop data="0" display="1" showdata="false" id="currentitems">
+                <query>SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name</query>
+            </sqldrop>
+        </layout>
+        <layout type="horizontal">
+            <label>Expected % weight loss:</label>
+            <line validator="numeric" id="expectedloss" />
+        </layout>
+        <layout type="horizontal">
+            <label>Tolerance</label>
+            <line validator="numeric" id="tolerance" />
+        </layout>
+        <label>Specification Notes:</label>
+        <textarea id="notes" />
+        <layout type="horizontal">
+            <stretch />
+            <button id="save" type="push" name="Save" />
+        </layout>
+    </layout>
+    <program>
+        <![CDATA[
+            var window = this;
+            this.windowTitle = "Typica - Edit Roasting Specification";
+            var selector = findChildObject(this, 'currentitems');
+            var expected = findChildObject(this, 'expectedloss');
+            var tolerance = findChildObject(this, 'tolerance');
+            var notes = findChildObject(this, 'notes');
+            var savebutton = findChildObject(this, 'save');
+            selector['currentIndexChanged(int)'].connect(function() {
+                var query = new QSqlQuery();
+                query.prepare("SELECT loss, tolerance, notes FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
+                query.bind(":id1", selector.currentData());
+                query.bind(":id2", selector.currentData());
+                query.exec();
+                if(query.next()) {
+                    if(query.value(0).length > 0) {
+                        expected.text = Number(query.value(0)) * 100;
+                    }
+                    if(query.value(1).length > 0) {
+                        tolerance.text = Number(query.value(1)) * 100;
+                    }
+                    notes.plainText = query.value(2);
+                }
+                query = query.invalidate();
+            });
+            savebutton.clicked.connect(function() {
+                var query = new QSqlQuery();
+                var columnspec = "time, item, ";
+                var valuespec = "'now', :id, ";
+                if(expected.text.length > 0) {
+                    columnspec += "loss, ";
+                    valuespec += ":loss, ";
+                }
+                if(tolerance.text.length > 0) {
+                    columnspec += "tolerance, ";
+                    valuespec += ":tolerance, ";
+                }
+                columnspec += "notes";
+                valuespec += ":notes";
+                query.prepare("INSERT INTO roasting_specification (" + columnspec + ") VALUES (" + valuespec + ")");
+                query.bind(":id", selector.currentData());
+                if(expected.text.length > 0) {
+                    query.bind(":loss", Number(expected.text) / 100);
+                }
+                if(tolerance.text.length > 0) {
+                    query.bind(":tolerance", Number(tolerance.text) / 100);
+                }
+                query.bind(":notes", notes.plainText);
+                query.exec();
+                window.close();
+            });
+        ]]>
+    </program>
+</window>

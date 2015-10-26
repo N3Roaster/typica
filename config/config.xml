@@ -34,6 +34,7 @@
     <include src="Windows/editbatchdetails.xml" />
     <include src="Windows/newsamplebatch.xml" />
     <include src="Windows/editreminder.xml" />
+    <include src="Windows/roastspec.xml" />
     <program>
         <![CDATA[
             Windows = new Object();

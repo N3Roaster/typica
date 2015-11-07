@@ -56,7 +56,7 @@
 				output.writeTextElement("h1", "Daily Production Report: " + dateString);
 				output.writeTextElement("h2", "Batches Roasted");
 				var query = new QSqlQuery();
-				var q = "SELECT time, machine, (SELECT name FROM machine WHERE id = machine), (SELECT name FROM items WHERE id = roasted_id), unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, annotation, duration, files FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1') ORDER BY time";
+				var q = "SELECT time, machine, (SELECT name FROM machine WHERE id = machine), (SELECT name FROM items WHERE id = roasted_id), unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, annotation, duration, files, (SELECT loss FROM roasting_specification WHERE item = roasted_id AND time <= roasting_log.time), (SELECT tolerance FROM roasting_specification WHERE item = roasted_id AND time <= roasting_log.time), (SELECT notes FROM roasting_specification WHERE item = roasted_id AND time <= roasting_log.time), approval FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1') ORDER BY time";
 				query.exec(q);
 				var times = new Array();
 				var machines = new Array();
@@ -65,6 +65,7 @@
 				output.writeAttribute("cellpadding", "3px");
 				output.writeStartElement("thead");
 				output.writeStartElement("tr");
+                                output.writeAttribute("valign", "bottom");
 				output.writeTextElement("th", "Time");
 				output.writeTextElement("th", "Machine");
 				output.writeTextElement("th", "Batch ID");
@@ -93,6 +94,7 @@
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");
+                                output.writeAttribute("valign", "top");
 				while(query.next())
 				{
 					times.push(query.value(0));
@@ -164,11 +166,45 @@
 							output.writeCDATA(query.value(8));
 							break;
 					}
-					output.writeTextElement("td", query.value(3) + " (" + query.value(7) + ")");
+                                        output.writeStartElement("td");
+                                        output.writeStartElement("span");
+                                        if(query.value(15) == "false") {
+                                            output.writeAttribute("style", "color:#FF0000");
+                                        }
+                                        output.writeCharacters(query.value(3) + " (" + query.value(7) + ")");
+                                        output.writeEndElement();
+                                        output.writeEndElement();
 					if(Number(query.value(6)) > 0) {
 						var loss = (Number(query.value(6)) - Number(query.value(8)))/Number(query.value(6));
+                                                var lossMin;
+                                                var lossMax;
+                                                var lossColor;
+                                                var useLoss;
+                                                if(query.value(12) > 0) {
+                                                    useLoss = true;
+                                                    lossMin = Number(query.value(12)) - Number(query.value(13));
+                                                    lossMax = Number(query.value(12)) + Number(query.value(13));
+                                                    if(loss >= lossMin && loss <= lossMax) {
+                                                        lossColor = '#00FF00';
+                                                    } else {
+                                                        lossColor = '#FF0000';
+                                                    }
+                                                } else {
+                                                    lossColor = '#000000';
+                                                    useLoss = false;
+                                                }
 						loss *= 100;
-						output.writeTextElement("td", loss.toFixed(2)+"%");
+                                                var lossSpec = Number(query.value(12)) * 100;
+                                                var lossTol = Number(query.value(13)) * 100;
+                                                output.writeStartElement("td");
+                                                output.writeStartElement("span");
+                                                output.writeAttribute("style", "color:"+lossColor);
+                                                if(useLoss) {
+                                                    output.writeAttribute("title", lossSpec.toFixed(2) + "+/-" + lossTol.toFixed(2) + "%");
+                                                }
+                                                output.writeCharacters(loss.toFixed(2) + "%");
+                                                output.writeEndElement();
+                                                output.writeEndElement();
 					} else {
 						output.writeTextElement("td", "Undefined");
 					}
@@ -188,7 +224,7 @@
 					var annotations = annotationFromRecord(files[0]);
 					output.writeStartElement("tr");
 					output.writeStartElement("td");
-					output.writeAttribute("colspan", "9");
+					output.writeAttribute("colspan", "5");
 					output.writeTextElement("strong", "Profile Summary");
 					var buffer2 = new QBuffer("<points>"+annotations+"</points>");
 					buffer2.open(1);
@@ -265,6 +301,13 @@
 					output.writeEndElement();
 					output.writeEndElement();	
 					output.writeEndElement();
+                                        output.writeStartElement("td");
+                                        output.writeAttribute("colspan", "4");
+                                        if(query.value(14)) {
+                                            output.writeTextElement("strong", "Roast Specification Notes");
+                                            output.writeTextElement("p", query.value(14));
+                                        }
+                                        output.writeEndElement();
 					output.writeEndElement();
 				}
 				output.writeEndElement();

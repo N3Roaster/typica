@@ -30,7 +30,7 @@
             var tolerance = findChildObject(this, 'tolerance');
             var notes = findChildObject(this, 'notes');
             var savebutton = findChildObject(this, 'save');
-            selector['currentIndexChanged(int)'].connect(function() {
+            var updateDisplay = function() {
                 var query = new QSqlQuery();
                 query.prepare("SELECT loss, tolerance, notes FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
                 query.bind(":id1", selector.currentData());
@@ -39,13 +39,25 @@
                 if(query.next()) {
                     if(query.value(0).length > 0) {
                         expected.text = Number(query.value(0)) * 100;
+                    } else {
+                        expected.text = "";
                     }
                     if(query.value(1).length > 0) {
                         tolerance.text = Number(query.value(1)) * 100;
+                    } else {
+                        tolerance.text = "";
                     }
                     notes.plainText = query.value(2);
+                } else {
+                    expected.text = "";
+                    tolerance.text = "";
+                    notes.plainText = "";
                 }
                 query = query.invalidate();
+            };
+            updateDisplay();
+            selector['currentIndexChanged(int)'].connect(function() {
+                updateDisplay();
             });
             savebutton.clicked.connect(function() {
                 var query = new QSqlQuery();

@@ -8,6 +8,7 @@ QT += sql
 QT += xmlpatterns
 QT += scripttools
 QT += webkit
+QT += svg
 
 CONFIG += extserialport
 

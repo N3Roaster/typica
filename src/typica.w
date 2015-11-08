@@ -623,6 +623,7 @@ various Qt modules.
 #include <QtDebug>
 #include <QtXmlPatterns>
 #include <QtWebKit>
+#include <QtSvg>
 
 @ New code is being written in separate files in a long term effort to improve
 organization of the code. The result of this is that some additional headers
@@ -1361,6 +1362,93 @@ QScriptValue constructQLabel(QScriptContext *context, QScriptEngine *engine)
 void setQLabelProperties(QScriptValue value, QScriptEngine *engine)
 {
     setQFrameProperties(value, engine);
+}
+
+@* Scripting QSvgWidget.
+
+\noindent Sometimes it is useful to provide a space for simple drawings without
+the need for all of the other capabilities of a web view. This was introduced
+as a way to draw box plots to help guide the creation of roast specifications.
+
+@<Function prototypes for scripting@>=
+void setQSvgWidgetProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue constructQSvgWidget(QScriptContext *context,
+                                 QScriptEngine *engine);
+QScriptValue QSvgWidget_loadDevice(QScriptContext *context,
+                                   QScriptEngine *engine);
+void addSvgWidgetToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
+                          QStack<QLayout *> *layoutStack);
+
+@ The constructor must be passed to the scripting engine.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQSvgWidget);
+value = engine->newQMetaObject(&QSvgWidget::staticMetaObject, constructor);
+engine->globalObject().setProperty("QSvgWidget", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQSvgWidget(QScriptContext *context,
+                                 QScriptEngine *engine)
+{
+    QScriptValue object = engine->newQObject(new QSvgWidget);
+    setQSvgWidgetProperties(object, engine);
+    return object;
+}
+
+@ A property is added that allows loading data from a |QIODevice|.
+
+@<Functions for scripting@>=
+void setQSvgWidgetProperties(QScriptValue value, QScriptEngine *engine)
+{
+    setQWidgetProperties(value, engine);
+    value.setProperty("loadDevice",
+                      engine->newFunction(QSvgWidget_loadDevice));
+}
+
+QScriptValue QSvgWidget_loadDevice(QScriptContext *context, QScriptEngine *)
+{
+    if(context->argumentCount() == 1)
+    {
+        QSvgWidget *self = getself<@[QSvgWidget *@]>(context);
+        QIODevice *device = argument<QIODevice *>(0, context);
+        device->reset();
+        QByteArray data = device->readAll();
+        self->load(data);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QSvgWidget::loadData(). This method takes one "@|
+                            "QIODevice as an argument.");
+    }
+    return QScriptValue();
+}
+
+@ Additional work is needed to allow including this from the XML description of
+a window.
+
+@<Additional box layout elements@>=
+else if(currentElement.tagName() == "svgwidget")
+{
+    addSvgWidgetToLayout(currentElement, widgetStack, layoutStack);
+}
+
+@ The function used to create this follows the usual pattern.
+
+@<Functions for scripting@>=
+void addSvgWidgetToLayout(QDomElement element, QStack<QWidget *> *,
+                          QStack<QLayout *> *layoutStack)
+{
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    QSvgWidget *widget = new QSvgWidget;
+    layout->addWidget(widget);
+    QString id = element.attribute("id");
+    if(!id.isEmpty())
+    {
+        widget->setObjectName(id);
+    }
 }
 
 @* Scripting QLineEdit.
@@ -6115,6 +6203,10 @@ else if(className == "QWebView")
 else if(className == "QLineEdit")
 {
     setQLineEditProperties(value, engine);
+}
+else if(className == "QSvgWidget")
+{
+    setQSvgWidgetProperties(value, engine);
 }
 
 @ In the list of classes, the SaltTable entry is for a class which does not

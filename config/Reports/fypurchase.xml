@@ -64,13 +64,21 @@
 				output.writeTextElement("th", "Sacks Purchased");
 				switch(unitBox.currentIndex) {
 					case 0:
-						output.writeTextElement("th", "Kilos Purchased");
+						output.writeTextElement("th", "Kg Purchased");
 						break;
 					case 1:
-						output.writeTextElement("th", "Pounds Purchased");
+						output.writeTextElement("th", "Lb Purchased");
 						break;
 				}
 				output.writeTextElement("th", "Cost");
+                                switch(unitBox.currentIndex) {
+                                    case 0:
+                                        output.writeTextElement("th", "Cost per Kg");
+                                        break;
+                                    case 1:
+                                        output.writeTextElement("th", "Cost per Lb");
+                                        break;
+                                }
 				output.writeEndElement(); //tr
 				output.writeEndElement(); //thead
 				output.writeStartElement("tbody");
@@ -102,6 +110,7 @@
 					sacktotal += Number(query.value(0));
 					unittotal += Number(query.value(1));
 					costtotal += Number(query.value(2));
+                                        output.writeTextElement("td", (Number(query.value(2))/Number(query.value(1))).toFixed(2));
 					output.writeEndElement(); //tr
 				}
 				query = query.invalidate();

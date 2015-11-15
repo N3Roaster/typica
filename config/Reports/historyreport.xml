@@ -261,8 +261,39 @@
                     output.writeEndElement();
                     output.writeEndElement();
                 }
-                query = query.invalidate();
                 output.writeEndElement();
+                output.writeStartElement("tfoot");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", "Total Batches");
+                output.writeTextElement("th", "Total Duration");
+                output.writeTextElement("th", "Total Green Weight");
+                output.writeTextElement("th", "Total Roasted Weight");
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                q = "WITH qq AS (SELECT roasting_log.time, array_to_string(files, ','), person, (SELECT name || ' (' || id || ')' FROM items WHERE id = roasted_id) AS rname, duration, (SELECT name FROM machine WHERE id = machine) AS mname, array_to_string(ARRAY(SELECT name || ' (' || id || ')' FROM items WHERE id IN (SELECT unnest(unroasted_id))), ',') AS greens, (unroasted_total_quantity/:c1)::numeric(12,2) AS uq, (roasted_quantity/:c2)::numeric(12,2) AS rq, loss, annotation, approval, spec_loss::numeric(12,2) || '±' || spec_tolerance::numeric(12,2) AS lspec, notes, loss_match, machine || '@' || roasting_log.time AS link, files FROM roasting_log, LATERAL (SELECT CASE WHEN (unroasted_total_quantity = 0) THEN NULL ELSE (((unroasted_total_quantity - roasted_quantity)/unroasted_total_quantity)*100)::numeric(12,2) END AS loss) lc, LATERAL (WITH q AS (SELECT (SELECT min(time) - interval '10 years' FROM roasting_log) AS time, NULL::numeric AS loss, NULL::numeric AS tolerance, NULL::text AS notes) SELECT time, (loss*100)::numeric(12,2) AS spec_loss, (tolerance*100)::numeric(12,2) AS spec_tolerance, notes FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id) UNION (SELECT * FROM q) ORDER BY time DESC LIMIT 1) spec, LATERAL (SELECT loss >= spec_loss - spec_tolerance AND loss <= spec_loss + spec_tolerance AS loss_match) m WHERE roasting_log.time >= :sd AND roasting_log.time < :ed::date + interval '1 day'" + approvalClause + batchClause + ") SELECT count(1), sum(duration), sum(uq), sum(rq) FROM qq" + searchClause;
+                var query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
+                query.bind(":sd", startDate);
+                query.bind(":ed", endDate);
+                if(searchClause.length > 0) {
+                    var pattern = ".*" + search.text + ".*";
+                    query.bind(":p1", pattern);
+                    query.bind(":p2", pattern);
+                    query.bind(":p3", pattern);
+                    query.bind(":p4", pattern);
+                    query.bind(":p5", pattern);
+                    query.bind(":p6", pattern);
+                }
+                query.exec();
+                query.next();
+                for(var i = 0; i < 4; i++) {
+                    output.writeTextElement("td", query.value(i));
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                query = query.invalidate();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndDocument();

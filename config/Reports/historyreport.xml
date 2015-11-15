@@ -20,6 +20,7 @@
     </menu>
     <program>
         <![CDATA[
+            this.setWindowTitle("Typica - Batch Log");
             var dateSelect = findChildObject(this, 'dates');
             var dateQuery = new QSqlQuery();
             dateQuery.exec("SELECT time::date FROM roasting_log WHERE time = (SELECT min(time) FROM roasting_log) OR time = (SELECT max(time) FROM roasting_log) ORDER BY time ASC");
@@ -163,24 +164,28 @@
                 output.writeAttribute("cellpadding", "3px");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
                 output.writeTextElement("th", "Time");
                 output.writeTextElement("th", "File Numbers");
                 output.writeTextElement("th", "Operator");
                 output.writeTextElement("th", "Roasted Coffee");
                 output.writeEndElement();
                 output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
                 output.writeEmptyElement("td");
                 output.writeTextElement("th", "Duration");
                 output.writeTextElement("th", "Machine");
                 output.writeTextElement("th", "Green Coffees");
                 output.writeEndElement();
                 output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
                 output.writeEmptyElement("td");
                 output.writeTextElement("th", "Green Weight");
                 output.writeTextElement("th", "Roasted Weight");
                 output.writeTextElement("th", "% Weight Loss");
                 output.writeEndElement();
                 output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
                 output.writeEmptyElement("td");
                 output.writeStartElement("th");
                 output.writeAttribute("colspan", "2");
@@ -192,6 +197,7 @@
                 output.writeStartElement("tbody");
                 while(query.next()) {
                     output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
                     output.writeStartElement("td");
                     output.writeStartElement("a");
                     output.writeAttribute("href", "typica://script/b/" + query.value(15));
@@ -215,12 +221,14 @@
                     output.writeEndElement();
                     output.writeEndElement();
                     output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
                     output.writeEmptyElement("td");
                     output.writeTextElement("td", query.value(4));
                     output.writeTextElement("td", query.value(5));
                     output.writeTextElement("td", query.value(6));
                     output.writeEndElement();
                     output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
                     output.writeEmptyElement("td");
                     output.writeTextElement("td", query.value(7));
                     output.writeTextElement("td", query.value(8));
@@ -237,6 +245,7 @@
                     output.writeEndElement();
                     output.writeEndElement();
                     output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
                     output.writeEmptyElement("td");
                     output.writeStartElement("td");
                     output.writeAttribute("colspan", "2");
@@ -264,13 +273,15 @@
                 output.writeEndElement();
                 output.writeStartElement("tfoot");
                 output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
                 output.writeTextElement("th", "Total Batches");
                 output.writeTextElement("th", "Total Duration");
                 output.writeTextElement("th", "Total Green Weight");
                 output.writeTextElement("th", "Total Roasted Weight");
                 output.writeEndElement();
                 output.writeStartElement("tr");
-                q = "WITH qq AS (SELECT roasting_log.time, array_to_string(files, ','), person, (SELECT name || ' (' || id || ')' FROM items WHERE id = roasted_id) AS rname, duration, (SELECT name FROM machine WHERE id = machine) AS mname, array_to_string(ARRAY(SELECT name || ' (' || id || ')' FROM items WHERE id IN (SELECT unnest(unroasted_id))), ',') AS greens, (unroasted_total_quantity/:c1)::numeric(12,2) AS uq, (roasted_quantity/:c2)::numeric(12,2) AS rq, loss, annotation, approval, spec_loss::numeric(12,2) || '±' || spec_tolerance::numeric(12,2) AS lspec, notes, loss_match, machine || '@' || roasting_log.time AS link, files FROM roasting_log, LATERAL (SELECT CASE WHEN (unroasted_total_quantity = 0) THEN NULL ELSE (((unroasted_total_quantity - roasted_quantity)/unroasted_total_quantity)*100)::numeric(12,2) END AS loss) lc, LATERAL (WITH q AS (SELECT (SELECT min(time) - interval '10 years' FROM roasting_log) AS time, NULL::numeric AS loss, NULL::numeric AS tolerance, NULL::text AS notes) SELECT time, (loss*100)::numeric(12,2) AS spec_loss, (tolerance*100)::numeric(12,2) AS spec_tolerance, notes FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id) UNION (SELECT * FROM q) ORDER BY time DESC LIMIT 1) spec, LATERAL (SELECT loss >= spec_loss - spec_tolerance AND loss <= spec_loss + spec_tolerance AS loss_match) m WHERE roasting_log.time >= :sd AND roasting_log.time < :ed::date + interval '1 day'" + approvalClause + batchClause + ") SELECT count(1), sum(duration), sum(uq), sum(rq) FROM qq" + searchClause;
+                output.writeAttribute("valign", "top");
+                q = "WITH qq AS (SELECT roasting_log.time, array_to_string(files, ','), person, (SELECT name || ' (' || id || ')' FROM items WHERE id = roasted_id) AS rname, duration, (SELECT name FROM machine WHERE id = machine) AS mname, array_to_string(ARRAY(SELECT name || ' (' || id || ')' FROM items WHERE id IN (SELECT unnest(unroasted_id))), ',') AS greens, (unroasted_total_quantity/:c1)::numeric(12,2) AS uq, (roasted_quantity/:c2)::numeric(12,2) AS rq, annotation, approval, files FROM roasting_log WHERE roasting_log.time >= :sd AND roasting_log.time < :ed::date + interval '1 day'" + approvalClause + batchClause + ") SELECT count(1), sum(duration), sum(uq), sum(rq) FROM qq" + searchClause;
                 var query = new QSqlQuery();
                 query.prepare(q);
                 query.bind(":c1", conversion);

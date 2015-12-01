@@ -4803,6 +4803,7 @@ void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                 QWidget *widget = new QWidget;
                 layout->addWidget(widget);
                 widgetStack->push(widget);
+                currentElement.setAttribute("trcontext", element.attribute("trcontext"));
                 populateWidget(currentElement, widgetStack, layoutStack);
                 widgetStack->pop();
             }
@@ -4913,6 +4914,7 @@ for(int j = 0; j < rowChildren.count(); j++)
             QHBoxLayout *cell = new QHBoxLayout;
             layout->addLayout(cell, row, column, vspan, hspan);
             layoutStack->push(cell);
+            columnElement.setAttribute("trcontext", element.attribute("trcontext"));
             populateBoxLayout(columnElement, widgetStack, layoutStack);
             layoutStack->pop();
         }
@@ -4935,6 +4937,7 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
         if(current.isElement())
         {
             currentElement = current.toElement();
+            currentElement.setAttribute("trcontext", element.attribute("trcontext"));
             if(currentElement.tagName() == "button")
             {
                 addButtonToLayout(currentElement, widgetStack, layoutStack);
@@ -4960,7 +4963,9 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
             {
                 QBoxLayout *layout =
                     qobject_cast<QBoxLayout *>(layoutStack->top());
-                QLabel *label = new QLabel(currentElement.text());
+                QLabel *label = new QLabel(QCoreApplication::translate(
+                    element.attribute("trcontext").toAscii().data(),
+                    currentElement.text().toUtf8().data()));
                 layout->addWidget(label);
             }
             else if(currentElement.tagName() == "lcdtemperature")
@@ -5104,6 +5109,7 @@ void populateSplitter(QDomElement element, QStack<QWidget *> *widgetStack,@|
         if(current.isElement())
         {
             currentElement = current.toElement();
+            currentElement.setAttribute("trcontext", element.attribute("trcontext"));
             if(currentElement.tagName() == "decoration")
             {
                 addDecorationToSplitter(currentElement, widgetStack,
@@ -5249,7 +5255,9 @@ void addDecorationToSplitter(QDomElement element,
 labeled.
 
 @<Set up decoration@>=
-QString labelText = element.attribute("name");
+QString labelText =
+    QCoreApplication::translate(element.attribute("trcontext").toAscii().data(),
+    element.attribute("name").toUtf8().data());
 Qt::Orientations@, orientation = Qt::Horizontal;
 if(element.hasAttribute("type"))
 {
@@ -5345,6 +5353,7 @@ void populateWidget(QDomElement element, QStack<QWidget *> *widgetStack,@|
             currentElement = current.toElement();
             if(currentElement.tagName() == "layout")
             {
+                currentElement.setAttribute("trcontext", element.attribute("trcontext"));
                 addLayoutToWidget(currentElement, widgetStack, layoutStack);
             }
         }
@@ -5360,7 +5369,9 @@ void addButtonToLayout(QDomElement element, QStack<QWidget *> *,@|
                        QStack<QLayout *> *layoutStack)
 {
     QAbstractButton *button = NULL;
-    QString text = element.attribute("name");
+    QString text =
+        QCoreApplication::translate(element.attribute("trcontext").toAscii().data(),
+                                    element.attribute("name").toUtf8().data());
     if(element.hasAttribute("type"))
     {
         QString type = element.attribute("type");
@@ -5414,11 +5425,15 @@ void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *,@|
     AnnotationSpinBox *box = new AnnotationSpinBox("", "", NULL);
     if(element.hasAttribute("pretext"))
     {
-        box->setPretext(element.attribute("pretext"));
+        box->setPretext(QCoreApplication::translate(
+                        element.attribute("trcontext").toAscii().data(),
+                        element.attribute("pretext").toUtf8().data()));
     }
     if(element.hasAttribute("posttext"))
     {
-        box->setPosttext(element.attribute("posttext"));
+        box->setPosttext(QCoreApplication::translate(
+                         element.attribute("trcontext").toAscii().data(),
+                         element.attribute("posttext").toUtf8().data()));
     }
     if(element.hasAttribute("series"))
     {

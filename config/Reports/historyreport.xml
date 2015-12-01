@@ -72,6 +72,10 @@
                 refresh();
             });
             var view = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                view.print();
+            });
             view.scriptLinkClicked.connect(function(url) {
                 var arg = decodeURI(url.slice(2, url.length));
                 var key = arg.split("@");

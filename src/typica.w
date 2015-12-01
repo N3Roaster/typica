@@ -5483,10 +5483,6 @@ void addZoomLogToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                           QStack<QLayout *> *)
 {
     ZoomLog *widget = new ZoomLog;
-    if(!widget)
-    {
-        qDebug() << "Error constructing widget!";
-    }
     if(element.hasAttribute("id"))
     {
         widget->setObjectName(element.attribute("id"));

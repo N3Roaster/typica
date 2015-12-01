@@ -4616,6 +4616,7 @@ while(i < windowChildren.count())
         }
         else if(element.tagName() == "layout")
         {
+            element.setAttribute("trcontext", targetID);
             addLayoutToWidget(element, &widgetStack, &layoutStack);
         }
         else if(element.tagName() == "menu")
@@ -4648,7 +4649,8 @@ bar->setParent(window);
 bar->setObjectName("menuBar");
 if(element.hasAttribute("name"))
 {
-    QMenu *menu = bar->addMenu(element.attribute("name"));
+    QMenu *menu = bar->addMenu(QCoreApplication::translate(targetID.toAscii().data(),
+                                                           element.attribute("name").toUtf8().data()));
     menu->setParent(bar);
     if(element.hasAttribute("type"))
     {
@@ -4680,7 +4682,8 @@ while(j < menuItems.count())
         QDomElement itemElement = item.toElement();
         if(itemElement.tagName() == "item")
         {
-            QAction *itemAction = new QAction(itemElement.text(), menu);
+            QAction *itemAction = new QAction(QCoreApplication::translate(targetID.toAscii().data(),
+                                              itemElement.text().toUtf8().data()), menu);
             if(itemElement.hasAttribute("id"))
             {
                 itemAction->setObjectName(itemElement.attribute("id"));

@@ -5501,7 +5501,10 @@ void addZoomLogToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                 currentElement = current.toElement();
                 if(currentElement.tagName() == "column")
                 {
-                    QString text = currentElement.text();
+                    QString text =
+                        QCoreApplication::translate(
+                            element.attribute("trcontext").toAscii().data(),
+                            currentElement.text().toUtf8().data());
                     widget->setHeaderData(column, text);
                     column++;
                 }
@@ -5645,8 +5648,11 @@ void addSaltToLayout(QDomElement element, QStack<QWidget *> *,@|
                 {
                     if(currentElement.hasAttribute("name"))
                     {
-                        model->setHeaderData(currentColumn, Qt::Horizontal,
-                                             currentElement.attribute("name"));
+                        model->setHeaderData(currentColumn,
+                            Qt::Horizontal,
+                            QCoreApplication::translate(
+                                element.attribute("trcontext").toAscii().data(),
+                                    currentElement.attribute("name").toUtf8().data()));
                     }
                     if(currentElement.hasAttribute("delegate"))
                     {

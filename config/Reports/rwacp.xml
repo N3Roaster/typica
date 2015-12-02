@@ -1,11 +1,17 @@
 <window id="productionreport">
-	<reporttitle>Production:->Recent Average Weekly Coffee Production</reporttitle>
+	<reporttitle>Production:->Recent Average Coffee Production</reporttitle>
     <layout type="vertical">
         <layout type="horizontal">
             <label>Sort Order:</label>
             <sqldrop id="sort" />
-			<label>Weight Unit:</label>
-			<sqldrop id="unit" />
+            <label>Weight Unit:</label>
+            <sqldrop id="unit" />
+            <label>Batch Type: </label>
+            <sqldrop id="batchtype" />
+            <label>Days to Average: </label>
+            <line id="days" />
+            <label>Days to Scale: </label>
+            <line id="scale" />
             <stretch />
         </layout>
         <webview id="report" />
@@ -27,10 +33,38 @@
             sortBox.addItem("Weekly Use Ascending");
             sortBox.addItem("Weekly Use Descending");
             sortBox.currentIndex = QSettings.value("rwacp_sort", 3);
-			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
-			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            var unitBox = findChildObject(this, 'unit');
+            unitBox.addItem("Kg");
+            unitBox.addItem("Lb");
+            unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            var batchType = findChildObject(this, 'batchtype');
+            batchType.addItem("Any");
+            batchType.addItem("Production Roasts");
+            batchType.addItem("Sample Roasts");
+            batchType.currentIndex = QSettings.value("script/racpreport/batchtypefilter", 1);
+            batchType['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/racpreport/batchtypefilter",
+                                   batchType.currentIndex);
+                refresh();
+            });
+            var daysBox = findChildObject(this, 'days');
+            daysBox.text = QSettings.value("script/racpreport/days", "28");
+            daysBox.editingFinished.connect(function() {
+                if(Number(daysBox.text) < 1) {
+                    daysBox.text = QSettings.value("script/racpreport/days");
+                }
+                QSettings.setValue("script/racpreport/days", daysBox.text);
+                refresh();
+            });
+            var scaleBox = findChildObject(this, 'scale');
+            scaleBox.text = QSettings.value("script/racpreport/scale", "7");
+            scaleBox.editingFinished.connect(function() {
+                if(Number(scaleBox.text) < 1) {
+                    scaleBox.text = QSettings.value("script/racpreport/scale");
+                }
+                QSettings.setValue("script/racpreport/scale", scaleBox.text);
+                refresh();
+            });
             function refresh() {
                 var buffer = new QBuffer;
                 buffer.open(3);
@@ -44,15 +78,15 @@
                 output.writeEndElement();
                 output.writeStartElement("body");
                 output.writeTextElement("h1", "Recent Average Weekly Coffee Production");
-				switch(unitBox.currentIndex)
-				{
-					case 0:
-						output.writeTextElement("p", "This is a report of average weekly coffee production in kilograms over the past 28 days.");
-						break;
-					case 1:
-						output.writeTextElement("p", "This is a report of average weekly coffee production in pounds over the past 28 days.");
-						break;
-				}
+                switch(unitBox.currentIndex)
+                {
+                    case 0:
+                        output.writeTextElement("p", "This is a report of average coffee production per " + scaleBox.text + " days in kilograms over the past " + daysBox.text + " days.");
+                        break;
+                    case 1:
+                        output.writeTextElement("p", "This is a report of average coffee production per " + scaleBox.text + " days in pounds over the past " + daysBox.text + " days.");
+                        break;
+                }
                 output.writeStartElement("table");
                 output.writeAttribute("rules", "groups");
                 output.writeAttribute("cellpadding", "3px");
@@ -63,33 +97,43 @@
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
-				var q = "SELECT (SELECT name FROM items WHERE id = roasted_id) AS name, ((sum(roasted_quantity) / 4) / :conversion)::numeric(18,2) AS weekly FROM roasting_log WHERE time > current_date - integer '28' AND roasted_quantity > 0 GROUP BY roasted_id ORDER BY "
+                var batchClause = "";
+                switch(batchType.currentIndex) {
+                    case 1:
+                        batchClause = " AND transaction_type = 'ROAST'";
+                        break;
+                    case 2:
+                        batchClause = " AND transaction_type = 'SAMPLEROAST'";
+                        break;
+                }
+                var q = "SELECT (SELECT name FROM items WHERE id = roasted_id) AS name, ((sum(roasted_quantity) / :scale) / :conversion)::numeric(18,2) AS weekly FROM roasting_log WHERE time > current_date - integer '" + daysBox.text + "' AND roasted_quantity > 0 " + batchClause + " GROUP BY roasted_id ORDER BY "
                 switch(sortBox.currentIndex)
                 {
                     case 0:
-						q += "name ASC";
+                        q += "name ASC";
                         break;
                     case 1:
-						q += "name DESC";
-						break;
+                        q += "name DESC";
+                        break;
                     case 2:
-						q += "weekly ASC";
-						break;
+                        q += "weekly ASC";
+                        break;
                     case 3:
-						q += "weekly DESC";
-						break;
+                        q += "weekly DESC";
+                        break;
                 }
-				var query = new QSqlQuery();
-				query.prepare(q);
-				switch(unitBox.currentIndex)
-				{
-					case 0:
-						query.bind(":conversion", 2.2);
-						break;
-					case 1:
-						query.bind(":conversion", 1);
-						break;
-				}
+                var query = new QSqlQuery();
+                query.prepare(q);
+                switch(unitBox.currentIndex)
+                {
+                    case 0:
+                        query.bind(":conversion", 2.2);
+                        break;
+                    case 1:
+                        query.bind(":conversion", 1);
+                        break;
+                }
+                query.bind(":scale", Number(daysBox.text)/Number(scaleBox.text));
                 query.exec();
                 while(query.next())
                 {
@@ -101,21 +145,22 @@
                 output.writeEndElement();
                 output.writeStartElement("tfoot")
                 output.writeTextElement("th", "Total");
-                query.prepare("SELECT (sum(roasted_quantity) / 4 / :conversion)::numeric(18,2) FROM roasting_log WHERE time > current_date - integer '28' AND roasted_quantity > 0");
+                query.prepare("SELECT ((sum(roasted_quantity) / :scale) / :conversion)::numeric(18,2) FROM roasting_log WHERE time > current_date - integer '" + daysBox.text + "' AND roasted_quantity > 0 " + batchClause);
                 switch(unitBox.currentIndex)
-				{
-					case 0:
-						query.bind(":conversion", 2.2);
-						break;
-					case 1:
-						query.bind(":conversion", 1);
-						break;
-				}
-				query.exec();
-				query.next();
+                {
+                    case 0:
+                        query.bind(":conversion", 2.2);
+                        break;
+                    case 1:
+                        query.bind(":conversion", 1);
+                        break;
+                }
+                query.bind(":scale", Number(daysBox.text)/Number(scaleBox.text));
+                query.exec();
+                query.next();
                 output.writeTextElement("td", query.value(0));
                 query = query.invalidate();
-				output.writeEndElement();
+                output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();

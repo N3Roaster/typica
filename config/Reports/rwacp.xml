@@ -21,7 +21,7 @@
     </menu>
     <program>
         <![CDATA[
-            this.windowTitle = "Typica - Recent Average Weekly Coffee Production";
+            this.windowTitle = "Typica - Recent Average Coffee Production";
             var report = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
@@ -74,10 +74,10 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Recent Average Weekly Coffee Production");
+                output.writeTextElement("title", "Recent Average Coffee Production");
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Recent Average Weekly Coffee Production");
+                output.writeTextElement("h1", "Recent Average Coffee Production");
                 switch(unitBox.currentIndex)
                 {
                     case 0:

@@ -16085,6 +16085,9 @@ class RoasterConfWidget : public BasicDeviceConfigurationWidget
                                             const QModelIndex &index);
     @[private slots@]:@/
         void updateRoasterId(int id);
+        void updateCapacityCheck(int value);
+        void updateCapacity(const QString &value);
+        void updateCapacityUnit(const QString &value);
 };
 
 @ Aside from the ID number used to identify the roaster in the database we also
@@ -16166,7 +16169,26 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
     idLayout->addWidget(idLabel);
     QSpinBox *id = new QSpinBox;
     idLayout->addWidget(id);
+    idLayout->addStretch();
     layout->addLayout(idLayout);
+    QHBoxLayout *capacityLayout = new QHBoxLayout;
+    QCheckBox *capacityCheckEnabled = new QCheckBox(tr("Maximum batch size:"));
+    QDoubleSpinBox *capacity = new QDoubleSpinBox;
+    capacity->setMinimum(0.0);
+    capacity->setDecimals(3);
+    capacity->setMaximum(999999.999);
+    QComboBox *capacityUnit = new QComboBox;
+    capacityUnit->addItem("g");
+    capacityUnit->addItem("Kg");
+    capacityUnit->addItem("oz");
+    capacityUnit->addItem("Lb");
+    capacityUnit->setCurrentIndex(3);
+    capacityLayout->addWidget(capacityCheckEnabled);
+    capacityLayout->addWidget(capacity);
+    capacityLayout->addWidget(capacityUnit);
+    capacityLayout->addStretch();
+    layout->addLayout(capacityLayout);
+    layout->addStretch();
     @<Get device configuration data for current node@>@;
     for(int i = 0; i < configData.size(); i++)
     {
@@ -16174,11 +16196,25 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
         if(node.attribute("name") == "databaseid")
         {
             id->setValue(node.attribute("value").toInt());
-            break;
+        }
+        else if(node.attribute("name") == "checkcapacity")
+        {
+            capacityCheckEnabled->setChecked(node.attribute("value") == "true");
+        }
+        else if(node.attribute("name") == "capacity")
+        {
+            capacity->setValue(node.attribute("value").toDouble());
+        }
+        else if(node.attribute("name") == "capacityunit")
+        {
+            capacityUnit->setCurrentIndex(capacityUnit->findText(node.attribute("value")));
         }
     }
     updateRoasterId(id->value());
     connect(id, SIGNAL(valueChanged(int)), this, SLOT(updateRoasterId(int)));
+    connect(capacityCheckEnabled, SIGNAL(stateChanged(int)), this, SLOT(updateCapacityCheck(int)));
+    connect(capacity, SIGNAL(valueChanged(QString)), this, SLOT(updateCapacity(QString)));
+    connect(capacityUnit, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateCapacityUnit(QString)));
     setLayout(layout);
 }
 
@@ -16195,7 +16231,7 @@ QDomElement referenceElement =
 QDomNodeList configData = referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
-@ We need to propagate changes to the ID number field to the device
+@ We need to propagate changes to the configuration fields to the device
 configuration document. The |updateAttribute()| method in the base class
 makes this trivial.
 
@@ -16203,6 +16239,21 @@ makes this trivial.
 void RoasterConfWidget::updateRoasterId(int id)
 {
     updateAttribute("databaseid", QString("%1").arg(id));
+}
+
+void RoasterConfWidget::updateCapacityCheck(int value)
+{
+    updateAttribute("checkcapacity", value == Qt::Checked ? "true" : "false");
+}
+
+void RoasterConfWidget::updateCapacity(const QString &value)
+{
+    updateAttribute("capacity", value);
+}
+
+void RoasterConfWidget::updateCapacityUnit(const QString &value)
+{
+    updateAttribute("capacityunit", value);
 }
 
 @ Finally we must register the configuration widget so that it can be

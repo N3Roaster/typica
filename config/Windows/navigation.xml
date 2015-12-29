@@ -35,11 +35,6 @@
 		</row>
 		<row>
 			<column>
-				<button name="Batch Log" id="history" type="push" />
-			</column>
-		</row>
-		<row>
-			<column>
 				<button name="New Cupping Session" id="createcupping"
 type="push" />
 			</column>
@@ -132,11 +127,6 @@ type="push" />
             var invwin = createWindow("inventory");
             invwin.windowTitle = "Typica - Inventory";
         });
-        var history = findChildObject(this, 'history');
-        history.clicked.connect(function() {
-            var histwindow = createWindow("history");
-            histwindow.windowTitle = "Typica - Batch Log";
-        });
         var roastspecbutton = findChildObject(this, 'roastspec');
         roastspecbutton.clicked.connect(function() {
             var specwindow = createWindow("roastspec");
@@ -161,20 +151,19 @@ type="push" />
             {
                 window.loggingWindow = createWindow("basicWindow");
                 window.loggingWindow.windowTitle = "Typica [*]";
-				window.loggingWindow.navigationWindow = window;
+                window.loggingWindow.navigationWindow = window;
             }
             else
             {
-				print(window.loggingWindow);
                 window.loggingWindow.raise();
                 window.loggingWindow.activateWindow();
             }
         });
-		var configurebutton = findChildObject(this, 'configure');
-		configurebutton.clicked.connect(function() {
-			var confwindow = new SettingsWindow;
-			confwindow.show();
-		});
+        var configurebutton = findChildObject(this, 'configure');
+        configurebutton.clicked.connect(function() {
+            var confwindow = new SettingsWindow;
+            confwindow.show();
+        });
         <![CDATA[
 		var DBCreateBase = function() {
 			var query = new QSqlQuery();

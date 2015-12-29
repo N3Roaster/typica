@@ -937,12 +937,15 @@ message and return the selected action.
 
 @<Function prototypes for scripting@>=
 QScriptValue displayWarning(QScriptContext *context, QScriptEngine *engine);
+QScriptValue displayError(QScriptContext *context, QScriptEngine *engine);
 
 @ This function is exposed to the host environment.
 
 @<Set up the scripting engine@>=
 constructor = engine->newFunction(displayWarning);
 engine->globalObject().setProperty("displayWarning", constructor);
+constructor = engine->newFunction(displayError);
+engine->globalObject().setProperty("displayError", constructor);
 
 @ The function takes some arguments.
 
@@ -957,6 +960,13 @@ QScriptValue displayWarning(QScriptContext *context, QScriptEngine *)
         return QScriptValue(true);
     }
     return QScriptValue(false);
+}
+
+QScriptValue displayError(QScriptContext *context, QScriptEngine *)
+{
+    QMessageBox::critical(NULL, argument<QString>(0, context),
+                          argument<QString>(1, context));
+    return QScriptValue();
 }
 
 @* Scripting QMainWindow.

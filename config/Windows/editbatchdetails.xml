@@ -1,47 +1,63 @@
 <window id="editBatchDetails">
     <layout type="vertical">
-		<button type="check" name="Approved" id="approval" />
-		<layout type="horizontal">
-			<label>Annotation</label>
-			<textarea id="annotation" />
-		</layout>
-		<button type="push" id="submit" name="Submit" />
-	</layout>
+        <layout type="horizontal">
+            <label>Roasted Weight: </label>
+            <line id="roasted" validator="numeric" />
+            <line id="roastunit" writable="false" />
+        </layout>
+        <button type="check" name="Approved" id="approval" />
+        <layout type="horizontal">
+            <label>Annotation</label>
+            <textarea id="annotation" />
+        </layout>
+        <button type="push" id="submit" name="Submit" />
+    </layout>
     <program>
         <![CDATA[
-			var window = this;
-			var approvalButton = findChildObject(this, 'approval');
-			var annotationField = findChildObject(this, 'annotation');
-			var parentWindow;
-			var tableReference;
-			var rowReference;
-			var timeKey;
-			var machineKey;
-			var submit = findChildObject(this, 'submit');
-			submit.enabled = false;
-			this.loadData = function(parent, table, row, time, machine, approval, annotation) {
-				parentWindow = parent;
-				tableReference = table;
-				rowReference = row;
-				if(approval == "true") {
-					approvalButton.checked = true;
-				}
-				annotationField.plainText = annotation;
-				timeKey = time;
-				machineKey = machine;
-				submit.enabled = true;
-			};
-			submit.clicked.connect(function() {
-				var query = new QSqlQuery;
-				query.prepare("UPDATE roasting_log SET approval = :approval, annotation = :annotation WHERE time = :time AND machine = :machine");
-				query.bind("approval", approvalButton.checked);
-				query.bind("annotation", annotationField.plainText);
-				query.bind("time", timeKey);
-				query.bind("machine", machineKey);
-				query.exec();
-				parentWindow.loadData(tableReference, rowReference);
-				window.close();
-			});
+            var window = this;
+            var approvalButton = findChildObject(this, 'approval');
+            var annotationField = findChildObject(this, 'annotation');
+            var parentWindow;
+            var tableReference;
+            var rowReference;
+            var timeKey;
+            var machineKey;
+            var submit = findChildObject(this, 'submit');
+            submit.enabled = false;
+            var roastedEdit = findChildObject(this, 'roasted');
+            var unitEdit = findChildObject(this, 'roastunit');
+            var conversion = 1;
+            this.loadData = function(parent, table, row, time, machine, approval, annotation, roastWeight, unit) {
+                parentWindow = parent;
+                tableReference = table;
+                rowReference = row;
+                if(approval == "true") {
+                    approvalButton.checked = true;
+                }
+                annotationField.plainText = annotation;
+                timeKey = time;
+                machineKey = machine;
+                submit.enabled = true;
+                roastedEdit.text = roastWeight;
+                if(unit == 0) {
+                    unitEdit.text = "Kg";
+                    conversion = 2.2;
+                } else {
+                    unitEdit.text = "Lb";
+                }
+            };
+            submit.clicked.connect(function() {
+                var query = new QSqlQuery;
+                query.prepare("UPDATE roasting_log SET roasted_quantity = :roasted, approval = :approval, annotation = :annotation WHERE time = :time AND machine = :machine");
+                query.bind(":approval", approvalButton.checked);
+                query.bind(":annotation", annotationField.plainText);
+                query.bind(":roasted", Number(roastedEdit.text)/conversion);
+                query.bind(":time", timeKey);
+                query.bind(":machine", Number(machineKey));
+                query.exec();
+                parentWindow.loadData(tableReference, rowReference);
+                window.close();
+            });
         ]]>
     </program>
 </window>

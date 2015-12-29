@@ -42,9 +42,10 @@
             var machine;
             var approval;
             var annotation;
+            var roastWeight;
             edit.clicked.connect(function() {
                 var editWindow = createWindow("editBatchDetails");
-                editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation);
+                editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation, roastWeight, unit);
             });
             compare.clicked.connect(function() {
                 var query = new QSqlQuery;
@@ -255,6 +256,7 @@
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
                 output.writeCharacters(query.value(6));
+                roastWeight = query.value(6);
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tr");

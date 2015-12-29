@@ -472,11 +472,22 @@
             }
             var noprofilebutton = findChildObject(this, 'noprofile');
             noprofilebutton.clicked.connect(function() {
+                var proceed = false;
+                if(validateCapacity()) {
+                    proceed = true;
+                } else {
+                    proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                }
+                if(proceed) {
+                    doNoProfile();
+                }
+            });
+            var doNoProfile = function() {
                 batch.windowModified = true;
                 currentBatchInfo = batch;
                 navigationwindow.loggingWindow.raise();
                 navigationwindow.loggingWindow.activateWindow();
-            });
+            }
             var submitbutton = findChildObject(this, 'submit');
             var timefield = findChildObject(this, 'time');
             var notes = findChildObject(this, 'annotation');
@@ -485,6 +496,17 @@
             approval.checked = true;
             var target = findChildObject(this, 'target');
             submitbutton.clicked.connect(function() {
+                var proceed = false;
+                if(validateCapacity()) {
+                    proceed = true;
+                } else {
+                    proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                }
+                if(proceed) {
+                    doSubmit();
+                }
+            });
+            var doSubmit = function() {
                 checkQuery = new QSqlQuery();
                 checkQuery.exec("SELECT 1 FROM machine WHERE id = " + selectedRoasterID);
                 if(!checkQuery.next())
@@ -544,7 +566,7 @@
                 query = query.invalidate();
                 batch.windowModified = false;
                 batch.close();
-            });
+            }
         ]]>
     </program>
 </window>

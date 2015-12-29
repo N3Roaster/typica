@@ -10,6 +10,7 @@
     </layout>
 	<menu name="File">
             <item id="save" shortcut="Ctrl+S">Save…</item>
+            <item id="print" shortcut="Ctrl+P">Print…</item>
 	</menu>
     <program>
         <![CDATA[
@@ -22,6 +23,10 @@
             }
             var unitText = (unit == 0 ? "Kg" : "Lb");
             dataView = findChildObject(this, 'view');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                dataView.print();
+            });
             var fileID;
             var target = findChildObject(this, 'target');
             var compare = findChildObject(this, 'compare');

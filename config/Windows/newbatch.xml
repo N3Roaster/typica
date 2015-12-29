@@ -41,7 +41,7 @@
             </layout>
             <layout type="horizontal">
                 <label>Roasted Weight:</label>
-                <line id="roast" validator="numeric" />
+                <line id="roast" validator="numeric">0.0</line>
                 <label>Weight Loss:</label>
                 <line id="wloss" writable="false" />
                 <button type="check" id="approval" name="Approved" />
@@ -381,7 +381,26 @@
                 roastestimate.text = "";
                 query = query.invalidate();
             });
+            var validateCapacity = function() {
+                if(checkCapacity == "true") {
+                    if(convertToPounds(parseFloat(green.text), unitBox.currentText) > poundsCapacity) {
+                        return false;
+                    }
+                }
+                return true;
+            }
             profilebutton.clicked.connect(function() {
+                var proceed = false;
+                if(validateCapacity()) {
+                    proceed = true;
+                } else {
+                    proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                }
+                if(proceed) {
+                    doLoadProfile();
+                }
+            });
+            var doLoadProfile = function() {
                 batch.windowModified = true;
                 currentBatchInfo = batch;
                 query = new QSqlQuery();
@@ -450,7 +469,7 @@
                 log.updatesEnabled = true;
                 graph.updatesEnabled = true;
                 log.newAnnotation("End", 1, lc);
-            });
+            }
             var noprofilebutton = findChildObject(this, 'noprofile');
             noprofilebutton.clicked.connect(function() {
                 batch.windowModified = true;

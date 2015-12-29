@@ -922,6 +922,43 @@ QScriptValue QWidget_activateWindow(QScriptContext *context,
     return QScriptValue();
 }
 
+@* Scripting QMessageBox.
+
+\noindent Some features require that \pn{} pauses an operation until further
+information can be obtained. An example of this is discretionary validation
+where input is checked and if it seems unlikely but not impossible to be
+correct a dialog should come up asking if that input is correct. If it is not,
+the operation should be cancelled and the person using \pn{} should be allowed
+to correct the information and try again.
+
+For this use case, it is not necessary to fully expose the |QMessageBox| class.
+Instead, it is enough to provide a function that will raise an appropriate
+message and return the selected action.
+
+@<Function prototypes for scripting@>=
+QScriptValue displayWarning(QScriptContext *context, QScriptEngine *engine);
+
+@ This function is exposed to the host environment.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(displayWarning);
+engine->globalObject().setProperty("displayWarning", constructor);
+
+@ The function takes some arguments.
+
+@<Functions for scripting@>=
+QScriptValue displayWarning(QScriptContext *context, QScriptEngine *)
+{
+    QMessageBox::StandardButton selection = QMessageBox::warning(NULL,
+        argument<QString>(0, context),
+        argument<QString>(1, context),
+        QMessageBox::Ok | QMessageBox::Cancel);
+    if(selection == QMessageBox::Ok) {
+        return QScriptValue(true);
+    }
+    return QScriptValue(false);
+}
+
 @* Scripting QMainWindow.
 
 \noindent Rather than directly exposing |QMainWindow| to the scripting engine,

@@ -6050,6 +6050,8 @@ void setQDateTimeEditProperties(QScriptValue value, QScriptEngine *engine)
     value.setProperty("day", engine->newFunction(QDateTimeEdit_day));
     value.setProperty("month", engine->newFunction(QDateTimeEdit_month));
     value.setProperty("year", engine->newFunction(QDateTimeEdit_year));
+    value.setProperty("setToCurrentTime",
+                      engine->newFunction(QDateTimeEdit_setToCurrentTime));
 }
 
 @ Certain operations on a |QDateEdit| are easier with a few convenience
@@ -6094,6 +6096,13 @@ QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *)
     return QScriptValue(self->date().year());
 }
 
+QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *)
+{
+    QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
+    self->setDateTime(QDateTime::currentDateTime());
+    return QScriptValue();
+}
+
 @ A few function prototypes are needed for this.
 
 @<Function prototypes for scripting@>=
@@ -6105,6 +6114,7 @@ QScriptValue QDateTimeEdit_day(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QDateTimeEdit_month(QScriptContext *context,
                                  QScriptEngine *engine);
 QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *engine);
 
 @ In order to get to objects created from the XML description, it is necessary
 to provide a function that can be called to retrieve children of a given widget.

@@ -216,7 +216,13 @@
 						output.writeEmptyElement("td");
 						output.writeStartElement("td");
 						output.writeAttribute("colspan", "8");
-						output.writeTextElement("em", query.value(9));
+                                                var noteArray = query.value(9).split("\n");
+                                                for(var i = 0; i < noteArray.length; i++) {
+                                                    output.writeStartElement("p");
+                                                    output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
+                                                    output.writeCharacters(noteArray[i]);
+                                                    output.writeEndElement();
+                                                }
 						output.writeEndElement();
 						output.writeEndElement();
 					}
@@ -305,7 +311,13 @@
                                         output.writeAttribute("colspan", "4");
                                         if(query.value(14)) {
                                             output.writeTextElement("strong", "Roast Specification Notes");
-                                            output.writeTextElement("p", query.value(14));
+                                            var specArray = query.value(14).split("\n");
+                                            for(var i = 0; i < noteArray.length; i++) {
+                                                output.writeStartElement("p");
+                                                output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
+                                                output.writeCharacters(specArray[i]);
+                                                output.writeEndElement();
+                                            }                                            
                                         }
                                         output.writeEndElement();
 					output.writeEndElement();

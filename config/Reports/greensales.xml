@@ -46,7 +46,6 @@
 				var buffer = new QBuffer;
 				buffer.open(3);
 				var output = new XmlWriter(buffer);
-				var output = new XmlWriter(buffer);
 				output.writeStartDocument("1.0");
 				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
 				output.writeStartElement("html");
@@ -96,6 +95,22 @@
 					output.writeEndElement();
 				}
 				output.writeEndElement();
+                                output.writeStartElement("tfoot");
+                                query.prepare("SELECT (sum(quantity)/:conversion)::numeric(12,3) FROM sale WHERE time < :ed ::date + interval '1 day' AND time >= :sd");
+                                query.bind(":conversion", conversion);
+                                query.bind(":ed", endDate);
+                                query.bind(":sd", startDate);
+                                query.exec();
+                                if(query.next()) {
+                                    output.writeStartElement("tr");
+                                    output.writeEmptyElement("td");
+                                    output.writeEmptyElement("td");
+                                    output.writeEmptyElement("td");
+                                    output.writeTextElement("th", "Total:");
+                                    output.writeTextElement("td", query.value(0));
+                                    output.writeEndElement();
+                                }
+                                output.writeEndElement();
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeEndElement();

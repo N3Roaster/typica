@@ -1049,7 +1049,7 @@
         var compareMenu = findChildObject(this, 'compare');
         compareMenu.triggered.connect(function() {
             QSettings.setValue('cseries', lc+1);
-            var history = createWindow("history");
+            var history = createReport("historyreport.xml");
             history.windowTitle = 'Typica - Roasting Log';
         });
         var printMenu = findChildObject(this, 'print');

@@ -91,7 +91,7 @@
                     conversion = 2.2;
                 }
                 var query = new QSqlQuery();
-                var q = "SELECT to_char(time, 'Dy Mon DD YYYY HH24:MI:SS'), machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity / " + conversion + " AS green, roasted_quantity  / " + conversion + " AS roasted, CASE WHEN unroasted_total_quantity = 0 THEN NULL ELSE ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) END AS weight_loss, duration, annotation FROM roasting_log WHERE machine = :machine AND time = :time";
+                var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity / " + conversion + " AS green, roasted_quantity  / " + conversion + " AS roasted, CASE WHEN unroasted_total_quantity = 0 THEN NULL ELSE ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) END AS weight_loss, duration, annotation FROM roasting_log WHERE machine = :machine AND time = :time";
                 query.prepare(q);
                 query.bind(":machine", key[0]);
                 query.bind(":time", key[1]);
@@ -101,6 +101,7 @@
                     print("Constructing row with " + query.value(i));
                     fakeTable.holding[i] = query.value(i);
                 }
+                fakeTable.holding[0] = key[1];
                 query = query.invalidate();
                 details.loadData(fakeTable, 0);
             });

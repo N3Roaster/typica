@@ -117,7 +117,7 @@
 				output.writeEndElement(); //tbody
 				output.writeStartElement("tfoot");
 				output.writeTextElement("th", "Totals:");
-				output.writeTextElement("td", sacktotal);
+				output.writeTextElement("td", sacktotal.toFixed(2));
 				output.writeTextElement("td", unittotal.toFixed(2));
 				output.writeTextElement("td", costtotal.toFixed(2));
 				output.writeEndElement(); //tfoot

@@ -922,6 +922,53 @@ QScriptValue QWidget_activateWindow(QScriptContext *context,
     return QScriptValue();
 }
 
+@* Scripting QMessageBox.
+
+\noindent Some features require that \pn{} pauses an operation until further
+information can be obtained. An example of this is discretionary validation
+where input is checked and if it seems unlikely but not impossible to be
+correct a dialog should come up asking if that input is correct. If it is not,
+the operation should be cancelled and the person using \pn{} should be allowed
+to correct the information and try again.
+
+For this use case, it is not necessary to fully expose the |QMessageBox| class.
+Instead, it is enough to provide a function that will raise an appropriate
+message and return the selected action.
+
+@<Function prototypes for scripting@>=
+QScriptValue displayWarning(QScriptContext *context, QScriptEngine *engine);
+QScriptValue displayError(QScriptContext *context, QScriptEngine *engine);
+
+@ This function is exposed to the host environment.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(displayWarning);
+engine->globalObject().setProperty("displayWarning", constructor);
+constructor = engine->newFunction(displayError);
+engine->globalObject().setProperty("displayError", constructor);
+
+@ The function takes some arguments.
+
+@<Functions for scripting@>=
+QScriptValue displayWarning(QScriptContext *context, QScriptEngine *)
+{
+    QMessageBox::StandardButton selection = QMessageBox::warning(NULL,
+        argument<QString>(0, context),
+        argument<QString>(1, context),
+        QMessageBox::Ok | QMessageBox::Cancel);
+    if(selection == QMessageBox::Ok) {
+        return QScriptValue(true);
+    }
+    return QScriptValue(false);
+}
+
+QScriptValue displayError(QScriptContext *context, QScriptEngine *)
+{
+    QMessageBox::critical(NULL, argument<QString>(0, context),
+                          argument<QString>(1, context));
+    return QScriptValue();
+}
+
 @* Scripting QMainWindow.
 
 \noindent Rather than directly exposing |QMainWindow| to the scripting engine,
@@ -6033,6 +6080,8 @@ void setQDateTimeEditProperties(QScriptValue value, QScriptEngine *engine)
     value.setProperty("day", engine->newFunction(QDateTimeEdit_day));
     value.setProperty("month", engine->newFunction(QDateTimeEdit_month));
     value.setProperty("year", engine->newFunction(QDateTimeEdit_year));
+    value.setProperty("setToCurrentTime",
+                      engine->newFunction(QDateTimeEdit_setToCurrentTime));
 }
 
 @ Certain operations on a |QDateEdit| are easier with a few convenience
@@ -6077,6 +6126,13 @@ QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *)
     return QScriptValue(self->date().year());
 }
 
+QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *)
+{
+    QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
+    self->setDateTime(QDateTime::currentDateTime());
+    return QScriptValue();
+}
+
 @ A few function prototypes are needed for this.
 
 @<Function prototypes for scripting@>=
@@ -6088,6 +6144,7 @@ QScriptValue QDateTimeEdit_day(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QDateTimeEdit_month(QScriptContext *context,
                                  QScriptEngine *engine);
 QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *engine);
 
 @ In order to get to objects created from the XML description, it is necessary
 to provide a function that can be called to retrieve children of a given widget.
@@ -16105,6 +16162,9 @@ class RoasterConfWidget : public BasicDeviceConfigurationWidget
                                             const QModelIndex &index);
     @[private slots@]:@/
         void updateRoasterId(int id);
+        void updateCapacityCheck(int value);
+        void updateCapacity(const QString &value);
+        void updateCapacityUnit(const QString &value);
 };
 
 @ Aside from the ID number used to identify the roaster in the database we also
@@ -16186,7 +16246,26 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
     idLayout->addWidget(idLabel);
     QSpinBox *id = new QSpinBox;
     idLayout->addWidget(id);
+    idLayout->addStretch();
     layout->addLayout(idLayout);
+    QHBoxLayout *capacityLayout = new QHBoxLayout;
+    QCheckBox *capacityCheckEnabled = new QCheckBox(tr("Maximum batch size:"));
+    QDoubleSpinBox *capacity = new QDoubleSpinBox;
+    capacity->setMinimum(0.0);
+    capacity->setDecimals(3);
+    capacity->setMaximum(999999.999);
+    QComboBox *capacityUnit = new QComboBox;
+    capacityUnit->addItem("g");
+    capacityUnit->addItem("Kg");
+    capacityUnit->addItem("oz");
+    capacityUnit->addItem("Lb");
+    capacityUnit->setCurrentIndex(3);
+    capacityLayout->addWidget(capacityCheckEnabled);
+    capacityLayout->addWidget(capacity);
+    capacityLayout->addWidget(capacityUnit);
+    capacityLayout->addStretch();
+    layout->addLayout(capacityLayout);
+    layout->addStretch();
     @<Get device configuration data for current node@>@;
     for(int i = 0; i < configData.size(); i++)
     {
@@ -16194,11 +16273,25 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
         if(node.attribute("name") == "databaseid")
         {
             id->setValue(node.attribute("value").toInt());
-            break;
+        }
+        else if(node.attribute("name") == "checkcapacity")
+        {
+            capacityCheckEnabled->setChecked(node.attribute("value") == "true");
+        }
+        else if(node.attribute("name") == "capacity")
+        {
+            capacity->setValue(node.attribute("value").toDouble());
+        }
+        else if(node.attribute("name") == "capacityunit")
+        {
+            capacityUnit->setCurrentIndex(capacityUnit->findText(node.attribute("value")));
         }
     }
     updateRoasterId(id->value());
     connect(id, SIGNAL(valueChanged(int)), this, SLOT(updateRoasterId(int)));
+    connect(capacityCheckEnabled, SIGNAL(stateChanged(int)), this, SLOT(updateCapacityCheck(int)));
+    connect(capacity, SIGNAL(valueChanged(QString)), this, SLOT(updateCapacity(QString)));
+    connect(capacityUnit, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateCapacityUnit(QString)));
     setLayout(layout);
 }
 
@@ -16215,7 +16308,7 @@ QDomElement referenceElement =
 QDomNodeList configData = referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
-@ We need to propagate changes to the ID number field to the device
+@ We need to propagate changes to the configuration fields to the device
 configuration document. The |updateAttribute()| method in the base class
 makes this trivial.
 
@@ -16223,6 +16316,21 @@ makes this trivial.
 void RoasterConfWidget::updateRoasterId(int id)
 {
     updateAttribute("databaseid", QString("%1").arg(id));
+}
+
+void RoasterConfWidget::updateCapacityCheck(int value)
+{
+    updateAttribute("checkcapacity", value == Qt::Checked ? "true" : "false");
+}
+
+void RoasterConfWidget::updateCapacity(const QString &value)
+{
+    updateAttribute("capacity", value);
+}
+
+void RoasterConfWidget::updateCapacityUnit(const QString &value)
+{
+    updateAttribute("capacityunit", value);
 }
 
 @ Finally we must register the configuration widget so that it can be

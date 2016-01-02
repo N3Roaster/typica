@@ -48,771 +48,789 @@
 		<item id="unshift">Reset Translation</item>
 	</menu>
     <program>
-		<![CDATA[
-		var window = this;
-		var targetOffset = 0;
-		var gtrans = 0;
-		var targetDetector = new ThresholdDetector;
-		window.targetcolumnname = "";
-		var currentDetector = new ThresholdDetector;
-		var translationChannel = -1;
-		targetDetector.timeForValue.connect(function(value) {
-			targetOffset = value;
-		});
-		var epoch = new QTime;
-		epoch = epoch.currentTime;
-		var translationCurrentColumn = -1;
-		var configModel = new DeviceTreeModel;
-		var rootIndex = configModel.index(roasterlist.currentIndex, 0);
-		var roasterIndex = roasterlist.currentIndex;
-		var channels = new Array();
-		var annotationButtons = new Array();
-                var rangetimers = new Array();
-		var nidevices = new Array();
-		var dataqsdkdevices = new Array();
-		var jsdevices = new Array();
-		var pdevices = new Array();
-		var temperatureDisplays = new Array();
-		var columnNames = new Array();
-		var modbusdevices = new Array();
-		var rateCalculators = new Array();
-		var rateadapters = new Array();
-		var rateoffsets = new Array();
-		var ratezeros = new Array();
-		var channelType = new Array();
-		window.scales = new Array();
-		var channelVisibility = new Array();
-		var indicatorPanel = findChildObject(this, 'indicators');
-		var annotationPanel = findChildObject(this, 'controlpanel');
-		var log = findChildObject(this, 'log');
-		var tabControls = new Array();
-		var start = findChildObject(this, 'startbutton');
-		var stop = findChildObject(this, 'stopbutton');
-		stop.enabled = false;
-		tabControls.push(start);
-		tabControls.push(stop);
-		var nsparam = findChildObject(this, 'setSample');
-		nsparam.enabled = false;
-		var graph = findChildObject(this, 'graph');
-		var hasTranslated = false;
-		var externtrans = undefined;
-		window.translateLoadedSeries = function(translation) {
-			var lc = Number(QSettings.value("liveColumn"));
-			for(var i = 1; i < lc - 1; i++)
-			{
-				graph.setSeriesTranslation(i, translation);
-			}
-		};
-		window.translateCurrentSeries = function(translation) {
-			var lc = Number(QSettings.value("liveColumn"));
-			for(var i = 0; i < columnNames.length; i++)
-			{
-				graph.setSeriesTranslation(lc + i, translation);
-			}
-		};
-		var selectedRoasterName = configModel.data(rootIndex, 0);
-		var machineReference = configModel.referenceElement(configModel.data(rootIndex, 32));
-		var selectedRoasterID = machineReference.databaseid;
-		if(configModel.hasChildren(rootIndex)) {
-			for(var i = 0; i < configModel.rowCount(rootIndex); i++) {
-				var driverIndex = configModel.index(i, 0, rootIndex);
-				var driverReference = configModel.referenceElement(configModel.data(driverIndex, 32));
-				if(driverReference.driver == "nidaqmxbase" || driverReference.driver == "nidaqmx") {
-					if(configModel.hasChildren(driverIndex)) {
-						for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
-							var deviceIndex = configModel.index(j, 0, driverIndex);
-							var deviceReference = configModel.referenceElement(configModel.data(deviceIndex, 32));
-							if(deviceReference.driver == "nidaqmxbase9211series" || deviceReference.driver == "nidaqmx9211series") {
-								var device = new DAQ(deviceReference.deviceID, driverReference.driver);
-								nidevices.push(device);
-								var DAQChannels = 0;
-								if(configModel.hasChildren(deviceIndex)) {
-									for(var k = 0; k < configModel.rowCount(deviceIndex); k++) {
-										var channelIndex = configModel.index(k, 0, deviceIndex);
-										var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
-										if(channelReference.driver == "ni9211seriestc")	{
-											var channel;
-											if(channelReference.type == "J") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeJ);
-											}
-											else if(channelReference.type == "K") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeK);
-											}
-											else if(channelReference.type == "T") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeT);
-											}
-											else if(channelReference.type == "B") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeB);
-											}
-											else if(channelReference.type == "E") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeE);
-											}
-											else if(channelReference.type == "N") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeN);
-											}
-											else if(channelReference.type == "R") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeR);
-											}
-											else if(channelReference.type == "S") {
-												channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeS);
-											}
-											channels.push(channel);
-											channelType.push("T");
-											columnNames.push(channelReference.columnname);
-											DAQChannels++;
-											if(channelReference.hidden == "true") {
-												channelVisibility.push(false);
-											} else {
-												channelVisibility.push(true);
-												var indicator = new TemperatureDisplay;
-												temperatureDisplays.push(indicator);
-												var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
-												channel.newData.connect(indicator.setValue);
-												indicatorPanel.addWidget(decorator);
-											}
+    <![CDATA[
+        var window = this;
+        var targetOffset = 0;
+        var gtrans = 0;
+        var targetDetector = new ThresholdDetector;
+        window.targetcolumnname = "";
+        var currentDetector = new ThresholdDetector;
+        var translationChannel = -1;
+        targetDetector.timeForValue.connect(function(value) {
+            targetOffset = value;
+        });
+        var epoch = new QTime;
+        epoch = epoch.currentTime;
+        var translationCurrentColumn = -1;
+        var configModel = new DeviceTreeModel;
+        var rootIndex = configModel.index(roasterlist.currentIndex, 0);
+        var roasterIndex = roasterlist.currentIndex;
+        var channels = new Array();
+        var annotationButtons = new Array();
+        var rangetimers = new Array();
+	var nidevices = new Array();
+	var dataqsdkdevices = new Array();
+	var jsdevices = new Array();
+	var pdevices = new Array();
+	var temperatureDisplays = new Array();
+	var columnNames = new Array();
+	var modbusdevices = new Array();
+	var rateCalculators = new Array();
+	var rateadapters = new Array();
+	var rateoffsets = new Array();
+	var ratezeros = new Array();
+	var channelType = new Array();
+	window.scales = new Array();
+	var channelVisibility = new Array();
+	var indicatorPanel = findChildObject(this, 'indicators');
+	var annotationPanel = findChildObject(this, 'controlpanel');
+	var log = findChildObject(this, 'log');
+	var tabControls = new Array();
+	var start = findChildObject(this, 'startbutton');
+	var stop = findChildObject(this, 'stopbutton');
+	stop.enabled = false;
+	tabControls.push(start);
+	tabControls.push(stop);
+	var nsparam = findChildObject(this, 'setSample');
+	nsparam.enabled = false;
+	var graph = findChildObject(this, 'graph');
+	var hasTranslated = false;
+	var externtrans = undefined;
+	window.translateLoadedSeries = function(translation) {
+            var lc = Number(QSettings.value("liveColumn"));
+            for(var i = 1; i < lc - 1; i++)
+            {
+                graph.setSeriesTranslation(i, translation);
+            }
+	};
+	window.translateCurrentSeries = function(translation) {
+            var lc = Number(QSettings.value("liveColumn"));
+            for(var i = 0; i < columnNames.length; i++)
+            {
+                graph.setSeriesTranslation(lc + i, translation);
+            }
+	};
+	var selectedRoasterName = configModel.data(rootIndex, 0);
+	var machineReference = configModel.referenceElement(configModel.data(rootIndex, 32));
+	var selectedRoasterID = machineReference.databaseid;
+        var checkCapacity = machineReference.checkcapacity;
+        var maxCapacity = machineReference.capacity;
+        var capacityUnit = machineReference.capacityunit;
+        var poundsCapacity;
+        var convertToPounds = function(w, u) {
+            switch(u) {
+                case "g":
+                    return w * 0.0022;
+                case "oz":
+                    return w * 0.0625;
+                case "Kg":
+                    return w * 2.2;
+            }
+            return w;
+        };
+        if(checkCapacity == "true") {
+            poundsCapacity = convertToPounds(maxCapacity, capacityUnit);
+        }
+	if(configModel.hasChildren(rootIndex)) {
+		for(var i = 0; i < configModel.rowCount(rootIndex); i++) {
+			var driverIndex = configModel.index(i, 0, rootIndex);
+			var driverReference = configModel.referenceElement(configModel.data(driverIndex, 32));
+			if(driverReference.driver == "nidaqmxbase" || driverReference.driver == "nidaqmx") {
+				if(configModel.hasChildren(driverIndex)) {
+					for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
+						var deviceIndex = configModel.index(j, 0, driverIndex);
+						var deviceReference = configModel.referenceElement(configModel.data(deviceIndex, 32));
+						if(deviceReference.driver == "nidaqmxbase9211series" || deviceReference.driver == "nidaqmx9211series") {
+							var device = new DAQ(deviceReference.deviceID, driverReference.driver);
+							nidevices.push(device);
+							var DAQChannels = 0;
+							if(configModel.hasChildren(deviceIndex)) {
+								for(var k = 0; k < configModel.rowCount(deviceIndex); k++) {
+									var channelIndex = configModel.index(k, 0, deviceIndex);
+									var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
+									if(channelReference.driver == "ni9211seriestc")	{
+										var channel;
+										if(channelReference.type == "J") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeJ);
+										}
+										else if(channelReference.type == "K") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeK);
+										}
+										else if(channelReference.type == "T") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeT);
+										}
+										else if(channelReference.type == "B") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeB);
+										}
+										else if(channelReference.type == "E") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeE);
+										}
+										else if(channelReference.type == "N") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeN);
+										}
+										else if(channelReference.type == "R") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeR);
+										}
+										else if(channelReference.type == "S") {
+											channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeS);
+										}
+										channels.push(channel);
+										channelType.push("T");
+										columnNames.push(channelReference.columnname);
+										DAQChannels++;
+										if(channelReference.hidden == "true") {
+											channelVisibility.push(false);
+										} else {
+											channelVisibility.push(true);
+											var indicator = new TemperatureDisplay;
+											temperatureDisplays.push(indicator);
+											var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
+											channel.newData.connect(indicator.setValue);
+											indicatorPanel.addWidget(decorator);
 										}
 									}
-									switch(DAQChannels) {
-										case 1:
-											device.setClockRate(4);
-											break;
-										case 2:
-											device.setClockRate(2);
-											break;
-										case 3:
-											device.setClockRate(1.5);
-											break;
-										case 4:
-											device.setClockRate(1);
-											break;
-									}
-									device.start();
 								}
-							}
-							else if(deviceReference.driver == "nidaqmxtc01")
-							{
-								var device = new DAQ(deviceReference.deviceID, "nidaqmx");
-								var channel;
-								if(deviceReference.type == "J")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeJ);
-								}
-								else if(deviceReference.type == "K")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeK);
-								}
-								else if(deviceReference.type == "T")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeT);
-								}
-								else if(deviceReference.type == "B")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeB);
-								}
-								else if(deviceReference.type == "E")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeE);
-								}
-								else if(deviceReference.type == "N")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeN);
-								}
-								else if(deviceReference.type == "R")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeR);
-								}
-								else if(deviceReference.type == "S")
-								{
-									channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeS);
-								}
-								channels.push(channel);
-								channelType.push("T");
-								columnNames.push(deviceReference.columnname);
-								if(deviceReference.hidden == "true") {
-									channelVisibility.push(false);
-								} else {
-									channelVisibility.push(true);
-									var indicator = new TemperatureDisplay;
-									temperatureDisplays.push(indicator);
-									var decorator = new WidgetDecorator(indicator, configModel.data(deviceIndex, 0), 2);
-									channel.newData.connect(indicator.setValue);
-									indicatorPanel.addWidget(decorator);
+								switch(DAQChannels) {
+									case 1:
+										device.setClockRate(4);
+										break;
+									case 2:
+										device.setClockRate(2);
+										break;
+									case 3:
+										device.setClockRate(1.5);
+										break;
+									case 4:
+										device.setClockRate(1);
+										break;
 								}
 								device.start();
-								nidevices.push(device);
 							}
 						}
-					}
-				}
-				else if(driverReference.driver == "dataqsdk") {
-					var device;
-					if(driverReference.autoSelect == "true") {
-						device = new DataqSdkDevice(driverReference.deviceNumber);
-					}
-					else {
-						device = new DataqSdkDevice(driverReference.port);
-					}
-					var sampleRate = 6;
-					if(configModel.hasChildren(driverIndex)) {
-						for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
-							var channelIndex = configModel.index(j, 0, driverIndex);
-							var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
-							var indicator = new TemperatureDisplay;
-							var unit;
-							if(channelReference.type == "Temperature") {
-								unit = Units.Fahrenheit;
-								channelType.push("T");
-								temperatureDisplays.push(indicator);
+						else if(deviceReference.driver == "nidaqmxtc01")
+						{
+							var device = new DAQ(deviceReference.deviceID, "nidaqmx");
+							var channel;
+							if(deviceReference.type == "J")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeJ);
 							}
-							else {
-								unit = Units.Unitless;
-								indicator.setDisplayUnits(Units.Unitless);
-								channelType.push("C");
-								indicator.digitCount = 6;
+							else if(deviceReference.type == "K")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeK);
 							}
-							var channel = device.newChannel(unit);
-							var calibrator = new LinearCalibrator;
-							calibrator.measuredLower = channelReference.calibrationMeasuredLower;
-							calibrator.measuredUpper = channelReference.calibrationMeasuredUpper;
-							calibrator.mappedLower = channelReference.calibrationMappedLower;
-							calibrator.mappedUpper = channelReference.calibrationMappedUpper;
-							calibrator.sensitivity = channelReference.calibrationSensitivity;
-							if(channelReference.calibrationClosedInterval == 'true') {
-								calibrator.closedRange = true;
+							else if(deviceReference.type == "T")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeT);
 							}
-							// device.setSmoothingEnabled(j) = channelReference.smoothing;
-							channel.newData.connect(calibrator.newMeasurement)
-							channels.push(calibrator);
-							columnNames.push(channelReference.column);
-							if(channelReference.hidden == "true") {
+							else if(deviceReference.type == "B")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeB);
+							}
+							else if(deviceReference.type == "E")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeE);
+							}
+							else if(deviceReference.type == "N")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeN);
+							}
+							else if(deviceReference.type == "R")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeR);
+							}
+							else if(deviceReference.type == "S")
+							{
+								channel = device.newChannel(DAQ.Fahrenheit, DAQ.TypeS);
+							}
+							channels.push(channel);
+							channelType.push("T");
+							columnNames.push(deviceReference.columnname);
+							if(deviceReference.hidden == "true") {
 								channelVisibility.push(false);
 							} else {
 								channelVisibility.push(true);
-								var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
-								calibrator.newData.connect(indicator.setValue);
+								var indicator = new TemperatureDisplay;
+								temperatureDisplays.push(indicator);
+								var decorator = new WidgetDecorator(indicator, configModel.data(deviceIndex, 0), 2);
+								channel.newData.connect(indicator.setValue);
 								indicatorPanel.addWidget(decorator);
 							}
+							device.start();
+							nidevices.push(device);
 						}
-						sampleRate /= configModel.rowCount(driverIndex);
 					}
-					device.setClockRate(sampleRate);
-					device.start();
-					dataqsdkdevices.push(device);
 				}
-				else if(driverReference.driver == "modbusrtu")
+			}
+			else if(driverReference.driver == "dataqsdk") {
+				var device;
+				if(driverReference.autoSelect == "true") {
+					device = new DataqSdkDevice(driverReference.deviceNumber);
+				}
+				else {
+					device = new DataqSdkDevice(driverReference.port);
+				}
+				var sampleRate = 6;
+				if(configModel.hasChildren(driverIndex)) {
+					for(var j = 0; j < configModel.rowCount(driverIndex); j++) {
+						var channelIndex = configModel.index(j, 0, driverIndex);
+						var channelReference = configModel.referenceElement(configModel.data(channelIndex, 32));
+						var indicator = new TemperatureDisplay;
+						var unit;
+						if(channelReference.type == "Temperature") {
+							unit = Units.Fahrenheit;
+							channelType.push("T");
+							temperatureDisplays.push(indicator);
+						}
+						else {
+							unit = Units.Unitless;
+							indicator.setDisplayUnits(Units.Unitless);
+							channelType.push("C");
+							indicator.digitCount = 6;
+						}
+						var channel = device.newChannel(unit);
+						var calibrator = new LinearCalibrator;
+						calibrator.measuredLower = channelReference.calibrationMeasuredLower;
+						calibrator.measuredUpper = channelReference.calibrationMeasuredUpper;
+						calibrator.mappedLower = channelReference.calibrationMappedLower;
+						calibrator.mappedUpper = channelReference.calibrationMappedUpper;
+						calibrator.sensitivity = channelReference.calibrationSensitivity;
+						if(channelReference.calibrationClosedInterval == 'true') {
+							calibrator.closedRange = true;
+						}
+						// device.setSmoothingEnabled(j) = channelReference.smoothing;
+						channel.newData.connect(calibrator.newMeasurement)
+						channels.push(calibrator);
+						columnNames.push(channelReference.column);
+						if(channelReference.hidden == "true") {
+							channelVisibility.push(false);
+						} else {
+							channelVisibility.push(true);
+							var decorator = new WidgetDecorator(indicator, configModel.data(channelIndex, 0), 2);
+							calibrator.newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
+					}
+					sampleRate /= configModel.rowCount(driverIndex);
+				}
+				device.setClockRate(sampleRate);
+				device.start();
+				dataqsdkdevices.push(device);
+			}
+			else if(driverReference.driver == "modbusrtu")
+			{
+				var device = new ModbusRTUDevice(configModel, driverIndex);
+				modbusdevices.push(device);
+				var pvchannel = device.pVChannel();
+				channels.push(pvchannel);
+				channelType.push("T");
+				columnNames.push(driverReference.pvcolname);
+				if(driverReference.pvhidden == "true") {
+					channelVisibility.push(false);
+				} else {
+					channelVisibility.push(true);
+					var indicator = new TemperatureDisplay;
+					temperatureDisplays.push(indicator);
+					var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " PV", 2);
+					pvchannel.newData.connect(indicator.setValue);
+					indicatorPanel.addWidget(decorator);
+				}
+				if(driverReference.sVEnabled == "true")
 				{
-					var device = new ModbusRTUDevice(configModel, driverIndex);
-					modbusdevices.push(device);
-					var pvchannel = device.pVChannel();
-					channels.push(pvchannel);
-					channelType.push("T");
-					columnNames.push(driverReference.pvcolname);
-					if(driverReference.pvhidden == "true") {
+					var svchannel = device.sVChannel();
+					channels.push(svchannel);
+					channelType.push("C");
+					columnNames.push(driverReference.svcolname);
+					if(driverReference.svhidden == "true") {
 						channelVisibility.push(false);
 					} else {
 						channelVisibility.push(true);
 						var indicator = new TemperatureDisplay;
 						temperatureDisplays.push(indicator);
-						var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " PV", 2);
-						pvchannel.newData.connect(indicator.setValue);
+						var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " SV", 2);
+						svchannel.newData.connect(indicator.setValue);
 						indicatorPanel.addWidget(decorator);
 					}
-					if(driverReference.sVEnabled == "true")
-					{
-						var svchannel = device.sVChannel();
-						channels.push(svchannel);
-						channelType.push("C");
-						columnNames.push(driverReference.svcolname);
-						if(driverReference.svhidden == "true") {
-							channelVisibility.push(false);
-						} else {
-							channelVisibility.push(true);
-							var indicator = new TemperatureDisplay;
-							temperatureDisplays.push(indicator);
-							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0) + " SV", 2);
-							svchannel.newData.connect(indicator.setValue);
-							indicatorPanel.addWidget(decorator);
-						}
-					}
-					if(driverReference.sVWritable == "true")
-					{
-						var outputControl = new AnnotationSpinBox;
-						device.SVLowerChanged.connect(function(min) {
-							outputControl.minimum = min;
-						});
-						outputControl.minimum = device.SVLower();
-						device.SVUpperChanged.connect(function(max) {
-							outputControl.maximum = max;
-						});
-						outputControl.maximum = device.SVUpper();
-						device.SVDecimalChanged.connect(function(prec) {
-							outputControl.decimals = prec;
-						});
-						outputControl.decimals = device.decimals();
-						outputControl.editingFinished.connect(function() {
-							device.outputSV(outputControl.value);
-						});
-						var layout = new QBoxLayout;
-						var label = new QLabel("Change SV");
-						layout.addWidget(label, 0, 2);
-						layout.addWidget(outputControl, 0, 1);
-						annotationPanel.addLayout(layout);
-						tabControls.push(outputControl);
-					}
 				}
-				else if(driverReference.driver == "unsupporteddevice")
+				if(driverReference.sVWritable == "true")
 				{
-					var device = createDevice(driverIndex);
-					for(var j = 0; j < device.channelCount(); j++) {
-						channels.push(device.getChannel(j));
-						columnNames.push(device.channelColumnName(j));
-						var unit = device.expectedChannelUnit(j);
-						if(unit == Units.Fahrenheit) {
-							channelType.push("T");
-						} else {
-							channelType.push("C");
-						}
-						if(device.isChannelHidden(j)) {
-							channelVisibility.push(false);
-						} else {
-							channelVisibility.push(true);
-							var indicator = new TemperatureDisplay;
-							if(unit == Units.Unitless) {
-								indicator.setDisplayUnits(Units.Unitless);
-								indicator.digitCount = 6;
-							}
-							temperatureDisplays.push(indicator);
-							var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
-							device.getChannel(j).newData.connect(indicator.setValue);
-							indicatorPanel.addWidget(decorator);
-						}
-					}
-					device.start();
-					jsdevices.push(device);
+					var outputControl = new AnnotationSpinBox;
+					device.SVLowerChanged.connect(function(min) {
+						outputControl.minimum = min;
+					});
+					outputControl.minimum = device.SVLower();
+					device.SVUpperChanged.connect(function(max) {
+						outputControl.maximum = max;
+					});
+					outputControl.maximum = device.SVUpper();
+					device.SVDecimalChanged.connect(function(prec) {
+						outputControl.decimals = prec;
+					});
+					outputControl.decimals = device.decimals();
+					outputControl.editingFinished.connect(function() {
+						device.outputSV(outputControl.value);
+					});
+					var layout = new QBoxLayout;
+					var label = new QLabel("Change SV");
+					layout.addWidget(label, 0, 2);
+					layout.addWidget(outputControl, 0, 1);
+					annotationPanel.addLayout(layout);
+					tabControls.push(outputControl);
 				}
-				else if(driverReference.driver == "phidgets1048")
-				{
-					var device = new PhidgetsTemperatureSensor(driverIndex);
-					for(var j = 0; j < device.channelCount(); j++) {
-						channels.push(device.getChannel(j));
-						columnNames.push(device.channelColumnName(j));
+			}
+			else if(driverReference.driver == "unsupporteddevice")
+			{
+				var device = createDevice(driverIndex);
+				for(var j = 0; j < device.channelCount(); j++) {
+					channels.push(device.getChannel(j));
+					columnNames.push(device.channelColumnName(j));
+					var unit = device.expectedChannelUnit(j);
+					if(unit == Units.Fahrenheit) {
 						channelType.push("T");
-						if(device.isChannelHidden(j)) {
-							channelVisibility.push(false);
-						} else {
-							channelVisibility.push(true);
+					} else {
+						channelType.push("C");
+					}
+					if(device.isChannelHidden(j)) {
+						channelVisibility.push(false);
+					} else {
+						channelVisibility.push(true);
+						var indicator = new TemperatureDisplay;
+						if(unit == Units.Unitless) {
+							indicator.setDisplayUnits(Units.Unitless);
+							indicator.digitCount = 6;
+						}
+						temperatureDisplays.push(indicator);
+						var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+						device.getChannel(j).newData.connect(indicator.setValue);
+						indicatorPanel.addWidget(decorator);
+					}
+				}
+				device.start();
+				jsdevices.push(device);
+			}
+			else if(driverReference.driver == "phidgets1048")
+			{
+				var device = new PhidgetsTemperatureSensor(driverIndex);
+				for(var j = 0; j < device.channelCount(); j++) {
+					channels.push(device.getChannel(j));
+					columnNames.push(device.channelColumnName(j));
+					channelType.push("T");
+					if(device.isChannelHidden(j)) {
+						channelVisibility.push(false);
+					} else {
+						channelVisibility.push(true);
+						var indicator = new TemperatureDisplay;
+						temperatureDisplays.push(indicator);
+						var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+						device.getChannel(j).newData.connect(indicator.setValue);
+						indicatorPanel.addWidget(decorator);
+					}
+				}
+				device.start();
+				pdevices.push(device);
+			}
+			else if(driverReference.driver == "annotationbutton")
+			{
+				var button = new AnnotationButton(driverReference.buttontext);
+				button.setAnnotation(driverReference.annotationtext);
+				annotationButtons.push(button);
+				annotationPanel.addWidget(button);
+				tabControls.push(button);
+			}
+			else if(driverReference.driver == "valueannotation")
+			{
+				var checker = new ValueAnnotation;
+				var valuesSetting = driverReference.measuredValues;
+				var notesSetting = driverReference.annotations;
+				var valuesList = valuesSetting.slice(2, valuesSetting.length-2).split(",");
+				var notesList = notesSetting.slice(2, notesSetting.length-2).split(",");
+				if(valuesList.length > 1 && notesList.length == valuesList.length) {
+					for(var j = 0; j < valuesList.length; j++) {
+						checker.setAnnotation(Number(valuesList[j]), notesList[j]);
+					}
+				}
+				if(driverReference.emitOnStart == "true") {
+					start.clicked.connect(checker.annotate);
+				}
+				var colname = driverReference.source;
+				for(var j = 0; j < columnNames.length; j++) {
+					if(columnNames[j] == colname) {
+						channels[j].newData.connect(checker.newMeasurement);
+						break;
+					}
+				}
+				annotationButtons.push(checker);
+			}
+			else if(driverReference.driver == "reconfigurablebutton")
+			{
+				var button = new AnnotationButton(driverReference.buttontext);
+				button.setAnnotation(driverReference.annotationtext);
+				annotationButtons.push(button);
+				annotationPanel.addWidget(button);
+				tabControls.push(button);
+				nsparam.enabled = true;
+				nsparam.triggered.connect(function() {
+					var setParam = createWindow("sampleParameters");
+					setParam.windowTitle = "Typica - Set Sample Parameters";
+					setParam.button = button;
+				});
+			}
+			else if(driverReference.driver == "annotationspinbox")
+			{
+				var layout = new QBoxLayout;
+				var label = new QLabel(driverReference.label);
+				layout.addWidget(label, 0, 2);
+				var spinbox = new AnnotationSpinBox;
+				spinbox.setPretext(driverReference.pretext);
+				spinbox.setPosttext(driverReference.posttext);
+				spinbox.minimum = driverReference.minimum;
+				spinbox.maximum = driverReference.maximum;
+				spinbox.decimals = driverReference.precision;
+				layout.addWidget(spinbox, 0, 1);
+				annotationPanel.addLayout(layout);
+				annotationButtons.push(spinbox);
+				tabControls.push(spinbox);
+			}
+			else if(driverReference.driver == "freeannotation")
+			{
+				var layout = new QBoxLayout;
+				var label = new QLabel(driverReference.labeltext);
+				var control = new QLineEdit;
+				layout.addWidget(label, 0, 2);
+				layout.addWidget(control, 0, 1);
+				annotationPanel.addLayout(layout);
+				tabControls.push(control);
+				control.returnPressed.connect(function() {
+					for(var i = window.firstTempColumn; i < window.annotationColumn; i++) {
+						log.newAnnotation(control.text, i, window.annotationColumn);
+					}
+				});
+			}
+			else if(driverReference.driver == "linearspline")
+			{
+				var colname = driverReference.source;
+				for(var j = 0; j < columnNames.length; j++)
+				{
+					if(columnNames[j] == colname)
+					{
+						var calibrator = new LinearSplineInterpolator;
+						var sv = driverReference.sourcevalues;
+						var dv = driverReference.destinationvalues;
+						var sourcevalues = sv.slice(2, sv.length-2).split(",");
+						var destvalues = dv.slice(2, dv.length-2).split(",");
+						if(sourcevalues.length > 1 && destvalues.length == sourcevalues.length)
+						{
+							for(var k = 0; k < sourcevalues.length; k++)
+							{
+								calibrator.add_pair(Number(sourcevalues[k]),Number(destvalues[k]));
+							}
 							var indicator = new TemperatureDisplay;
 							temperatureDisplays.push(indicator);
-							var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
-							device.getChannel(j).newData.connect(indicator.setValue);
-							indicatorPanel.addWidget(decorator);
-						}
-					}
-					device.start();
-					pdevices.push(device);
-				}
-				else if(driverReference.driver == "annotationbutton")
-				{
-					var button = new AnnotationButton(driverReference.buttontext);
-					button.setAnnotation(driverReference.annotationtext);
-					annotationButtons.push(button);
-					annotationPanel.addWidget(button);
-					tabControls.push(button);
-				}
-				else if(driverReference.driver == "valueannotation")
-				{
-					var checker = new ValueAnnotation;
-					var valuesSetting = driverReference.measuredValues;
-					var notesSetting = driverReference.annotations;
-					var valuesList = valuesSetting.slice(2, valuesSetting.length-2).split(",");
-					var notesList = notesSetting.slice(2, notesSetting.length-2).split(",");
-					if(valuesList.length > 1 && notesList.length == valuesList.length) {
-						for(var j = 0; j < valuesList.length; j++) {
-							checker.setAnnotation(Number(valuesList[j]), notesList[j]);
-						}
-					}
-					if(driverReference.emitOnStart == "true") {
-						start.clicked.connect(checker.annotate);
-					}
-					var colname = driverReference.source;
-					for(var j = 0; j < columnNames.length; j++) {
-						if(columnNames[j] == colname) {
-							channels[j].newData.connect(checker.newMeasurement);
-							break;
-						}
-					}
-					annotationButtons.push(checker);
-				}
-				else if(driverReference.driver == "reconfigurablebutton")
-				{
-					var button = new AnnotationButton(driverReference.buttontext);
-					button.setAnnotation(driverReference.annotationtext);
-					annotationButtons.push(button);
-					annotationPanel.addWidget(button);
-					tabControls.push(button);
-					nsparam.enabled = true;
-					nsparam.triggered.connect(function() {
-						var setParam = createWindow("sampleParameters");
-						setParam.windowTitle = "Typica - Set Sample Parameters";
-						setParam.button = button;
-					});
-				}
-				else if(driverReference.driver == "annotationspinbox")
-				{
-					var layout = new QBoxLayout;
-					var label = new QLabel(driverReference.label);
-					layout.addWidget(label, 0, 2);
-					var spinbox = new AnnotationSpinBox;
-					spinbox.setPretext(driverReference.pretext);
-					spinbox.setPosttext(driverReference.posttext);
-					spinbox.minimum = driverReference.minimum;
-					spinbox.maximum = driverReference.maximum;
-					spinbox.decimals = driverReference.precision;
-					layout.addWidget(spinbox, 0, 1);
-					annotationPanel.addLayout(layout);
-					annotationButtons.push(spinbox);
-					tabControls.push(spinbox);
-				}
-				else if(driverReference.driver == "freeannotation")
-				{
-					var layout = new QBoxLayout;
-					var label = new QLabel(driverReference.labeltext);
-					var control = new QLineEdit;
-					layout.addWidget(label, 0, 2);
-					layout.addWidget(control, 0, 1);
-					annotationPanel.addLayout(layout);
-					tabControls.push(control);
-					control.returnPressed.connect(function() {
-						for(var i = window.firstTempColumn; i < window.annotationColumn; i++) {
-							log.newAnnotation(control.text, i, window.annotationColumn);
-						}
-					});
-				}
-				else if(driverReference.driver == "linearspline")
-				{
-					var colname = driverReference.source;
-					for(var j = 0; j < columnNames.length; j++)
-					{
-						if(columnNames[j] == colname)
-						{
-							var calibrator = new LinearSplineInterpolator;
-							var sv = driverReference.sourcevalues;
-							var dv = driverReference.destinationvalues;
-							var sourcevalues = sv.slice(2, sv.length-2).split(",");
-							var destvalues = dv.slice(2, dv.length-2).split(",");
-							if(sourcevalues.length > 1 && destvalues.length == sourcevalues.length)
-							{
-								for(var k = 0; k < sourcevalues.length; k++)
-								{
-									calibrator.add_pair(Number(sourcevalues[k]),Number(destvalues[k]));
-								}
-								var indicator = new TemperatureDisplay;
-								temperatureDisplays.push(indicator);
-								var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
-								channels[j].newData.connect(calibrator.newMeasurement);
-								calibrator.newData.connect(indicator.setValue);
-								channels.push(calibrator);
-								// Channel hiding is not yet configurable for this.
-								// I'm not sure if there's any need to allow this
-								// to be hidden at present.
-								channelVisibility.push(true);
-								channelType.push(channelType[j]);
-								columnNames.push(driverReference.destination);
-								indicatorPanel.addWidget(decorator);
-							}
-							break;
-						}
-					}
-				}
-				else if(driverReference.driver == "translation")
-				{
-					var colname = driverReference.column;
-					window.targetcolumnname = colname;
-					for(var j = 0; j < columnNames.length; j++)
-					{
-						if(columnNames[j] == colname)
-						{
-							translationChannel = j;
-							var indicator = new TemperatureDisplay;
-							indicator.digitCount = 4;
-							externtrans = indicator;
-							indicator.display(0);
 							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
+							channels[j].newData.connect(calibrator.newMeasurement);
+							calibrator.newData.connect(indicator.setValue);
+							channels.push(calibrator);
+							// Channel hiding is not yet configurable for this.
+							// I'm not sure if there's any need to allow this
+							// to be hidden at present.
+							channelVisibility.push(true);
+							channelType.push(channelType[j]);
+							columnNames.push(driverReference.destination);
 							indicatorPanel.addWidget(decorator);
-							currentDetector.timeForValue.connect(function(value) {
-								if(!hasTranslated)
+						}
+						break;
+					}
+				}
+			}
+			else if(driverReference.driver == "translation")
+			{
+				var colname = driverReference.column;
+				window.targetcolumnname = colname;
+				for(var j = 0; j < columnNames.length; j++)
+				{
+					if(columnNames[j] == colname)
+					{
+						translationChannel = j;
+						var indicator = new TemperatureDisplay;
+						indicator.digitCount = 4;
+						externtrans = indicator;
+						indicator.display(0);
+						var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
+						indicatorPanel.addWidget(decorator);
+						currentDetector.timeForValue.connect(function(value) {
+							if(!hasTranslated)
+							{
+								var currentOffset = value;
+								if(targetOffset != 0)
 								{
-									var currentOffset = value;
-									if(targetOffset != 0)
+									var translation = currentOffset - targetOffset;
+									externtrans.display(translation);
+									gtrans = translation;
+									if(translation > 0)
 									{
-										var translation = currentOffset - targetOffset;
-										externtrans.display(translation);
-										gtrans = translation;
-										if(translation > 0)
-										{
-											window.translateLoadedSeries(translation);
-										}
-										else
-										{
-											window.translateCurrentSeries(-translation);
-										}
+										window.translateLoadedSeries(translation);
+									}
+									else
+									{
+										window.translateCurrentSeries(-translation);
 									}
 								}
-								hasTranslated = true;
-							});
-							var resetTranslation = findChildObject(this, 'unshift');
-							resetTranslation.triggered.connect(function() {
-								if(gtrans > 0) {
-									window.translateLoadedSeries(-gtrans);
-								}
-								else {
-									window.translateCurrentSeries(gtrans);
-								}
-								gtrans = 0;
-								indicator.display(0);
-							});
-						}
-					}
-					targetDetector.setThreshold(driverReference.FValue);
-					currentDetector.setThreshold(driverReference.FValue);
-				}
-				else if(driverReference.driver == "rate")
-				{
-					var primaryColumn = driverReference.column;
-					for(var j = 0; j < columnNames.length; j++)
-					{
-						if(columnNames[j] == primaryColumn)
-						{
-							var rate = new RateOfChange(driverReference.cache, driverReference.scale);
-							channels[j].newData.connect(rate.newMeasurement);
-							var indicator = new TemperatureDisplay;
-							indicator.setRelativeMode(true);
+							}
+							hasTranslated = true;
+						});
+						var resetTranslation = findChildObject(this, 'unshift');
+						resetTranslation.triggered.connect(function() {
+							if(gtrans > 0) {
+								window.translateLoadedSeries(-gtrans);
+							}
+							else {
+								window.translateCurrentSeries(gtrans);
+							}
+							gtrans = 0;
 							indicator.display(0);
-							indicator.digitCount = 9;
-							var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
-							indicatorPanel.addWidget(decorator);
-							rate.newData.connect(indicator.setValue);
-							temperatureDisplays.push(indicator);
-							channels.push(rate);
-							// This cannot at present be configured to be
-							// hidden.
-							channelVisibility.push(true);
-							channelType.push("T");
-							columnNames.push(configModel.data(driverIndex, 0));
-						}
+						});
 					}
 				}
-				else if(driverReference.driver == "scale")
+				targetDetector.setThreshold(driverReference.FValue);
+				currentDetector.setThreshold(driverReference.FValue);
+			}
+			else if(driverReference.driver == "rate")
+			{
+				var primaryColumn = driverReference.column;
+				for(var j = 0; j < columnNames.length; j++)
 				{
-					var scale = new SerialScale(driverReference.port);
-					scale.setDataBits(8);
-					scale.setBaudRate(driverReference.baudrate);
-					scale.setParity(driverReference.parity);
-					scale.setStopBits(driverReference.stopbits);
-					scale.setFlowControl(driverReference.flowcontrol);
-					scale.open(3);
-					window.scales.push(scale);
+					if(columnNames[j] == primaryColumn)
+					{
+						var rate = new RateOfChange(driverReference.cache, driverReference.scale);
+						channels[j].newData.connect(rate.newMeasurement);
+						var indicator = new TemperatureDisplay;
+						indicator.setRelativeMode(true);
+						indicator.display(0);
+						indicator.digitCount = 9;
+						var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
+						indicatorPanel.addWidget(decorator);
+						rate.newData.connect(indicator.setValue);
+						temperatureDisplays.push(indicator);
+						channels.push(rate);
+						// This cannot at present be configured to be
+						// hidden.
+						channelVisibility.push(true);
+						channelType.push("T");
+						columnNames.push(configModel.data(driverIndex, 0));
+					}
 				}
-                                else if(driverReference.driver == "coolingtimer")
-                                {
-                                    var coolingTimer = new TimerDisplay();
-                                    coolingTimer.setDisplayFormat("mm:ss");
-                                    var decorator = new WidgetDecorator(coolingTimer, configModel.data(driverIndex, 0), 2);
-                                    indicatorPanel.addWidget(decorator);
-                                    coolingTimer.setTimerMode(1);
-                                    coolingTimer.setAutoReset(true);
-                                    var timeValue = new QTime();
-                                    timeValue = timeValue.fromString(driverReference.reset, "mm:ss");
-                                    coolingTimer.setResetValue(timeValue);
-                                    stop.clicked.connect(coolingTimer.startTimer);
-                                }
-                                else if(driverReference.driver == "rangetimer")
-                                {
-                                    rangetimers.push(new TimerDisplay());
-                                    var rangeTimer = rangetimers[rangetimers.length - 1];
-                                    rangeTimer.setDisplayFormat("mm:ss");
-                                    var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
-                                    indicatorPanel.addWidget(decorator);
-                                    stop.clicked.connect(rangeTimer.stopTimer);
-                                    start.clicked.connect(rangeTimer.reset);
-                                    if(driverReference.starttrigger == "batch")
-                                    {
-                                        start.clicked.connect(rangeTimer.startTimer);
-                                    }
-                                    else if(driverReference.starttrigger == "manual")
-                                    {
-                                        var startButton = new AnnotationButton(driverReference.startbuttontext);
-                                        startButton.clicked.connect(rangeTimer.startTimer);
-                                        annotationPanel.addWidget(startButton);
-                                        tabControls.push(button);
-                                    }
-                                    else if(driverReference.starttrigger == "value")
-                                    {
-                                        var startTrigger = new ThresholdDetector();
-                                        startTrigger.setThreshold(Number(driverReference.startvalue));
-                                        var scope = new Object;
-                                        scope.invoke = function() {
-                                            if(timer.running && !(arguments.callee.rangeTimer.running))
-                                            {
-                                                arguments.callee.rangeTimer.startTimer();
-                                            }
-                                        };
-                                        scope.invoke.rangeTimer = rangeTimer;
-                                        startTrigger.timeForValue.connect(scope.invoke);
-                                        for(var j = 0; j < columnNames.length; j++)
-                                        {
-                                            if(columnNames[j] == driverReference.startcolumnname)
-                                            {
-                                                channels[j].newData.connect(startTrigger.newMeasurement);
-                                            }
-                                        }
-                                    }
-                                    stop.clicked.connect(rangeTimer.stopTimer)
-                                    if(driverReference.stoptrigger == "manual")
-                                    {
-                                        var stopButton = new AnnotationButton(driverReference.stopbuttontext);
-                                        stopButton.clicked.connect(rangeTimer.stopTimer);
-                                        annotationPanel.addWidget(stopButton);
-                                        tabControls.push(button);
-                                    }
-                                    else if(driverReference.stoptrigger == "value")
-                                    {
-                                        var stopTrigger = new ThresholdDetector();
-                                        stopTrigger.setThreshold(Number(driverReference.stopvalue));
-                                        stopTrigger.timeForValue.connect(rangeTimer.stopTimer);
-                                        for(var j = 0; j < columnNames.length; j++)
-                                        {
-                                            if(columnNames[j] == driverReference.stopcolumnname)
-                                            {
-                                                channels[j].newData.connect(stopTrigger.newMeasurement);
-                                            }
-                                        }
-                                    }
-                                    rangeTimer.reportingName = configModel.data(driverIndex, 0);
-                                    rangeTimer.report = function() {
-                                        return "" + this.reportingName + ": " + this.value;
-                                    };
-                                }
-                                else if(driverReference.driver = "multirangetimer")
-                                {
-                                    var rangeTimer = new TimerDisplay();
-                                    rangeTimer.setDisplayFormat("mm:ss");
-                                    var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
-                                    indicatorPanel.addWidget(decorator);
-                                    var rangenames = driverReference.rangenames;
-                                    var endtemps = driverReference.endtemps;
-                                    var names = rangenames.slice(2, rangenames.length - 2).split(", ");
-                                    rangeTimer.rangeNames = new Array();
-                                    for(var j = 0; j < names.length; j++)
-                                    {
-                                        var name = names[j].slice(1, names[j].length - 1);
-                                        rangeTimer.rangeNames.push(name);
-                                    }
-                                    rangeTimer.rangeEnds = new Array();
-                                    var ends = endtemps.slice(2, endtemps.length - 2).split(", ");
-                                    for(var j = 0; j < ends.length; j++)
-                                    {
-                                        rangeTimer.rangeEnds.push(Number(ends[j]));
-                                    }
-                                    rangeTimer.currentRange = 0;
-                                    rangeTimer.results = new Array();
-                                    rangeTimer.trigger = new ThresholdDetector();
-                                    for(var j = 0; j < columnNames.length; j++)
-                                    {
-                                        if(columnNames[j] == driverReference.trigger)
-                                        {
-                                            channels[j].newData.connect(rangeTimer.trigger.newMeasurement);
-                                        }
-                                    }
-                                    rangeTimer.startRanges = function() {
-                                        arguments.callee.timer.currentRange = 0;
-                                        arguments.callee.timer.results.splice(0, arguments.callee.timer.results.length);
-                                        arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[0]);
-                                    };
-                                    rangeTimer.startRanges.timer = rangeTimer;
-                                    start.clicked.connect(rangeTimer.startTimer);
-                                    start.clicked.connect(rangeTimer.startRanges);
-                                    rangeTimer.transition = function() {
-                                        arguments.callee.timer.stopTimer();
-                                        arguments.callee.timer.results.push(arguments.callee.timer.value);
-                                        arguments.callee.timer.reset();
-                                        arguments.callee.timer.startTimer();
-                                        arguments.callee.timer.currentRange++;
-                                        if(arguments.callee.timer.currentRange <= arguments.callee.timer.rangeEnds.length)
-                                        {
-                                            arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[arguments.callee.timer.currentRange]);
-                                        }
-                                    };
-                                    rangeTimer.transition.timer = rangeTimer;
-                                    rangeTimer.trigger.timeForValue.connect(rangeTimer.transition);
-                                    stop.clicked.connect(rangeTimer.transition);
-                                    stop.clicked.connect(rangeTimer.stopTimer);
-                                    rangeTimer.report = function() {
-                                        var retval = "";
-                                        for(var j = 0; j < arguments.callee.timer.results.length; j++)
-                                        {
-                                            retval += arguments.callee.timer.rangeNames[j] + ": " + arguments.callee.timer.results[j] + "\n";
-                                        }
-                                        return retval;
-                                    };
-                                    rangeTimer.report.timer = rangeTimer;
-                                    rangetimers.push(rangeTimer);
-                                }
 			}
+			else if(driverReference.driver == "scale")
+			{
+				var scale = new SerialScale(driverReference.port);
+				scale.setDataBits(8);
+				scale.setBaudRate(driverReference.baudrate);
+				scale.setParity(driverReference.parity);
+				scale.setStopBits(driverReference.stopbits);
+				scale.setFlowControl(driverReference.flowcontrol);
+				scale.open(3);
+				window.scales.push(scale);
+			}
+                        else if(driverReference.driver == "coolingtimer")
+                        {
+                            var coolingTimer = new TimerDisplay();
+                            coolingTimer.setDisplayFormat("mm:ss");
+                            var decorator = new WidgetDecorator(coolingTimer, configModel.data(driverIndex, 0), 2);
+                            indicatorPanel.addWidget(decorator);
+                            coolingTimer.setTimerMode(1);
+                            coolingTimer.setAutoReset(true);
+                            var timeValue = new QTime();
+                            timeValue = timeValue.fromString(driverReference.reset, "mm:ss");
+                            coolingTimer.setResetValue(timeValue);
+                            stop.clicked.connect(coolingTimer.startTimer);
+                        }
+                        else if(driverReference.driver == "rangetimer")
+                        {
+                            rangetimers.push(new TimerDisplay());
+                            var rangeTimer = rangetimers[rangetimers.length - 1];
+                            rangeTimer.setDisplayFormat("mm:ss");
+                            var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
+                            indicatorPanel.addWidget(decorator);
+                            stop.clicked.connect(rangeTimer.stopTimer);
+                            start.clicked.connect(rangeTimer.reset);
+                            if(driverReference.starttrigger == "batch")
+                            {
+                                start.clicked.connect(rangeTimer.startTimer);
+                            }
+                            else if(driverReference.starttrigger == "manual")
+                            {
+                                var startButton = new AnnotationButton(driverReference.startbuttontext);
+                                startButton.clicked.connect(rangeTimer.startTimer);
+                                annotationPanel.addWidget(startButton);
+                                tabControls.push(button);
+                            }
+                            else if(driverReference.starttrigger == "value")
+                            {
+                                var startTrigger = new ThresholdDetector();
+                                startTrigger.setThreshold(Number(driverReference.startvalue));
+                                var scope = new Object;
+                                scope.invoke = function() {
+                                    if(timer.running && !(arguments.callee.rangeTimer.running))
+                                    {
+                                        arguments.callee.rangeTimer.startTimer();
+                                    }
+                                };
+                                scope.invoke.rangeTimer = rangeTimer;
+                                startTrigger.timeForValue.connect(scope.invoke);
+                                for(var j = 0; j < columnNames.length; j++)
+                                {
+                                    if(columnNames[j] == driverReference.startcolumnname)
+                                    {
+                                        channels[j].newData.connect(startTrigger.newMeasurement);
+                                    }
+                                }
+                            }
+                            stop.clicked.connect(rangeTimer.stopTimer)
+                            if(driverReference.stoptrigger == "manual")
+                            {
+                                var stopButton = new AnnotationButton(driverReference.stopbuttontext);
+                                stopButton.clicked.connect(rangeTimer.stopTimer);
+                                annotationPanel.addWidget(stopButton);
+                                tabControls.push(button);
+                            }
+                            else if(driverReference.stoptrigger == "value")
+                            {
+                                var stopTrigger = new ThresholdDetector();
+                                stopTrigger.setThreshold(Number(driverReference.stopvalue));
+                                stopTrigger.timeForValue.connect(rangeTimer.stopTimer);
+                                for(var j = 0; j < columnNames.length; j++)
+                                {
+                                    if(columnNames[j] == driverReference.stopcolumnname)
+                                    {
+                                        channels[j].newData.connect(stopTrigger.newMeasurement);
+                                    }
+                                }
+                            }
+                            rangeTimer.reportingName = configModel.data(driverIndex, 0);
+                            rangeTimer.report = function() {
+                                return "" + this.reportingName + ": " + this.value;
+                            };
+                        }
+                        else if(driverReference.driver = "multirangetimer")
+                        {
+                            var rangeTimer = new TimerDisplay();
+                            rangeTimer.setDisplayFormat("mm:ss");
+                            var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
+                            indicatorPanel.addWidget(decorator);
+                            var rangenames = driverReference.rangenames;
+                            var endtemps = driverReference.endtemps;
+                            var names = rangenames.slice(2, rangenames.length - 2).split(", ");
+                            rangeTimer.rangeNames = new Array();
+                            for(var j = 0; j < names.length; j++)
+                            {
+                                var name = names[j].slice(1, names[j].length - 1);
+                                rangeTimer.rangeNames.push(name);
+                            }
+                            rangeTimer.rangeEnds = new Array();
+                            var ends = endtemps.slice(2, endtemps.length - 2).split(", ");
+                            for(var j = 0; j < ends.length; j++)
+                            {
+                                rangeTimer.rangeEnds.push(Number(ends[j]));
+                            }
+                            rangeTimer.currentRange = 0;
+                            rangeTimer.results = new Array();
+                            rangeTimer.trigger = new ThresholdDetector();
+                            for(var j = 0; j < columnNames.length; j++)
+                            {
+                                if(columnNames[j] == driverReference.trigger)
+                                {
+                                    channels[j].newData.connect(rangeTimer.trigger.newMeasurement);
+                                }
+                            }
+                            rangeTimer.startRanges = function() {
+                                arguments.callee.timer.currentRange = 0;
+                                arguments.callee.timer.results.splice(0, arguments.callee.timer.results.length);
+                                arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[0]);
+                            };
+                            rangeTimer.startRanges.timer = rangeTimer;
+                            start.clicked.connect(rangeTimer.startTimer);
+                            start.clicked.connect(rangeTimer.startRanges);
+                            rangeTimer.transition = function() {
+                                arguments.callee.timer.stopTimer();
+                                arguments.callee.timer.results.push(arguments.callee.timer.value);
+                                arguments.callee.timer.reset();
+                                arguments.callee.timer.startTimer();
+                                arguments.callee.timer.currentRange++;
+                                if(arguments.callee.timer.currentRange <= arguments.callee.timer.rangeEnds.length)
+                                {
+                                    arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[arguments.callee.timer.currentRange]);
+                                }
+                            };
+                            rangeTimer.transition.timer = rangeTimer;
+                            rangeTimer.trigger.timeForValue.connect(rangeTimer.transition);
+                            stop.clicked.connect(rangeTimer.transition);
+                            stop.clicked.connect(rangeTimer.stopTimer);
+                            rangeTimer.report = function() {
+                                var retval = "";
+                                for(var j = 0; j < arguments.callee.timer.results.length; j++)
+                                {
+                                    retval += arguments.callee.timer.rangeNames[j] + ": " + arguments.callee.timer.results[j] + "\n";
+                                }
+                                return retval;
+                            };
+                            rangeTimer.report.timer = rangeTimer;
+                            rangetimers.push(rangeTimer);
+                        }
 		}
-		for(var i = 1; i < tabControls.length; i++)
+	}
+	for(var i = 1; i < tabControls.length; i++)
+	{
+		setTabOrder(tabControls[i-1], tabControls[i]);
+	}
+	log.setHeaderData(0, "Time");
+	var channelSkip = 0;
+	for(var i = 0; i < columnNames.length; i++) {
+		if(channelVisibility[i]) {
+			log.setHeaderData(i + 1 - channelSkip, columnNames[i]);
+			log.addToCurrentColumnSet(i + 1 - channelSkip);
+		}
+		else {
+			channelSkip++;
+		}
+	}
+	log.setHeaderData(columnNames.length + 1 - channelSkip, "Note");
+	var timer = new TimerDisplay;
+	timer.displayFormat = "mm:ss";
+	timer.autoReset = true;
+	var btdecorator = new WidgetDecorator(timer, "Batch Timer", 2);
+	indicatorPanel.addWidget(btdecorator);
+	var vsplit = findChildObject(this, 'main');
+	var isplit = findChildObject(this, 'indicators');
+	var lsplit = findChildObject(this, 'logsplit');
+	window.aboutToClose.connect(function() {
+		for(var i = 0; i < nidevices.length; i++)
 		{
-			setTabOrder(tabControls[i-1], tabControls[i]);
+			nidevices[i].stop();
+			nidevices[i].deleteLater();
 		}
-		log.setHeaderData(0, "Time");
-		var channelSkip = 0;
-		for(var i = 0; i < columnNames.length; i++) {
-			if(channelVisibility[i]) {
-				log.setHeaderData(i + 1 - channelSkip, columnNames[i]);
-				log.addToCurrentColumnSet(i + 1 - channelSkip);
-			}
-			else {
-				channelSkip++;
-			}
+		for(var i = 0; i < modbusdevices.length; i++)
+		{
+			modbusdevices[i].deleteLater();
 		}
-		log.setHeaderData(columnNames.length + 1 - channelSkip, "Note");
-		var timer = new TimerDisplay;
-		timer.displayFormat = "mm:ss";
-		timer.autoReset = true;
-		var btdecorator = new WidgetDecorator(timer, "Batch Timer", 2);
-		indicatorPanel.addWidget(btdecorator);
-		var vsplit = findChildObject(this, 'main');
-		var isplit = findChildObject(this, 'indicators');
-		var lsplit = findChildObject(this, 'logsplit');
-		window.aboutToClose.connect(function() {
-			for(var i = 0; i < nidevices.length; i++)
-			{
-				nidevices[i].stop();
-				nidevices[i].deleteLater();
-			}
-			for(var i = 0; i < modbusdevices.length; i++)
-			{
-				modbusdevices[i].deleteLater();
-			}
-			for(var i = 0; i < dataqsdkdevices.length; i++)
-			{
-				dataqsdkdevices[i].deleteLater();
-			}
-			for(var i = 0; i < jsdevices.length; i++)
-			{
-				jsdevices[i].stop();
-				jsdevices[i].deleteLater();
-			}
-			for(var i = 0; i < pdevices.length; i++)
-			{
-				pdevices[i].stop();
-				pdevices[i].deleteLater();
-			}
-			delete nidevices;
-			delete modbusdevices;
-			delete dataqsdkdevices;
-			delete jsdevices;
-			delete pdevices;
+		for(var i = 0; i < dataqsdkdevices.length; i++)
+		{
+			dataqsdkdevices[i].deleteLater();
+		}
+		for(var i = 0; i < jsdevices.length; i++)
+		{
+			jsdevices[i].stop();
+			jsdevices[i].deleteLater();
+		}
+		for(var i = 0; i < pdevices.length; i++)
+		{
+			pdevices[i].stop();
+			pdevices[i].deleteLater();
+		}
+		delete nidevices;
+		delete modbusdevices;
+		delete dataqsdkdevices;
+		delete jsdevices;
+		delete pdevices;
             window.saveSizeAndPosition("window");
             vsplit.saveState("script/loggingView/" + roasterIndex + "/mainSplitter");
 			QSettings.setValue("script/loggingView/" + roasterIndex + "/instrumentCount", isplit.count());
@@ -1031,7 +1049,7 @@
         var compareMenu = findChildObject(this, 'compare');
         compareMenu.triggered.connect(function() {
             QSettings.setValue('cseries', lc+1);
-            var history = createWindow("history");
+            var history = createReport("historyreport.xml");
             history.windowTitle = 'Typica - Roasting Log';
         });
         var printMenu = findChildObject(this, 'print');

@@ -72,6 +72,10 @@
             var batchesfield = findChildObject(this, 'batches');
             var hoursfield = findChildObject(this, 'roastingtime');
             var time = new QTime();
+            var nowButton = findChildObject(this, 'now');
+            nowButton.clicked.connect(function() {
+                sincefield.setToCurrentTime();
+            });
             var deleteButton = findChildObject(this, 'delete');
             deleteButton.enabled = false;
             deleteButton.clicked.connect(function() {

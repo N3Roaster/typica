@@ -10,6 +10,7 @@
     </layout>
 	<menu name="File">
             <item id="save" shortcut="Ctrl+S">Save…</item>
+            <item id="print" shortcut="Ctrl+P">Print…</item>
 	</menu>
     <program>
         <![CDATA[
@@ -22,6 +23,10 @@
             }
             var unitText = (unit == 0 ? "Kg" : "Lb");
             dataView = findChildObject(this, 'view');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                dataView.print();
+            });
             var fileID;
             var target = findChildObject(this, 'target');
             var compare = findChildObject(this, 'compare');
@@ -37,9 +42,10 @@
             var machine;
             var approval;
             var annotation;
+            var roastWeight;
             edit.clicked.connect(function() {
                 var editWindow = createWindow("editBatchDetails");
-                editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation);
+                editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation, roastWeight, unit);
             });
             compare.clicked.connect(function() {
                 var query = new QSqlQuery;
@@ -250,6 +256,7 @@
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
                 output.writeCharacters(query.value(6));
+                roastWeight = query.value(6);
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tr");

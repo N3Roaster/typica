@@ -5425,7 +5425,6 @@ void addButtonToLayout(QDomElement element, QStack<QWidget *> *,@|
     QString text =
         QCoreApplication::translate(element.attribute("trcontext").toAscii().data(),
                                     element.attribute("name").toUtf8().data());
-    qDebug() << element.attribute("name").toUtf8().data() << "translated to" << text << "using context" << element.attribute("trcontext").toAscii().data();
     if(element.hasAttribute("type"))
     {
         QString type = element.attribute("type");

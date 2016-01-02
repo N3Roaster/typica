@@ -4339,6 +4339,12 @@ if(!filename.isEmpty())
     QFile file(filename);
     QFileInfo info(filename);
     directory = info.dir();
+    QTranslator *configtr = new QTranslator;
+    if(configtr->load(QString("config.%1").arg(QLocale::system().name()),
+                     QString("%1/Translations").arg(directory.canonicalPath())))
+    {
+        QCoreApplication::installTranslator(configtr);
+    }
     settings.setValue("config", directory.path());
     if(file.open(QIODevice::ReadOnly))
     {
@@ -5419,6 +5425,7 @@ void addButtonToLayout(QDomElement element, QStack<QWidget *> *,@|
     QString text =
         QCoreApplication::translate(element.attribute("trcontext").toAscii().data(),
                                     element.attribute("name").toUtf8().data());
+    qDebug() << element.attribute("name").toUtf8().data() << "translated to" << text << "using context" << element.attribute("trcontext").toAscii().data();
     if(element.hasAttribute("type"))
     {
         QString type = element.attribute("type");
@@ -12606,15 +12613,15 @@ text can be replaced with translated text based on the user'@q'@>s locale. For m
 details, see the Qt Linguist manual.
 
 @<Load translation objects@>=
-QTranslator base;
-if(base.load(QString("qt_%1").arg(QLocale::system().name())))
+QTranslator *base = new QTranslator;
+if(base->load(QString("qt_%1").arg(QLocale::system().name())))
 {
-    installTranslator(&base);
+    installTranslator(base);
 }
-QTranslator app;
-if(app.load(QString("%1_%2").arg("Typica").arg(QLocale::system().name())))
+QTranslator *app = new QTranslator;
+if(app->load(QString("%1_%2").arg("Typica").arg(QLocale::system().name())))
 {
-    installTranslator(&app);
+    installTranslator(app);
 }
 
 @ We also want to be able to access the application instance from within the

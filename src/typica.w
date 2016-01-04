@@ -13915,11 +13915,13 @@ if(file.open(QIODevice::ReadOnly))
     QDomDocument document;
     document.setContent(&file, true);
     QDomElement root = document.documentElement();
+    QString translationContext = root.attribute("id");
     QDomNode titleNode = root.elementsByTagName("reporttitle").at(0);
     if(!titleNode.isNull())
     {
         QDomElement titleElement = titleNode.toElement();
-        QString title = titleElement.text();
+        QString title = QCoreApplication::translate(translationContext.toAscii().data(),
+                                                    titleElement.text().toUtf8().data());
         if(!title.isEmpty())
         {
             QStringList hierarchy = title.split(":->");

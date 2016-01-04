@@ -4149,6 +4149,7 @@ QScriptValue annotationFromRecord(QScriptContext *context,
                                   QScriptEngine *engine);
 QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *engine);
 QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *engine);
+QScriptValue scriptTr(QScriptContext *context, QScriptEngine *engine);
 
 @ These functions are passed to the scripting engine.
 
@@ -4164,6 +4165,7 @@ engine->globalObject().setProperty("setTabOrder",
                                    engine->newFunction(setTabOrder));
 engine->globalObject().setProperty("saveFileFromDatabase",
                                    engine->newFunction(saveFileFromDatabase));
+engine->globalObject().setProperty("TTR", engine->newFunction(scriptTr));
 
 @ These functions are not part of an object. They expect a string specifying
 the path to a file and return a string with either the name of the file without
@@ -4290,6 +4292,16 @@ QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *)
     return QScriptValue();
 }
 
+@ This function is used to allow text that must be placed in scripts to be
+translated into other languages.
+
+@<Functions for scripting@>=
+QScriptValue scriptTr(QScriptContext *context, QScriptEngine *)
+{
+    return QScriptValue(QCoreApplication::translate(
+        argument<QString>(0, context).toAscii().data(),
+        argument<QString>(1, context).toUtf8().data()));
+}
 
 @** Application Configuration.
 

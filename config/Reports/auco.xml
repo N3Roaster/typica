@@ -5,34 +5,34 @@
             <daterange id="dates" initial="23" /><!-- Lifetime -->
             <label>Sort Order:</label>
             <sqldrop id="sort" />
-			<label>Weight Unit:</label>
-			<sqldrop id="unit" />
+            <label>Weight Unit:</label>
+            <sqldrop id="unit" />
             <stretch />
         </layout>
         <webview id="report" />
     </layout>
     <menu name="File">
-        <item id="print" shortcut="Ctrl+P">Print</item>
+        <item id="print" shortcut="Ctrl+P">Print...</item>
     </menu>
     <program>
         <![CDATA[
-            this.windowTitle = "Typica - Average Use and Cost by Origin";
+            this.windowTitle = TTR("useandcostreport", "Typica - Average Use and Cost by Origin");
             var report = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
                 report.print();
             });
             var sortBox = findChildObject(this, 'sort');
-            sortBox.addItem("Origin A-Z");
-            sortBox.addItem("Origin Z-A");
-            sortBox.addItem("Avg. Rate Ascending");
-            sortBox.addItem("Avg. Rate Descending");
-            sortBox.addItem("Avg. Cost Ascending");
-            sortBox.addItem("Avg. Cost Descending");
+            sortBox.addItem(TTR("useandcostreport","Origin A-Z"));
+            sortBox.addItem(TTR("useandcostreport", "Origin Z-A"));
+            sortBox.addItem(TTR("useandcostreport", "Avg. Rate Ascending"));
+            sortBox.addItem(TTR("useandcostreport", "Avg. Rate Descending"));
+            sortBox.addItem(TTR("useandcostreport", "Avg. Cost Ascending"));
+            sortBox.addItem(TTR("useandcostreport", "Avg. Cost Descending"));
             sortBox.currentIndex = QSettings.value("auco_sort", 0);
             var unitBox = findChildObject(this, 'unit');
-            unitBox.addItem("Kg");
-            unitBox.addItem("Lb");
+            unitBox.addItem(TTR("useandcostreport", "Kg"));
+            unitBox.addItem(TTR("useandcostreport", "Lb"));
             unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             unitBox['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/report_unit", unitBox.currentIndex);
@@ -68,17 +68,17 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Recent Use and Cost by Origin");
+                output.writeTextElement("title", TTR("useandcostreport", "Recent Use and Cost by Origin"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Average Use and Cost by Origin " + startDate + " - " + endDate);
+                output.writeTextElement("h1", TTR("useandcostreport", "Average Use and Cost by Origin ") + startDate + " - " + endDate);
                 switch(unitBox.currentIndex)
                 {
                     case 0:
-                        output.writeTextElement("p", "This is a report of average rate of use in kilograms per day and cost of unroasted coffee.");
+                        output.writeTextElement("p", TTR("useandcostreport", "This is a report of average rate of use in kilograms per day and cost of unroasted coffee."));
                             break;
                     case 1:
-                        output.writeTextElement("p", "This is a report of average rate of use in pounds per day and cost of unroasted coffee.");
+                        output.writeTextElement("p", TTR("useandcostreport", "This is a report of average rate of use in pounds per day and cost of unroasted coffee."));
                     break;
                 }
                 output.writeStartElement("table");
@@ -88,19 +88,19 @@
                 output.writeStartElement("tr");
                 output.writeStartElement("th");
                 output.writeAttribute("colspan", "9");
-                output.writeCharacters("Regular Coffees");
+                output.writeCharacters(TTR("useandcostreport", "Regular Coffees"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Origin");
-                output.writeTextElement("th", "Avg. Rate");
-                output.writeTextElement("th", "Avg. Cost");
-                output.writeTextElement("th", "Last Cost");
-                output.writeTextElement("th", "Last Purchase Date");
-                output.writeTextElement("th", "Bag Size (min)");
-                output.writeTextElement("th", "Bag Size (max)");
-                output.writeTextElement("th", "Bag Size (mean)");
-                output.writeTextElement("th", "Purchases");
+                output.writeTextElement("th", TTR("useandcostreport", "Origin"));
+                output.writeTextElement("th", TTR("useandcostreport", "Avg. Rate"));
+                output.writeTextElement("th", TTR("useandcostreport", "Avg. Cost"));
+                output.writeTextElement("th", TTR("useandcostreport", "Last Cost"));
+                output.writeTextElement("th", TTR("useandcostreport", "Last Purchase Date"));
+                output.writeTextElement("th", TTR("useandcostreport", "Bag Size (min)"));
+                output.writeTextElement("th", TTR("useandcostreport", "Bag Size (max)"));
+                output.writeTextElement("th", TTR("useandcostreport", "Bag Size (mean)"));
+                output.writeTextElement("th", TTR("useandcostreport", "Purchases"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
@@ -164,7 +164,7 @@
                 output.writeStartElement("tr");
                 output.writeStartElement("th");
                 output.writeAttribute("colspan", "9");
-                output.writeCharacters("Decaffeinated Coffees");
+                output.writeCharacters(TTR("useandcostreport", "Decaffeinated Coffees"));
                 output.writeEndElement();
                 output.writeEndElement();
                 query.prepare("WITH q AS (SELECT id, origin, rate/:c1 AS rate, (SELECT cost*:c2 FROM purchase WHERE item = id) AS cost, (SELECT min(time) FROM purchase WHERE item = id) AS purchase_time, (SELECT conversion/:c3 FROM lb_bag_conversion WHERE item = id) AS bag_weight FROM coffee_history WHERE id IN (SELECT id FROM decaf_coffees) AND id IN (SELECT item FROM transactions WHERE time >= :startDate AND time < :endDate::date + interval '1 day')) SELECT DISTINCT origin, avg(rate)::numeric(10,2) AS rate, avg(cost)::numeric(10,2) AS cost, (SELECT (cost*:c4)::numeric(10,2) FROM purchase WHERE item = max(q.id)) AS last_cost, max(purchase_time)::date AS last_purchase, min(bag_weight)::numeric(10,2) AS min_weight, max(bag_weight)::numeric(10,2) AS max_weight, avg(bag_weight)::numeric(10,2) AS mean_weight, count(1) AS n FROM q GROUP BY origin ORDER BY " + orderClause);
@@ -229,7 +229,14 @@
                     tableref = "decaf_coffees";
                 }
                 var origin = rowData[Number(url.slice(1, url.length))];
-                var details = '<tr><td /><td colspan="6"><table><tr><th>Id</th><th>Name</th><th>Rate</th><th>Cost</th><th>Inventory</th><th>First Use</th><th>Last Use</th></tr>';
+                var details = '<tr><td /><td colspan="6"><table><tr><th>' +
+                                    TTR("useandcostreport", "Id") + '</th><th>' +
+                                    TTR("useandcostreport", "Name") + '</th><th>' +
+                                    TTR("useandcostreport", "Rate") + '</th><th>' +
+                                    TTR("useandcostreport", "Cost") + '</th><th>' +
+                                    TTR("useandcostreport", "Inventory") + '</th><th>' +
+                                    TTR("useandcostreport", "First Use") + '</th><th>' +
+                                    TTR("useandcostreport", "Last Use") + '</th></tr>';
                 var query = new QSqlQuery();
                 query.prepare("SELECT id, name, (rate/:conversion1)::numeric(12,3), (SELECT (cost*:conversion2)::numeric(12,2) FROM purchase WHERE item = id), (stock/:conversion3)::numeric(12,3), (SELECT min(time)::date FROM use WHERE item = id) AS first_use, (SELECT max(time)::date FROM use WHERE item = id) AS last_use FROM coffee_history WHERE origin = :origin AND id IN (SELECT id FROM " + tableref + ") AND id IN (SELECT item FROM transactions WHERE time >= :startDate AND time < :endDate::date + interval '1 day') ORDER BY first_use DESC");
                 var conversion = 1;

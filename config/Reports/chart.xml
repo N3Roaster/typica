@@ -2,12 +2,12 @@
 	<reporttitle>Production:->Previous Year Production Comparison</reporttitle>
     <layout type="vertical">
         <layout type="horizontal">
-            <label>Batch Type: </label>
+            <label>Batch Type:</label>
             <sqldrop id="batchtype" />
-            <label>Approval: </label>
+            <label>Approval:</label>
             <sqldrop id="approval" />
             <daterange id="dates" initial="19" /><!-- Current Year to Date -->
-            <label>Days to Average</label>
+            <label>Days to Average:</label>
             <line validator="integer" id="days">7</line>
             <label>Weight Unit:</label>
             <sqldrop id="unit" />
@@ -16,11 +16,11 @@
         <webview id="report" />
     </layout>
     <menu name="File">
-        <item id="print" shortcut="Ctrl+P">Print</item>
+        <item id="print" shortcut="Ctrl+P">Print...</item>
     </menu>
     <program>
         <![CDATA[
-            this.windowTitle = "Typica - Previous Year Production Comparison";
+            this.windowTitle = TTR("pytdprodcomp", "Typica - Previous Year Production Comparison");
             var dateSelect = findChildObject(this, 'dates');
             dateSelect.removeIndex(23); // Remove Lifetime range
             var view = findChildObject(this, 'report');
@@ -30,26 +30,26 @@
             });
             var avgField = findChildObject(this, 'days');
             var unitBox = findChildObject(this, 'unit');
-            unitBox.addItem("Kg");
-            unitBox.addItem("Lb");
+            unitBox.addItem(TTR("pytdprodcomp", "Kg"));
+            unitBox.addItem(TTR("pytdprodcomp", "Lb"));
             unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             unitBox['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/report_unit", unitBox.currentIndex);
                 refresh();
             });
             var batchType = findChildObject(this, 'batchtype');
-            batchType.addItem("Any");
-            batchType.addItem("Production Roasts");
-            batchType.addItem("SampleRoasts");
+            batchType.addItem(TTR("pytdprodcomp", "Any"));
+            batchType.addItem(TTR("pytdprodcomp", "Production Roasts"));
+            batchType.addItem(TTR("pytdprodcomp", "Sample Roasts"));
             batchType.currentIndex = QSettings.value("script/batchtypefilter", 1);
             batchType['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/batchtypefilter", batchType.currentIndex);
                 refresh();
             });
             var approval = findChildObject(this, 'approval');
-            approval.addItem("Any");
-            approval.addItem("Approved");
-            approval.addItem("Not Approved");
+            approval.addItem(TTR("pytdprodcomp", "Any"));
+            approval.addItem(TTR("pytdprodcomp", "Approved"));
+            approval.addItem(TTR("pytdprodcomp", "Not Approved"));
             approval.currentIndex = QSettings.value("script/approvalfilter", 1);
             approval['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/approvalfilter", approval.currentIndex);
@@ -68,11 +68,11 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Previous Year Production Comparison");
+                output.writeTextElement("title", TTR("pytdprodcomp", "Previous Year Production Comparison"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Previous Year Production Comparison");
-                output.writeTextElement("p", "This report provides an itemized and overall comparison of roasted coffee production for the dates specified with those dates in the previous year. A chart of this data along with percent change and rolling average of the percent change is also produced.");
+                output.writeTextElement("h1", TTR("pytdprodcomp", "Previous Year Production Comparison"));
+                output.writeTextElement("p", TTR("pytdprodcomp", "This report provides an itemized and overall comparison of roasted coffee production for the dates specified with those dates in the previous year. A chart of this data along with percent change and rolling average of the percent change is also produced."));
                 output.writeStartElement("table");
                 output.writeAttribute("style", "page-break-after:auto;");
                 output.writeAttribute("rules", "groups");
@@ -82,14 +82,14 @@
                 output.writeTextElement("th", "Coffee");
                 switch(unitBox.currentIndex) {
                     case 0:
-                        output.writeTextElement("th", "Previous (Kg)");
-                        output.writeTextElement("th", "Current (Kg)");
-                        output.writeTextElement("th", "Change (Kg)");
+                        output.writeTextElement("th", TTR("pytdprodcomp", "Previous (Kg)"));
+                        output.writeTextElement("th", TTR("pytdprodcomp", "Current (Kg)"));
+                        output.writeTextElement("th", TTR("pytdprodcomp", "Change (Kg)"));
                         break;
                     case 1:
-                        output.writeTextElement("th", "Previous (Lb)");
-                        output.writeTextElement("th", "Current (Lb)");
-                        output.writeTextElement("th", "Change (Lb)");
+                        output.writeTextElement("th", TTR("pytdprodcomp", "Previous (Lb)"));
+                        output.writeTextElement("th", TTR("pytdprodcomp", "Current (Lb)"));
+                        output.writeTextElement("th", TTR("pytdprodcomp", "Change (Lb)"));
                         break;
                 }
                 output.writeEndElement();
@@ -148,7 +148,7 @@
                 }
                 output.writeEndElement();
                 output.writeStartElement("tfoot");
-                output.writeTextElement("th", "Totals");
+                output.writeTextElement("th", TTR("pytdprodcomp", "Totals"));
                 query.exec("SELECT sum(p), sum(c), sum(c-p) FROM comp");
                 query.next();
                 output.writeTextElement("td", (query.value(0) / conversion).toFixed(2));
@@ -424,40 +424,40 @@
                     switch(parts[1])
                     {
                         case '01':
-                            ds = "January ";
+                            ds = TTR("pytdprodcomp", "January ");
                             break;
                         case '02':
-                            ds = "February ";
+                            ds = TTR("pytdprodcomp", "February ");
                             break;
                         case '03':
-                            ds = "March ";
+                            ds = TTR("pytdprodcomp", "March ");
                             break;
                         case '04':
-                            ds = "April ";
+                            ds = TTR("pytdprodcomp", "April ");
                             break;
                         case '05':
-                            ds = "May ";
+                            ds = TTR("pytdprodcomp", "May ");
                             break;
                         case '06':
-                            ds = "June ";
+                            ds = TTR("pytdprodcomp", "June ");
                             break;
                         case '07':
-                            ds = "July ";
+                            ds = TTR("pytdprodcomp", "July ");
                             break;
                         case '08':
-                            ds = "August ";
+                            ds = TTR("pytdprodcomp", "August ");
                             break;
                         case '09':
-                            ds = "September ";
+                            ds = TTR("pytdprodcomp", "September ");
                             break;
                         case '10':
-                            ds = "October ";
+                            ds = TTR("pytdprodcomp", "October ");
                             break;
                         case '11':
-                            ds = "November ";
+                            ds = TTR("pytdprodcomp", "November ");
                             break;
                         case '12':
-                            ds = "December ";
+                            ds = TTR("pytdprodcomp", "December ");
                             break;
                     }
                     ds = ds + Number(parts[2]);
@@ -487,10 +487,10 @@
                 output.writeAttribute("font-size", "12");
                 switch(unitBox.currentIndex) {
                     case 0:
-                        output.writeCharacters("Previous Year Kg");
+                        output.writeCharacters(TTR("pytdprodcomp", "Previous Year Kg"));
                         break;
                     case 1:
-                        output.writeCharacters("Previous Year Lb");
+                        output.writeCharacters(TTR("pytdprodcomp", "Previous Year Lb"));
                         break;
                 }
                 output.writeEndElement();
@@ -507,10 +507,10 @@
                 output.writeAttribute("font-size", "12");
                 switch(unitBox.currentIndex) {
                     case 0:
-                        output.writeCharacters("Current Year Kg");
+                        output.writeCharacters(TTR("pytdprodcomp", "Current Year Kg"));
                         break;
                     case 1:
-                        output.writeCharacters("Current Year Lb");
+                        output.writeCharacters(TTR("pytdprodcomp", "Current Year Lb"));
                         break;
                 }
                 output.writeEndElement();
@@ -525,7 +525,7 @@
                 output.writeAttribute("x", "375");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-                output.writeCharacters("% Change");
+                output.writeCharacters(TTR("pytdprodcomp", "% Change"));
                 output.writeEndElement();
                 output.writeStartElement("rect");
                 output.writeAttribute("fill", "rgb(0,0,255)");
@@ -538,7 +538,7 @@
                 output.writeAttribute("x", "525");
                 output.writeAttribute("y", "120");
                 output.writeAttribute("font-size", "12");
-                output.writeCharacters("Average % Change");
+                output.writeCharacters(TTR("pytdprodcomp", "Average % Change"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();

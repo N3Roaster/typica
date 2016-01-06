@@ -8,19 +8,19 @@
         <webview id="report" />
     </layout>
     <menu name="File">
-        <item id="print" shortcut="Ctrl+P">Print</item>
+        <item id="print" shortcut="Ctrl+P">Print...</item>
     </menu>
     <program>
         <![CDATA[
-            this.windowTitle = "Typica - Cost of Green Coffee for Roasted Coffee";
+            this.windowTitle = TTR("greencost", "Typica - Cost of Green Coffee for Roasted Coffee");
             var report = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
                 report.print();
             });
             var unitBox = findChildObject(this, 'unit');
-            unitBox.addItem("Kg");
-            unitBox.addItem("Lb");
+            unitBox.addItem(TTR("greencost", "Kg");
+            unitBox.addItem(TTR("greencost", "Lb");
             unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             unitBox['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/report_unit", unitBox.currentIndex);
@@ -39,12 +39,14 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Cost of Green Coffee for Roasted Coffee");
+                output.writeTextElement("title", TTR("greencost", "Cost of Green Coffee for Roasted Coffee"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                var unit = (unitBox.currentIndex == 0 ? "Kg" : "Lb");
-                output.writeTextElement("h1", "Cost of Green Coffee for Roasted Coffee");
-                output.writeTextElement("p", "Cost of green coffee per " + unit + " of roasted coffee");
+                var unit = (unitBox.currentIndex == 0 ? TTR("greencost", "Kg") : 
+                    TTR("greencost", "Lb"));
+                output.writeTextElement("h1", TTR("greencost", "Cost of Green Coffee for Roasted Coffee"));
+                output.writeTextElement("p", TTR("greencost", "Cost of green coffee per ") +
+                    unit + TTR("greencost", " of roasted coffee"));
                 var query = new QSqlQuery();
                 query.exec("SELECT item, (SELECT name FROM items WHERE id = item) AS name FROM current_items ORDER BY name");
                 var roastedItems = new Array();
@@ -140,10 +142,10 @@
                 output.writeAttribute("cellpadding", "3px");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Coffee");
-                output.writeTextElement("th", "Minimum Cost");
-                output.writeTextElement("th", "Maximum Cost");
-                output.writeTextElement("th", "Mean Cost");
+                output.writeTextElement("th", TTR("greencost", "Coffee"));
+                output.writeTextElement("th", TTR("greencost", "Minimum Cost"));
+                output.writeTextElement("th", TTR("greencost", "Maximum Cost"));
+                output.writeTextElement("th", TTR("greencost", "Mean Cost"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");

@@ -30,13 +30,13 @@
     <program>
         <![CDATA[
             var types = findChildObject(this, 'transactiontype');
-            types.addItem("inventory");
-            types.addItem("loss");
+            types.addItem(TTR("inventory", "inventory"));
+            types.addItem(TTR("inventory", "loss");
             var optionalDisplay = findChildObject(this, 'optional');
             var units = findChildObject(this, 'units');
-            units.addItem("bag");
-            units.addItem("lb");
-            units.addItem("kg");
+            units.addItem(TTR("inventory", "bag"));
+            units.addItem(TTR("inventory", "Lb"));
+            units.addItem(TTR("inventory", "Kg"));
             var items = findChildObject(this, 'item');
             var status = findChildObject(this, 'current');
             function updateStatus() {
@@ -49,11 +49,12 @@
                 var text = items.currentText;
                 text += " Current inventory: ";
                 text += query.value(0);
-                text += " Lb (";
+                text += TTR("inventory", " Lb (");
                 text += query.value(1);
-                text += " Kg), ";
+                text += TTR("inventory", " Kg), ");
                 text += query.value(2);
-                text += (query.value(2) == "1" ? " bag" : " bags");
+                text += (query.value(2) == "1" ? TTR("inventory", " bag") :
+                    TTR("inventory", " bags"));
                 query = query.invalidate();
                 status.plainText = text;
             }
@@ -70,9 +71,9 @@
                 q += " VALUES ('now', ";
                 q = q + items.currentData();
                 q = q + ", ";
-                if(units.currentText == "lb") {
+                if(units.currentText == TTR("inventory", "Lb")) {
                     q = q + value.text;
-                } else if (units.currentText == "kg") {
+                } else if (units.currentText == TTR("inventory", "Kg")) {
                     q = q + (value.text * 2.2);
                 }
                 else {

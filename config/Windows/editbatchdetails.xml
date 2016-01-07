@@ -40,10 +40,10 @@
                 submit.enabled = true;
                 roastedEdit.text = roastWeight;
                 if(unit == 0) {
-                    unitEdit.text = "Kg";
+                    unitEdit.text = TTR("editBatchDetails", "Kg");
                     conversion = 2.2;
                 } else {
-                    unitEdit.text = "Lb";
+                    unitEdit.text = TTR("editBatchDetails", "Lb";
                 }
             };
             submit.clicked.connect(function() {

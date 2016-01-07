@@ -72,7 +72,7 @@
             var titleField = findChildObject(window, 'title');
             var subTitleField = findChildObject(window, 'subtitle');
             exportButton.clicked.connect(function() {
-                var filename = QFileDialog.getSaveFileName(window, "Export XHTML+SVG As...", QSettings.value("script/lastDir", "") + "/");
+                var filename = QFileDialog.getSaveFileName(window, TTR("exportWindow", "Export XHTML+SVG As..."), QSettings.value("script/lastDir", "") + "/");
                 if(filename != "")
                 {
                     window.log.clearOutputColumns();
@@ -284,11 +284,11 @@ print("Column headers output");
                     output.writeAttribute("transform", "rotate(-90 40,150)");
                     if(log.displayUnits() == 10143)
                     {
-                        output.writeCDATA("Temperature (°C)");
+                        output.writeCDATA(TTR("exportWindow", "Temperature (°C)"));
                     }
                     else
                     {
-                        output.writeCDATA("Temperature (°F)");
+                        output.writeCDATA(TTR("exportWindow", "Temperature (°F)"));
                     }
                     output.writeEndElement();
                     output.writeStartElement("text");
@@ -679,7 +679,7 @@ print("Column headers output");
                     if(lossField.text != "")
                     {
                         output.writeStartElement("p");
-                        output.writeCDATA("Weight loss: ");
+                        output.writeCDATA(TTR("exportWindow", "Weight loss: "));
                         output.writeCDATA(lossField.text);
                         if(tolField.text != "")
                         {
@@ -691,10 +691,10 @@ print("Column headers output");
                         output.writeStartElement("table");
                         output.writeStartElement("tr");
                         output.writeStartElement("th");
-                        output.writeCDATA("Roasted");
+                        output.writeCDATA(TTR("exportWindow", "Roasted"));
                         output.writeEndElement();
                         output.writeStartElement("th");
-                        output.writeCDATA("Green");
+                        output.writeCDATA(TTR("exportWindow", "Green"));
                         output.writeEndElement();
                         output.writeEndElement();
                         var green;

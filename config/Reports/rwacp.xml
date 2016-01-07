@@ -21,26 +21,26 @@
     </menu>
     <program>
         <![CDATA[
-            this.windowTitle = "Typica - Recent Average Coffee Production";
+            this.windowTitle = TTR("productionreport", "Typica - Recent Average Coffee Production");
             var report = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
                 report.print();
             });
             var sortBox = findChildObject(this, 'sort');
-            sortBox.addItem("Roasted Coffee A-Z");
-            sortBox.addItem("Roasted Coffee Z-A");
-            sortBox.addItem("Weekly Use Ascending");
-            sortBox.addItem("Weekly Use Descending");
+            sortBox.addItem(TTR("productionreport", "Roasted Coffee A-Z"));
+            sortBox.addItem(TTR("productionreport", "Roasted Coffee Z-A"));
+            sortBox.addItem(TTR("productionreport", "Weekly Use Ascending"));
+            sortBox.addItem(TTR("productionreport", "Weekly Use Descending"));
             sortBox.currentIndex = QSettings.value("rwacp_sort", 3);
             var unitBox = findChildObject(this, 'unit');
-            unitBox.addItem("Kg");
-            unitBox.addItem("Lb");
+            unitBox.addItem(TTR("productionreport", "Kg"));
+            unitBox.addItem(TTR("productionreport", "Lb"));
             unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             var batchType = findChildObject(this, 'batchtype');
-            batchType.addItem("Any");
-            batchType.addItem("Production Roasts");
-            batchType.addItem("Sample Roasts");
+            batchType.addItem(TTR("productionreport", "Any"));
+            batchType.addItem(TTR("productionreport", "Production Roasts"));
+            batchType.addItem(TTR("productionreport", "Sample Roasts"));
             batchType.currentIndex = QSettings.value("script/racpreport/batchtypefilter", 1);
             batchType['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/racpreport/batchtypefilter",
@@ -74,17 +74,21 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Recent Average Coffee Production");
+                output.writeTextElement("title", TTR("productionreport", "Recent Average Coffee Production"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Recent Average Coffee Production");
+                output.writeTextElement("h1", TTR("productionreport", "Recent Average Coffee Production"));
                 switch(unitBox.currentIndex)
                 {
                     case 0:
-                        output.writeTextElement("p", "This is a report of average coffee production per " + scaleBox.text + " days in kilograms over the past " + daysBox.text + " days.");
+                        output.writeTextElement("p", TTR("productionreport", "This is a report of average coffee production per ") + scaleBox.text + 
+                        TTR("productionreport", " days in kilograms over the past ") + daysBox.text +
+                        TTR("productionreport", " days."));
                         break;
                     case 1:
-                        output.writeTextElement("p", "This is a report of average coffee production per " + scaleBox.text + " days in pounds over the past " + daysBox.text + " days.");
+                        output.writeTextElement("p", TTR("productionreport", "This is a report of average coffee production per ") + scaleBox.text +
+                        TTR("productionreport", " days in pounds over the past ") + daysBox.text +
+                        TTR("productionreport", " days."));
                         break;
                 }
                 output.writeStartElement("table");
@@ -92,8 +96,8 @@
                 output.writeAttribute("cellpadding", "3px");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Roasted Coffee");
-                output.writeTextElement("th", "Weekly Use");
+                output.writeTextElement("th", TTR("productionreport", "Roasted Coffee"));
+                output.writeTextElement("th", TTR("productionreport", "Weekly Use"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
@@ -144,7 +148,7 @@
                 }
                 output.writeEndElement();
                 output.writeStartElement("tfoot")
-                output.writeTextElement("th", "Total");
+                output.writeTextElement("th", TTR("productionreport", "Total:"));
                 query.prepare("SELECT ((sum(roasted_quantity) / :scale) / :conversion)::numeric(18,2) FROM roasting_log WHERE time > current_date - integer '" + daysBox.text + "' AND roasted_quantity > 0 " + batchClause);
                 switch(unitBox.currentIndex)
                 {
@@ -173,10 +177,10 @@
                 QSettings.setValue("rwacp_sort", sortBox.currentIndex);
                 refresh();
             });
-			unitBox['currentIndexChanged(int)'].connect(function() {
-				QSettings.setValue("script/report_unit", unitBox.currentIndex);
-				refresh();
-			});
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/report_unit", unitBox.currentIndex);
+                refresh();
+            });
         ]]>
     </program>
 </window>

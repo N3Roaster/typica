@@ -1,6 +1,6 @@
 <window id="batchWindow">
     <menu name="Batch">
-        <item id="new" shortcut="Ctrl+N">New Batch…</item>
+        <item id="new" shortcut="Ctrl+N">New Batch...</item>
     </menu>
     <layout type="horizontal">
         <layout type="vertical">
@@ -394,7 +394,8 @@
                 if(validateCapacity()) {
                     proceed = true;
                 } else {
-                    proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                    proceed = displayWarning(TTR("batchWindow", "Suspicious Input"),
+                    TTR("batchWindow", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                 }
                 if(proceed) {
                     doLoadProfile();
@@ -468,7 +469,7 @@
                 input.input();
                 log.updatesEnabled = true;
                 graph.updatesEnabled = true;
-                log.newAnnotation("End", 1, lc);
+                log.newAnnotation(TTR("batchWindow", "End"), 1, lc);
             }
             var noprofilebutton = findChildObject(this, 'noprofile');
             noprofilebutton.clicked.connect(function() {
@@ -476,7 +477,8 @@
                 if(validateCapacity()) {
                     proceed = true;
                 } else {
-                    proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                    proceed = displayWarning(TTR("batchWindow", "Suspicious Input"),
+                    TTR("batchWindow", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                 }
                 if(proceed) {
                     doNoProfile();
@@ -514,13 +516,15 @@
                 if(validateCapacity()) {
                     proceed = true;
                 } else {
-                    proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                    proceed = displayWarning(TTR("batchWindow", "Suspicious Input"),
+                    TTR("batchWindow", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                 }
                 if(proceed) {
                     if(checkSubmitEnable()) {
                         doSubmit();
                     } else {
-                        displayError("Incomplete Input", "Some required information is not available. Please check inputs and try again.");
+                        displayError(TTR("batchWindow", "Incomplete Input"),
+                        TTR("batchWindow", "Some required information is not available. Please check inputs and try again."));
                     }
                 }
             });

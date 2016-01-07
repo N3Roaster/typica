@@ -17,7 +17,7 @@
     <program>
         <![CDATA[
             var vendor = findChildObject(this, "vendor");
-            vendor.addItem("Any");
+            vendor.addItem(TTR("invoicereport", "Any"));
             var query = new QSqlQuery();
             query.exec("SELECT DISTINCT vendor FROM invoices");
             while(query.next()) {
@@ -68,20 +68,20 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Invoices");
+                output.writeTextElement("title", TTR("invoicereport", "Invoices"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Invoices " + startDate + " - " + endDate);
+                output.writeTextElement("h1", TTR("invoicereport", "Invoices ") + startDate + " - " + endDate);
                 output.writeStartElement("table");
                 output.writeAttribute("style", "page-break-after: auto; text-align: left");
                 output.writeAttribute("rules", "groups");
                 output.writeAttribute("cellpadding", "3px");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Date");
-                output.writeTextElement("th", "Vendor");
-                output.writeTextElement("th", "Invoice");
-                output.writeTextElement("th", "Cost");
+                output.writeTextElement("th", TTR("invoicereport", "Date"));
+                output.writeTextElement("th", TTR("invoicereport", "Vendor"));
+                output.writeTextElement("th", TTR("invoicereport", "Invoice"));
+                output.writeTextElement("th", TTR("invoicereport", "Cost"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
@@ -140,7 +140,7 @@
                 output.writeStartElement("tr");
                 output.writeEmptyElement("td");
                 output.writeEmptyElement("td");
-                output.writeTextElement("th", "Total:");
+                output.writeTextElement("th", TTR("invoicereport", "Total:"));
                 output.writeTextElement("td", Number(cost_sum).toFixed(2));
                 output.writeEndElement();
                 output.writeEndElement();

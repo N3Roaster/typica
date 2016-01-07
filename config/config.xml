@@ -22,7 +22,6 @@
     <include src="Windows/cuppingsessionsummary.xml" />
     <include src="Windows/cuppingsummary.xml" />
     <include src="Windows/purchase.xml" />
-    <include src="Windows/invoicelist.xml" />
     <include src="Windows/invoiceinfo.xml" />
     <include src="Windows/editinvoice.xml" />
     <include src="Windows/editinvoiceitem.xml" />

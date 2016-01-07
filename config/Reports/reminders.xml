@@ -9,7 +9,7 @@
     <program>
         <![CDATA[
             var window = this;
-            this.windowTitle = "Typica - Reminders";
+            this.windowTitle = TTR("remindersreport", "Typica - Reminders");
             var report = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
@@ -28,11 +28,11 @@
                     if(reminder.condition == "PRODUCTIONWEIGHT")
                     {
                         var convert = 1;
-                        var unittext = " Lb";
+                        var unittext = TTR("remindersreport", " Lb");
                         if(reminder.unit == "KG")
                         {
                             convert = 2.2;
-                            unittext = " Kg";
+                            unittext = TTR("remindersreport", " Kg");
                         }
                         var dq = new QSqlQuery;
                         dq.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE time > :since");
@@ -74,7 +74,7 @@
                         }
                         remain = reminder.value - Number(dq.value(0));
                         reminder.completion = proportion;
-                        reminder.detail = remain + " Days";
+                        reminder.detail = remain + TTR("remindersreport", " Days");
                         dq = dq.invalidate();
                     }
                     else if(reminder.condition == "PRODUCTIONBATCHES")
@@ -96,7 +96,7 @@
                         }
                         remain = reminder.value - Number(dq.value(0));
                         reminder.completion = proportion;
-                        reminder.detail = remain + " Batches";
+                        reminder.detail = remain + TTR("remindersreport", " Batches");
                         dq = dq.invalidate();
                     }
                     else if(reminder.condition == "PRODUCTIONHOURS")
@@ -118,7 +118,7 @@
                         }
                         remain = reminder.value - Number(dq.value(0));
                         reminder.completion = proportion;
-                        reminder.detail = remain.toFixed(1) + " Hours";
+                        reminder.detail = remain.toFixed(1) + TTR("remindersreport", " Hours");
                         dq = dq.invalidate();
                     }
                     e[reminder.dbid] = reminder;
@@ -136,10 +136,10 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Reminders");
+                output.writeTextElement("title", TTR("remindersreport", "Reminders"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Reminders");
+                output.writeTextElement("h1", TTR("remindersreport", "Reminders"));
                 output.writeStartElement("a");
                 output.writeAttribute("href", "typica://script/0");
                 output.writeStartElement("div");
@@ -149,7 +149,7 @@
                 output.writeEndElement();
                 output.writeStartElement("span");
                 output.writeAttribute("class", "title");
-                output.writeCDATA("New Reminder");
+                output.writeCDATA(TTR("remindersreport", "New Reminder"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();

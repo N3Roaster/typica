@@ -19,8 +19,8 @@
                 report.print();
             });
             var unitBox = findChildObject(this, 'unit');
-            unitBox.addItem(TTR("greencost", "Kg");
-            unitBox.addItem(TTR("greencost", "Lb");
+            unitBox.addItem(TTR("greencost", "Kg"));
+            unitBox.addItem(TTR("greencost", "Lb"));
             unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             unitBox['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/report_unit", unitBox.currentIndex);

@@ -10,7 +10,7 @@
         var box = findChildObject(this, 'roasted');
         var win = this;
         button.clicked.connect(function() {
-            var filename = QFileDialog.getOpenFileName(win, 'Open Log…', QSettings.value('script/lastDir', '') + '/');
+            var filename = QFileDialog.getOpenFileName(win, TTR("importTargets", "Open Log..."), QSettings.value('script/lastDir', '') + '/');
             if(filename != '') {
                 QSettings.setValue("script/lastDir", dir(filename));
                 var q = "INSERT INTO files (id, name, type, note, file) VALUES(default, :name, 'profile', NULL, :data) RETURNING id";

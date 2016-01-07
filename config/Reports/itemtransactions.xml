@@ -18,11 +18,11 @@
 	</menu>
 	<program>
 		<![CDATA[
-			this.windowTitle = "Typica - Item Transactions";
+			this.windowTitle = TTR("item_transactions", "Typica - Item Transactions");
 			var itemBox = findChildObject(this, 'item');
 			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
+			unitBox.addItem(TTR("item_transactions", "Kg"));
+			unitBox.addItem(TTR("item_transactions", "Lb"));
 			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
 			unitBox['currentIndexChanged(int)'].connect(function() {
 				QSettings.setValue("script/report_unit", unitBox.currentIndex);
@@ -45,7 +45,7 @@
 				output.writeStartElement("html");
 				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
 				output.writeStartElement("head");
-				output.writeTextElement("title", "Item Transactions");
+				output.writeTextElement("title", TTR("item_transactions", "Item Transactions"));
 				output.writeStartElement("script");
 				var scriptFile = new QFile(QSettings.value("config") + "/Scripts/d3.min.js");
 				scriptFile.open(1);
@@ -64,7 +64,7 @@
 				
 				output.writeEndElement();
 				output.writeStartElement("body");
-				output.writeTextElement("h1", "Item Transactions:");
+				output.writeTextElement("h1", TTR("item_transactions", "Item Transactions:"));
 				output.writeStartElement("table");
 				output.writeStartElement("tr");
 				output.writeStartElement("td");
@@ -77,11 +77,11 @@
 				query.exec();
 				if(query.next()) {
 					output.writeStartElement("td");
-					output.writeTextElement("strong", "Reference: ");
+					output.writeTextElement("strong", TTR("item_transactions", "Reference: "));
 					output.writeTextElement("span", query.value(0));
 					output.writeEndElement(); // td
 					output.writeStartElement("td");
-					output.writeTextElement("strong", "Category: ");
+					output.writeTextElement("strong", TTR("item_transactions", "Category: "));
 					output.writeTextElement("span", query.value(1));
 					output.writeEndElement(); //td
 					output.writeEndElement(); //tr
@@ -91,29 +91,29 @@
 					if(query.next()) {
 						output.writeStartElement("tr");
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Origin: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Origin: "));
 						output.writeTextElement("span", query.value(0));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Region: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Region: "));
 						output.writeTextElement("span", query.value(1));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Producer: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Producer: "));
 						output.writeTextElement("span", query.value(2));
 						output.writeEndElement(); // td
 						output.writeEndElement(); // tr
 						output.writeStartElement("tr");
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Grade: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Grade: "));
 						output.writeTextElement("span", query.value(3));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Milling: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Milling: "));
 						output.writeTextElement("span", query.value(4));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Drying: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Drying: "));
 						output.writeTextElement("span", query.value(5));
 						output.writeEndElement(); // td
 						output.writeEndElement(); // tr
@@ -124,7 +124,7 @@
 							output.writeStartElement("tr");
 							output.writeStartElement("td");
 							output.writeAttribute("colspan", "3");
-							output.writeTextElement("strong", "Decaffeination Method: ");
+							output.writeTextElement("strong", TTR("item_transactions", "Decaffeination Method: "));
 							output.writeTextElement("span", query.value(0));
 							output.writeEndElement(); // td
 							output.writeEndElement(); // tr
@@ -192,11 +192,11 @@
 					query.exec();
 					output.writeStartElement("table");
 					output.writeStartElement("tr");
-					output.writeTextElement("th", "Date");
-					output.writeTextElement("th", "Type");
-					output.writeTextElement("th", "Quantity");
-					output.writeTextElement("th", "Balance");
-					output.writeTextElement("th", "Record");
+					output.writeTextElement("th", TTR("item_transactions", "Date"));
+					output.writeTextElement("th", TTR("item_transactions", "Type"));
+					output.writeTextElement("th", TTR("item_transactions", "Quantity"));
+					output.writeTextElement("th", TTR("item_transactions", "Balance"));
+					output.writeTextElement("th", TTR("item_transactions", "Record"));
 					output.writeEndElement(); // tr
 					var prev_balance = "0";
 					var prev_prec = 0;

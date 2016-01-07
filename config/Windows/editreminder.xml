@@ -50,16 +50,16 @@
                 window.refreshCallback = callback;
             }
             window.currentReminder = new Object();
-            this.windowTitle = "Typica - Edit Reminder";
+            this.windowTitle = TTR("editreminder", "Typica - Edit Reminder");
             var unitBox = findChildObject(this, 'productionunit');
-            unitBox.addItem("Kg");
-            unitBox.addItem("Lb");
+            unitBox.addItem(TTR("editreminder", "Kg"));
+            unitBox.addItem(TTR("editreminder", "Lb"));
             unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             var condition = findChildObject(this, 'condition');
-            condition.addItem("Roasted Coffee Production");
-            condition.addItem("Days");
-            condition.addItem("Batches Roasted");
-            condition.addItem("Hours of Roasting Time");
+            condition.addItem(TTR("editreminder", "Roasted Coffee Production"));
+            condition.addItem(TTR("editreminder", "Days"));
+            condition.addItem(TTR("editreminder", "Batches Roasted"));
+            condition.addItem(TTR("editreminder", "Hours of Roasting Time"));
             var conditionpage = findChildObject(this, 'conditionvars');
             condition['currentIndexChanged(int)'].connect(function(c) {
                 conditionpage.setCurrentIndex(c);

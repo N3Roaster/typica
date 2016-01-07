@@ -18,7 +18,7 @@
     </menu>
     <program>
         <![CDATA[
-            this.windowTitle = "Typica - Production Summary";
+            this.windowTitle = TTR("dailyproduction", "Typica - Production Summary");
             var dateSelect = findChildObject(this, 'dates');
             var dateQuery = new QSqlQuery();
             dateQuery.exec("SELECT time::date FROM roasting_log WHERE time = (SELECT min(time) FROM roasting_log) OR time = (SELECT max(time) FROM roasting_log) ORDER BY time ASC");
@@ -33,26 +33,26 @@
             dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
             dateQuery = dateQuery.invalidate();
             var unitBox = findChildObject(this, 'unit');
-            unitBox.addItem("Kg");
-            unitBox.addItem("Lb");
+            unitBox.addItem(TTR("dailyproduction", "Kg"));
+            unitBox.addItem(TTR("dailyproduction", "Lb"));
             unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             unitBox['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/report_unit", unitBox.currentIndex);
                 refresh();
             });
             var batchType = findChildObject(this, 'batchtype');
-            batchType.addItem("Any");
-            batchType.addItem("Production Roasts");
-            batchType.addItem("SampleRoasts");
+            batchType.addItem(TTR("dailyproduction", "Any"));
+            batchType.addItem(TTR("dailyproduction", "Production Roasts"));
+            batchType.addItem(TTR("dailyproduction", "Sample Roasts"));
             batchType.currentIndex = QSettings.value("script/batchtypefilter", 1);
             batchType['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/batchtypefilter", batchType.currentIndex);
                 refresh();
             });
             var approval = findChildObject(this, 'approval');
-            approval.addItem("Any");
-            approval.addItem("Approved");
-            approval.addItem("Not Approved");
+            approval.addItem(TTR("dailyproduction", "Any"));
+            approval.addItem(TTR("dailyproduction", "Approved"));
+            approval.addItem(TTR("dailyproduction", "Not Approved"));
             approval.currentIndex = QSettings.value("script/approvalfilter", 1);
             approval['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/approvalfilter", approval.currentIndex);
@@ -72,18 +72,18 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Production Summary");
+                output.writeTextElement("title", TTR("dailyproduction", "Production Summary"));
                 output.writeEndElement();
                 output.writeStartElement("body");
                 var dateRange = dateSelect.currentRange();
                 var startDate = dateRange[0];
                 var endDate = dateRange[dateRange.length - 1];
-                output.writeTextElement("h1", "Production Summary: " + startDate + " - " + endDate);
+                output.writeTextElement("h1", TTR("dailyproduction", "Production Summary: ") + startDate + " - " + endDate);
                 var conversion = 1;
-                var unitText = 'Lb';
+                var unitText = TTR("dailyproduction", "Lb");
                 if(unitBox.currentIndex == 0) {
                     conversion = 2.2;
-                    unitText = 'Kg';
+                    unitText = TTR("dailyproduction", "Kg");
                 }
                 var transaction_filter;
                 var approval_filter;
@@ -120,7 +120,9 @@
                 var batchesRoasted = query.value(0);
                 var unroastedSum = query.value(1);
                 var roastedSum = query.value(2);
-                output.writeTextElement("p", "" + roastedSum + " " + unitText + " roasted from " + unroastedSum + " " + unitText + " green in " + batchesRoasted + " batches.");
+                output.writeTextElement("p", "" + roastedSum + " " + unitText + TTR("dailyproduction", " roasted from ") +
+                unroastedSum + " " + unitText + TTR("dailyproduction", " green in ") +
+                batchesRoasted + TTR("dailyproduction", " batches."));
                 query.prepare("SELECT time::date AS date, count(1), sum(unroasted_total_quantity) / :c1, sum(roasted_quantity) / :c2 FROM roasting_log WHERE time >= :sd AND time < :ed ::date + interval '1 day'" + transaction_filter + approval_filter + " GROUP BY date ORDER BY date ASC");
                 query.bind(":c1", conversion);
                 query.bind(":c2", conversion);
@@ -132,10 +134,10 @@
                 output.writeAttribute("cellpadding", "3px");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Date");
-                output.writeTextElement("th", "Batches");
-                output.writeTextElement("th", "Unroasted (" + unitText + ")");
-                output.writeTextElement("th", "Roasted (" + unitText + ")");
+                output.writeTextElement("th", TTR("dailyproduction", "Date"));
+                output.writeTextElement("th", TTR("dailyproduction", "Batches"));
+                output.writeTextElement("th", TTR("dailyproduction", "Unroasted (") + unitText + ")");
+                output.writeTextElement("th", TTR("dailyproduction", "Roasted (") + unitText + ")");
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
@@ -156,7 +158,7 @@
                 output.writeStartElement("tfoot");
                 output.writeStartElement("tr");
                 output.writeStartElement("td");
-                output.writeTextElement("strong", "Totals:");
+                output.writeTextElement("strong", TTR("dailyproduction", "Totals:"));
                 output.writeEndElement();
                 output.writeTextElement("td", batchesRoasted);
                 output.writeTextElement("td", unroastedSum);

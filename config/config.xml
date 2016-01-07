@@ -8,7 +8,6 @@
     <include src="Windows/navigation.xml" />
     <include src="Windows/success.xml" />
     <include src="Windows/roastmanager.xml" />
-    <include src="Windows/history.xml" />
     <include src="Windows/greeninventory.xml" />
     <include src="Windows/newroaster.xml" />
     <include src="Windows/batchdetailsnew.xml" />

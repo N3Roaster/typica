@@ -19,7 +19,7 @@
 			this.setInvoiceID = function(arg) {
 				window.invoiceID = arg;
                                 invoiceID = arg;
-				window.windowTitle = "Typica - Invoice Details " + arg;
+				window.windowTitle = TTR("invoiceinfo", "Typica - Invoice Details ") + arg;
 			};
 			button = findChildObject(this, 'edit');
 			button.clicked.connect(function() {

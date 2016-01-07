@@ -9,8 +9,8 @@
         <webview id="view" />
     </layout>
 	<menu name="File">
-            <item id="save" shortcut="Ctrl+S">Save…</item>
-            <item id="print" shortcut="Ctrl+P">Print…</item>
+            <item id="save" shortcut="Ctrl+S">Save...</item>
+            <item id="print" shortcut="Ctrl+P">Print...</item>
 	</menu>
     <program>
         <![CDATA[
@@ -21,7 +21,8 @@
             {
                 conversion = 2.2;
             }
-            var unitText = (unit == 0 ? "Kg" : "Lb");
+            var unitText = (unit == 0 ? TTR("batchDetails", "Kg") :
+                           TTR("batchDetails", "Lb"));
             dataView = findChildObject(this, 'view');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
@@ -109,7 +110,7 @@
                 Windows.loggingWindow.raise();
                 Windows.loggingWindow.activateWindow();
                 input.input();
-                log.newAnnotation("End", 1, lc);
+                log.newAnnotation(TTR("batchDetails", "End"), 1, lc);
                 query = query.invalidate();
             });
             var viewbutton = findChildObject(this, 'viewprofile');
@@ -159,9 +160,6 @@
                     graph.updatesEnabled = true;
                     log.newAnnotation("End", 1, lc);
                 }
-                else {
-                    print("Query returned no results");
-                }
                 query = query.invalidate();
             });
             window.loadData = function(table, row) {
@@ -175,25 +173,25 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Batch Details");
+                output.writeTextElement("title", TTR("batchDetails", "Batch Details"));
                 output.writeEndElement();
                 output.writeStartElement("body");
                 output.writeStartElement("div");
                 output.writeAttribute("style", "float: left; padding-right: 10px");
                 output.writeStartElement("p");
-                output.writeTextElement("strong", "Roasted Coffee: ");
+                output.writeTextElement("strong", TTR("batchDetails", "Roasted Coffee: "));
                 output.writeTextElement("span", table.data(row, 2));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("div");
                 output.writeAttribute("style", "float: left");
                 output.writeStartElement("p");
-                output.writeTextElement("strong", "Roasted On: ");
+                output.writeTextElement("strong", TTR("batchDetails", "Roasted On: "));
                 batchTime = table.data(row, 0);
                 output.writeTextElement("span", batchTime);
                 output.writeEndElement();
                 output.writeStartElement("p");
-                output.writeTextElement("strong", "Batch Duration: ");
+                output.writeTextElement("strong", TTR("batchDetails", "Batch Duration: "));
                 output.writeTextElement("span", table.data(row, 6));
                 output.writeEndElement();
                 output.writeEndElement();
@@ -203,8 +201,8 @@
                 output.writeStartElement("table");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Green Coffee");
-                output.writeTextElement("th", "Weight (" + unitText + ")");
+                output.writeTextElement("th", TTR("batchDetails", "Green Coffee"));
+                output.writeTextElement("th", TTR("batchDetails", "Weight (") + unitText + ")");
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
@@ -241,7 +239,7 @@
                 output.writeStartElement("tr");
                 output.writeStartElement("td");
                 output.writeAttribute("align", "right");
-                output.writeTextElement("strong", "Green Total:");
+                output.writeTextElement("strong", TTR("batchDetails", "Green Total:"));
                 output.writeEndElement();
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
@@ -251,7 +249,7 @@
                 output.writeStartElement("tr");
                 output.writeStartElement("td");
                 output.writeAttribute("align", "right");
-                output.writeTextElement("strong", "Roasted Weight:");
+                output.writeTextElement("strong", TTR("batchDetails", "Roasted Weight:"));
                 output.writeEndElement();
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
@@ -262,7 +260,7 @@
                 output.writeStartElement("tr");
                 output.writeStartElement("td");
                 output.writeAttribute("align", "right");
-                output.writeTextElement("strong", "Weight Loss:");
+                output.writeTextElement("strong", TTR("batchDetails", "Weight Loss:"));
                 output.writeEndElement();
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
@@ -273,15 +271,15 @@
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("p");
-                output.writeTextElement("strong", "Approved: ");
+                output.writeTextElement("strong", TTR("batchDetails", "Approved: "));
                 output.writeCharacters(approval);
                 output.writeEndElement();
                 output.writeStartElement("p");
-                output.writeTextElement("strong", "Files: ");
+                output.writeTextElement("strong", TTR("batchDetails", "Files: "));
                 output.writeCharacters(query.value(3));
                 output.writeEndElement();
                 output.writeStartElement("p");
-                output.writeTextElement("strong", "Annotations:");
+                output.writeTextElement("strong", TTR("batchDetails", "Annotations:"));
                 var files = sqlToArray(query.value(3));
                 var annotations = annotationFromRecord(files[0]);
                 fileID = files[0];
@@ -293,12 +291,12 @@
                 var result = colQuery.exec();
                 buffer2.close();
                 var seriesHeaders = new Array();
-                seriesHeaders.push("Time");
+                seriesHeaders.push(TTR("batchDetails", "Time"));
                 var records = result.split(";");
                 for(var i = 0; i < records.length - 1; i++) {
                     seriesHeaders.push(records[i].replace(/^\s+|\s+$/g,""));
                 }
-                seriesHeaders.push("Note");
+                seriesHeaders.push(TTR("batchDetails", "Note"));
                 output.writeStartElement("table");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
@@ -352,7 +350,7 @@
             };
             var saveMenu = findChildObject(this, 'save');
             saveMenu.triggered.connect(function() {
-                var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
+                var filename = QFileDialog.getSaveFileName(window, TTR("batchDetails", "Save Log As..."), QSettings.value("script/lastDir", "") + "/");
                 if(filename != "") {
                     saveFileFromDatabase(fileID, filename);
                 }

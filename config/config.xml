@@ -45,7 +45,7 @@
             var badapt;
             var azero;
             var bzero;
-            navwindow.windowTitle = "Typica - Choose Your Path";
+            navwindow.windowTitle = TTR("config", "Typica - Choose Your Path");
         ]]>
     </program>
 </application>

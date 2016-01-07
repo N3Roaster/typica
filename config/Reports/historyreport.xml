@@ -20,7 +20,7 @@
     </menu>
     <program>
         <![CDATA[
-            this.setWindowTitle("Typica - Batch Log");
+            this.setWindowTitle(TTR("batchreport", "Typica - Batch Log"));
             var dateSelect = findChildObject(this, 'dates');
             var dateQuery = new QSqlQuery();
             dateQuery.exec("SELECT time::date FROM roasting_log WHERE time = (SELECT min(time) FROM roasting_log) OR time = (SELECT max(time) FROM roasting_log) ORDER BY time ASC");
@@ -42,26 +42,26 @@
                 refresh();
             });
             var unitBox = findChildObject(this, 'unit');
-            unitBox.addItem("Kg");
-            unitBox.addItem("Lb");
+            unitBox.addItem(TTR("batchreport", "Kg"));
+            unitBox.addItem(TTR("batchreport", "Lb"));
             unitBox.currentIndex = QSettings.value("script/history_unit", 1);
             unitBox['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/history_unit", unitBox.currentIndex);
                 refresh();
             });
             var batchType = findChildObject(this, 'batchtype');
-            batchType.addItem("Any");
-            batchType.addItem("Production Roasts");
-            batchType.addItem("Sample Roasts");
+            batchType.addItem(TTR("batchreport", "Any"));
+            batchType.addItem(TTR("batchreport", "Production Roasts"));
+            batchType.addItem(TTR("batchreport", "Sample Roasts"));
             batchType.currentIndex = QSettings.value("script/history/batchtypefilter", 1);
             batchType['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/history/batchtypefilter", batchType.currentIndex);
                 refresh();
             });
             var approval = findChildObject(this, 'approval');
-            approval.addItem("Any");
-            approval.addItem("Approved");
-            approval.addItem("Not Approved");
+            approval.addItem(TTR("batchreport", "Any"));
+            approval.addItem(TTR("batchreport", "Approved"));
+            approval.addItem(TTR("batchreport", "Not Approved"));
             approval.currentIndex = QSettings.value("script/history/approvalfilter", 1);
             approval['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/history/approvalfilter", approval.currentIndex);
@@ -79,7 +79,6 @@
             view.scriptLinkClicked.connect(function(url) {
                 var arg = decodeURI(url.slice(2, url.length));
                 var key = arg.split("@");
-                print("Handling click with key " + key);
                 var details = createWindow("batchDetails");
                 var fakeTable = new Object;
                 fakeTable.holding = new Array(7);
@@ -98,7 +97,6 @@
                 query.exec();
                 query.next();
                 for(var i = 0; i < 8; i++) {
-                    print("Constructing row with " + query.value(i));
                     fakeTable.holding[i] = query.value(i);
                 }
                 fakeTable.holding[0] = key[1];
@@ -160,7 +158,7 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Batch Log");
+                output.writeTextElement("title", TTR("batchreport", "Batch Log"));
                 output.writeEndElement();
                 output.writeStartElement("body");
                 output.writeStartElement("table");
@@ -170,33 +168,33 @@
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
                 output.writeAttribute("valign", "bottom");
-                output.writeTextElement("th", "Time");
-                output.writeTextElement("th", "File Numbers");
-                output.writeTextElement("th", "Operator");
-                output.writeTextElement("th", "Roasted Coffee");
+                output.writeTextElement("th", TTR("batchreport", "Time"));
+                output.writeTextElement("th", TTR("batchreport", "File Numbers"));
+                output.writeTextElement("th", TTR("batchreport", "Operator"));
+                output.writeTextElement("th", TTR("batchreport", "Roasted Coffee"));
                 output.writeEndElement();
                 output.writeStartElement("tr");
                 output.writeAttribute("valign", "bottom");
                 output.writeEmptyElement("td");
-                output.writeTextElement("th", "Duration");
-                output.writeTextElement("th", "Machine");
-                output.writeTextElement("th", "Green Coffees");
+                output.writeTextElement("th", TTR("batchreport", "Duration"));
+                output.writeTextElement("th", TTR("batchreport", "Machine"));
+                output.writeTextElement("th", TTR("batchreport", "Green Coffees"));
                 output.writeEndElement();
                 output.writeStartElement("tr");
                 output.writeAttribute("valign", "bottom");
                 output.writeEmptyElement("td");
-                output.writeTextElement("th", "Green Weight");
-                output.writeTextElement("th", "Roasted Weight");
-                output.writeTextElement("th", "% Weight Loss");
+                output.writeTextElement("th", TTR("batchreport", "Green Weight"));
+                output.writeTextElement("th", TTR("batchreport", "Roasted Weight"));
+                output.writeTextElement("th", TTR("batchreport", "% Weight Loss"));
                 output.writeEndElement();
                 output.writeStartElement("tr");
                 output.writeAttribute("valign", "bottom");
                 output.writeEmptyElement("td");
                 output.writeStartElement("th");
                 output.writeAttribute("colspan", "2");
-                output.writeCharacters("Batch Notes");
+                output.writeCharacters(TTR("batchreport", "Batch Notes"));
                 output.writeEndElement();
-                output.writeTextElement("th", "Specification Notes");
+                output.writeTextElement("th", TTR("batchreport", "Specification Notes"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
@@ -279,10 +277,10 @@
                 output.writeStartElement("tfoot");
                 output.writeStartElement("tr");
                 output.writeAttribute("valign", "bottom");
-                output.writeTextElement("th", "Total Batches");
-                output.writeTextElement("th", "Total Duration");
-                output.writeTextElement("th", "Total Green Weight");
-                output.writeTextElement("th", "Total Roasted Weight");
+                output.writeTextElement("th", TTR("batchreport", "Total Batches"));
+                output.writeTextElement("th", TTR("batchreport", "Total Duration"));
+                output.writeTextElement("th", TTR("batchreport", "Total Green Weight"));
+                output.writeTextElement("th", TTR("batchreport", "Total Roasted Weight"));
                 output.writeEndElement();
                 output.writeStartElement("tr");
                 output.writeAttribute("valign", "top");

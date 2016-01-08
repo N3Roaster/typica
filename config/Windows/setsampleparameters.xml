@@ -13,7 +13,7 @@
         print("Program loaded");
         var window = this;
         var instructions = findChildObject(this, 'instructions');
-        instructions.plainText = "%1 will be replaced with a sample number.";
+        instructions.plainText = TTR("sampleParameters", "%1 will be replaced with a sample number.");
         instructions.readOnly = true;
         var reset = findChildObject(this, 'reset');
         reset.clicked.connect(function() {

@@ -98,7 +98,7 @@
 					var scale = navigationwindow.loggingWindow.scales[i];
 					var label = new DragLabel();
 					var weighButton = new QPushButton();
-					weighButton.text = "Weigh";
+					weighButton.text = TTR("sampleRoastingBatch", "Weigh");
 					weighButton.clicked.connect(scale.weigh);
 					label.updateMeasurement = function(m, u) {
 						switch(GunitBox.currentIndex) {
@@ -127,7 +127,7 @@
 			}
 			var submit = findChildObject(this, 'submit');
 			submit.setEnabled(false);
-			this.windowTitle = "Typica - New Sample Roasting Batch";
+			this.windowTitle = TTR("sampleRoastingBatch", "Typica - New Sample Roasting Batch");
 			var newMenu = findChildObject(this, 'new');
 			newMenu.triggered.connect(function() {
 				createWindow("sampleRoastingBatch");
@@ -192,7 +192,8 @@
                             if(validateCapacity()) {
                                 proceed = true;
                             } else {
-                                proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                                proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
+                                TTR("sampleRoastingBatch", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                             }
                             if(proceed) {
                                 doRoast();
@@ -251,11 +252,11 @@
 						input.input();
 						graph.updatesEnabled = true;
 						log.updatesEnabled = true;
-						log.newAnnotation("End", 1, lc);
+						log.newAnnotation(TTR("sampleRoastingBatch", "End"), 1, lc);
 					}
 				}
 				query = query.invalidate();
-				var t = "Typica - Sample Roasting: [*]" + name.text;
+				var t = TTR("sampleRoastingBatch", "Typica - Sample Roasting: [*]") + name.text;
 				if(profileName.currentText != '')
 				{
 					t = t + ", " + profileName.currentText;
@@ -274,7 +275,8 @@
                             if(validateCapacity()) {
                                 proceed = true;
                             } else {
-                                proceed = displayWarning("Suspicious Input", "Entered green coffee weight exceeds maximum batch size. Continue?");
+                                proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
+                                TTR("sampleRoastingBatch", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                             }
                             if(proceed) {
                                 doLoadProfile();

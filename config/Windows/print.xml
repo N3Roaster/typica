@@ -279,18 +279,18 @@
                 output.writeAttribute("transform", "rotate(-90 40,150)");
                 if(log.displayUnits() == 10143)
                 {
-                    output.writeCDATA("Temperature (°C)");
+                    output.writeCDATA(TTR("print", "Temperature (°C)"));
                 }
                 else
                 {
-                    output.writeCDATA("Temperature (°F)");
+                    output.writeCDATA(TTR("print", "Temperature (°F)"));
                 }
                 output.writeEndElement();
                 output.writeStartElement("text");
                 output.writeAttribute("x", "1.9in");
                 output.writeAttribute("y", "3.3in");
                 output.writeAttribute("font-size", "12");
-                output.writeCDATA("Time (minutes)");
+                output.writeCDATA(TTR("print", "Time (minutes)"));
                 output.writeEndElement();
                 output.writeStartElement("line");
                 output.writeAttribute("x1", "0.4in");
@@ -675,7 +675,7 @@
                 if(lossField.text != "")
                 {
                     output.writeStartElement("p");
-                    output.writeCDATA("Weight loss: ");
+                    output.writeCDATA(TTR("print", "Weight loss: "));
                     output.writeCDATA(lossField.text);
                     if(tolField.text != "")
                     {
@@ -687,10 +687,10 @@
                     output.writeStartElement("table");
                     output.writeStartElement("tr");
                     output.writeStartElement("th");
-                    output.writeCDATA("Roasted");
+                    output.writeCDATA(TTR("print", "Roasted"));
                     output.writeEndElement();
                     output.writeStartElement("th");
-                    output.writeCDATA("Green");
+                    output.writeCDATA(TTR("print", "Green"));
                     output.writeEndElement();
                     output.writeEndElement();
                     var green;

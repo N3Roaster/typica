@@ -22,7 +22,6 @@
                 <button id="save" type="push" name="Save" />
             </layout>
         </layout>
-        <svgwidget id="boxplot" />
     </layout>
     <program>
         <![CDATA[
@@ -33,7 +32,6 @@
             var tolerance = findChildObject(this, 'tolerance');
             var notes = findChildObject(this, 'notes');
             var savebutton = findChildObject(this, 'save');
-            var boxplot = findChildObject(this, 'boxplot');
             var updateDisplay = function() {
                 var query = new QSqlQuery();
                 query.prepare("SELECT loss, tolerance, notes FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
@@ -56,48 +54,7 @@
                     expected.text = "";
                     tolerance.text = "";
                     notes.plainText = "";
-                }
-                query.prepare("SELECT (unroasted_total_quantity - roasted_quantity)/unroasted_total_quantity AS loss FROM roasting_log WHERE roasted_id = :id1 AND unroasted_id = (SELECT unroasted_id FROM roasting_log WHERE time = (SELECT max(time) FROM roasting_log WHERE roasted_id = :id2) AND roasted_id = :id3) AND approval = true ORDER BY loss ASC");
-                query.bind(":id1", selector.currentData());
-                query.bind(":id2", selector.currentData());
-                query.bind(":id3", selector.currentData());
-                query.exec();
-                var buffer = new QBuffer;
-                buffer.open(3);
-                var output = new XmlWriter(buffer);
-                output.writeStartDocument("1.0");
-                output.writeDTD('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">');
-                output.writeStartElement("svg");
-                output.writeAttribute("width", "40");
-                output.writeAttribute("height", "320");
-                output.writeStartElement("g");
-                output.writeAttribute("stroke", "black");
-                output.writeAttribute("stroke-width", "2");
-                output.writeStartElement("line");
-                output.writeAttribute("x1", "15");
-                output.writeAttribute("x2", "25");
-                output.writeAttribute("y1", "278.25");
-                output.writeAttribute("y2", "278.26");
-                output.writeTextElement("title", "17.71");
-                output.writeEndElement();
-                output.writeStartElement("line");
-                output.writeAttribute("x1", "20");
-                output.writeAttribute("x2", "20");
-                output.writeAttribute("y1", "278.25");
-                output.writeAttribute("y2", "247.5");
-                output.writeEndElement();
-                output.writeStartElement("line");
-                output.writeAttribute("x1", "10");
-                output.writeAttribute("x2", "30");
-                output.writeAttribute("y1", "247.5");
-                output.writeAttribute("y2", "247.5");
-                output.writeEndElement();
-                
-                output.writeEndElement();
-                output.writeEndElement();
-                output.writeEndDocument();
-                boxplot.loadDevice(buffer);
-                buffer.close();
+                }                
                 query = query.invalidate();
             };
             updateDisplay();

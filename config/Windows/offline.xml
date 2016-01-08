@@ -11,10 +11,10 @@
         </splitter>
     </layout>
 	<menu name="File">
-		<item id="save" shortcut="Ctrl+S">Save…</item>
-		<item id="print" shortcut="Ctrl+P">Print…</item>
-		<item id="export">Export CSV…</item>
-		<item id="svgexport">Export XHTML+SVG…</item>
+		<item id="save" shortcut="Ctrl+S">Save...</item>
+		<item id="print" shortcut="Ctrl+P">Print...</item>
+		<item id="export">Export CSV...</item>
+		<item id="svgexport">Export XHTML+SVG...</item>
 		<item id="quit" shortcut="Ctrl+Q">Quit</item>
 	</menu>
 	<menu name="Log">
@@ -54,7 +54,7 @@
 			};
 			var saveMenu = findChildObject(this, 'save');
 			saveMenu.triggered.connect(function() {
-				var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
+				var filename = QFileDialog.getSaveFileName(window, TTR("offline", "Save Log As..."), QSettings.value("script/lastDir", "") + "/");
 				if(filename != "") {
 					var file = new QFile(filename);
 					setLogOutputColumns();
@@ -65,12 +65,12 @@
 			var printMenu = findChildObject(this, 'print');
 			printMenu.triggered.connect(function() {
 				var exportWindow = createWindow("print");
-				exportWindow.windowTitle = "Typica - Print";
+				exportWindow.windowTitle = TTR("offline", "Typica - Print");
 				exportWindow.log = log;
 			});
 			var exportMenu = findChildObject(this, 'export');
 			exportMenu.triggered.connect(function() {
-				var filename = QFileDialog.getSaveFileName(window, "Export CSV As…", QSettings.value("script/lastDir", "") + "/");
+				var filename = QFileDialog.getSaveFileName(window, TTR("offline", "Export CSV As..."), QSettings.value("script/lastDir", "") + "/");
 				if(filename != "") {
 					var file = new QFile(filename);
 					setLogOutputColumns();
@@ -81,7 +81,7 @@
 			var svgExportMenu = findChildObject(this, 'svgexport');
 			svgExportMenu.triggered.connect(function() {
 				var exportWindow = createWindow("exportWindow");
-				exportWindow.windowTitle = "Typica - Export XHTML+SVG";
+				exportWindow.windowTitle = TTR("offline", "Typica - Export XHTML+SVG");
 				exportWindow.log = log;
 			});
 			var quitMenu = findChildObject(this, 'quit');

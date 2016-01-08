@@ -15,16 +15,16 @@
         </splitter>
     </layout>
     <menu name="File">
-        <item id="open" shortcut="Ctrl+O">Open…</item>
-        <item id="save" shortcut="Ctrl+S">Save…</item>
-        <item id="print" shortcut="Ctrl+P">Print…</item>
-        <item id="export">Export CSV…</item>
-        <item id="svgexport">Export XHTML+SVG…</item>
+        <item id="open" shortcut="Ctrl+O">Open...</item>
+        <item id="save" shortcut="Ctrl+S">Save...</item>
+        <item id="print" shortcut="Ctrl+P">Print...</item>
+        <item id="export">Export CSV...</item>
+        <item id="svgexport">Export XHTML+SVG...</item>
         <item id="quit" shortcut="Ctrl+Q">Quit</item>
     </menu>
     <menu name="Batch">
         <item id="new" shortcut="Ctrl+N">New Batch…</item>
-		<item id="newsample">New Sample Batch…</item>
+		<item id="newsample">New Sample Batch...</item>
         <item id="compare">Load Additional Profiles...</item>
     </menu>
     <menu name="Log">
@@ -793,11 +793,11 @@
 			channelSkip++;
 		}
 	}
-	log.setHeaderData(columnNames.length + 1 - channelSkip, "Note");
+	log.setHeaderData(columnNames.length + 1 - channelSkip, TTR("basicWindow", "Note"));
 	var timer = new TimerDisplay;
 	timer.displayFormat = "mm:ss";
 	timer.autoReset = true;
-	var btdecorator = new WidgetDecorator(timer, "Batch Timer", 2);
+	var btdecorator = new WidgetDecorator(timer, TTR("basicWindow", "Batch Timer"), 2);
 	indicatorPanel.addWidget(btdecorator);
 	var vsplit = findChildObject(this, 'main');
 	var isplit = findChildObject(this, 'indicators');
@@ -1050,22 +1050,22 @@
         compareMenu.triggered.connect(function() {
             QSettings.setValue('cseries', lc+1);
             var history = createReport("historyreport.xml");
-            history.windowTitle = 'Typica - Roasting Log';
+            history.windowTitle = TTR("basicWindow", "Typica - Roasting Log");
         });
         var printMenu = findChildObject(this, 'print');
         printMenu.triggered.connect(function() {
             var exportWindow = createWindow("print");
-            exportWindow.windowTitle = "Typica - Print";
+            exportWindow.windowTitle = TTR("basicWindow", "Typica - Print");
             exportWindow.log = log;
         });
         var svgExportMenu = findChildObject(this, 'svgexport');
         svgExportMenu.triggered.connect(function() {
             var exportWindow = createWindow("exportWindow");
-            exportWindow.windowTitle = "Typica - Export XHTML+SVG";
+            exportWindow.windowTitle = TTR("basicWindow", "Typica - Export XHTML+SVG");
             exportWindow.log = log;
         });
         openMenu.triggered.connect(function() {
-            var filename = QFileDialog.getOpenFileName(window, 'Open Log…', QSettings.value('script/lastDir', '') + '/');
+            var filename = QFileDialog.getOpenFileName(window, TTR("basicWindow", "Open Log..."), QSettings.value('script/lastDir', '') + '/');
             if(filename != '') {
                 var file = new QFile(filename);
                 var input = new XMLInput(file, 1);
@@ -1103,7 +1103,7 @@
 				graph.updatesEnabled = true;
                 window.windowTitle = 'Typica - [*]' + baseName(filename);
                 QSettings.setValue("script/lastDir", dir(filename));
-				log.newAnnotation("End", 1, lc);
+				log.newAnnotation(TTR("basicWindow", "End"), 1, lc);
             }
         });
 		var columnName = function(c) {
@@ -1125,7 +1125,7 @@
 				zeroemitters[i].setColumn(c + i + 1);
 				log.setHeaderData(c + i + 1, columnName(i));
 			}
-			log.setHeaderData(c + columnNames.length + 1 - channelSkip, "Note");
+			log.setHeaderData(c + columnNames.length + 1 - channelSkip, TTR("basicWindow", "Note"));
             stop.setTemperatureColumn(c + 1);
 			stop.setAnnotationColumn(c + columnNames.length + 1 - channelSkip);
 			for(var i = 0; i < annotationButtons.length; i++)
@@ -1142,7 +1142,7 @@
 		}
 		var saveMenu = findChildObject(this, 'save');
         saveMenu.triggered.connect(function() {
-            var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
+            var filename = QFileDialog.getSaveFileName(window, TTR("basicWindow", "Save Log As..."), QSettings.value("script/lastDir", "") + "/");
             if(filename != "") {
                 var lc = Number(QSettings.value("liveColumn"));
                 var file = new QFile(filename);
@@ -1168,7 +1168,7 @@
         });
 		var exportMenu = findChildObject(this, 'export');
         exportMenu.triggered.connect(function() {
-            var filename = QFileDialog.getSaveFileName(window, "Export CSV As…", QSettings.value("script/lastDir", "") + "/");
+            var filename = QFileDialog.getSaveFileName(window, TTR("basicWindow", "Export CSV As..."), QSettings.value("script/lastDir", "") + "/");
             if(filename != "") {
                 var lc = Number(QSettings.value("liveColumn"));
                 var file = new QFile(filename);
@@ -1190,7 +1190,7 @@
         var newMenu = findChildObject(this, 'new');
         newMenu.triggered.connect(function() {
             var bwindow = createWindow("batchWindow");
-            bwindow.windowTitle = "Typica - [*]New Batch";
+            bwindow.windowTitle = TTR("basicWindow", "Typica - [*]New Batch");
         });
 		var newSampleMenu = findChildObject(this, 'newsample');
 		newSampleMenu.triggered.connect(function() {

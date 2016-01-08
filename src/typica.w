@@ -1436,7 +1436,7 @@ engine->globalObject().setProperty("QSvgWidget", value);
 @ The constructor is trivial.
 
 @<Functions for scripting@>=
-QScriptValue constructQSvgWidget(QScriptContext *context,
+QScriptValue constructQSvgWidget(QScriptContext *,
                                  QScriptEngine *engine)
 {
     QScriptValue object = engine->newQObject(new QSvgWidget);
@@ -13473,6 +13473,7 @@ class SqlConnectionSetup : public QDialog@/
         QFormLayout *formLayout;
         QComboBox *driver;
         QLineEdit *hostname;
+        QLineEdit *portnumber;
         QLineEdit *dbname;
         QLineEdit *user;
         QLineEdit *password;
@@ -13487,6 +13488,7 @@ class SqlConnectionSetup : public QDialog@/
 @<SqlConnectionSetup implementation@>=
 SqlConnectionSetup::SqlConnectionSetup() :
     formLayout(new QFormLayout), driver(new QComboBox), hostname(new QLineEdit),
+    portnumber(new QLineEdit),
     dbname(new QLineEdit), user(new QLineEdit), password(new QLineEdit),
     layout(new QVBoxLayout), buttons(new QHBoxLayout),
     cancelButton(new QPushButton(tr("Cancel"))),
@@ -13495,6 +13497,8 @@ SqlConnectionSetup::SqlConnectionSetup() :
     driver->addItem("PostgreSQL", "QPSQL");
     formLayout->addRow(tr("Database driver:"), driver);
     formLayout->addRow(tr("Host name:"), hostname);
+    formLayout->addRow(tr("Port number:"), portnumber);
+    portnumber->setText("5432");
     formLayout->addRow(tr("Database name:"), dbname);
     formLayout->addRow(tr("User name:"), user);
     password->setEchoMode(QLineEdit::Password);
@@ -13506,6 +13510,7 @@ SqlConnectionSetup::SqlConnectionSetup() :
     buttons->addWidget(connectButton);
     layout->addLayout(buttons);
     connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(testConnection()));
+    connectButton->setDefault(true);
     setLayout(layout);
     setModal(true);
 }
@@ -13526,6 +13531,7 @@ void SqlConnectionSetup::testConnection()
                                   toString());
     database.setConnectOptions("application_name=Typica");
     database.setHostName(hostname->text());
+    database.setPort(portnumber->text().toInt());
     database.setDatabaseName(dbname->text());
     database.setUserName(user->text());
     database.setPassword(password->text());
@@ -13536,6 +13542,7 @@ void SqlConnectionSetup::testConnection()
         settings.setValue("database/driver",
                           driver->itemData(driver->currentIndex()).toString());
         settings.setValue("database/hostname", hostname->text());
+        settings.setValue("database/portnumber", portnumber->text());
         settings.setValue("database/dbname", dbname->text());
         settings.setValue("database/user", user->text());
         settings.setValue("database/password", password->text());
@@ -13568,6 +13575,7 @@ QSqlDatabase database =
     QSqlDatabase::addDatabase(settings.value("database/driver").toString());
 database.setConnectOptions("application_name=Typica");
 database.setHostName(settings.value("database/hostname").toString());
+database.setPort(settings.value("database/portnumber", 5432).toInt());
 database.setDatabaseName(settings.value("database/dbname").toString());
 database.setUserName(settings.value("database/user").toString());
 database.setPassword(settings.value("database/password").toString());

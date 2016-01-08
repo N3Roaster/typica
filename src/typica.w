@@ -4681,7 +4681,7 @@ while(i < windowChildren.count())
         }
         else if(element.tagName() == "layout")
         {
-            element.setAttribute("trcontext", targetID);
+            element.setAttribute("trcontext", "configuration");
             addLayoutToWidget(element, &widgetStack, &layoutStack);
         }
         else if(element.tagName() == "menu")
@@ -4868,7 +4868,7 @@ void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                 QWidget *widget = new QWidget;
                 layout->addWidget(widget);
                 widgetStack->push(widget);
-                currentElement.setAttribute("trcontext", element.attribute("trcontext"));
+                currentElement.setAttribute("trcontext", "configuration");
                 populateWidget(currentElement, widgetStack, layoutStack);
                 widgetStack->pop();
             }
@@ -4979,7 +4979,7 @@ for(int j = 0; j < rowChildren.count(); j++)
             QHBoxLayout *cell = new QHBoxLayout;
             layout->addLayout(cell, row, column, vspan, hspan);
             layoutStack->push(cell);
-            columnElement.setAttribute("trcontext", element.attribute("trcontext"));
+            columnElement.setAttribute("trcontext", "configuration");
             populateBoxLayout(columnElement, widgetStack, layoutStack);
             layoutStack->pop();
         }
@@ -5002,7 +5002,7 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
         if(current.isElement())
         {
             currentElement = current.toElement();
-            currentElement.setAttribute("trcontext", element.attribute("trcontext"));
+            currentElement.setAttribute("trcontext", "configuration");
             if(currentElement.tagName() == "button")
             {
                 addButtonToLayout(currentElement, widgetStack, layoutStack);
@@ -5029,7 +5029,7 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                 QBoxLayout *layout =
                     qobject_cast<QBoxLayout *>(layoutStack->top());
                 QLabel *label = new QLabel(QCoreApplication::translate(
-                    element.attribute("trcontext").toAscii().data(),
+                    "configuration",
                     currentElement.text().toUtf8().data()));
                 layout->addWidget(label);
             }
@@ -5174,7 +5174,7 @@ void populateSplitter(QDomElement element, QStack<QWidget *> *widgetStack,@|
         if(current.isElement())
         {
             currentElement = current.toElement();
-            currentElement.setAttribute("trcontext", element.attribute("trcontext"));
+            currentElement.setAttribute("trcontext", "configuration");
             if(currentElement.tagName() == "decoration")
             {
                 addDecorationToSplitter(currentElement, widgetStack,
@@ -5321,7 +5321,7 @@ labeled.
 
 @<Set up decoration@>=
 QString labelText =
-    QCoreApplication::translate(element.attribute("trcontext").toAscii().data(),
+    QCoreApplication::translate("configuration",
     element.attribute("name").toUtf8().data());
 Qt::Orientations@, orientation = Qt::Horizontal;
 if(element.hasAttribute("type"))
@@ -5418,7 +5418,7 @@ void populateWidget(QDomElement element, QStack<QWidget *> *widgetStack,@|
             currentElement = current.toElement();
             if(currentElement.tagName() == "layout")
             {
-                currentElement.setAttribute("trcontext", element.attribute("trcontext"));
+                currentElement.setAttribute("trcontext", "configuration");
                 addLayoutToWidget(currentElement, widgetStack, layoutStack);
             }
         }
@@ -5435,7 +5435,7 @@ void addButtonToLayout(QDomElement element, QStack<QWidget *> *,@|
 {
     QAbstractButton *button = NULL;
     QString text =
-        QCoreApplication::translate(element.attribute("trcontext").toAscii().data(),
+        QCoreApplication::translate("configuration",
                                     element.attribute("name").toUtf8().data());
     if(element.hasAttribute("type"))
     {
@@ -5491,13 +5491,13 @@ void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *,@|
     if(element.hasAttribute("pretext"))
     {
         box->setPretext(QCoreApplication::translate(
-                        element.attribute("trcontext").toAscii().data(),
+                        "configuration",
                         element.attribute("pretext").toUtf8().data()));
     }
     if(element.hasAttribute("posttext"))
     {
         box->setPosttext(QCoreApplication::translate(
-                         element.attribute("trcontext").toAscii().data(),
+                         "configuration",
                          element.attribute("posttext").toUtf8().data()));
     }
     if(element.hasAttribute("series"))
@@ -5568,7 +5568,7 @@ void addZoomLogToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                 {
                     QString text =
                         QCoreApplication::translate(
-                            element.attribute("trcontext").toAscii().data(),
+                            "configuration",
                             currentElement.text().toUtf8().data());
                     widget->setHeaderData(column, text);
                     column++;
@@ -5716,8 +5716,8 @@ void addSaltToLayout(QDomElement element, QStack<QWidget *> *,@|
                         model->setHeaderData(currentColumn,
                             Qt::Horizontal,
                             QCoreApplication::translate(
-                                element.attribute("trcontext").toAscii().data(),
-                                    currentElement.attribute("name").toUtf8().data()));
+                                "configuration",
+                                currentElement.attribute("name").toUtf8().data()));
                     }
                     if(currentElement.hasAttribute("delegate"))
                     {

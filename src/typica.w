@@ -12625,12 +12625,12 @@ details, see the Qt Linguist manual.
 
 @<Load translation objects@>=
 QTranslator *base = new QTranslator;
-if(base->load(QString("qt_%1").arg(QLocale::system().name())))
+if(base->load(QString("qt_%1").arg(QLocale::system().name()), QString("%1/Translations").arg(QCoreApplication::applicationDirPath())))
 {
     installTranslator(base);
 }
 QTranslator *app = new QTranslator;
-if(app->load(QString("%1_%2").arg("Typica").arg(QLocale::system().name())))
+if(app->load(QString("%1_%2").arg("Typica").arg(QLocale::system().name()), QString("%1/Translations").arg(QCoreApplication::applicationDirPath())))
 {
     installTranslator(app);
 }

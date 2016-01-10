@@ -22,7 +22,7 @@ static const uint qt_meta_data_HelpMenu[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -31,12 +31,14 @@ static const uint qt_meta_data_HelpMenu[] = {
 
  // slots: signature, parameters, type, tag, flags
       10,    9,    9,    9, 0x0a,
+      31,    9,    9,    9, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_HelpMenu[] = {
     "HelpMenu\0\0displayAboutTypica()\0"
+    "displayLicenseWindow()\0"
 };
 
 void HelpMenu::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -46,6 +48,7 @@ void HelpMenu::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         HelpMenu *_t = static_cast<HelpMenu *>(_o);
         switch (_id) {
         case 0: _t->displayAboutTypica(); break;
+        case 1: _t->displayLicenseWindow(); break;
         default: ;
         }
     }
@@ -84,9 +87,9 @@ int HelpMenu::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }

@@ -3759,25 +3759,31 @@ static const uint qt_meta_data_RoasterConfWidget[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
-       1,   19, // constructors
+       1,   34, // constructors
        0,       // flags
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
       22,   19,   18,   18, 0x08,
+      49,   43,   18,   18, 0x08,
+      74,   43,   18,   18, 0x08,
+      98,   43,   18,   18, 0x08,
 
  // constructors: signature, parameters, type, tag, flags
-      55,   43,   18,   18, 0x0e,
+     138,  126,   18,   18, 0x0e,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_RoasterConfWidget[] = {
     "RoasterConfWidget\0\0id\0updateRoasterId(int)\0"
-    "model,index\0RoasterConfWidget(DeviceTreeModel*,QModelIndex)\0"
+    "value\0updateCapacityCheck(int)\0"
+    "updateCapacity(QString)\0"
+    "updateCapacityUnit(QString)\0model,index\0"
+    "RoasterConfWidget(DeviceTreeModel*,QModelIndex)\0"
 };
 
 void RoasterConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3792,6 +3798,9 @@ void RoasterConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         RoasterConfWidget *_t = static_cast<RoasterConfWidget *>(_o);
         switch (_id) {
         case 0: _t->updateRoasterId((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 1: _t->updateCapacityCheck((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 2: _t->updateCapacity((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 3: _t->updateCapacityUnit((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -3829,9 +3838,9 @@ int RoasterConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 4;
     }
     return _id;
 }

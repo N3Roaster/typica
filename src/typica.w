@@ -22,8 +22,8 @@
 \mark{\noexpand\nullsec0{A Note on Notation}}
 \def\pn{Typica}
 \def\filebase{typica}
-\def\version{1.6.4 \number\year-\number\month-\number\day}
-\def\years{2007--2015}
+\def\version{1.7.0 \number\year-\number\month-\number\day}
+\def\years{2007--2016}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip

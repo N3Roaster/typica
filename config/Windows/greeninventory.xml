@@ -31,7 +31,7 @@
         <![CDATA[
             var types = findChildObject(this, 'transactiontype');
             types.addItem(TTR("inventory", "inventory"));
-            types.addItem(TTR("inventory", "loss");
+            types.addItem(TTR("inventory", "loss"));
             var optionalDisplay = findChildObject(this, 'optional');
             var units = findChildObject(this, 'units');
             units.addItem(TTR("inventory", "bag"));

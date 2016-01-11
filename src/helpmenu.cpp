@@ -42,7 +42,7 @@ LicenseWindow*window= new LicenseWindow;
 window->show();
 }
 
-#line 4771 "./typica.w"
+#line 4772 "./typica.w"
 
 #line 1 "./licensewindow.w"
 /*:207*/

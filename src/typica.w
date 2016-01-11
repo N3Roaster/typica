@@ -4351,6 +4351,7 @@ if(!filename.isEmpty())
     QFile file(filename);
     QFileInfo info(filename);
     directory = info.dir();
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
     QTranslator *configtr = new QTranslator;
     if(configtr->load(QString("config.%1").arg(QLocale::system().name()),
                      QString("%1/Translations").arg(directory.canonicalPath())))

@@ -243,7 +243,7 @@
                                     displayValue = convertFromPounds(displayValue, "oz");
                                     break;
                             }
-                            displayValue = "" + displayValue + " (" + bagCount + " bags)";
+                            displayValue = "" + Number(displayValue).toFixed(3) + " (" + Number(bagCount).toFixed(3) + " bags)";
                             if(table.data(r, 2, 0) != displayValue)
                             {
                                 table.setData(r, 2, displayValue, 0);

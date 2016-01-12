@@ -62,7 +62,6 @@
             var value = findChildObject(this, 'quantity');
             var reason = findChildObject(this, 'reason');
             var reasonlabel = findChildObject(this, 'reasonlabel');
-            reason.enabled = false;
             button.clicked.connect(function() {
                 q = "INSERT INTO ";
                 q += (types.currentIndex == 0 ?

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de">
+<TS version="2.0" language="de">
 <context>
     <name>AdvancedSettingsWidget</name>
     <message>
@@ -978,7 +978,6 @@
         <source>CPhidget_waitForAttachment returns error %n</source>
         <translation>
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -1176,7 +1175,7 @@
     <message>
         <location filename="../typica.cpp" line="12161"/>
         <source>Maximum batch size:</source>
-        <translation type="unfinished"></translation>
+        <translation>maximale Chargengröße:</translation>
     </message>
 </context>
 <context>
@@ -1266,7 +1265,7 @@
     <message>
         <location filename="../typica.cpp" line="8227"/>
         <source>Port number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port nummer:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="8229"/>

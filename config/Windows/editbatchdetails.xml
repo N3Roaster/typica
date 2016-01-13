@@ -43,7 +43,7 @@
                     unitEdit.text = TTR("editBatchDetails", "Kg");
                     conversion = 2.2;
                 } else {
-                    unitEdit.text = TTR("editBatchDetails", "Lb";
+                    unitEdit.text = TTR("editBatchDetails", "Lb");
                 }
             };
             submit.clicked.connect(function() {

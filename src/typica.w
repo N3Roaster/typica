@@ -4299,7 +4299,7 @@ translated into other languages.
 QScriptValue scriptTr(QScriptContext *context, QScriptEngine *)
 {
     return QScriptValue(QCoreApplication::translate(
-        argument<QString>(0, context).toAscii().data(),
+        "configuration",
         argument<QString>(1, context).toUtf8().data()));
 }
 
@@ -4715,7 +4715,7 @@ bar->setParent(window);
 bar->setObjectName("menuBar");
 if(element.hasAttribute("name"))
 {
-    QMenu *menu = bar->addMenu(QCoreApplication::translate(targetID.toAscii().data(),
+    QMenu *menu = bar->addMenu(QCoreApplication::translate("configuration",
                                                            element.attribute("name").toUtf8().data()));
     menu->setParent(bar);
     if(element.hasAttribute("type"))
@@ -4748,7 +4748,7 @@ while(j < menuItems.count())
         QDomElement itemElement = item.toElement();
         if(itemElement.tagName() == "item")
         {
-            QAction *itemAction = new QAction(QCoreApplication::translate(targetID.toAscii().data(),
+            QAction *itemAction = new QAction(QCoreApplication::translate("configuration",
                                               itemElement.text().toUtf8().data()), menu);
             if(itemElement.hasAttribute("id"))
             {
@@ -13929,7 +13929,7 @@ if(file.open(QIODevice::ReadOnly))
     if(!titleNode.isNull())
     {
         QDomElement titleElement = titleNode.toElement();
-        QString title = QCoreApplication::translate(translationContext.toAscii().data(),
+        QString title = QCoreApplication::translate("configuration",
                                                     titleElement.text().toUtf8().data());
         if(!title.isEmpty())
         {

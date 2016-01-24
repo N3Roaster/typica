@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
 <dict>
 	<key>CFBundleIconFile</key>
 	<string>@ICON@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Typica 1.6.4</string>
+	<string>Typica 1.7.0</string>
 	<key>CFBundleSignature</key>
 	<string>@TYPEINFO@</string>
 	<key>CFBundleExecutable</key>
@@ -17,10 +17,10 @@
 	<key>CFBundleDisplayName</key>
 	<string>Typica</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.6.4</string>
+	<string>1.7.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.6.4</string>
+	<string>1.7.0</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© 2007–2015 Neal Wilson</string>
+	<string>© 2007–2016 Neal Wilson</string>
 </dict>
 </plist>

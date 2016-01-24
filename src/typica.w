@@ -22,8 +22,8 @@
 \mark{\noexpand\nullsec0{A Note on Notation}}
 \def\pn{Typica}
 \def\filebase{typica}
-\def\version{1.6.4 \number\year-\number\month-\number\day}
-\def\years{2007--2015}
+\def\version{1.7.0 \number\year-\number\month-\number\day}
+\def\years{2007--2016}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip
@@ -4299,7 +4299,7 @@ translated into other languages.
 QScriptValue scriptTr(QScriptContext *context, QScriptEngine *)
 {
     return QScriptValue(QCoreApplication::translate(
-        argument<QString>(0, context).toAscii().data(),
+        "configuration",
         argument<QString>(1, context).toUtf8().data()));
 }
 
@@ -4351,6 +4351,7 @@ if(!filename.isEmpty())
     QFile file(filename);
     QFileInfo info(filename);
     directory = info.dir();
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
     QTranslator *configtr = new QTranslator;
     if(configtr->load(QString("config.%1").arg(QLocale::system().name()),
                      QString("%1/Translations").arg(directory.canonicalPath())))
@@ -4714,7 +4715,7 @@ bar->setParent(window);
 bar->setObjectName("menuBar");
 if(element.hasAttribute("name"))
 {
-    QMenu *menu = bar->addMenu(QCoreApplication::translate(targetID.toAscii().data(),
+    QMenu *menu = bar->addMenu(QCoreApplication::translate("configuration",
                                                            element.attribute("name").toUtf8().data()));
     menu->setParent(bar);
     if(element.hasAttribute("type"))
@@ -4747,7 +4748,7 @@ while(j < menuItems.count())
         QDomElement itemElement = item.toElement();
         if(itemElement.tagName() == "item")
         {
-            QAction *itemAction = new QAction(QCoreApplication::translate(targetID.toAscii().data(),
+            QAction *itemAction = new QAction(QCoreApplication::translate("configuration",
                                               itemElement.text().toUtf8().data()), menu);
             if(itemElement.hasAttribute("id"))
             {
@@ -12625,12 +12626,12 @@ details, see the Qt Linguist manual.
 
 @<Load translation objects@>=
 QTranslator *base = new QTranslator;
-if(base->load(QString("qt_%1").arg(QLocale::system().name())))
+if(base->load(QString("qt_%1").arg(QLocale::system().name()), QString("%1/Translations").arg(QCoreApplication::applicationDirPath())))
 {
     installTranslator(base);
 }
 QTranslator *app = new QTranslator;
-if(app->load(QString("%1_%2").arg("Typica").arg(QLocale::system().name())))
+if(app->load(QString("%1_%2").arg("Typica").arg(QLocale::system().name()), QString("%1/Translations").arg(QCoreApplication::applicationDirPath())))
 {
     installTranslator(app);
 }
@@ -13928,7 +13929,7 @@ if(file.open(QIODevice::ReadOnly))
     if(!titleNode.isNull())
     {
         QDomElement titleElement = titleNode.toElement();
-        QString title = QCoreApplication::translate(translationContext.toAscii().data(),
+        QString title = QCoreApplication::translate("configuration",
                                                     titleElement.text().toUtf8().data());
         if(!title.isEmpty())
         {

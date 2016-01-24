@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <title>Typica - Connecting to a database</title>
+        <link rel="stylesheet" type="text/css" href="../../style.css">
+    </head>
+    <body>
+        <div id="page">
+            <div id="topmatter">
+                <div id="topbanner">
+                    <img src="../../logo96.png" height="96px" width="96px" alt="Typica logo" />
+                    <h1>Typica</h1>
+                    <h2>Data for Coffee Roasters</h2>
+                </div>
+                <div id="menu">
+                    <a class="tab" href="../../index.html">Project Home</a>
+                    <a class="tab" href="../../downloads.html" >Downloads</a>
+                    <a class="tab active" >Documentation</a>
+                    <a class="tab" href="../../screenshots.html" >Screenshots and Videos</a>
+                    <a href="http://appliedcoffeetechnology.tumblr.com/tagged/Typica" class="tab">Blog</a>
+                </div>
+            </div>
+            <div id="maintext">
+                <h1>Connecting to a database</h1>
+                <p>When opening Typica, if you have not previously connected to
+                a database, you will be prompted for information needed to
+                connect to that database.</p>
+
+                <img src="databaseconnection.png"/>
+                
+                <p>If you do not want to connect to a database, you can click
+                the Cancel button, but doing so means that most of the features
+                of Typica will not work. Clicking the Connect button will cause
+                Typica to attempt to connect to the database with the
+                information provided in the fields. An error message will be
+                presented if that connection attempt fails.</p>
+                
+                <p>After either successfully connecting to a database or
+                cancelling, you will be prompted to
+                <a href="openconfigurationfile.html">open a configuration
+                file.</a></p>
+                
+                <h2>Field descriptions</h2>
+                
+                <h3>Database driver</h3>
+                <p>Currently the only database supported is PostgreSQL.</p>
+                
+                <h3>Host name</h3>
+                <p>This identifies the computer the database is installed on.
+                If the database is on the same computer as Typica, this can be
+                <tt>localhost</tt> otherwise it will most likely be an IP
+                address for another computer on your network.</p>
+                
+                <h3>Port number</h3>
+                <p>PostgreSQL normally communicates on port 5432 but if you
+                have PostgreSQL configured to communicate over a different port
+                this field should be changed to match.</p>
+                
+                <h3>Database name</h3>
+                <p>During installation, the PostgreSQL installer creates a
+                database called <tt>postgres</tt>. If you've created a new
+                database for use with Typica, its name should be used.</p>
+                
+                <h3>User name</h3>
+                <p>During installation, the PostgreSQL installer creates a
+                database user called <tt>postgres</tt>. If you don't want to
+                create separate users, this account can be used. Typica keeps
+                track of which database user performed many data entry tasks so
+                it is recommended to create new users for everybody who will be
+                using Typica.</p>
+                
+                <h3>Password</h3>
+                <p>This is the password previously set for the database user.
+                If you are using the <tt>postgres</tt> user, this was set
+                during PostgreSQL installation.</p>
+
+            </div>
+        </div>
+    </body>
+</html>

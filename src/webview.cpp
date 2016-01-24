@@ -1,9 +1,9 @@
-/*541:*/
+/*551:*/
 #line 50 "./webview.w"
 
 #include "webview.h"
 
-/*542:*/
+/*552:*/
 #line 57 "./webview.w"
 
 TypicaWebView::TypicaWebView():QWebView()
@@ -12,7 +12,7 @@ page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 connect(page(),SIGNAL(linkClicked(QUrl)),this,SLOT(linkDelegate(QUrl)));
 }
 
-/*:542*//*543:*/
+/*:552*//*553:*/
 #line 73 "./webview.w"
 
 void TypicaWebView::linkDelegate(const QUrl&url)
@@ -20,7 +20,7 @@ void TypicaWebView::linkDelegate(const QUrl&url)
 if(url.scheme()=="typica")
 {
 QString address(url.toEncoded());
-/*544:*/
+/*554:*/
 #line 91 "./webview.w"
 
 if(address=="typica://aboutqt")
@@ -29,10 +29,10 @@ QMessageBox::aboutQt(this);
 return;
 }
 
-/*:544*/
+/*:554*/
 #line 79 "./webview.w"
 
-/*545:*/
+/*555:*/
 #line 100 "./webview.w"
 
 if(address.startsWith("typica://script/"))
@@ -41,7 +41,7 @@ emit scriptLinkClicked(address.remove(0,16));
 return;
 }
 
-/*:545*/
+/*:555*/
 #line 80 "./webview.w"
 
 }
@@ -51,7 +51,7 @@ QDesktopServices::openUrl(url);
 }
 }
 
-/*:543*//*546:*/
+/*:553*//*556:*/
 #line 112 "./webview.w"
 
 void TypicaWebView::load(const QString&url)
@@ -88,7 +88,7 @@ QString TypicaWebView::saveXml()
 return page()->currentFrame()->documentElement().toOuterXml();
 }
 
-/*:546*//*552:*/
+/*:556*//*562:*/
 #line 205 "./webview.w"
 
 QWebElement TypicaWebView::documentElement()
@@ -101,8 +101,8 @@ QWebElement TypicaWebView::findFirstElement(const QString&selector)
 return page()->mainFrame()->findFirstElement(selector);
 }
 
-/*:552*/
+/*:562*/
 #line 53 "./webview.w"
 
 
-/*:541*/
+/*:551*/

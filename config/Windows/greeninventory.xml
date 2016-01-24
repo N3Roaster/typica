@@ -31,7 +31,7 @@
         <![CDATA[
             var types = findChildObject(this, 'transactiontype');
             types.addItem(TTR("inventory", "inventory"));
-            types.addItem(TTR("inventory", "loss");
+            types.addItem(TTR("inventory", "loss"));
             var optionalDisplay = findChildObject(this, 'optional');
             var units = findChildObject(this, 'units');
             units.addItem(TTR("inventory", "bag"));
@@ -62,7 +62,6 @@
             var value = findChildObject(this, 'quantity');
             var reason = findChildObject(this, 'reason');
             var reasonlabel = findChildObject(this, 'reasonlabel');
-            reason.enabled = false;
             button.clicked.connect(function() {
                 q = "INSERT INTO ";
                 q += (types.currentIndex == 0 ?

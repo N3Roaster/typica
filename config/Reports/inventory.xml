@@ -15,31 +15,31 @@
     </menu>
     <program>
         <![CDATA[
-            this.windowTitle = "Typica - Current Inventory and Availability Projection";
+            this.windowTitle = TTR("inventoryreport", "Typica - Current Inventory and Availability Projection");
             var report = findChildObject(this, 'report');
             var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
                 report.print();
             });
             var sortBox = findChildObject(this, 'sort');
-            sortBox.addItem("Coffee A-Z");
-            sortBox.addItem("Coffee Z-A");
-            sortBox.addItem("Stock Ascending");
-            sortBox.addItem("Stock Descending");
-            sortBox.addItem("Sacks Ascending");
-            sortBox.addItem("Sacks Descending");
-            sortBox.addItem("Unit Cost Ascending");
-            sortBox.addItem("Unit Cost Descending");
-            sortBox.addItem("Stock Cost Ascending");
-            sortBox.addItem("Stock Cost Descending");
-            sortBox.addItem("Use Rate Ascending");
-            sortBox.addItem("Use Rate Descending");
-            sortBox.addItem("Availability Shortest-Longest");
-            sortBox.addItem("Availability Longest-Shortest");
+            sortBox.addItem(TTR("inventoryreport", "Coffee A-Z"));
+            sortBox.addItem(TTR("inventoryreport", "Coffee Z-A"));
+            sortBox.addItem(TTR("inventoryreport", "Stock Ascending"));
+            sortBox.addItem(TTR("inventoryreport", "Stock Descending"));
+            sortBox.addItem(TTR("inventoryreport", "Sacks Ascending"));
+            sortBox.addItem(TTR("inventoryreport", "Sacks Descending"));
+            sortBox.addItem(TTR("inventoryreport", "Unit Cost Ascending"));
+            sortBox.addItem(TTR("inventoryreport", "Unit Cost Descending"));
+            sortBox.addItem(TTR("inventoryreport", "Stock Cost Ascending"));
+            sortBox.addItem(TTR("inventoryreport", "Stock Cost Descending"));
+            sortBox.addItem(TTR("inventoryreport", "Use Rate Ascending"));
+            sortBox.addItem(TTR("inventoryreport", "Use Rate Descending"));
+            sortBox.addItem(TTR("inventoryreport", "Availability Shortest-Longest"));
+            sortBox.addItem(TTR("inventoryreport", "Availability Longest-Shortest"));
             sortBox.currentIndex = QSettings.value("inventory_sort", 0);
 			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
+			unitBox.addItem(TTR("inventoryreport", "Kg"));
+			unitBox.addItem(TTR("inventoryreport", "Lb"));
 			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
             function refresh() {
                 var buffer = new QBuffer;
@@ -50,31 +50,31 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Current Inventory and Availability Projection");
+                output.writeTextElement("title", TTR("inventoryreport", "Current Inventory and Availability Projection"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Current Inventory and Availability Projection");
-                output.writeTextElement("p", "This is a report showing how much of each coffee is available, the cost of that coffee, the daily rate of use for that coffee, and the date the coffee will be gone if use continues at the current rate.");
+                output.writeTextElement("h1", TTR("inventoryreport", "Current Inventory and Availability Projection"));
+                output.writeTextElement("p", TTR("inventoryreport", "This is a report showing how much of each coffee is available, the cost of that coffee, the daily rate of use for that coffee, and the date the coffee will be gone if use continues at the current rate."));
                 output.writeStartElement("table");
                 output.writeAttribute("rules", "groups");
                 output.writeAttribute("cellpadding", "3px");
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Coffee");
+                output.writeTextElement("th", TTR("inventoryreport", "Coffee"));
 				switch(unitBox.currentIndex)
 				{
 					case 0:
-						output.writeTextElement("th", "Stock (Kg)");
+						output.writeTextElement("th", TTR("inventoryreport", "Stock (Kg)"));
 						break;
 					case 1:
-						output.writeTextElement("th", "Stock (Lb)");
+						output.writeTextElement("th", TTR("inventoryreport", "Stock (Lb)"));
 						break;
 				}
-                output.writeTextElement("th", "Sacks");
-                output.writeTextElement("th", "Unit Cost");
-                output.writeTextElement("th", "Stock Cost");
-                output.writeTextElement("th", "Use Rate");
-                output.writeTextElement("th", "Availability");
+                output.writeTextElement("th", TTR("inventoryreport", "Sacks"));
+                output.writeTextElement("th", TTR("inventoryreport", "Unit Cost"));
+                output.writeTextElement("th", TTR("inventoryreport", "Stock Cost"));
+                output.writeTextElement("th", TTR("inventoryreport", "Use Rate"));
+                output.writeTextElement("th", TTR("inventoryreport", "Availability"));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
@@ -155,7 +155,7 @@
                 output.writeEndElement();
                 output.writeStartElement("tfoot");
                 output.writeStartElement("tr");
-                output.writeTextElement("th", "Totals");
+                output.writeTextElement("th", TTR("inventoryreport", "Totals"));
                 query.prepare("SELECT (sum(quantity) / :conversion)::numeric(12,2), sum(quantity * (SELECT cost FROM purchase WHERE item = id))::numeric(12,2) FROM items WHERE quantity > 0");
 				switch(unitBox.currentIndex)
 				{
@@ -175,7 +175,7 @@
                 output.writeTextElement("td", "");
                 output.writeTextElement("td", "");
                 query = query.invalidate();
-				output.writeEndElement();
+                output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();

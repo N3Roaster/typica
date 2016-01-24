@@ -14,11 +14,11 @@
 	</menu>
 	<program>
 		<![CDATA[
-			this.windowTitle = "Typica - Coffee Purchase Previous Years Comparison";
+			this.windowTitle = TTR("fypurchase", "Typica - Coffee Purchase Previous Years Comparison");
 			/* Set Lifetime range. */
 			var dateSelect = findChildObject(this, 'dates');
 			var query = new QSqlQuery();
-			query.exec("SELECT concat(EXTRACT(YEAR FROM time::date), '-01-01') FROM purchase WHERE time = (SELECT min(time) FROM purchase) UNION SELECT concat(EXTRACT(YEAR FROM 'now'::date), '-12-31')");
+			query.exec("SELECT concat(EXTRACT(YEAR FROM time::date), '-01-01') FROM purchase WHERE time = (SELECT min(time) FROM purchase) UNION SELECT concat(EXTRACT(YEAR FROM 'now'::date), '-12-31') ORDER BY concat ASC");
 			query.next();
 			var lifetimeStartDate = query.value(0);
 			query.next();
@@ -33,8 +33,8 @@
 			});
 			/* Add units to unit selector and enable functionality */
 			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
+			unitBox.addItem(TTR("fypurchase", "Kg"));
+			unitBox.addItem(TTR("fypurchase", "Lb"));
 			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
 			unitBox['currentIndexChanged(int)'].connect(function() {
 				QSettings.setValue("script/report_unit", unitBox.currentIndex);
@@ -50,10 +50,10 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-				output.writeTextElement("title", "Coffee Purchase Previous Years Comparison");
+				output.writeTextElement("title", TTR("fypurchase", "Coffee Purchase Previous Years Comparison"));
 				output.writeEndElement();
 				output.writeStartElement("body");
-				output.writeTextElement("h1", "Coffee Purchase Previous Years Comparison");
+				output.writeTextElement("h1", TTR("fypurchase", "Coffee Purchase Previous Years Comparison"));
 				output.writeStartElement("table");
 				output.writeAttribute("style", "page-break-after: auto; text-align: left");
 				output.writeAttribute("rules", "groups");
@@ -61,16 +61,24 @@
 				output.writeStartElement("thead");
 				output.writeStartElement("tr");
 				output.writeEmptyElement("th");
-				output.writeTextElement("th", "Sacks Purchased");
+				output.writeTextElement("th", TTR("fypurchase", "Sacks Purchased"));
 				switch(unitBox.currentIndex) {
 					case 0:
-						output.writeTextElement("th", "Kilos Purchased");
+						output.writeTextElement("th", TTR("fypurchase", "Kg Purchased"));
 						break;
 					case 1:
-						output.writeTextElement("th", "Pounds Purchased");
+						output.writeTextElement("th", TTR("fypurchase", "Lb Purchased"));
 						break;
 				}
-				output.writeTextElement("th", "Cost");
+				output.writeTextElement("th", TTR("fypurchase", "Cost"));
+                                switch(unitBox.currentIndex) {
+                                    case 0:
+                                        output.writeTextElement("th", TTR("fypurchase", "Cost per Kg"));
+                                        break;
+                                    case 1:
+                                        output.writeTextElement("th", TTR("fypurchase", "Cost per Lb"));
+                                        break;
+                                }
 				output.writeEndElement(); //tr
 				output.writeEndElement(); //thead
 				output.writeStartElement("tbody");
@@ -102,13 +110,14 @@
 					sacktotal += Number(query.value(0));
 					unittotal += Number(query.value(1));
 					costtotal += Number(query.value(2));
+                                        output.writeTextElement("td", (Number(query.value(2))/Number(query.value(1))).toFixed(2));
 					output.writeEndElement(); //tr
 				}
 				query = query.invalidate();
 				output.writeEndElement(); //tbody
 				output.writeStartElement("tfoot");
-				output.writeTextElement("th", "Totals:");
-				output.writeTextElement("td", sacktotal);
+				output.writeTextElement("th", TTR("fypurchase", "Totals:"));
+				output.writeTextElement("td", sacktotal.toFixed(2));
 				output.writeTextElement("td", unittotal.toFixed(2));
 				output.writeTextElement("td", costtotal.toFixed(2));
 				output.writeEndElement(); //tfoot
@@ -131,7 +140,10 @@
 					expandedYears.push(url);
 					var element = new WebElement(view.findFirstElement("#" + url));
 					var year = url.slice(1,url.length);
-					var details = '<tr><td /><td colspan="3"><table><tr><th>Id</th><th>Invoice</th><th>Vendor</th><th>Cost</th></tr>';
+					var details = '<tr><td /><td colspan="3"><table><tr><th>Id</th><th>' + TTR("fypurchase", "Invoice") +
+                                        '</th><th>' + TTR("fypurchase", "Vendor") +
+                                        '</th><th>' + TTR("fypurchase", "Cost") +
+                                        '</th></tr>';
 					q = "SELECT id, invoice, vendor, (SELECT sum(cost) FROM invoice_items WHERE invoice_id = id) FROM invoices WHERE time >= '" + year + "-01-01' AND time <= '" + year + "-12-31'";
 					var query = new QSqlQuery();
 					query.exec(q);

@@ -14,7 +14,7 @@
 	</menu>
 	<program>
 		<![CDATA[
-			this.windowTitle = "Typica - Inventory Change Summary";
+			this.windowTitle = TTR("invchange", "Typica - Inventory Change Summary");
 			var dateSelect = findChildObject(this, 'dates');
 			var dateQuery = new QSqlQuery();
 			dateQuery.exec("SELECT time::date FROM transactions WHERE time = (SELECT min(time) FROM transactions) OR time = (SELECT max(time) FROM transactions) ORDER BY time ASC");
@@ -29,8 +29,8 @@
 			dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
 			dateQuery = dateQuery.invalidate();
 			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
+			unitBox.addItem(TTR("invchange", "Kg"));
+			unitBox.addItem(TTR("invchange", "Lb"));
 			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
 			unitBox['currentIndexChanged(int)'].connect(function() {
 				QSettings.setValue("script/report_unit", unitBox.currentIndex);
@@ -50,23 +50,23 @@
 				output.writeStartElement("html");
 				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
 				output.writeStartElement("head");
-				output.writeTextElement("title", "Inventory Change Summary");
+				output.writeTextElement("title", TTR("invchange", "Inventory Change Summary"));
 				output.writeEndElement();
 				output.writeStartElement("body");
 				var dateRange = dateSelect.currentRange();
 				var startDate = dateRange[0];
 				var endDate = dateRange[dateRange.length - 1];
-				output.writeTextElement("h1", "Inventory Change Summary: " + startDate + " – " + endDate);
+				output.writeTextElement("h1", TTR("invchange", "Inventory Change Summary: ") + startDate + " – " + endDate);
 				var conversion = 1;
 				if(unitBox.currentIndex == 0) {
 					conversion = 2.2;
 				}
-				var unitText = "Lb";
+				var unitText = TTR("invchange", "Lb");
 				if(unitBox.currentIndex == 0) {
-					unitText = "Kg";
+					unitText = TTR("invchange", "Kg");
 				}
 				var query = new QSqlQuery();
-					var q = "WITH q AS (SELECT id, name, reference, COALESCE((SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :sd1)), 0)/:c1 AS starting_balance, COALESCE((SELECT sum(quantity) FROM purchase WHERE item = id AND time >= :sd2 AND time < :ed1 ::date + interval '1 day'), 0)/:c2 AS purchase, COALESCE((SELECT sum(quantity) FROM use WHERE item = id AND time >= :sd3 AND time < :ed2 ::date + interval '1 day'), 0)/:c3 AS use, COALESCE((SELECT sum(quantity) FROM sale WHERE item = id AND time >= :sd4 AND time < :ed3 ::date + interval '1 day'), 0)/:c4 AS sale, (SElECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed4 ::date + interval '1 day'))/:c5 AS quantity, (SELECT sum(cost * quantity) / sum(quantity) FROM purchase WHERE item = id) AS unit_cost FROM coffees WHERE id IN (SELECT item FROM purchase WHERE time >= :sd6 AND time < :ed5 ::date + interval '1 day') OR id IN (SELECT id FROM items WHERE (SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed6 ::date + interval '1 day')) > 0) OR id IN (SELECT DISTINCT item FROM all_transactions WHERE time > :sd7 AND time < :ed7 ::date + interval '1 day')) SELECT *, (starting_balance + purchase - use - sale - quantity)/:c7 AS adjustment, starting_balance * unit_cost * :c8 AS starting_cost, purchase * unit_cost * :c9 AS purchase_cost, use * unit_cost * :c10 AS use_cost, sale * unit_cost * :c11 AS sale_cost, quantity * unit_cost * :c12 AS quantity_cost, (starting_balance + purchase - use - sale - quantity) * unit_cost * :c13 AS adjustment_cost, (SELECT sum(quantity)/:c6 FROM purchase WHERE item = id) AS total_purchase FROM q ORDER BY name";
+					var q = "WITH q AS (SELECT id, name, reference, COALESCE((SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :sd1)), 0)/:c1 AS starting_balance, COALESCE((SELECT sum(quantity) FROM purchase WHERE item = id AND time >= :sd2 AND time < :ed1 ::date + interval '1 day'), 0)/:c2 AS purchase, COALESCE((SELECT sum(quantity) FROM use WHERE item = id AND time >= :sd3 AND time < :ed2 ::date + interval '1 day'), 0)/:c3 AS use, COALESCE((SELECT sum(quantity) FROM sale WHERE item = id AND time >= :sd4 AND time < :ed3 ::date + interval '1 day'), 0)/:c4 AS sale, (SElECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed4 ::date + interval '1 day'))/:c5 AS quantity, (SELECT sum(cost * quantity) / sum(quantity) FROM purchase WHERE item = id) AS unit_cost FROM coffees WHERE id IN (SELECT item FROM purchase WHERE time >= :sd6 AND time < :ed5 ::date + interval '1 day') OR id IN (SELECT id FROM items WHERE (SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed6 ::date + interval '1 day')) > 0) OR id IN (SELECT DISTINCT item FROM all_transactions WHERE time > :sd7 AND time < :ed7 ::date + interval '1 day')) SELECT *, (starting_balance + purchase - use - sale - quantity) AS adjustment, starting_balance * unit_cost * :c8 AS starting_cost, purchase * unit_cost * :c9 AS purchase_cost, use * unit_cost * :c10 AS use_cost, sale * unit_cost * :c11 AS sale_cost, quantity * unit_cost * :c12 AS quantity_cost, (starting_balance + purchase - use - sale - quantity) * unit_cost * :c13 AS adjustment_cost, (SELECT sum(quantity)/:c6 FROM purchase WHERE item = id) AS total_purchase FROM q ORDER BY name";
 				query.prepare(q);
 				query.bind(":sd1", startDate);
 				query.bind(":sd2", startDate);
@@ -87,7 +87,6 @@
 				query.bind(":c4", conversion);
 				query.bind(":c5", conversion);
 				query.bind(":c6", conversion);
-				query.bind(":c7", conversion);
 				query.bind(":c8", conversion);
 				query.bind(":c9", conversion);
 				query.bind(":c10", conversion);
@@ -100,21 +99,21 @@
 				output.writeAttribute("cellpadding", "3px");
 				output.writeStartElement("thead");
 				output.writeStartElement("tr");
-				output.writeTextElement("th", "ID"); // 0
-				output.writeTextElement("th", "Coffee"); // 1
-				output.writeTextElement("th", "Reference"); // 2
-				output.writeTextElement("th", "Starting (" + unitText + ")"); // 3
-				output.writeTextElement("th", "Cost"); // 10
-				output.writeTextElement("th", "Purchase (" + unitText + ")"); // 4
-				output.writeTextElement("th", "Cost"); // 11
-				output.writeTextElement("th", "Use (" + unitText + ")"); // 5
-				output.writeTextElement("th", "Cost"); // 12
-				output.writeTextElement("th", "Sale (" + unitText + ")"); // 6
-				output.writeTextElement("th", "Cost"); // 13
-				output.writeTextElement("th", "Adjustment (" + unitText + ")"); // 9
-				output.writeTextElement("th", "Cost"); // 15
-				output.writeTextElement("th", "Ending (" + unitText + ")"); // 7
-				output.writeTextElement("th", "Cost"); // 14
+				output.writeTextElement("th", TTR("invchange", "ID")); // 0
+				output.writeTextElement("th", TTR("invchange", "Coffee")); // 1
+				output.writeTextElement("th", TTR("invchange", "Reference")); // 2
+				output.writeTextElement("th", TTR("invchange", "Starting (") + unitText + ")"); // 3
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 10
+				output.writeTextElement("th", TTR("invchange", "Purchase (") + unitText + ")"); // 4
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 11
+				output.writeTextElement("th", TTR("invchange", "Use (") + unitText + ")"); // 5
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 12
+				output.writeTextElement("th", TTR("invchange", "Sale (") + unitText + ")"); // 6
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 13
+				output.writeTextElement("th", TTR("invchange", "Adjustment (") + unitText + ")"); // 9
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 15
+				output.writeTextElement("th", TTR("invchange", "Ending (") + unitText + ")"); // 7
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 14
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");
@@ -190,7 +189,7 @@
 				output.writeStartElement("tr");
 				output.writeTextElement("td", "");
 				output.writeTextElement("td", "");
-				output.writeTextElement("th", "Total:");
+				output.writeTextElement("th", TTR("invchange", "Total:"));
 				output.writeTextElement("td", sum3.toFixed(2));
 				output.writeTextElement("td", sum10.toFixed(2));
 				output.writeTextElement("td", sum4.toFixed(2));

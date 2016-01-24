@@ -22,8 +22,8 @@
 \mark{\noexpand\nullsec0{A Note on Notation}}
 \def\pn{Typica}
 \def\filebase{typica}
-\def\version{1.6.4 \number\year-\number\month-\number\day}
-\def\years{2007--2015}
+\def\version{1.7.0 \number\year-\number\month-\number\day}
+\def\years{2007--2016}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip
@@ -623,6 +623,7 @@ various Qt modules.
 #include <QtDebug>
 #include <QtXmlPatterns>
 #include <QtWebKit>
+#include <QtSvg>
 
 @ New code is being written in separate files in a long term effort to improve
 organization of the code. The result of this is that some additional headers
@@ -918,6 +919,53 @@ QScriptValue QWidget_activateWindow(QScriptContext *context,
 {
     QWidget *self = getself<QWidget *>(context);
     self->activateWindow();
+    return QScriptValue();
+}
+
+@* Scripting QMessageBox.
+
+\noindent Some features require that \pn{} pauses an operation until further
+information can be obtained. An example of this is discretionary validation
+where input is checked and if it seems unlikely but not impossible to be
+correct a dialog should come up asking if that input is correct. If it is not,
+the operation should be cancelled and the person using \pn{} should be allowed
+to correct the information and try again.
+
+For this use case, it is not necessary to fully expose the |QMessageBox| class.
+Instead, it is enough to provide a function that will raise an appropriate
+message and return the selected action.
+
+@<Function prototypes for scripting@>=
+QScriptValue displayWarning(QScriptContext *context, QScriptEngine *engine);
+QScriptValue displayError(QScriptContext *context, QScriptEngine *engine);
+
+@ This function is exposed to the host environment.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(displayWarning);
+engine->globalObject().setProperty("displayWarning", constructor);
+constructor = engine->newFunction(displayError);
+engine->globalObject().setProperty("displayError", constructor);
+
+@ The function takes some arguments.
+
+@<Functions for scripting@>=
+QScriptValue displayWarning(QScriptContext *context, QScriptEngine *)
+{
+    QMessageBox::StandardButton selection = QMessageBox::warning(NULL,
+        argument<QString>(0, context),
+        argument<QString>(1, context),
+        QMessageBox::Ok | QMessageBox::Cancel);
+    if(selection == QMessageBox::Ok) {
+        return QScriptValue(true);
+    }
+    return QScriptValue(false);
+}
+
+QScriptValue displayError(QScriptContext *context, QScriptEngine *)
+{
+    QMessageBox::critical(NULL, argument<QString>(0, context),
+                          argument<QString>(1, context));
     return QScriptValue();
 }
 
@@ -1361,6 +1409,93 @@ QScriptValue constructQLabel(QScriptContext *context, QScriptEngine *engine)
 void setQLabelProperties(QScriptValue value, QScriptEngine *engine)
 {
     setQFrameProperties(value, engine);
+}
+
+@* Scripting QSvgWidget.
+
+\noindent Sometimes it is useful to provide a space for simple drawings without
+the need for all of the other capabilities of a web view. This was introduced
+as a way to draw box plots to help guide the creation of roast specifications.
+
+@<Function prototypes for scripting@>=
+void setQSvgWidgetProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue constructQSvgWidget(QScriptContext *context,
+                                 QScriptEngine *engine);
+QScriptValue QSvgWidget_loadDevice(QScriptContext *context,
+                                   QScriptEngine *engine);
+void addSvgWidgetToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
+                          QStack<QLayout *> *layoutStack);
+
+@ The constructor must be passed to the scripting engine.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQSvgWidget);
+value = engine->newQMetaObject(&QSvgWidget::staticMetaObject, constructor);
+engine->globalObject().setProperty("QSvgWidget", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQSvgWidget(QScriptContext *,
+                                 QScriptEngine *engine)
+{
+    QScriptValue object = engine->newQObject(new QSvgWidget);
+    setQSvgWidgetProperties(object, engine);
+    return object;
+}
+
+@ A property is added that allows loading data from a |QIODevice|.
+
+@<Functions for scripting@>=
+void setQSvgWidgetProperties(QScriptValue value, QScriptEngine *engine)
+{
+    setQWidgetProperties(value, engine);
+    value.setProperty("loadDevice",
+                      engine->newFunction(QSvgWidget_loadDevice));
+}
+
+QScriptValue QSvgWidget_loadDevice(QScriptContext *context, QScriptEngine *)
+{
+    if(context->argumentCount() == 1)
+    {
+        QSvgWidget *self = getself<@[QSvgWidget *@]>(context);
+        QIODevice *device = argument<QIODevice *>(0, context);
+        device->reset();
+        QByteArray data = device->readAll();
+        self->load(data);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+                            "QSvgWidget::loadData(). This method takes one "@|
+                            "QIODevice as an argument.");
+    }
+    return QScriptValue();
+}
+
+@ Additional work is needed to allow including this from the XML description of
+a window.
+
+@<Additional box layout elements@>=
+else if(currentElement.tagName() == "svgwidget")
+{
+    addSvgWidgetToLayout(currentElement, widgetStack, layoutStack);
+}
+
+@ The function used to create this follows the usual pattern.
+
+@<Functions for scripting@>=
+void addSvgWidgetToLayout(QDomElement element, QStack<QWidget *> *,
+                          QStack<QLayout *> *layoutStack)
+{
+    QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+    QSvgWidget *widget = new QSvgWidget;
+    layout->addWidget(widget);
+    QString id = element.attribute("id");
+    if(!id.isEmpty())
+    {
+        widget->setObjectName(id);
+    }
 }
 
 @* Scripting QLineEdit.
@@ -4014,6 +4149,7 @@ QScriptValue annotationFromRecord(QScriptContext *context,
                                   QScriptEngine *engine);
 QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *engine);
 QScriptValue saveFileFromDatabase(QScriptContext *context, QScriptEngine *engine);
+QScriptValue scriptTr(QScriptContext *context, QScriptEngine *engine);
 
 @ These functions are passed to the scripting engine.
 
@@ -4029,6 +4165,7 @@ engine->globalObject().setProperty("setTabOrder",
                                    engine->newFunction(setTabOrder));
 engine->globalObject().setProperty("saveFileFromDatabase",
                                    engine->newFunction(saveFileFromDatabase));
+engine->globalObject().setProperty("TTR", engine->newFunction(scriptTr));
 
 @ These functions are not part of an object. They expect a string specifying
 the path to a file and return a string with either the name of the file without
@@ -4155,6 +4292,16 @@ QScriptValue setTabOrder(QScriptContext *context, QScriptEngine *)
     return QScriptValue();
 }
 
+@ This function is used to allow text that must be placed in scripts to be
+translated into other languages.
+
+@<Functions for scripting@>=
+QScriptValue scriptTr(QScriptContext *context, QScriptEngine *)
+{
+    return QScriptValue(QCoreApplication::translate(
+        "configuration",
+        argument<QString>(1, context).toUtf8().data()));
+}
 
 @** Application Configuration.
 
@@ -4204,6 +4351,13 @@ if(!filename.isEmpty())
     QFile file(filename);
     QFileInfo info(filename);
     directory = info.dir();
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
+    QTranslator *configtr = new QTranslator;
+    if(configtr->load(QString("config.%1").arg(QLocale::system().name()),
+                     QString("%1/Translations").arg(directory.canonicalPath())))
+    {
+        QCoreApplication::installTranslator(configtr);
+    }
     settings.setValue("config", directory.path());
     if(file.open(QIODevice::ReadOnly))
     {
@@ -4528,6 +4682,7 @@ while(i < windowChildren.count())
         }
         else if(element.tagName() == "layout")
         {
+            element.setAttribute("trcontext", "configuration");
             addLayoutToWidget(element, &widgetStack, &layoutStack);
         }
         else if(element.tagName() == "menu")
@@ -4560,7 +4715,8 @@ bar->setParent(window);
 bar->setObjectName("menuBar");
 if(element.hasAttribute("name"))
 {
-    QMenu *menu = bar->addMenu(element.attribute("name"));
+    QMenu *menu = bar->addMenu(QCoreApplication::translate("configuration",
+                                                           element.attribute("name").toUtf8().data()));
     menu->setParent(bar);
     if(element.hasAttribute("type"))
     {
@@ -4592,7 +4748,8 @@ while(j < menuItems.count())
         QDomElement itemElement = item.toElement();
         if(itemElement.tagName() == "item")
         {
-            QAction *itemAction = new QAction(itemElement.text(), menu);
+            QAction *itemAction = new QAction(QCoreApplication::translate("configuration",
+                                              itemElement.text().toUtf8().data()), menu);
             if(itemElement.hasAttribute("id"))
             {
                 itemAction->setObjectName(itemElement.attribute("id"));
@@ -4712,6 +4869,7 @@ void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                 QWidget *widget = new QWidget;
                 layout->addWidget(widget);
                 widgetStack->push(widget);
+                currentElement.setAttribute("trcontext", "configuration");
                 populateWidget(currentElement, widgetStack, layoutStack);
                 widgetStack->pop();
             }
@@ -4822,6 +4980,7 @@ for(int j = 0; j < rowChildren.count(); j++)
             QHBoxLayout *cell = new QHBoxLayout;
             layout->addLayout(cell, row, column, vspan, hspan);
             layoutStack->push(cell);
+            columnElement.setAttribute("trcontext", "configuration");
             populateBoxLayout(columnElement, widgetStack, layoutStack);
             layoutStack->pop();
         }
@@ -4844,6 +5003,7 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
         if(current.isElement())
         {
             currentElement = current.toElement();
+            currentElement.setAttribute("trcontext", "configuration");
             if(currentElement.tagName() == "button")
             {
                 addButtonToLayout(currentElement, widgetStack, layoutStack);
@@ -4869,7 +5029,9 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
             {
                 QBoxLayout *layout =
                     qobject_cast<QBoxLayout *>(layoutStack->top());
-                QLabel *label = new QLabel(currentElement.text());
+                QLabel *label = new QLabel(QCoreApplication::translate(
+                    "configuration",
+                    currentElement.text().toUtf8().data()));
                 layout->addWidget(label);
             }
             else if(currentElement.tagName() == "lcdtemperature")
@@ -5013,6 +5175,7 @@ void populateSplitter(QDomElement element, QStack<QWidget *> *widgetStack,@|
         if(current.isElement())
         {
             currentElement = current.toElement();
+            currentElement.setAttribute("trcontext", "configuration");
             if(currentElement.tagName() == "decoration")
             {
                 addDecorationToSplitter(currentElement, widgetStack,
@@ -5158,7 +5321,9 @@ void addDecorationToSplitter(QDomElement element,
 labeled.
 
 @<Set up decoration@>=
-QString labelText = element.attribute("name");
+QString labelText =
+    QCoreApplication::translate("configuration",
+    element.attribute("name").toUtf8().data());
 Qt::Orientations@, orientation = Qt::Horizontal;
 if(element.hasAttribute("type"))
 {
@@ -5254,6 +5419,7 @@ void populateWidget(QDomElement element, QStack<QWidget *> *widgetStack,@|
             currentElement = current.toElement();
             if(currentElement.tagName() == "layout")
             {
+                currentElement.setAttribute("trcontext", "configuration");
                 addLayoutToWidget(currentElement, widgetStack, layoutStack);
             }
         }
@@ -5269,7 +5435,9 @@ void addButtonToLayout(QDomElement element, QStack<QWidget *> *,@|
                        QStack<QLayout *> *layoutStack)
 {
     QAbstractButton *button = NULL;
-    QString text = element.attribute("name");
+    QString text =
+        QCoreApplication::translate("configuration",
+                                    element.attribute("name").toUtf8().data());
     if(element.hasAttribute("type"))
     {
         QString type = element.attribute("type");
@@ -5323,11 +5491,15 @@ void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *,@|
     AnnotationSpinBox *box = new AnnotationSpinBox("", "", NULL);
     if(element.hasAttribute("pretext"))
     {
-        box->setPretext(element.attribute("pretext"));
+        box->setPretext(QCoreApplication::translate(
+                        "configuration",
+                        element.attribute("pretext").toUtf8().data()));
     }
     if(element.hasAttribute("posttext"))
     {
-        box->setPosttext(element.attribute("posttext"));
+        box->setPosttext(QCoreApplication::translate(
+                         "configuration",
+                         element.attribute("posttext").toUtf8().data()));
     }
     if(element.hasAttribute("series"))
     {
@@ -5377,10 +5549,6 @@ void addZoomLogToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                           QStack<QLayout *> *)
 {
     ZoomLog *widget = new ZoomLog;
-    if(!widget)
-    {
-        qDebug() << "Error constructing widget!";
-    }
     if(element.hasAttribute("id"))
     {
         widget->setObjectName(element.attribute("id"));
@@ -5399,7 +5567,10 @@ void addZoomLogToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                 currentElement = current.toElement();
                 if(currentElement.tagName() == "column")
                 {
-                    QString text = currentElement.text();
+                    QString text =
+                        QCoreApplication::translate(
+                            "configuration",
+                            currentElement.text().toUtf8().data());
                     widget->setHeaderData(column, text);
                     column++;
                 }
@@ -5543,8 +5714,11 @@ void addSaltToLayout(QDomElement element, QStack<QWidget *> *,@|
                 {
                     if(currentElement.hasAttribute("name"))
                     {
-                        model->setHeaderData(currentColumn, Qt::Horizontal,
-                                             currentElement.attribute("name"));
+                        model->setHeaderData(currentColumn,
+                            Qt::Horizontal,
+                            QCoreApplication::translate(
+                                "configuration",
+                                currentElement.attribute("name").toUtf8().data()));
                     }
                     if(currentElement.hasAttribute("delegate"))
                     {
@@ -5925,6 +6099,8 @@ void setQDateTimeEditProperties(QScriptValue value, QScriptEngine *engine)
     value.setProperty("day", engine->newFunction(QDateTimeEdit_day));
     value.setProperty("month", engine->newFunction(QDateTimeEdit_month));
     value.setProperty("year", engine->newFunction(QDateTimeEdit_year));
+    value.setProperty("setToCurrentTime",
+                      engine->newFunction(QDateTimeEdit_setToCurrentTime));
 }
 
 @ Certain operations on a |QDateEdit| are easier with a few convenience
@@ -5969,6 +6145,13 @@ QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *)
     return QScriptValue(self->date().year());
 }
 
+QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *)
+{
+    QDateTimeEdit *self = getself<QDateTimeEdit *>(context);
+    self->setDateTime(QDateTime::currentDateTime());
+    return QScriptValue();
+}
+
 @ A few function prototypes are needed for this.
 
 @<Function prototypes for scripting@>=
@@ -5980,6 +6163,7 @@ QScriptValue QDateTimeEdit_day(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QDateTimeEdit_month(QScriptContext *context,
                                  QScriptEngine *engine);
 QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *engine);
 
 @ In order to get to objects created from the XML description, it is necessary
 to provide a function that can be called to retrieve children of a given widget.
@@ -6115,6 +6299,10 @@ else if(className == "QWebView")
 else if(className == "QLineEdit")
 {
     setQLineEditProperties(value, engine);
+}
+else if(className == "QSvgWidget")
+{
+    setQSvgWidgetProperties(value, engine);
 }
 
 @ In the list of classes, the SaltTable entry is for a class which does not
@@ -12437,15 +12625,15 @@ text can be replaced with translated text based on the user'@q'@>s locale. For m
 details, see the Qt Linguist manual.
 
 @<Load translation objects@>=
-QTranslator base;
-if(base.load(QString("qt_%1").arg(QLocale::system().name())))
+QTranslator *base = new QTranslator;
+if(base->load(QString("qt_%1").arg(QLocale::system().name()), QString("%1/Translations").arg(QCoreApplication::applicationDirPath())))
 {
-    installTranslator(&base);
+    installTranslator(base);
 }
-QTranslator app;
-if(app.load(QString("%1_%2").arg("Typica").arg(QLocale::system().name())))
+QTranslator *app = new QTranslator;
+if(app->load(QString("%1_%2").arg("Typica").arg(QLocale::system().name()), QString("%1/Translations").arg(QCoreApplication::applicationDirPath())))
 {
-    installTranslator(&app);
+    installTranslator(app);
 }
 
 @ We also want to be able to access the application instance from within the
@@ -13286,6 +13474,7 @@ class SqlConnectionSetup : public QDialog@/
         QFormLayout *formLayout;
         QComboBox *driver;
         QLineEdit *hostname;
+        QLineEdit *portnumber;
         QLineEdit *dbname;
         QLineEdit *user;
         QLineEdit *password;
@@ -13300,6 +13489,7 @@ class SqlConnectionSetup : public QDialog@/
 @<SqlConnectionSetup implementation@>=
 SqlConnectionSetup::SqlConnectionSetup() :
     formLayout(new QFormLayout), driver(new QComboBox), hostname(new QLineEdit),
+    portnumber(new QLineEdit),
     dbname(new QLineEdit), user(new QLineEdit), password(new QLineEdit),
     layout(new QVBoxLayout), buttons(new QHBoxLayout),
     cancelButton(new QPushButton(tr("Cancel"))),
@@ -13308,6 +13498,8 @@ SqlConnectionSetup::SqlConnectionSetup() :
     driver->addItem("PostgreSQL", "QPSQL");
     formLayout->addRow(tr("Database driver:"), driver);
     formLayout->addRow(tr("Host name:"), hostname);
+    formLayout->addRow(tr("Port number:"), portnumber);
+    portnumber->setText("5432");
     formLayout->addRow(tr("Database name:"), dbname);
     formLayout->addRow(tr("User name:"), user);
     password->setEchoMode(QLineEdit::Password);
@@ -13319,6 +13511,7 @@ SqlConnectionSetup::SqlConnectionSetup() :
     buttons->addWidget(connectButton);
     layout->addLayout(buttons);
     connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(testConnection()));
+    connectButton->setDefault(true);
     setLayout(layout);
     setModal(true);
 }
@@ -13339,6 +13532,7 @@ void SqlConnectionSetup::testConnection()
                                   toString());
     database.setConnectOptions("application_name=Typica");
     database.setHostName(hostname->text());
+    database.setPort(portnumber->text().toInt());
     database.setDatabaseName(dbname->text());
     database.setUserName(user->text());
     database.setPassword(password->text());
@@ -13349,6 +13543,7 @@ void SqlConnectionSetup::testConnection()
         settings.setValue("database/driver",
                           driver->itemData(driver->currentIndex()).toString());
         settings.setValue("database/hostname", hostname->text());
+        settings.setValue("database/portnumber", portnumber->text());
         settings.setValue("database/dbname", dbname->text());
         settings.setValue("database/user", user->text());
         settings.setValue("database/password", password->text());
@@ -13381,6 +13576,7 @@ QSqlDatabase database =
     QSqlDatabase::addDatabase(settings.value("database/driver").toString());
 database.setConnectOptions("application_name=Typica");
 database.setHostName(settings.value("database/hostname").toString());
+database.setPort(settings.value("database/portnumber", 5432).toInt());
 database.setDatabaseName(settings.value("database/dbname").toString());
 database.setUserName(settings.value("database/user").toString());
 database.setPassword(settings.value("database/password").toString());
@@ -13728,11 +13924,13 @@ if(file.open(QIODevice::ReadOnly))
     QDomDocument document;
     document.setContent(&file, true);
     QDomElement root = document.documentElement();
+    QString translationContext = root.attribute("id");
     QDomNode titleNode = root.elementsByTagName("reporttitle").at(0);
     if(!titleNode.isNull())
     {
         QDomElement titleElement = titleNode.toElement();
-        QString title = titleElement.text();
+        QString title = QCoreApplication::translate("configuration",
+                                                    titleElement.text().toUtf8().data());
         if(!title.isEmpty())
         {
             QStringList hierarchy = title.split(":->");
@@ -15993,6 +16191,9 @@ class RoasterConfWidget : public BasicDeviceConfigurationWidget
                                             const QModelIndex &index);
     @[private slots@]:@/
         void updateRoasterId(int id);
+        void updateCapacityCheck(int value);
+        void updateCapacity(const QString &value);
+        void updateCapacityUnit(const QString &value);
 };
 
 @ Aside from the ID number used to identify the roaster in the database we also
@@ -16074,7 +16275,26 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
     idLayout->addWidget(idLabel);
     QSpinBox *id = new QSpinBox;
     idLayout->addWidget(id);
+    idLayout->addStretch();
     layout->addLayout(idLayout);
+    QHBoxLayout *capacityLayout = new QHBoxLayout;
+    QCheckBox *capacityCheckEnabled = new QCheckBox(tr("Maximum batch size:"));
+    QDoubleSpinBox *capacity = new QDoubleSpinBox;
+    capacity->setMinimum(0.0);
+    capacity->setDecimals(3);
+    capacity->setMaximum(999999.999);
+    QComboBox *capacityUnit = new QComboBox;
+    capacityUnit->addItem("g");
+    capacityUnit->addItem("Kg");
+    capacityUnit->addItem("oz");
+    capacityUnit->addItem("Lb");
+    capacityUnit->setCurrentIndex(3);
+    capacityLayout->addWidget(capacityCheckEnabled);
+    capacityLayout->addWidget(capacity);
+    capacityLayout->addWidget(capacityUnit);
+    capacityLayout->addStretch();
+    layout->addLayout(capacityLayout);
+    layout->addStretch();
     @<Get device configuration data for current node@>@;
     for(int i = 0; i < configData.size(); i++)
     {
@@ -16082,11 +16302,25 @@ RoasterConfWidget::RoasterConfWidget(DeviceTreeModel *model, const QModelIndex &
         if(node.attribute("name") == "databaseid")
         {
             id->setValue(node.attribute("value").toInt());
-            break;
+        }
+        else if(node.attribute("name") == "checkcapacity")
+        {
+            capacityCheckEnabled->setChecked(node.attribute("value") == "true");
+        }
+        else if(node.attribute("name") == "capacity")
+        {
+            capacity->setValue(node.attribute("value").toDouble());
+        }
+        else if(node.attribute("name") == "capacityunit")
+        {
+            capacityUnit->setCurrentIndex(capacityUnit->findText(node.attribute("value")));
         }
     }
     updateRoasterId(id->value());
     connect(id, SIGNAL(valueChanged(int)), this, SLOT(updateRoasterId(int)));
+    connect(capacityCheckEnabled, SIGNAL(stateChanged(int)), this, SLOT(updateCapacityCheck(int)));
+    connect(capacity, SIGNAL(valueChanged(QString)), this, SLOT(updateCapacity(QString)));
+    connect(capacityUnit, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateCapacityUnit(QString)));
     setLayout(layout);
 }
 
@@ -16103,7 +16337,7 @@ QDomElement referenceElement =
 QDomNodeList configData = referenceElement.elementsByTagName("attribute");
 QDomElement node;
 
-@ We need to propagate changes to the ID number field to the device
+@ We need to propagate changes to the configuration fields to the device
 configuration document. The |updateAttribute()| method in the base class
 makes this trivial.
 
@@ -16111,6 +16345,21 @@ makes this trivial.
 void RoasterConfWidget::updateRoasterId(int id)
 {
     updateAttribute("databaseid", QString("%1").arg(id));
+}
+
+void RoasterConfWidget::updateCapacityCheck(int value)
+{
+    updateAttribute("checkcapacity", value == Qt::Checked ? "true" : "false");
+}
+
+void RoasterConfWidget::updateCapacity(const QString &value)
+{
+    updateAttribute("capacity", value);
+}
+
+void RoasterConfWidget::updateCapacityUnit(const QString &value)
+{
+    updateAttribute("capacityunit", value);
 }
 
 @ Finally we must register the configuration widget so that it can be

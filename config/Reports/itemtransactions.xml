@@ -18,11 +18,11 @@
 	</menu>
 	<program>
 		<![CDATA[
-			this.windowTitle = "Typica - Item Transactions";
+			this.windowTitle = TTR("item_transactions", "Typica - Item Transactions");
 			var itemBox = findChildObject(this, 'item');
 			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
+			unitBox.addItem(TTR("item_transactions", "Kg"));
+			unitBox.addItem(TTR("item_transactions", "Lb"));
 			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
 			unitBox['currentIndexChanged(int)'].connect(function() {
 				QSettings.setValue("script/report_unit", unitBox.currentIndex);
@@ -45,7 +45,7 @@
 				output.writeStartElement("html");
 				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
 				output.writeStartElement("head");
-				output.writeTextElement("title", "Item Transactions");
+				output.writeTextElement("title", TTR("item_transactions", "Item Transactions"));
 				output.writeStartElement("script");
 				var scriptFile = new QFile(QSettings.value("config") + "/Scripts/d3.min.js");
 				scriptFile.open(1);
@@ -64,7 +64,7 @@
 				
 				output.writeEndElement();
 				output.writeStartElement("body");
-				output.writeTextElement("h1", "Item Transactions:");
+				output.writeTextElement("h1", TTR("item_transactions", "Item Transactions:"));
 				output.writeStartElement("table");
 				output.writeStartElement("tr");
 				output.writeStartElement("td");
@@ -77,11 +77,11 @@
 				query.exec();
 				if(query.next()) {
 					output.writeStartElement("td");
-					output.writeTextElement("strong", "Reference: ");
+					output.writeTextElement("strong", TTR("item_transactions", "Reference: "));
 					output.writeTextElement("span", query.value(0));
 					output.writeEndElement(); // td
 					output.writeStartElement("td");
-					output.writeTextElement("strong", "Category: ");
+					output.writeTextElement("strong", TTR("item_transactions", "Category: "));
 					output.writeTextElement("span", query.value(1));
 					output.writeEndElement(); //td
 					output.writeEndElement(); //tr
@@ -91,29 +91,29 @@
 					if(query.next()) {
 						output.writeStartElement("tr");
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Origin: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Origin: "));
 						output.writeTextElement("span", query.value(0));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Region: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Region: "));
 						output.writeTextElement("span", query.value(1));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Producer: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Producer: "));
 						output.writeTextElement("span", query.value(2));
 						output.writeEndElement(); // td
 						output.writeEndElement(); // tr
 						output.writeStartElement("tr");
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Grade: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Grade: "));
 						output.writeTextElement("span", query.value(3));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Milling: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Milling: "));
 						output.writeTextElement("span", query.value(4));
 						output.writeEndElement(); // td
 						output.writeStartElement("td");
-						output.writeTextElement("strong", "Drying: ");
+						output.writeTextElement("strong", TTR("item_transactions", "Drying: "));
 						output.writeTextElement("span", query.value(5));
 						output.writeEndElement(); // td
 						output.writeEndElement(); // tr
@@ -124,7 +124,7 @@
 							output.writeStartElement("tr");
 							output.writeStartElement("td");
 							output.writeAttribute("colspan", "3");
-							output.writeTextElement("strong", "Decaffeination Method: ");
+							output.writeTextElement("strong", TTR("item_transactions", "Decaffeination Method: "));
 							output.writeTextElement("span", query.value(0));
 							output.writeEndElement(); // td
 							output.writeEndElement(); // tr
@@ -176,7 +176,7 @@
 					scriptFile.close();
 					output.writeEndElement();
 					
-					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))) FROM item_history(:item)");
+					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason FROM item_history(:item)");
 					switch(unitBox.currentIndex)
 					{
 						case 0:
@@ -192,39 +192,41 @@
 					query.exec();
 					output.writeStartElement("table");
 					output.writeStartElement("tr");
-					output.writeTextElement("th", "Date");
-					output.writeTextElement("th", "Type");
-					output.writeTextElement("th", "Quantity");
-					output.writeTextElement("th", "Balance");
-					output.writeTextElement("th", "Record");
+					output.writeTextElement("th", TTR("item_transactions", "Date"));
+					output.writeTextElement("th", TTR("item_transactions", "Type"));
+					output.writeTextElement("th", TTR("item_transactions", "Quantity"));
+					output.writeTextElement("th", TTR("item_transactions", "Balance"));
+					output.writeTextElement("th", TTR("item_transactions", "Record"));
 					output.writeEndElement(); // tr
 					var prev_balance = "0";
 					var prev_prec = 0;
 					var cur_prec = 0;
+                                        var max_prec = 3;
 					while(query.next()) {
 						output.writeStartElement("tr");
 						output.writeAttribute("class", query.value(1));
 						output.writeTextElement("td", query.value(0));
 						output.writeTextElement("td", query.value(1));
+                                                var split = prev_balance.split('.');
+                                                if(split.length > 1) {
+                                                    prev_prec = split[1].length;
+                                                } else {
+                                                    prev_prec = 0;
+                                                }
+                                                split = query.value(2).split('.');
+                                                if(split.length > 1) {
+                                                    cur_prec = split[1].length;
+                                                } else {
+                                                    cur_prec = 0;
+                                                }
+                                                var prec = prev_prec > cur_prec ? prev_prec : cur_prec;
+                                                var prec = (prec > max_prec ? max_prec : prec);
 						if(query.value(1) == "INVENTORY") {
-							var split = prev_balance.split('.');
-							if(split.length > 1) {
-								prev_prec = split[1].length;
-							} else {
-								prev_prec = 0;
-							}
-							split = query.value(2).split('.');
-							if(split.length > 1) {
-								cur_prec = split[1].length;
-							} else {
-								cur_prec = 0;
-							}
-							var prec = prev_prec > cur_prec ? prev_prec : cur_prec;
-							output.writeTextElement("td", (Number(query.value(2)) - Number(prev_balance)).toFixed(prec));
+                                                    output.writeTextElement("td", (Number(query.value(2)) - Number(prev_balance)).toFixed(prec));
 						} else {
-							output.writeTextElement("td", query.value(2));
+                                                    output.writeTextElement("td", (Number(query.value(2)).toFixed(prec)));
 						}
-						output.writeTextElement("td", query.value(3));
+						output.writeTextElement("td", (Number(query.value(3)).toFixed(prec)));
 						prev_balance = query.value(3);
 						if(query.value(1) == "PURCHASE") {
 							output.writeStartElement("td");
@@ -240,6 +242,10 @@
 							output.writeCDATA(query.value(7) + " " + query.value(4));
 							output.writeEndElement();
 							output.writeEndElement();
+                                                } else if(query.value(1) == "LOSS") {
+                                                    output.writeTextElement("td", query.value(9));
+                                                } else if(query.value(1) == "SALE") {
+                                                    output.writeTextElement("td", query.value(8));
 						} else {
 							output.writeTextElement("td", "");
 						}

@@ -15,22 +15,24 @@
 	<program>
 		<![CDATA[
 			window = this;
+                        var invoiceID = 0;
 			this.windowTitle = 'Typica - Fee Detail';
 			var descField = findChildObject(this, 'description');
 			var costField = findChildObject(this, 'cost');
 			this.dataSet = function() {
 				descField.text = window.rowData[2];
-				costField.text = window.rowData[4];
+				costField.text = window.rowData[7];
+                                invoiceID = window.invoiceID;
 			};
 			button = findChildObject(this, 'submit');
 			button.clicked.connect(function() {
 				var query = new QSqlQuery();
-				query.prepare("UPDATE invoice_items SET description = :name, cost = :cost WHERE invoice_id = :id AND record_type = 'FEE' AND item_id = NULL AND description = :oldname AND cost = :oldcost");
+				query.prepare("UPDATE invoice_items SET description = :name, cost = :cost WHERE invoice_id = :id AND record_type = 'FEE' AND description = :oldname AND cost = :oldcost");
 				query.bind(":name", descField.text);
 				query.bind(":cost", Number(costField.text));
-				query.bind(":id", Number(window.rowData[1]);
+				query.bind(":id", Number(invoiceID));
 				query.bind(":oldname", window.rowData[2]);
-				query.bind(":oldcost", window.rowData[4]);
+				query.bind(":oldcost", window.rowData[7]);
 				query.exec();
 				query = query.invalidate();
 				window.close();

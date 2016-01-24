@@ -24,7 +24,7 @@
     </layout>
     <program>
         <![CDATA[
-            this.displayStatus("Ready.");
+            this.displayStatus(TTR("newroasted", "Ready."));
             var itemname = findChildObject(this, 'name');
             var newItemButton = findChildObject(this, 'ok');
             var window = this;
@@ -43,7 +43,7 @@
                 drop2.clear();
                 drop1.addSqlOptions("SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name");
                 drop2.addSqlOptions("SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id NOT IN (SELECT item FROM current_items) ORDER BY name");
-                window.displayStatus("Item removed.");
+                window.displayStatus(TTR("newroasted", "Item removed."));
             });
             restoreButton.clicked.connect(function() {
                 var q = "INSERT INTO current_items (item) VALUES (:id)";
@@ -56,7 +56,7 @@
                 drop2.clear();
                 drop1.addSqlOptions("SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name");
                 drop2.addSqlOptions("SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id NOT IN (SELECT item FROM current_items) ORDER BY name");
-                window.displayStatus("Item restored.");
+                window.displayStatus(TTR("newroasted", "Item restored."));
             });
             newItemButton.clicked.connect(function() {
                 var q = "INSERT INTO items (id, name, reference, unit, quantity, category) VALUES (default, :name, NULL, 'lb', 0, 'Coffee: Roasted') RETURNING id";
@@ -76,7 +76,7 @@
                 drop2.clear();
                 drop1.addSqlOptions("SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name");
                 drop2.addSqlOptions("SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id NOT IN (SELECT item FROM current_items) ORDER BY name");
-                window.displayStatus("Item added.");
+                window.displayStatus(TTR("newroasted", "Item added."));
             });
         ]]>
     </program>

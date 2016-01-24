@@ -1,0 +1,320 @@
+<window id="batchreport">
+    <reporttitle>Production:->Batch Log</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <daterange id="dates" initial="6" /><!-- Last 7 Days -->
+            <label>Batch Type: </label>
+            <sqldrop id="batchtype" />
+            <label>Approval: </label>
+            <sqldrop id="approval" />
+            <label>Search: </label>
+            <line id="search" />
+            <label>Weight Unit:</label>
+            <sqldrop id="unit" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print...</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.setWindowTitle(TTR("batchreport", "Typica - Batch Log"));
+            var dateSelect = findChildObject(this, 'dates');
+            var dateQuery = new QSqlQuery();
+            dateQuery.exec("SELECT time::date FROM roasting_log WHERE time = (SELECT min(time) FROM roasting_log) OR time = (SELECT max(time) FROM roasting_log) ORDER BY time ASC");
+            dateQuery.next();
+            var lifetimeStartDate = dateQuery.value(0);
+            var lifetimeEndDate;
+            if(dateQuery.next()) {
+                lifetimeEndDate = dateQuery.value(0);
+            } else {
+                lifetimeEndDate = lifetimeStartDate;
+            }
+            dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+            dateQuery = dateQuery.invalidate();
+            dateSelect.currentIndex = QSettings.value("script/history/dateIndex", 6);
+            dateSelect.rangeUpdated.connect(function() {
+                if(dateSelect.currentIndex != 24) {
+                    QSettings.setValue("script/history/dateIndex", dateSelect.currentIndex);
+                }
+                refresh();
+            });
+            var unitBox = findChildObject(this, 'unit');
+            unitBox.addItem(TTR("batchreport", "Kg"));
+            unitBox.addItem(TTR("batchreport", "Lb"));
+            unitBox.currentIndex = QSettings.value("script/history_unit", 1);
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/history_unit", unitBox.currentIndex);
+                refresh();
+            });
+            var batchType = findChildObject(this, 'batchtype');
+            batchType.addItem(TTR("batchreport", "Any"));
+            batchType.addItem(TTR("batchreport", "Production Roasts"));
+            batchType.addItem(TTR("batchreport", "Sample Roasts"));
+            batchType.currentIndex = QSettings.value("script/history/batchtypefilter", 1);
+            batchType['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/history/batchtypefilter", batchType.currentIndex);
+                refresh();
+            });
+            var approval = findChildObject(this, 'approval');
+            approval.addItem(TTR("batchreport", "Any"));
+            approval.addItem(TTR("batchreport", "Approved"));
+            approval.addItem(TTR("batchreport", "Not Approved"));
+            approval.currentIndex = QSettings.value("script/history/approvalfilter", 1);
+            approval['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/history/approvalfilter", approval.currentIndex);
+                refresh();
+            });
+            var search = findChildObject(this, 'search');
+            search.editingFinished.connect(function() {
+                refresh();
+            });
+            var view = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                view.print();
+            });
+            view.scriptLinkClicked.connect(function(url) {
+                var arg = decodeURI(url.slice(2, url.length));
+                var key = arg.split("@");
+                var details = createWindow("batchDetails");
+                var fakeTable = new Object;
+                fakeTable.holding = new Array(7);
+                fakeTable.data = function(r, c) {
+                    return this.holding[c];
+                };
+                var conversion = 1;
+                if(unitBox.currentIndex == 0) {
+                    conversion = 2.2;
+                }
+                var query = new QSqlQuery();
+                var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity / " + conversion + " AS green, roasted_quantity  / " + conversion + " AS roasted, CASE WHEN unroasted_total_quantity = 0 THEN NULL ELSE ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) END AS weight_loss, duration, annotation FROM roasting_log WHERE machine = :machine AND time = :time";
+                query.prepare(q);
+                query.bind(":machine", key[0]);
+                query.bind(":time", key[1]);
+                query.exec();
+                query.next();
+                for(var i = 0; i < 8; i++) {
+                    fakeTable.holding[i] = query.value(i);
+                }
+                fakeTable.holding[0] = key[1];
+                query = query.invalidate();
+                details.loadData(fakeTable, 0);
+            });
+            var refresh = function() {
+                var dateRange = dateSelect.currentRange();
+                var startDate = dateRange[0];
+                var endDate = dateRange[dateRange.length - 1];
+                var conversion = 1;
+                if(unitBox.currentIndex == 0) {
+                    conversion = 2.2;
+                }
+                var approvalClause = "";
+                switch(approval.currentIndex) {
+                    case 1:
+                        approvalClause = " AND approval = true";
+                        break;
+                    case 2:
+                        approvalClause = " AND approval = false";
+                        break;
+                }
+                var batchClause = "";
+                switch(batchType.currentIndex) {
+                    case 1:
+                        batchClause = " AND transaction_type = 'ROAST'";
+                        break;
+                    case 2:
+                        batchClause = " AND transaction_type = 'SAMPLEROAST'";
+                        break;
+                }
+                var searchClause = "";
+                if(search.text.length > 0) {
+                    searchClause = " WHERE (person ~* :p1 OR rname ~* :p2 OR mname ~* :p3 OR greens ~* :p4 OR annotation ~* :p5 OR array_to_string(files, ',') ~* :p6)";
+                }
+                var q = "WITH qq AS (SELECT roasting_log.time, array_to_string(files, ','), person, (SELECT name || ' (' || id || ')' FROM items WHERE id = roasted_id) AS rname, duration, (SELECT name FROM machine WHERE id = machine) AS mname, array_to_string(ARRAY(SELECT name || ' (' || id || ')' FROM items WHERE id IN (SELECT unnest(unroasted_id))), ',') AS greens, (unroasted_total_quantity/:c1)::numeric(12,2), (roasted_quantity/:c2)::numeric(12,2), loss, annotation, approval, spec_loss::numeric(12,2) || '±' || spec_tolerance::numeric(12,2) AS lspec, notes, loss_match, machine || '@' || roasting_log.time AS link, files FROM roasting_log, LATERAL (SELECT CASE WHEN (unroasted_total_quantity = 0) THEN NULL ELSE (((unroasted_total_quantity - roasted_quantity)/unroasted_total_quantity)*100)::numeric(12,2) END AS loss) lc, LATERAL (WITH q AS (SELECT (SELECT min(time) - interval '10 years' FROM roasting_log) AS time, NULL::numeric AS loss, NULL::numeric AS tolerance, NULL::text AS notes) SELECT time, (loss*100)::numeric(12,2) AS spec_loss, (tolerance*100)::numeric(12,2) AS spec_tolerance, notes FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id) UNION (SELECT * FROM q) ORDER BY time DESC LIMIT 1) spec, LATERAL (SELECT loss >= spec_loss - spec_tolerance AND loss <= spec_loss + spec_tolerance AS loss_match) m WHERE roasting_log.time >= :sd AND roasting_log.time < :ed::date + interval '1 day'" + approvalClause + batchClause + ") SELECT * FROM qq" + searchClause + " ORDER BY time DESC";
+                var query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
+                query.bind(":sd", startDate);
+                query.bind(":ed", endDate);
+                if(searchClause.length > 0) {
+                    var pattern = ".*" + search.text + ".*";
+                    query.bind(":p1", pattern);
+                    query.bind(":p2", pattern);
+                    query.bind(":p3", pattern);
+                    query.bind(":p4", pattern);
+                    query.bind(":p5", pattern);
+                    query.bind(":p6", pattern);
+                }
+                query.exec();
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", TTR("batchreport", "Batch Log"));
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeStartElement("table");
+                output.writeAttribute("style", "page-break-after: auto; text-align: left");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
+                output.writeTextElement("th", TTR("batchreport", "Time"));
+                output.writeTextElement("th", TTR("batchreport", "File Numbers"));
+                output.writeTextElement("th", TTR("batchreport", "Operator"));
+                output.writeTextElement("th", TTR("batchreport", "Roasted Coffee"));
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
+                output.writeEmptyElement("td");
+                output.writeTextElement("th", TTR("batchreport", "Duration"));
+                output.writeTextElement("th", TTR("batchreport", "Machine"));
+                output.writeTextElement("th", TTR("batchreport", "Green Coffees"));
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
+                output.writeEmptyElement("td");
+                output.writeTextElement("th", TTR("batchreport", "Green Weight"));
+                output.writeTextElement("th", TTR("batchreport", "Roasted Weight"));
+                output.writeTextElement("th", TTR("batchreport", "% Weight Loss"));
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
+                output.writeEmptyElement("td");
+                output.writeStartElement("th");
+                output.writeAttribute("colspan", "2");
+                output.writeCharacters(TTR("batchreport", "Batch Notes"));
+                output.writeEndElement();
+                output.writeTextElement("th", TTR("batchreport", "Specification Notes"));
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+                while(query.next()) {
+                    output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
+                    output.writeStartElement("td");
+                    output.writeStartElement("a");
+                    output.writeAttribute("href", "typica://script/b/" + query.value(15));
+                    output.writeCharacters(query.value(0).replace("T", " "));
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("td");
+                    output.writeStartElement("a");
+                    output.writeAttribute("href", "typica://script/b/" + query.value(15));
+                    output.writeCharacters(query.value(1));
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeTextElement("td", query.value(2));
+                    output.writeStartElement("td");
+                    output.writeStartElement("span");
+                    if(query.value(11) == "false") {
+                        output.writeAttribute("style", "color:#FF0000");
+                    }
+                    output.writeCharacters(query.value(3));
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
+                    output.writeEmptyElement("td");
+                    output.writeTextElement("td", query.value(4));
+                    output.writeTextElement("td", query.value(5));
+                    output.writeTextElement("td", query.value(6));
+                    output.writeEndElement();
+                    output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
+                    output.writeEmptyElement("td");
+                    output.writeTextElement("td", query.value(7));
+                    output.writeTextElement("td", query.value(8));
+                    output.writeStartElement("td");
+                    output.writeStartElement("span");
+                    if(query.value(14) == "false" && query.value(12).length > 0) {
+                        output.writeAttribute("style", "color:#FF0000");
+                    } else if (query.value(14) === "true") {
+                        output.writeAttribute("style", "color:#00FF00");
+                    }
+                    output.writeAttribute("title", query.value(12));
+                    output.writeCharacters(query.value(9));
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    output.writeStartElement("tr");
+                    output.writeAttribute("valign", "top");
+                    output.writeEmptyElement("td");
+                    output.writeStartElement("td");
+                    output.writeAttribute("colspan", "2");
+                    output.writeAttribute("style", "max-width: 400px");
+                    var noteArray = query.value(10).split("\n");
+                    for(var i = 0; i < noteArray.length; i++) {
+                        output.writeStartElement("p");
+                        output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
+                        output.writeCharacters(noteArray[i]);
+                        output.writeEndElement();
+                    }
+                    output.writeEndElement();
+                    output.writeStartElement("td");
+                    output.writeAttribute("style", "max-width: 400px");
+                    var specArray = query.value(13).split("\n");
+                    for(var i = 0; i < specArray.length; i++) {
+                        output.writeStartElement("p", specArray[i]);
+                        output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
+                        output.writeCharacters(specArray[i]);
+                        output.writeEndElement();
+                    }
+                    output.writeEndElement();
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeStartElement("tfoot");
+                output.writeStartElement("tr");
+                output.writeAttribute("valign", "bottom");
+                output.writeTextElement("th", TTR("batchreport", "Total Batches"));
+                output.writeTextElement("th", TTR("batchreport", "Total Duration"));
+                output.writeTextElement("th", TTR("batchreport", "Total Green Weight"));
+                output.writeTextElement("th", TTR("batchreport", "Total Roasted Weight"));
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                output.writeAttribute("valign", "top");
+                q = "WITH qq AS (SELECT roasting_log.time, array_to_string(files, ','), person, (SELECT name || ' (' || id || ')' FROM items WHERE id = roasted_id) AS rname, duration, (SELECT name FROM machine WHERE id = machine) AS mname, array_to_string(ARRAY(SELECT name || ' (' || id || ')' FROM items WHERE id IN (SELECT unnest(unroasted_id))), ',') AS greens, (unroasted_total_quantity/:c1)::numeric(12,2) AS uq, (roasted_quantity/:c2)::numeric(12,2) AS rq, annotation, approval, files FROM roasting_log WHERE roasting_log.time >= :sd AND roasting_log.time < :ed::date + interval '1 day'" + approvalClause + batchClause + ") SELECT count(1), sum(duration), sum(uq), sum(rq) FROM qq" + searchClause;
+                var query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
+                query.bind(":sd", startDate);
+                query.bind(":ed", endDate);
+                if(searchClause.length > 0) {
+                    var pattern = ".*" + search.text + ".*";
+                    query.bind(":p1", pattern);
+                    query.bind(":p2", pattern);
+                    query.bind(":p3", pattern);
+                    query.bind(":p4", pattern);
+                    query.bind(":p5", pattern);
+                    query.bind(":p6", pattern);
+                }
+                query.exec();
+                query.next();
+                for(var i = 0; i < 4; i++) {
+                    output.writeTextElement("td", query.value(i));
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                query = query.invalidate();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                view.setContent(buffer);
+                buffer.close();
+            };
+            refresh();
+        ]]>
+    </program>
+</window>

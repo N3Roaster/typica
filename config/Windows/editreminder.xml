@@ -1,0 +1,210 @@
+<window id="editreminder">
+    <layout type="vertical">
+        <layout type="horizontal">
+            <label>Name:</label>
+            <line id="name" />
+        </layout>
+        <label>Description:</label>
+        <textarea id="description" />
+        <layout type="horizontal">
+            <label>Since:</label>
+            <calendar time="true" id="since" />
+            <button name="Now" id="now" type="push" />
+        </layout>
+        <layout type="horizontal">
+            <label>Condition:</label>
+            <sqldrop id="condition" />
+        </layout>
+        <layout type="stack" id="conditionvars">
+            <page>
+                <layout type="horizontal">
+                    <line id="productionweight" validator="numeric" />
+                    <sqldrop id="productionunit" />
+                </layout>
+            </page>
+            <page>
+                <layout type="horizontal">
+                    <line id="days" validator="numeric" />
+                </layout>
+            </page>
+            <page>
+                <layout type="horizontal">
+                    <line id="batches" validator="numeric" />
+                </layout>
+            </page>
+            <page>
+                <layout type="horizontal">
+                    <line id="roastingtime" validator="numeric" />
+                </layout>
+            </page>
+        </layout>
+        <layout type="horizontal">
+            <button name="Delete" id="delete" type="push" />
+            <button name="Save" id="save" type="push" />
+        </layout>
+    </layout>
+    <program>
+        <![CDATA[
+            var window = this;
+            window.setRefreshFunction = function(callback) {
+                window.refreshCallback = callback;
+            }
+            window.currentReminder = new Object();
+            this.windowTitle = TTR("editreminder", "Typica - Edit Reminder");
+            var unitBox = findChildObject(this, 'productionunit');
+            unitBox.addItem(TTR("editreminder", "Kg"));
+            unitBox.addItem(TTR("editreminder", "Lb"));
+            unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            var condition = findChildObject(this, 'condition');
+            condition.addItem(TTR("editreminder", "Roasted Coffee Production"));
+            condition.addItem(TTR("editreminder", "Days"));
+            condition.addItem(TTR("editreminder", "Batches Roasted"));
+            condition.addItem(TTR("editreminder", "Hours of Roasting Time"));
+            var conditionpage = findChildObject(this, 'conditionvars');
+            condition['currentIndexChanged(int)'].connect(function(c) {
+                conditionpage.setCurrentIndex(c);
+            });
+            var namefield = findChildObject(this, 'name');
+            var descfield = findChildObject(this, 'description');
+            var sincefield = findChildObject(this, 'since');
+            var prodweight = findChildObject(this, 'productionweight');
+            var daysfield = findChildObject(this, 'days');
+            var batchesfield = findChildObject(this, 'batches');
+            var hoursfield = findChildObject(this, 'roastingtime');
+            var time = new QTime();
+            var nowButton = findChildObject(this, 'now');
+            nowButton.clicked.connect(function() {
+                sincefield.setToCurrentTime();
+            });
+            var deleteButton = findChildObject(this, 'delete');
+            deleteButton.enabled = false;
+            deleteButton.clicked.connect(function() {
+                var query = new QSqlQuery;
+                query.prepare("DELETE FROM reminders WHERE id = :id");
+                query.bind("id", window.currentReminder.dbid);
+                query.exec();
+                query = query.invalidate();
+                window.refreshCallback();
+                window.close();
+            });
+            var saveButton = findChildObject(this, 'save');
+            saveButton.clicked.connect(function() {
+                r = new Object();
+                r.title = namefield.text;
+                r.description = descfield.plainText;
+                r.start_year = sincefield.year();
+                r.start_month = sincefield.month();
+                r.start_day = sincefield.day();
+                r.start_time = sincefield.time.toString("hh:mm:ss");
+                switch(condition.currentIndex)
+                {
+                    case 0:
+                        r.condition = "PRODUCTIONWEIGHT";
+                        r.value = Number(prodweight.text);
+                        if(unitBox.currentIndex == 0)
+                        {
+                            r.unit = "KG";
+                        }
+                        else
+                        {
+                            r.unit = "LB";
+                        }
+                        break;
+                    case 1:
+                        r.condition = "DAYS";
+                        r.value = daysfield.text;
+                        break;
+                    case 2:
+                        r.condition = "PRODUCTIONBATCHES";
+                        r.value = batchesfield.text;
+                        break;
+                    case 3:
+                        r.condition = "PRODUCTIONHOURS";
+                        r.value = hoursfield.text;
+                        break;
+                }
+                var query = new QSqlQuery;
+                if(window.currentReminder.hasOwnProperty("dbid"))
+                {
+                    query.prepare("UPDATE reminders SET reminder = :reminder WHERE id = :id");
+                    query.bind("reminder", JSON.stringify(r));
+                    query.bind("id", window.currentReminder.dbid);
+                }
+                else
+                {
+                    query.prepare("INSERT INTO reminders (id, reminder) VALUES(default, :reminder)");
+                    query.bind("reminder", JSON.stringify(r));
+                }
+                query.exec();
+                query = query.invalidate();
+                window.refreshCallback();
+                window.close();
+            });
+            window.loadData = function(reminder) {
+                window.currentReminder = reminder;
+                deleteButton.enabled = reminder.hasOwnProperty("dbid");
+                if(reminder.hasOwnProperty("title"))
+                {
+                    namefield.text = reminder.title;
+                }
+                if(reminder.hasOwnProperty("description"))
+                {
+                    descfield.plainText = reminder.description;
+                }
+                if(reminder.hasOwnProperty("start_year") &&
+                   reminder.hasOwnProperty("start_month") &&
+                   reminder.hasOwnProperty("start_day"))
+                {
+                    sincefield.setDate(reminder.start_year, reminder.start_month, reminder.start_day);
+                }
+                if(reminder.hasOwnProperty("start_time"))
+                {
+                    sincefield.time = time.fromString(reminder.start_time, "hh:mm:ss");
+                }
+                if(reminder.hasOwnProperty("condition"))
+                {
+                    if(reminder.condition == "PRODUCTIONWEIGHT")
+                    {
+                        condition.setCurrentIndex(0);
+                        if(reminder.hasOwnProperty("value"))
+                        {
+                            prodweight.text = reminder.value;
+                        }
+                        if(reminder.unit == "KG")
+                        {
+                            unitBox.setCurrentIndex(0);
+                        }
+                        else
+                        {
+                            unitBox.setCurrentIndex(1);
+                        }
+                    }
+                    else if(reminder.condition == "DAYS")
+                    {
+                        condition.setCurrentIndex(1);
+                        if(reminder.hasOwnProperty("value"))
+                        {
+                            daysfield.text = reminder.value;
+                        }
+                    }
+                    else if(reminder.condition == "PRODUCTIONBATCHES")
+                    {
+                        condition.setCurrentIndex(2);
+                        if(reminder.hasOwnProperty("value"))
+                        {
+                            batchesfield.text = reminder.value;
+                        }
+                    }
+                    else if(reminder.condition == "PRODUCTIONHOURS")
+                    {
+                        condition.setCurrentIndex(3);
+                        if(reminder.hasOwnProperty("value"))
+                        {
+                            hoursfield.text = reminder.value;
+                        }
+                    }
+                }
+            }
+        ]]>
+    </program>
+</window>

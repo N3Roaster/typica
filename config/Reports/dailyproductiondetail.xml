@@ -49,14 +49,14 @@
 				output.writeStartElement("html");
 				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
 				output.writeStartElement("head");
-				output.writeTextElement("title", "Daily Production Report");
+				output.writeTextElement("title", TTR("dailyproduction", "Daily Production Report"));
 				output.writeEndElement();
 				output.writeStartElement("body");
 				var dateString = "" + dateField.year() + "-" + dateField.month() + "-" + dateField.day();
-				output.writeTextElement("h1", "Daily Production Report: " + dateString);
-				output.writeTextElement("h2", "Batches Roasted");
+				output.writeTextElement("h1", TTR("dailyproduction", "Daily Production Report: ") + dateString);
+				output.writeTextElement("h2", TTR("dailyproduction", "Batches Roasted"));
 				var query = new QSqlQuery();
-				var q = "SELECT time, machine, (SELECT name FROM machine WHERE id = machine), (SELECT name FROM items WHERE id = roasted_id), unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, annotation, duration, files FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1') ORDER BY time";
+				var q = "SELECT time, machine, (SELECT name FROM machine WHERE id = machine), (SELECT name FROM items WHERE id = roasted_id), unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, annotation, duration, files, (SELECT loss FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), (SELECT tolerance FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), (SELECT notes FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), approval FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1') ORDER BY time";
 				query.exec(q);
 				var times = new Array();
 				var machines = new Array();
@@ -65,34 +65,36 @@
 				output.writeAttribute("cellpadding", "3px");
 				output.writeStartElement("thead");
 				output.writeStartElement("tr");
-				output.writeTextElement("th", "Time");
-				output.writeTextElement("th", "Machine");
-				output.writeTextElement("th", "Batch ID");
+                                output.writeAttribute("valign", "bottom");
+				output.writeTextElement("th", TTR("dailyproduction", "Time"));
+				output.writeTextElement("th", TTR("dailyproduction", "Machine"));
+				output.writeTextElement("th", TTR("dailyproduction", "Batch ID"));
 				switch(unitBox.currentIndex)
 				{
 					case 0:
-						output.writeTextElement("th", "Green Weights (Kg)");
+						output.writeTextElement("th", TTR("dailyproduction", "Green Weights (Kg)"));
 						break;
 					case 1:
-						output.writeTextElement("th", "Green Weights (Lb)");
+						output.writeTextElement("th", TTR("dailyproduction", "Green Weights (Lb)"));
 						break;
 				}
 				output.writeTextElement("th", "Green Coffees");
 				switch(unitBox.currentIndex)
 				{
 					case 0:
-						output.writeTextElement("th", "Roasted Weight (Kg)");
+						output.writeTextElement("th", TTR("dailyproduction", "Roasted Weight (Kg)"));
 						break;
 					case 1:
-						output.writeTextElement("th", "Roasted Weight (Lb)");
+						output.writeTextElement("th", TTR("dailyproduction", "Roasted Weight (Lb)"));
 						break;
 				}
-				output.writeTextElement("th", "Roasted Coffee");
-				output.writeTextElement("th", "% Weight Loss");
-				output.writeTextElement("th", "Duration");
+				output.writeTextElement("th", TTR("dailyproduction", "Roasted Coffee"));
+				output.writeTextElement("th", TTR("dailyproduction", "% Weight Loss"));
+				output.writeTextElement("th", TTR("dailyproduction", "Duration"));
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");
+                                output.writeAttribute("valign", "top");
 				while(query.next())
 				{
 					times.push(query.value(0));
@@ -164,11 +166,45 @@
 							output.writeCDATA(query.value(8));
 							break;
 					}
-					output.writeTextElement("td", query.value(3) + " (" + query.value(7) + ")");
+                                        output.writeStartElement("td");
+                                        output.writeStartElement("span");
+                                        if(query.value(15) == "false") {
+                                            output.writeAttribute("style", "color:#FF0000");
+                                        }
+                                        output.writeCharacters(query.value(3) + " (" + query.value(7) + ")");
+                                        output.writeEndElement();
+                                        output.writeEndElement();
 					if(Number(query.value(6)) > 0) {
 						var loss = (Number(query.value(6)) - Number(query.value(8)))/Number(query.value(6));
+                                                var lossMin;
+                                                var lossMax;
+                                                var lossColor;
+                                                var useLoss;
+                                                if(query.value(12) > 0) {
+                                                    useLoss = true;
+                                                    lossMin = Number(query.value(12)) - Number(query.value(13));
+                                                    lossMax = Number(query.value(12)) + Number(query.value(13));
+                                                    if(loss >= lossMin && loss <= lossMax) {
+                                                        lossColor = '#00FF00';
+                                                    } else {
+                                                        lossColor = '#FF0000';
+                                                    }
+                                                } else {
+                                                    lossColor = '#000000';
+                                                    useLoss = false;
+                                                }
 						loss *= 100;
-						output.writeTextElement("td", loss.toFixed(2)+"%");
+                                                var lossSpec = Number(query.value(12)) * 100;
+                                                var lossTol = Number(query.value(13)) * 100;
+                                                output.writeStartElement("td");
+                                                output.writeStartElement("span");
+                                                output.writeAttribute("style", "color:"+lossColor);
+                                                if(useLoss) {
+                                                    output.writeAttribute("title", lossSpec.toFixed(2) + "+/-" + lossTol.toFixed(2) + "%");
+                                                }
+                                                output.writeCharacters(loss.toFixed(2) + "%");
+                                                output.writeEndElement();
+                                                output.writeEndElement();
 					} else {
 						output.writeTextElement("td", "Undefined");
 					}
@@ -180,7 +216,13 @@
 						output.writeEmptyElement("td");
 						output.writeStartElement("td");
 						output.writeAttribute("colspan", "8");
-						output.writeTextElement("em", query.value(9));
+                                                var noteArray = query.value(9).split("\n");
+                                                for(var i = 0; i < noteArray.length; i++) {
+                                                    output.writeStartElement("p");
+                                                    output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
+                                                    output.writeCharacters(noteArray[i]);
+                                                    output.writeEndElement();
+                                                }
 						output.writeEndElement();
 						output.writeEndElement();
 					}
@@ -188,8 +230,8 @@
 					var annotations = annotationFromRecord(files[0]);
 					output.writeStartElement("tr");
 					output.writeStartElement("td");
-					output.writeAttribute("colspan", "9");
-					output.writeTextElement("strong", "Profile Summary");
+					output.writeAttribute("colspan", "5");
+					output.writeTextElement("strong", TTR("dailyproduction", "Profile Summary"));
 					var buffer2 = new QBuffer("<points>"+annotations+"</points>");
 					buffer2.open(1);
 					var colQuery = new XQuery;
@@ -198,12 +240,12 @@
 					var result = colQuery.exec();
 					buffer2.close();
 					var seriesHeaders = new Array();
-					seriesHeaders.push("Time");
+					seriesHeaders.push(TTR("dailyproduction", "Time"));
 					var records = result.split(";");
 					for(var i = 0; i < records.length - 1; i++) {
 						seriesHeaders.push(records[i].replace(/^\s+|\s+$/g,""));
 					}
-					seriesHeaders.push("Note");
+					seriesHeaders.push(TTR("dailyproduction", "Note"));
 					output.writeStartElement("table");
 					output.writeStartElement("thead");
 					output.writeStartElement("tr");
@@ -265,6 +307,19 @@
 					output.writeEndElement();
 					output.writeEndElement();	
 					output.writeEndElement();
+                                        output.writeStartElement("td");
+                                        output.writeAttribute("colspan", "4");
+                                        if(query.value(14)) {
+                                            output.writeTextElement("strong", "Roast Specification Notes");
+                                            var specArray = query.value(14).split("\n");
+                                            for(var i = 0; i < noteArray.length; i++) {
+                                                output.writeStartElement("p");
+                                                output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
+                                                output.writeCharacters(specArray[i]);
+                                                output.writeEndElement();
+                                            }                                            
+                                        }
+                                        output.writeEndElement();
 					output.writeEndElement();
 				}
 				output.writeEndElement();
@@ -273,7 +328,7 @@
 				output.writeEmptyElement("td");
 				output.writeEmptyElement("td");
 				output.writeStartElement("td");
-				output.writeTextElement("strong", "Totals:");
+				output.writeTextElement("strong", TTR("dailyproduction", "Totals:"));
 				output.writeEndElement();
 				q = "SELECT sum(unroasted_total_quantity), sum(roasted_quantity), sum(duration) FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1')";
 				query.exec(q);
@@ -303,17 +358,17 @@
 				output.writeEndElement();
 				output.writeEndElement(); //tfoot
 				output.writeEndElement(); //table
-				output.writeTextElement("h2", "Inventory");
+				output.writeTextElement("h2", TTR("dailyproduction", "Inventory"));
 				output.writeStartElement("table");
 				output.writeAttribute("rules", "groups");
 				output.writeAttribute("cellpadding", "3px");
 				output.writeStartElement("thead");
 				output.writeStartElement("tr");
-				output.writeTextElement("th", "Green Coffee");
-				output.writeTextElement("th", "Starting Inventory");
-				output.writeTextElement("th", "Ending Inventory");
-				output.writeTextElement("th", "Change");
-				output.writeTextElement("th", "Availability");
+				output.writeTextElement("th", TTR("dailyproduction", "Green Coffee"));
+				output.writeTextElement("th", TTR("dailyproduction", "Starting Inventory"));
+				output.writeTextElement("th", TTR("dailyproduction", "Ending Inventory"));
+				output.writeTextElement("th", TTR("dailyproduction", "Change"));
+				output.writeTextElement("th", TTR("dailyproduction", "Availability"));
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");

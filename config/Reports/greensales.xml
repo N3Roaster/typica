@@ -14,7 +14,7 @@
 	</menu>
 	<program>
 		<![CDATA[
-			this.windowTitle = "Typica - Green Coffee Sales";
+			this.windowTitle = TTR("greensales", "Typica - Green Coffee Sales");
 			var dateSelect = findChildObject(this, 'dates');
 			var dateQuery = new QSqlQuery();
 			dateQuery.exec("SELECT time::date FROM sale WHERE time = (SELECT min(time) FROM sale) OR time = (SELECT max(time) FROM sale) ORDER BY time ASC");
@@ -29,8 +29,8 @@
 			dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
 			dateQuery = dateQuery.invalidate();
 			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem("Kg");
-			unitBox.addItem("Lb");
+			unitBox.addItem(TTR("greensales", "Kg"));
+			unitBox.addItem(TTR("greensales", "Lb"));
 			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
 			unitBox['currentIndexChanged(int)'].connect(function() {
 				QSettings.setValue("script/report_unit", unitBox.currentIndex);
@@ -46,24 +46,23 @@
 				var buffer = new QBuffer;
 				buffer.open(3);
 				var output = new XmlWriter(buffer);
-				var output = new XmlWriter(buffer);
 				output.writeStartDocument("1.0");
 				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
 				output.writeStartElement("html");
 				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
 				output.writeStartElement("head");
-				output.writeTextElement("title", "Green Coffee Sales");
+				output.writeTextElement("title", TTR("greensales", "Green Coffee Sales"));
 				output.writeEndElement();
 				output.writeStartElement("body");
 				var dateRange = dateSelect.currentRange();
 				var startDate = dateRange[0];
 				var endDate = dateRange[dateRange.length - 1];
-				output.writeTextElement("h1", "Green Coffee Sales: " + startDate + " - " + endDate);
+				output.writeTextElement("h1", TTR("greensales", "Green Coffee Sales: ") + startDate + " - " + endDate);
 				var conversion = 1;
-				var unitText = 'Lb';
+				var unitText = TTR("greensales", "Lb");
 				if(unitBox.currentIndex == 0) {
 					conversion = 2.2;
-					unitText = 'Kg';
+					unitText = TTR("greensales", "Kg");
 				}
 				var query = new QSqlQuery();
 				query.prepare("SELECT item, (SELECT name FROM coffees WHERE id = item) AS name, (SELECT origin FROM coffees WHERE id = item) AS origin, (SELECT reference FROM coffees WHERE id = item) AS reference, (SUM(quantity)/:conversion)::numeric(12,3) FROM sale WHERE time < :ed ::date + interval '1 day' AND time >= :sd GROUP BY item ORDER BY name ASC");
@@ -76,11 +75,11 @@
 				output.writeAttribute("cellpadding", "3px");
 				output.writeStartElement("thead");
 				output.writeStartElement("tr");
-				output.writeTextElement("th", "ID"); // 0
-				output.writeTextElement("th", "Coffee"); // 1
-				output.writeTextElement("th", "Origin"); // 2
-				output.writeTextElement("th", "Reference"); // 3
-				output.writeTextElement("th", "Quantity"); // 4
+				output.writeTextElement("th", TTR("greensales", "ID")); // 0
+				output.writeTextElement("th", TTR("greensales", "Coffee")); // 1
+				output.writeTextElement("th", TTR("greensales", "Origin")); // 2
+				output.writeTextElement("th", TTR("greensales", "Reference")); // 3
+				output.writeTextElement("th", TTR("greensales", "Quantity")); // 4
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");
@@ -96,6 +95,22 @@
 					output.writeEndElement();
 				}
 				output.writeEndElement();
+                                output.writeStartElement("tfoot");
+                                query.prepare("SELECT (sum(quantity)/:conversion)::numeric(12,3) FROM sale WHERE time < :ed ::date + interval '1 day' AND time >= :sd");
+                                query.bind(":conversion", conversion);
+                                query.bind(":ed", endDate);
+                                query.bind(":sd", startDate);
+                                query.exec();
+                                if(query.next()) {
+                                    output.writeStartElement("tr");
+                                    output.writeEmptyElement("td");
+                                    output.writeEmptyElement("td");
+                                    output.writeEmptyElement("td");
+                                    output.writeTextElement("th", TTR("greensales", "Total:"));
+                                    output.writeTextElement("td", query.value(0));
+                                    output.writeEndElement();
+                                }
+                                output.writeEndElement();
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeEndElement();

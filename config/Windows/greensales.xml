@@ -21,13 +21,13 @@
 	<program>
 		<![CDATA[
 			var window = this;
-			this.windowTitle = 'Typica - Enter Green Coffee Sales';
+			this.windowTitle = TTR("greensales", "Typica - Enter Green Coffee Sales");
 			var unitBox = findChildObject(this, 'units');
 			unitBox.addItem("g");
 			unitBox.addItem("Kg");
 			unitBox.addItem("oz");
-			unitBox.addItem("lb");
-			unitBox.currentIndex = (QSettings.value("script/greensales_unit", unitBox.findText("lb")));
+			unitBox.addItem("Lb");
+			unitBox.currentIndex = (QSettings.value("script/greensales_unit", unitBox.findText("Lb")));
 			unitBox['currentIndexChanged(int)'].connect(function() {
 				QSettings.setValue("script/greensales_unit", unitBox.currentIndex);
 			});

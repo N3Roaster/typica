@@ -2,45 +2,59 @@
     <layout type="vertical">
         <layout type="horizontal">
             <button type="push" id="target" name="Load profile as target" />
-			<button type="push" id="viewprofile" name="View profile" />
-			<button type="push" id="compare" name="Compare profile" />
-			<button type="push" id="edit" name="Edit" />
+            <button type="push" id="viewprofile" name="View profile" />
+            <button type="push" id="compare" name="Compare profile" />
+            <button type="push" id="edit" name="Edit" />
         </layout>
         <webview id="view" />
     </layout>
 	<menu name="File">
-		<item id="save" shortcut="Ctrl+S">Save…</item>
+            <item id="save" shortcut="Ctrl+S">Save...</item>
+            <item id="print" shortcut="Ctrl+P">Print...</item>
 	</menu>
     <program>
         <![CDATA[
-			var window = this;
-			dataView = findChildObject(this, 'view');
-			var fileID;
-			var target = findChildObject(this, 'target');
-			var compare = findChildObject(this, 'compare');
-			var edit = findChildObject(this, 'edit');
-			edit.enabled = false;
-			if(typeof(Windows.loggingWindow) == "undefined") {
-				compare.enabled = false;
-				target.enabled = false;
-			}
-			var tableReference;
-			var rowReference;
-			var batchTime;
-			var machine;
-			var approval;
-			var annotation;
-			edit.clicked.connect(function() {
-				var editWindow = createWindow("editBatchDetails");
-				editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation);
-			});
-			compare.clicked.connect(function() {
-				var query = new QSqlQuery;
-				query.prepare("SELECT file, name FROM files WHERE id = :id");
-				query.bind(":id", Number(fileID));
-				query.exec();
-				query.next();
-				var buffer = new QBuffer(query.value(0));
+            var window = this;
+            var unit = QSettings.value("script/history_unit", 1);
+            var conversion = 1;
+            if(unit == 0)
+            {
+                conversion = 2.2;
+            }
+            var unitText = (unit == 0 ? TTR("batchDetails", "Kg") :
+                           TTR("batchDetails", "Lb"));
+            dataView = findChildObject(this, 'view');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                dataView.print();
+            });
+            var fileID;
+            var target = findChildObject(this, 'target');
+            var compare = findChildObject(this, 'compare');
+            var edit = findChildObject(this, 'edit');
+            edit.enabled = false;
+            if(typeof(Windows.loggingWindow) == "undefined") {
+                compare.enabled = false;
+                target.enabled = false;
+            }
+            var tableReference;
+            var rowReference;
+            var batchTime;
+            var machine;
+            var approval;
+            var annotation;
+            var roastWeight;
+            edit.clicked.connect(function() {
+                var editWindow = createWindow("editBatchDetails");
+                editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation, roastWeight, unit);
+            });
+            compare.clicked.connect(function() {
+                var query = new QSqlQuery;
+                query.prepare("SELECT file, name FROM files WHERE id = :id");
+                query.bind(":id", Number(fileID));
+                query.exec();
+                query.next();
+                var buffer = new QBuffer(query.value(0));
                 var pname = query.value(1);
                 query = query.invalidate();
                 var startSeries = Number(QSettings.value('cseries', 3));
@@ -50,300 +64,297 @@
                 var graph = findChildObject(Windows.loggingWindow, 'graph');
                 input.measure.connect(graph.newMeasurement);
                 input.input();
-				query = query.invalidate();
-			});
-			target.clicked.connect(function() {
-				var query = new QSqlQuery;
-				query.prepare("SELECT file, name FROM files WHERE id = :id");
-				query.bind(":id", Number(fileID));
-				query.exec();
-				query.next();
-				var buffer = new QBuffer(query.value(0));
-				var pname = query.value(1);
                 query = query.invalidate();
-				var input = new XMLInput(buffer, 1);
-				var graph = findChildObject(Windows.loggingWindow, 'graph');
-				var log = findChildObject(Windows.loggingWindow, 'log');
-				log.clear();
-				graph.clear();
-				input.newTemperatureColumn.connect(log.setHeaderData);
-				input.newTemperatureColumn.connect(function(col, text) {
-					if(text == Windows.loggingWindow.targetcolumnname)
-					{
-						targetseries = col;
-					}
-				});
-				input.newAnnotationColumn.connect(log.setHeaderData);
-				input.measure.connect(graph.newMeasurement);
-				input.measure.connect(log.newMeasurement);
-				input.measure.connect(function(data, series) {
-					if(series == targetseries)
-					{
-						targetDetector.newMeasurement(data);
-					}
-				});
-				var lc;
-				input.lastColumn.connect(function(c) {
-					lc = c;
-					QSettings.setValue("liveColumn", c + 1);
-					Windows.loggingWindow.postLoadColumnSetup(c);
-				});
-				input.annotation.connect(log.newAnnotation);
-				input.annotation.connect(function(note, tcol, ncol) {
-					for(var i = tcol; i < ncol; i++) {
-						log.newAnnotation(note, i, ncol);
-					}
-				});
-				Windows.loggingWindow.windowTitle = "Typica - " + pname;
-				Windows.loggingWindow.raise();
-				Windows.loggingWindow.activateWindow();
-				input.input();
-				log.newAnnotation("End", 1, lc);
-				query = query.invalidate();
-			});
-			var viewbutton = findChildObject(this, 'viewprofile');
-			viewbutton.clicked.connect(function() {
-				var query = new QSqlQuery;
-				query.prepare("SELECT file, name FROM files WHERE id = :id");
-				query.bind(":id", Number(fileID));
-				query.exec();
-				if(query.next()) {
-					var viewer = createWindow('offline');
-					var buffer = new QBuffer(query.value(0));
-					var pname = query.value(1);
-					query = query.invalidate();
-					var input = new XMLInput(buffer, 1);
-					var graph = findChildObject(viewer, 'graph');
-					var log = findChildObject(viewer, 'log');
-					input.newTemperatureColumn.connect(log.setHeaderData);
-					input.newTemperatureColumn.connect(function(column) {
-						viewer.saveTemperatureColumns.push(column);
-					});
-					input.newAnnotationColumn.connect(log.setHeaderData);
-					input.newAnnotationColumn.connect(function(column) {
-						viewer.saveAnnotationColumns.push(column);
-					});
-					input.measure.connect(graph.newMeasurement);
-					input.measure.connect(log.newMeasurement);
-					input.annotation.connect(log.newAnnotation);
-					var lc;
-					input.lastColumn.connect(function(c) {
-						lc = c;
-						if(c < 3)
-						{
-							log.setHeaderData(3, "");
-						}
-					});
-					input.annotation.connect(function(note, tcol, ncol) {
-						for(var i = tcol; i < ncol; i++) {
-							log.newAnnotation(note, i, ncol);
-						}
-					});
-					viewer.windowTitle = "Typica - " + pname;
-					viewer.raise();
-					viewer.activateWindow();
-					graph.updatesEnabled = false;
-					log.updatesEnabled = false;
-					input.input();
-					log.updatesEnabled = true;
-					graph.updatesEnabled = true;
-					log.newAnnotation("End", 1, lc);
-				}
-				else {
-					print("Query returned no results");
-				}
-				query = query.invalidate();
-			});
-			window.loadData = function(table, row) {
-				tableReference = table;
-				rowReference = row;
-				var buffer = new QBuffer;
-				buffer.open(3);
-				var output = new XmlWriter(buffer);
-				output.writeStartDocument("1.0");
-				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
-				output.writeStartElement("html");
-				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-				output.writeStartElement("head");
-				output.writeTextElement("title", "Batch Details");
-				output.writeEndElement();
-				output.writeStartElement("body");
-				output.writeStartElement("div");
-				output.writeAttribute("style", "float: left; padding-right: 10px");
-				output.writeStartElement("p");
-				output.writeTextElement("strong", "Roasted Coffee: ");
-				output.writeTextElement("span", table.data(row, 2));
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("div");
-				output.writeAttribute("style", "float: left");
-				output.writeStartElement("p");
-				output.writeTextElement("strong", "Roasted On: ");
-				batchTime = table.data(row, 0);
-				output.writeTextElement("span", batchTime);
-				output.writeEndElement();
-				output.writeStartElement("p");
-				output.writeTextElement("strong", "Batch Duration: ");
-				output.writeTextElement("span", table.data(row, 6));
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("div");
-				output.writeAttribute("style", "clear: both");
-				output.writeEndElement();
-				output.writeStartElement("table");
-				output.writeStartElement("thead");
-				output.writeStartElement("tr");
-				output.writeTextElement("th", "Green Coffee");
-				output.writeTextElement("th", "Weight (lb)");
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("tbody");
-				var query = new QSqlQuery();
-				query.prepare("SELECT unroasted_id, unroasted_quantity, approval, files, annotation FROM roasting_log WHERE time = :time AND machine = :machine");
-				query.bind(":time", batchTime);
-				machine = table.data(row, 1);
-				query.bind(":machine", machine);
-				query.exec();
-				query.next();
-				approval = query.value(2);
-				annotation = query.value(4);
-				var items = sqlToArray(query.value(0));
-				var quantities = sqlToArray(query.value(1));
-				var nameQuery = new QSqlQuery();
-				nameQuery.prepare("SELECT name FROM items WHERE id = :id");
-				for(var i = 0; i < items.length; i++) {
-					output.writeStartElement("tr");
-					nameQuery.bind(":id", items[i]);
-					nameQuery.exec();
-					nameQuery.next();
-					output.writeTextElement("td", nameQuery.value(0) + " (" + items[i] + ")");
-					output.writeStartElement("td");
-					output.writeAttribute("align", "center");
-					output.writeCharacters(quantities[i]);
-					output.writeEndElement();
-					output.writeEndElement();
-				}
-				nameQuery = nameQuery.invalidate();
-				output.writeEndElement();
-				output.writeStartElement("tfoot");
-				output.writeStartElement("tr");
-				output.writeStartElement("td");
-				output.writeAttribute("align", "right");
-				output.writeTextElement("strong", "Green Total:");
-				output.writeEndElement();
-				output.writeStartElement("td");
-				output.writeAttribute("align", "center");
-				output.writeCharacters(table.data(row, 3));
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("tr");
-				output.writeStartElement("td");
-				output.writeAttribute("align", "right");
-				output.writeTextElement("strong", "Roasted Weight:");
-				output.writeEndElement();
-				output.writeStartElement("td");
-				output.writeAttribute("align", "center");
-				output.writeCharacters(table.data(row, 4));
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("tr");
-				output.writeStartElement("td");
-				output.writeAttribute("align", "right");
-				output.writeTextElement("strong", "Weight Loss:");
-				output.writeEndElement();
-				output.writeStartElement("td");
-				output.writeAttribute("align", "center");
-				output.writeCharacters(table.data(row, 5));
-				output.writeCharacters("%");
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("p");
-				output.writeTextElement("strong", "Approved: ");
-				output.writeCharacters(approval);
-				output.writeEndElement();
-				output.writeStartElement("p");
-				output.writeTextElement("strong", "Files: ");
-				output.writeCharacters(query.value(3));
-				output.writeEndElement();
-				output.writeStartElement("p");
-				output.writeTextElement("strong", "Annotations:");
-				var files = sqlToArray(query.value(3));
-				var annotations = annotationFromRecord(files[0]);
-				fileID = files[0];
-				var buffer2 = new QBuffer("<points>"+annotations+"</points>");
-				buffer2.open(1);
-				var colQuery = new XQuery;
-				colQuery.bind("profile", buffer2);
-				colQuery.setQuery('for $i in doc($profile)//tuple[1]/temperature/@series return (string($i), ";")');
-				var result = colQuery.exec();
-				buffer2.close();
-				var seriesHeaders = new Array();
-				seriesHeaders.push("Time");
-				var records = result.split(";");
-				for(var i = 0; i < records.length - 1; i++) {
-					seriesHeaders.push(records[i].replace(/^\s+|\s+$/g,""));
-				}
-				seriesHeaders.push("Note");
-				output.writeStartElement("table");
-				output.writeStartElement("thead");
-				output.writeStartElement("tr");
-				for(var i = 0; i < seriesHeaders.length; i++) {
-					output.writeTextElement("th", seriesHeaders[i]);
-				}
-				output.writeEndElement();
-				output.writeEndElement();
-				buffer2.open(1);
-				var rq = 'for $t in doc($profile) //tuple return (string($t/time), ";", ';
-				for(var i = 0; i < seriesHeaders.length - 2; i++) {
-					rq = rq + 'string($t/temperature[' + Number(i+1) + ']), ";", ';
-				}
-				rq = rq + 'string($t/annotation), "~")';
-				colQuery.setQuery(rq);
-				var annotationData = colQuery.exec();
-				colQuery = colQuery.invalidate();
-				buffer2.close();
-				output.writeStartElement("tbody");
-				var annotationRecords = annotationData.split("~");
-				for(var i = 0; i < annotationRecords.length - 1; i++) {
-					output.writeStartElement("tr");
-					var annotationRow = annotationRecords[i].split(";");
-					for(var j = 0; j < annotationRow.length; j++) {
-						output.writeStartElement("td");
-						output.writeAttribute("style", "border-left: 1px solid #000000");
-						if(j > 0) {
-							output.writeAttribute("align", "center");
-						}
-						if(j > 0 && j < annotationRow.length - 1) {
-							output.writeCharacters(Number(annotationRow[j].replace(/^\s+|\s+$/g,"")).toFixed(2));
-						}
-						else {
-							output.writeCharacters(annotationRow[j].replace(/^\s+|\s+$/g,""));
-						}
-						output.writeEndElement();
-					}
-					output.writeEndElement();
-				}
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeCharacters(annotation);
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndDocument();
-				dataView.setContent(buffer);
-				buffer.close();
-				query = query.invalidate();
-				edit.enabled = true;
-			};
-			var saveMenu = findChildObject(this, 'save');
-			saveMenu.triggered.connect(function() {
-				var filename = QFileDialog.getSaveFileName(window, "Save Log As…", QSettings.value("script/lastDir", "") + "/");
-				if(filename != "") {
-					saveFileFromDatabase(fileID, filename);
-				}
-			});
+            });
+            target.clicked.connect(function() {
+                var query = new QSqlQuery;
+                query.prepare("SELECT file, name FROM files WHERE id = :id");
+                query.bind(":id", Number(fileID));
+                query.exec();
+                query.next();
+                var buffer = new QBuffer(query.value(0));
+                var pname = query.value(1);
+                query = query.invalidate();
+                var input = new XMLInput(buffer, 1);
+                var graph = findChildObject(Windows.loggingWindow, 'graph');
+                var log = findChildObject(Windows.loggingWindow, 'log');
+                log.clear();
+                graph.clear();
+                input.newTemperatureColumn.connect(log.setHeaderData);
+                input.newTemperatureColumn.connect(function(col, text) {
+                    if(text == Windows.loggingWindow.targetcolumnname) {
+                        targetseries = col;
+                    }
+                });
+                input.newAnnotationColumn.connect(log.setHeaderData);
+                input.measure.connect(graph.newMeasurement);
+                input.measure.connect(log.newMeasurement);
+                input.measure.connect(function(data, series) {
+                    if(series == targetseries) {
+                        targetDetector.newMeasurement(data);
+                    }
+                });
+                var lc;
+                input.lastColumn.connect(function(c) {
+                    lc = c;
+                    QSettings.setValue("liveColumn", c + 1);
+                    Windows.loggingWindow.postLoadColumnSetup(c);
+                });
+                input.annotation.connect(log.newAnnotation);
+                input.annotation.connect(function(note, tcol, ncol) {
+                    for(var i = tcol; i < ncol; i++) {
+                        log.newAnnotation(note, i, ncol);
+                    }
+                });
+                Windows.loggingWindow.windowTitle = "Typica - " + pname;
+                Windows.loggingWindow.raise();
+                Windows.loggingWindow.activateWindow();
+                input.input();
+                log.newAnnotation(TTR("batchDetails", "End"), 1, lc);
+                query = query.invalidate();
+            });
+            var viewbutton = findChildObject(this, 'viewprofile');
+            viewbutton.clicked.connect(function() {
+                var query = new QSqlQuery;
+                query.prepare("SELECT file, name FROM files WHERE id = :id");
+                query.bind(":id", Number(fileID));
+                query.exec();
+                if(query.next()) {
+                    var viewer = createWindow('offline');
+                    var buffer = new QBuffer(query.value(0));
+                    var pname = query.value(1);
+                    query = query.invalidate();
+                    var input = new XMLInput(buffer, 1);
+                    var graph = findChildObject(viewer, 'graph');
+                    var log = findChildObject(viewer, 'log');
+                    input.newTemperatureColumn.connect(log.setHeaderData);
+                    input.newTemperatureColumn.connect(function(column) {
+                        viewer.saveTemperatureColumns.push(column);
+                    });
+                    input.newAnnotationColumn.connect(log.setHeaderData);
+                    input.newAnnotationColumn.connect(function(column) {
+                        viewer.saveAnnotationColumns.push(column);
+                    });
+                    input.measure.connect(graph.newMeasurement);
+                    input.measure.connect(log.newMeasurement);
+                    input.annotation.connect(log.newAnnotation);
+                    var lc;
+                    input.lastColumn.connect(function(c) {
+                        lc = c;
+                        if(c < 3) {
+                            log.setHeaderData(3, "");
+                        }
+                    });
+                    input.annotation.connect(function(note, tcol, ncol) {
+                        for(var i = tcol; i < ncol; i++) {
+                            log.newAnnotation(note, i, ncol);
+                        }
+                    });
+                    viewer.windowTitle = "Typica - " + pname;
+                    viewer.raise();
+                    viewer.activateWindow();
+                    graph.updatesEnabled = false;
+                    log.updatesEnabled = false;
+                    input.input();
+                    log.updatesEnabled = true;
+                    graph.updatesEnabled = true;
+                    log.newAnnotation("End", 1, lc);
+                }
+                query = query.invalidate();
+            });
+            window.loadData = function(table, row) {
+                tableReference = table;
+                rowReference = row;
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", TTR("batchDetails", "Batch Details"));
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeStartElement("div");
+                output.writeAttribute("style", "float: left; padding-right: 10px");
+                output.writeStartElement("p");
+                output.writeTextElement("strong", TTR("batchDetails", "Roasted Coffee: "));
+                output.writeTextElement("span", table.data(row, 2));
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("div");
+                output.writeAttribute("style", "float: left");
+                output.writeStartElement("p");
+                output.writeTextElement("strong", TTR("batchDetails", "Roasted On: "));
+                batchTime = table.data(row, 0);
+                output.writeTextElement("span", batchTime);
+                output.writeEndElement();
+                output.writeStartElement("p");
+                output.writeTextElement("strong", TTR("batchDetails", "Batch Duration: "));
+                output.writeTextElement("span", table.data(row, 6));
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("div");
+                output.writeAttribute("style", "clear: both");
+                output.writeEndElement();
+                output.writeStartElement("table");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", TTR("batchDetails", "Green Coffee"));
+                output.writeTextElement("th", TTR("batchDetails", "Weight (") + unitText + ")");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+                var query = new QSqlQuery();
+                query.prepare("SELECT unroasted_id, unroasted_quantity, approval, files, annotation, (unroasted_total_quantity/:c1)::numeric(12,3), (roasted_quantity/:c2)::numeric(12,3) FROM roasting_log WHERE time = :time AND machine = :machine");
+                query.bind(":time", batchTime);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
+                machine = table.data(row, 1);
+                query.bind(":machine", machine);
+                query.exec();
+                query.next();
+                approval = query.value(2);
+                annotation = query.value(4);
+                var items = sqlToArray(query.value(0));
+                var quantities = sqlToArray(query.value(1));
+                var nameQuery = new QSqlQuery();
+                nameQuery.prepare("SELECT name FROM items WHERE id = :id");
+                for(var i = 0; i < items.length; i++) {
+                    output.writeStartElement("tr");
+                    nameQuery.bind(":id", items[i]);
+                    nameQuery.exec();
+                    nameQuery.next();
+                    output.writeTextElement("td", nameQuery.value(0) + " (" + items[i] + ")");
+                    output.writeStartElement("td");
+                    output.writeAttribute("align", "center");
+                    output.writeCharacters((Number(quantities[i])/conversion).toFixed(3));
+                    output.writeEndElement();
+                    output.writeEndElement();
+                }
+                nameQuery = nameQuery.invalidate();
+                output.writeEndElement();
+                output.writeStartElement("tfoot");
+                output.writeStartElement("tr");
+                output.writeStartElement("td");
+                output.writeAttribute("align", "right");
+                output.writeTextElement("strong", TTR("batchDetails", "Green Total:"));
+                output.writeEndElement();
+                output.writeStartElement("td");
+                output.writeAttribute("align", "center");
+                output.writeCharacters(query.value(5));
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                output.writeStartElement("td");
+                output.writeAttribute("align", "right");
+                output.writeTextElement("strong", TTR("batchDetails", "Roasted Weight:"));
+                output.writeEndElement();
+                output.writeStartElement("td");
+                output.writeAttribute("align", "center");
+                output.writeCharacters(query.value(6));
+                roastWeight = query.value(6);
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tr");
+                output.writeStartElement("td");
+                output.writeAttribute("align", "right");
+                output.writeTextElement("strong", TTR("batchDetails", "Weight Loss:"));
+                output.writeEndElement();
+                output.writeStartElement("td");
+                output.writeAttribute("align", "center");
+                output.writeCharacters(table.data(row, 5));
+                output.writeCharacters("%");
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("p");
+                output.writeTextElement("strong", TTR("batchDetails", "Approved: "));
+                output.writeCharacters(approval);
+                output.writeEndElement();
+                output.writeStartElement("p");
+                output.writeTextElement("strong", TTR("batchDetails", "Files: "));
+                output.writeCharacters(query.value(3));
+                output.writeEndElement();
+                output.writeStartElement("p");
+                output.writeTextElement("strong", TTR("batchDetails", "Annotations:"));
+                var files = sqlToArray(query.value(3));
+                var annotations = annotationFromRecord(files[0]);
+                fileID = files[0];
+                var buffer2 = new QBuffer("<points>"+annotations+"</points>");
+                buffer2.open(1);
+                var colQuery = new XQuery;
+                colQuery.bind("profile", buffer2);
+                colQuery.setQuery('for $i in doc($profile)//tuple[1]/temperature/@series return (string($i), ";")');
+                var result = colQuery.exec();
+                buffer2.close();
+                var seriesHeaders = new Array();
+                seriesHeaders.push(TTR("batchDetails", "Time"));
+                var records = result.split(";");
+                for(var i = 0; i < records.length - 1; i++) {
+                    seriesHeaders.push(records[i].replace(/^\s+|\s+$/g,""));
+                }
+                seriesHeaders.push(TTR("batchDetails", "Note"));
+                output.writeStartElement("table");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                for(var i = 0; i < seriesHeaders.length; i++) {
+                        output.writeTextElement("th", seriesHeaders[i]);
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                buffer2.open(1);
+                var rq = 'for $t in doc($profile) //tuple return (string($t/time), ";", ';
+                for(var i = 0; i < seriesHeaders.length - 2; i++) {
+                        rq = rq + 'string($t/temperature[' + Number(i+1) + ']), ";", ';
+                }
+                rq = rq + 'string($t/annotation), "~")';
+                colQuery.setQuery(rq);
+                var annotationData = colQuery.exec();
+                colQuery = colQuery.invalidate();
+                buffer2.close();
+                output.writeStartElement("tbody");
+                var annotationRecords = annotationData.split("~");
+                for(var i = 0; i < annotationRecords.length - 1; i++) {
+                    output.writeStartElement("tr");
+                    var annotationRow = annotationRecords[i].split(";");
+                    for(var j = 0; j < annotationRow.length; j++) {
+                        output.writeStartElement("td");
+                        output.writeAttribute("style", "border-left: 1px solid #000000");
+                        if(j > 0) {
+                            output.writeAttribute("align", "center");
+                        }
+                        if(j > 0 && j < annotationRow.length - 1) {
+                            output.writeCharacters(Number(annotationRow[j].replace(/^\s+|\s+$/g,"")).toFixed(2));
+                        }
+                        else {
+                            output.writeCharacters(annotationRow[j].replace(/^\s+|\s+$/g,""));
+                        }
+                        output.writeEndElement();
+                    }
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeCharacters(annotation);
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                dataView.setContent(buffer);
+                buffer.close();
+                query = query.invalidate();
+                edit.enabled = true;
+            };
+            var saveMenu = findChildObject(this, 'save');
+            saveMenu.triggered.connect(function() {
+                var filename = QFileDialog.getSaveFileName(window, TTR("batchDetails", "Save Log As..."), QSettings.value("script/lastDir", "") + "/");
+                if(filename != "") {
+                    saveFileFromDatabase(fileID, filename);
+                }
+            });
         ]]>
     </program>
 </window>

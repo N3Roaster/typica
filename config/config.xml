@@ -8,7 +8,6 @@
     <include src="Windows/navigation.xml" />
     <include src="Windows/success.xml" />
     <include src="Windows/roastmanager.xml" />
-    <include src="Windows/history.xml" />
     <include src="Windows/greeninventory.xml" />
     <include src="Windows/newroaster.xml" />
     <include src="Windows/batchdetailsnew.xml" />
@@ -23,27 +22,28 @@
     <include src="Windows/cuppingsessionsummary.xml" />
     <include src="Windows/cuppingsummary.xml" />
     <include src="Windows/purchase.xml" />
-	<include src="Windows/invoicelist.xml" />
-	<include src="Windows/invoiceinfo.xml" />
-	<include src="Windows/editinvoice.xml" />
-	<include src="Windows/editinvoiceitem.xml" />
-	<include src="Windows/editfee.xml" />
-	<include src="Windows/optime.xml" />
-	<include src="Windows/greensales.xml" />
-	<include src="Windows/profilehistory.xml" />
-	<include src="Windows/editbatchdetails.xml" />
-	<include src="Windows/newsamplebatch.xml" />
-	<program>
-		<![CDATA[
-		Windows = new Object();
-		var loggingWindow;
-		var currentBatchInfo;
-		var navwindow = createWindow("navwindow");
-		var aadapt;
-		var badapt;
-		var azero;
-		var bzero;
-		navwindow.windowTitle = "Typica - Choose Your Path";
-		]]>
-	</program>
+    <include src="Windows/invoiceinfo.xml" />
+    <include src="Windows/editinvoice.xml" />
+    <include src="Windows/editinvoiceitem.xml" />
+    <include src="Windows/editfee.xml" />
+    <include src="Windows/optime.xml" />
+    <include src="Windows/greensales.xml" />
+    <include src="Windows/profilehistory.xml" />
+    <include src="Windows/editbatchdetails.xml" />
+    <include src="Windows/newsamplebatch.xml" />
+    <include src="Windows/editreminder.xml" />
+    <include src="Windows/roastspec.xml" />
+    <program>
+        <![CDATA[
+            Windows = new Object();
+            var loggingWindow;
+            var currentBatchInfo;
+            var navwindow = createWindow("navwindow");
+            var aadapt;
+            var badapt;
+            var azero;
+            var bzero;
+            navwindow.windowTitle = TTR("config", "Typica - Choose Your Path");
+        ]]>
+    </program>
 </application>

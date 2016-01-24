@@ -1,151 +1,172 @@
 <window id="greencost">
-	<reporttitle>Production:->Cost of Green Coffee for Roasted Coffee</reporttitle>
-	<layout type="vertical">
-		<webview id="report" />
-	</layout>
-	<menu name="File">
-		<item id="print" shortcut="Ctrl+P">Print</item>
-	</menu>
-	<program>
-		<![CDATA[
-			this.windowTitle = "Typica - Cost of Green Coffee for Roasted Coffee";
-			var report = findChildObject(this, 'report');
-			var printMenu = findChildObject(this, 'print');
-			printMenu.triggered.connect(function() {
-				report.print();
-			});
-			function refresh() {
-				var buffer = new QBuffer;
-				buffer.open(3);
-				var output = new XmlWriter(buffer);
-				output.writeStartDocument("1.0");
-				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+    <reporttitle>Production:->Cost of Green Coffee for Roasted Coffee</reporttitle>	<layout type="vertical">
+        <layout type="horizontal">
+            <label>Weight Unit:</label>
+            <sqldrop id="unit" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print...</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = TTR("greencost", "Typica - Cost of Green Coffee for Roasted Coffee");
+            var report = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                report.print();
+            });
+            var unitBox = findChildObject(this, 'unit');
+            unitBox.addItem(TTR("greencost", "Kg"));
+            unitBox.addItem(TTR("greencost", "Lb"));
+            unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/report_unit", unitBox.currentIndex);
+                refresh();
+            });
+            function refresh() {
+                var conversion = 1;
+                if(unitBox.currentIndex == 0) {
+                    conversion = 2.2;
+                }
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", "Cost of Green Coffee for Roasted Coffee");
+                output.writeTextElement("title", TTR("greencost", "Cost of Green Coffee for Roasted Coffee"));
                 output.writeEndElement();
                 output.writeStartElement("body");
-                output.writeTextElement("h1", "Cost of Green Coffee for Roasted Coffee");
-				var query = new QSqlQuery();
-				query.exec("SELECT item, (SELECT name FROM items WHERE id = item) AS name FROM current_items ORDER BY name");
-				var roastedItems = new Array();
-				var roastedNames = new Array();
-				while(query.next()) {
-					roastedItems.push(query.value(0));
-					roastedNames.push(query.value(1));
-				}
-				var recipes = new Array();
-				var recipeQuantities = new Array();
-				query.prepare("SELECT unroasted_id, unroasted_quantity FROM roasting_log WHERE roasted_id = :item AND time = (SELECT max(time) FROM roasting_log WHERE roasted_id = :item2)");
-				for(var i = 0; i < roastedItems.length; i++) {
-					query.bind("item", roastedItems[i]);
-					query.bind("item2", roastedItems[i]);
-					query.exec();
-					if(query.next()) {
-						recipes.push(query.value(0));
-						recipeQuantities.push(query.value(1));
-					} else {
-						recipes.push("{-1}");
-						recipeQuantities.push("{-1}");
-					}
-				}
-				query.prepare("SELECT min(unroasted_total_quantity / roasted_quantity), max(unroasted_total_quantity / roasted_quantity), avg(unroasted_total_quantity / roasted_quantity) FROM roasting_log WHERE roasted_id = :ri AND unroasted_id = :gi AND unroasted_total_quantity > 0 AND roasted_quantity > 0 AND approval = true");
-				var mins = new Array();
-				var maxes = new Array();
-				var means = new Array();
-				for(var i = 0; i < roastedItems.length; i++) {
-					if(recipes[i] == "{-1}") {
-						mins.push("undefined");
-						maxes.push("undefined");
-						means.push("undefined");
-					} else {
-						query.bind(":ri", Number(roastedItems[i]));
-						query.bind(":gi", recipes[i]);
-						query.exec();
-						if(query.next()) {
-							mins.push(query.value(0));
-							maxes.push(query.value(1));
-							means.push(query.value(2));
-						} else {
-							print("Error 2");
-						}
-					}
-				}
-				var proportionalCosts = new Array();
-				query.prepare("SELECT cost * :proportion FROM purchase WHERE item = :id");
-				for(var i = 0; i < roastedItems.length; i++) {
-					if(recipes[i] == "{-1}") {
-						proportionalCosts.push("undefined");
-					} else {
-						greens = sqlToArray(recipes[i]);
-						weights = sqlToArray(recipeQuantities[i]);
-						proportions = new Array();
-						quantitySum = weights.reduce(function(p, c) {
-							return p + c;
-						});
-						for(var j = 0; j < weights.length; j++) {
-							proportions.push(weights[j]/quantitySum);
-						}
-						partialSum = 0;
-						for(var j = 0; j < greens.length; j++) {
-							query.bind(":proportion", proportions[j]);
-							query.bind(":id", greens[j]);
-							query.exec();
-							if(query.next()) {
-								partialSum += query.value(0);
-							} else {
-								print("Error 3");
-							}
-						}
-						proportionalCosts.push(partialSum);
-					}
-				}
-				query = query.invalidate();
-				var minCosts = new Array();
-				var maxCosts = new Array();
-				var meanCosts = new Array();
-				for(var i = 0; i < roastedItems.length; i++) {
-					if(recipes[i] == "{-1}") {
-						minCosts.push("undefined");
-						maxCosts.push("undefined");
-						meanCosts.push("undefined");
-					} else {
-						minCosts.push(proportionalCosts[i] * mins[i]);
-						maxCosts.push(proportionalCosts[i] * maxes[i]);
-						meanCosts.push(proportionalCosts[i] * means[i]);
-					}
-				}
-				output.writeStartElement("table");
-				output.writeAttribute("rules", "groups");
-				output.writeAttribute("cellpadding", "3px");
-				output.writeStartElement("thead");
-				output.writeStartElement("tr");
-				output.writeTextElement("th", "Coffee");
-				output.writeTextElement("th", "Minimum Cost");
-				output.writeTextElement("th", "Maximum Cost");
-				output.writeTextElement("th", "Mean Cost");
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeStartElement("tbody");
-				for(var i = 0; i < roastedItems.length; i++) {
-					output.writeStartElement("tr");
-					output.writeTextElement("td", roastedNames[i]);
-					output.writeTextElement("td", Number(minCosts[i]).toFixed(2));
-					output.writeTextElement("td", Number(maxCosts[i]).toFixed(2));
-					output.writeTextElement("td", Number(meanCosts[i]).toFixed(2));
-					output.writeEndElement();
-				}
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndDocument();
-				report.setContent(buffer);
-				buffer.close();
-			};
-			refresh();
-		]]>
-	</program>
+                var unit = (unitBox.currentIndex == 0 ? TTR("greencost", "Kg") : 
+                    TTR("greencost", "Lb"));
+                output.writeTextElement("h1", TTR("greencost", "Cost of Green Coffee for Roasted Coffee"));
+                output.writeTextElement("p", TTR("greencost", "Cost of green coffee per ") +
+                    unit + TTR("greencost", " of roasted coffee"));
+                var query = new QSqlQuery();
+                query.exec("SELECT item, (SELECT name FROM items WHERE id = item) AS name FROM current_items ORDER BY name");
+                var roastedItems = new Array();
+                var roastedNames = new Array();
+                while(query.next()) {
+                    roastedItems.push(query.value(0));
+                    roastedNames.push(query.value(1));
+                }
+                var recipes = new Array();
+                var recipeQuantities = new Array();
+                query.prepare("SELECT unroasted_id, unroasted_quantity FROM roasting_log WHERE roasted_id = :item AND time = (SELECT max(time) FROM roasting_log WHERE roasted_id = :item2)");
+                for(var i = 0; i < roastedItems.length; i++) {
+                    query.bind("item", roastedItems[i]);
+                    query.bind("item2", roastedItems[i]);
+                    query.exec();
+                    if(query.next()) {
+                        recipes.push(query.value(0));
+                        recipeQuantities.push(query.value(1));
+                    } else {
+                        recipes.push("{-1}");
+                        recipeQuantities.push("{-1}");
+                    }
+                }
+                query.prepare("SELECT min(unroasted_total_quantity / roasted_quantity), max(unroasted_total_quantity / roasted_quantity), avg(unroasted_total_quantity / roasted_quantity) FROM roasting_log WHERE roasted_id = :ri AND unroasted_id = :gi AND unroasted_total_quantity > 0 AND roasted_quantity > 0 AND approval = true");
+                var mins = new Array();
+                var maxes = new Array();
+                var means = new Array();
+                for(var i = 0; i < roastedItems.length; i++) {
+                    if(recipes[i] == "{-1}") {
+                        mins.push("undefined");
+                        maxes.push("undefined");
+                        means.push("undefined");
+                    } else {
+                        query.bind(":ri", Number(roastedItems[i]));
+                        query.bind(":gi", recipes[i]);
+                        query.exec();
+                        if(query.next()) {
+                            mins.push(query.value(0));
+                            maxes.push(query.value(1));
+                            means.push(query.value(2));
+                        } else {
+                            print("Error 2");
+                        }
+                    }
+                }
+                var proportionalCosts = new Array();
+                query.prepare("SELECT cost * :proportion * :conversion FROM purchase WHERE item = :id");
+                for(var i = 0; i < roastedItems.length; i++) {
+                    if(recipes[i] == "{-1}") {
+                        proportionalCosts.push("undefined");
+                    } else {
+                        greens = sqlToArray(recipes[i]);
+                        weights = sqlToArray(recipeQuantities[i]);
+                        proportions = new Array();
+                        quantitySum = weights.reduce(function(p, c) {
+                            return Number(p) + Number(c);
+                        });
+                        for(var j = 0; j < weights.length; j++) {
+                            proportions.push(weights[j]/quantitySum);
+                        }
+                        partialSum = 0;
+                        for(var j = 0; j < greens.length; j++) {
+                            query.bind(":proportion", proportions[j]);
+                            query.bind(":id", greens[j]);
+                            query.bind(":conversion", conversion);
+                            query.exec();
+                            if(query.next()) {
+                                partialSum += Number(query.value(0));
+                            } else {
+                                print("Error 3");
+                            }
+                        }
+                        proportionalCosts.push(partialSum);
+                    }
+                }
+                query = query.invalidate();
+                var minCosts = new Array();
+                var maxCosts = new Array();
+                var meanCosts = new Array();
+                for(var i = 0; i < roastedItems.length; i++) {
+                    if(recipes[i] == "{-1}") {
+                        minCosts.push("undefined");
+                        maxCosts.push("undefined");
+                        meanCosts.push("undefined");
+                    } else {
+                        minCosts.push(proportionalCosts[i] * mins[i]);
+                        maxCosts.push(proportionalCosts[i] * maxes[i]);
+                        meanCosts.push(proportionalCosts[i] * means[i]);
+                    }
+                }
+                output.writeStartElement("table");
+                output.writeAttribute("rules", "groups");
+                output.writeAttribute("cellpadding", "3px");
+                output.writeStartElement("thead");
+                output.writeStartElement("tr");
+                output.writeTextElement("th", TTR("greencost", "Coffee"));
+                output.writeTextElement("th", TTR("greencost", "Minimum Cost"));
+                output.writeTextElement("th", TTR("greencost", "Maximum Cost"));
+                output.writeTextElement("th", TTR("greencost", "Mean Cost"));
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("tbody");
+                for(var i = 0; i < roastedItems.length; i++) {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", roastedNames[i]);
+                    output.writeTextElement("td", Number(minCosts[i]).toFixed(2));
+                    output.writeTextElement("td", Number(maxCosts[i]).toFixed(2));
+                    output.writeTextElement("td", Number(meanCosts[i]).toFixed(2));
+                    output.writeEndElement();
+                }
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                report.setContent(buffer);
+                buffer.close();
+            };
+            refresh();
+        ]]>
+    </program>
 </window>
 

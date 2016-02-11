@@ -279,7 +279,7 @@
                                 TTR("sampleRoastingBatch", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                             }
                             if(proceed) {
-                                doLoadProfile();
+                                doSubmit();
                             }
                         });
                         var doSubmit = function() {

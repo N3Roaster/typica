@@ -36,6 +36,9 @@
                 <h2>When configuring rate of change calculations, what is the difference between scale time and cache time?</h2>
                 <p>A rate of change is logically a fraction where the numerator is how much the value has changed and the denominator is the amount of time that change takes place over. Scale time is the number of seconds used for the denominator of this fraction. If you are already used to thinking about rate of change over a certain amount of time, you can continue to use that. Otherwise, matching what you normally have the table view set to show is recommended. By default, that would be 30 seconds.</p>
                 <p>Measurement hardware is not perfect and presents data that is slightly noisy and of limited precision. Rate of change calculations can amplify that noise and make it difficult to use that information during the roast. Typica provides a way to smooth out that noise by presenting the slope of a linear regression of measurements taken in a given amount of time. Cache time is the number of seconds used for this. A smaller value will allow the rate to change more quickly while a larger value will be more resistant to noise. 10 seconds is a good starting point for this setting.</p>
+                <p>A good overview of using rate of change calculations in Typica is presented in the following video. The start of the video is an overview of why this is useful. Starting at 2:55 is a demonstration of how this looks in Typica. At 10:07 there's a walkthrough of all of the configuration details for this feature.</p>
+                
+                <iframe width="640" height="360" src="https://www.youtube.com/embed/km4GuMIxW70" frameborder="0" allowfullscreen></iframe>
                 
                 <h2>How can I support further development of Typica?</h2>
                 <p>Checks payable to Neal Wilson can be sent to</p>

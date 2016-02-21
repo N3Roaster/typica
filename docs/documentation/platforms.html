@@ -29,12 +29,9 @@
 				<h2>Operating Systems</h2>
 				<p>Precompiled builds of Typica are provided for Microsoft
 				Windows and Mac OS X. The Microsoft Windows build has been
-				tested as working on both Windows 7 and Windows 8. It might
-				work on Windows XP or Windows Vista but this has not been
-				tested.</p>
-				<p>The Mac OS X build has been tested on Mac OS X 10.6 and 10.7.
-				It might work on 10.4, 10.5, and 10.8 but this has not been
-				tested. The build is also only for Macs with Intel processors.</p>
+				tested as working on both Windows 7 and Windows 10. It might
+				work on Windows XP, Windows Vista, or Windows 8 but this has not been tested.</p>
+				<p>The Mac OS X build has been tested on Mac OS X 10.6 through 10.11. The build is also only for Macs with Intel processors. Note that at the time of this writing National Instruments hardware is known to not work starting with OS X 10.10 or later. If National Instruments starts advertising that a newer version of NI DAQmx Base works with current operating system releases and supported hardware, Typica will probably work with that, but there's nothing that anybody else can do about that other than choosing different hardware.</p>
 				<p>Source code is provided which may be used to build Typica
 				on Linux, PowerPC based Macs, and possibly other platforms,
 				however instructions on doing this are beyond the scope of this
@@ -71,7 +68,7 @@
 				<a href="http://sine.ni.com/nips/cds/view/p/lang/en/nid/208177">NI USB-TC01</a>
 				is also an option on
 				this platform. This has been tested with
-				<a href="http://joule.ni.com/nidu/cds/view/p/id/3622/lang/en">NI-DAQmx 9.6.1</a>.
+				<a href="http://joule.ni.com/nidu/cds/view/p/id/3622/lang/en">NI-DAQmx 9.6.1</a>. A newer hardware revision has been released which no longer works with NI-DAQmx 9.6.1. If you encounter an error related to firmware being too new, try the latest version of NI-DAQmx.
 				Note that NI-DAQmx should not be installed at the same time as NI-DAQmx Base 3.6
 				however it is fine to have it installed at the same time as NI-DAQmx Base 2.2.</p>
 				<p>On all platforms, devices which communicate using the Modbus
@@ -101,13 +98,13 @@
 						<tr>
 							<th><a href="appendix-a.1.html">National Instruments NI USB-9211</a></th>
 							<td>yes</td>
-							<td>yes</td>
+							<td>only 10.9 or earlier</td>
 							<td>maybe</td>
 						</tr>
 						<tr>
 							<th><a href="appendix-a.2.html">National Instruments NI USB-9211A</a></th>
 							<td>yes</td>
-							<td>yes</td>
+							<td>only 10.9 or earlier</td>
 							<td>maybe</td>
 						</tr>
 						<tr>

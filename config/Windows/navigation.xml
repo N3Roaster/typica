@@ -133,7 +133,7 @@
         var nrbutton = findChildObject(this, 'newroasted');
         nrbutton.clicked.connect(function() {
             var nrwindow = createWindow("newroasted");
-            nrwindow.windowTitle = "New Roasted Coffee Item";
+            nrwindow.windowTitle = "Manage Roasted Coffee Items";
         });
         var importb = findChildObject(this, 'target');
         importb.clicked.connect(function() {

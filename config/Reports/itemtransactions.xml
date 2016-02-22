@@ -175,6 +175,37 @@
 					output.writeCDATA(scriptFile.readToString());
 					scriptFile.close();
 					output.writeEndElement();
+
+                                        eval(chartData);
+                                        output.writeStartElement("table");
+                                        output.writeStartElement("tr");
+                                        output.writeTextElement("th", "Item");
+                                        output.writeTextElement("th", "Green");
+                                        output.writeTextElement("th", "Roasted");
+                                        output.writeTextElement("th", "Transactions");
+                                        output.writeEndElement();
+                                        for(var r = 0; r < data.length; r++)
+                                        {
+                                            output.writeStartElement("tr");
+                                            output.writeTextElement("td", data[r][0]);
+                                            output.writeTextElement("td", data[r][1]);
+                                            output.writeTextElement("td", data[r][3]);
+                                            output.writeTextElement("td", data[r][2]);
+                                            output.writeEndElement();
+                                        }
+                                        output.writeStartElement("tr");
+                                        output.writeTextElement("th", "Totals:");
+                                        output.writeTextElement("td", data.reduce(function(prev, current){
+                                            return +(current[1]) + prev;
+                                        }, 0));
+                                        output.writeTextElement("td", data.reduce(function(prev, current){
+                                            return +(current[3]) + prev;
+                                        }, 0));
+                                        output.writeTextElement("td", data.reduce(function(prev, current){
+                                            return +(current[2]) + prev;
+                                        }, 0));
+                                        output.writeEndElement();
+                                        output.writeEndElement();
 					
 					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason FROM item_history(:item)");
 					switch(unitBox.currentIndex)

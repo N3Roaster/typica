@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>Typica - Data for Coffee Roasters</title>
+        <link rel="stylesheet" type="text/css" href="../style.css">
+    </head>
+    <body>
+        <div id="page">
+            <div id="topmatter">
+                <div id="topbanner">
+                    <img src="../logo96.png" height="96px" width="96px" alt="Typica logo" />
+                    <h1>Typica</h1>
+                    <h2>Data for Coffee Roasters</h2>
+                </div>
+                <div id="menu">
+                    <a class="tab" href="index.html">Project Home</a>
+                    <a class="tab" href="downloads.html" >Downloads</a>
+                    <a class="tab active" >Documentation</a>
+                    <a class="tab" href="screenshots.html" >Screenshots and Videos</a>
+                    <a href="http://appliedcoffeetechnology.tumblr.com/tagged/Typica" class="tab">Blog</a>
+                </div>
+            </div>
+            <div id="maintext">
+                <h1>Tips, Tricks, and Frequently Asked Questions</h1>
+
+                <h2>What hardware does Typica work with?</h2>
+                <p>See the <a href="http://www.randomfield.com/programs/typica/documentation/platforms.html#compatability">Hardware Compatability Table</a> to learn what hardware will work with Typica on which operating systems. If your device is not listed, Typica is not known to work with it. If you'd like to add support for additional hardware, patches are welcome. For new installations, the Phidgets 1048 is generally recommended.</p>
+                
+                <h2>Does Typica work with my coffee roaster?</h2>
+                <p>Almost certainly. If your roaster already has one or more thermocouples installed, it is possible to jump off of that to one of the supported pieces of data acquisition hardware. If you have an RTD, you might need to replace whatever that is connected to with something that can speak Modbus RTU. Home roasting machines are generally more difficult to connect and may require significant modification.</p>
+                <p>The below video demonstrates connecting a roaster to a computer using a Diedrich SR-1 and a National Instruments NI USB 9211, but the process is very similar with most other commercial coffee roasters and other data acquisition hardware that takes thermocouple inputs.</p>
+                <iframe width="640" height="360" src="https://www.youtube.com/embed/EXPjLgCoUWU" frameborder="0" allowfullscreen></iframe>
+                
+                <h2>Can multiple instances of Typica connect to the same database?</h2>
+                <p>Yes. You'll need to configure PostgreSQL to allow network connections (it does not by default) and if you're using multiple coffee roasters you'll want to make sure these are configured with different IDs in the database. If you are using a software based firewall on the computer running PostgreSQL you will also need to make sure incoming connections are allowed.</p>
+                
+                <h2>When configuring rate of change calculations, what is the difference between scale time and cache time?</h2>
+                <p>A rate of change is logically a fraction where the numerator is how much the value has changed and the denominator is the amount of time that change takes place over. Scale time is the number of seconds used for the denominator of this fraction. If you are already used to thinking about rate of change over a certain amount of time, you can continue to use that. Otherwise, matching what you normally have the table view set to show is recommended. By default, that would be 30 seconds.</p>
+                <p>Measurement hardware is not perfect and presents data that is slightly noisy and of limited precision. Rate of change calculations can amplify that noise and make it difficult to use that information during the roast. Typica provides a way to smooth out that noise by presenting the slope of a linear regression of measurements taken in a given amount of time. Cache time is the number of seconds used for this. A smaller value will allow the rate to change more quickly while a larger value will be more resistant to noise. 10 seconds is a good starting point for this setting.</p>
+                <p>A good overview of using rate of change calculations in Typica is presented in the following video. The start of the video is an overview of why this is useful. Starting at 2:55 is a demonstration of how this looks in Typica. At 10:07 there's a walkthrough of all of the configuration details for this feature.</p>
+                
+                <iframe width="640" height="360" src="https://www.youtube.com/embed/km4GuMIxW70" frameborder="0" allowfullscreen></iframe>
+                
+                <h2>How can I support further development of Typica?</h2>
+                <p>Checks payable to Neal Wilson can be sent to</p>
+                <p>Neal Wilson<br />
+                C/O Wilson's Coffee &amp; Tea<br />
+                3306 Washington Ave.<br />
+                Racine, WI 53405<br />
+                USA</p>
+                <p>If you would prefer to use a credit card, it is possible to do this with the blue "$ Support" button on the right side of <a href="https://www.youtube.com/user/N3Roaster">the N3Roaster YouTube channel</a>.</p>
+                <p>It is also possible to <a href="mailto:roaster@wilsonscoffee.com">hire me for training at your company</a>.</p>
+                
+                <h2>Why can't I see the batch timer?</h2>
+                <p>There are splitter handles between all of the indicators at the top of the logging window. If you move your cursor to the right of the rightmost visible indicator and click and drag to the left, that should become visible again. Several other elements of this window also have splitter handles that you can use to customize the size of different information displays.</p>
+                
+                <h2>Can databases other than PostgreSQL be used with Typica?</h2>
+                <p>Not currently. I'd like to add SQLite3 support in Typica 2.0 which would make it easier to support additional database managers.</p>
+
+            </div>
+        </div>
+    </body>
+</html>

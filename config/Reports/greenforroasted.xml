@@ -1,0 +1,99 @@
+<window id="greenforroasted">
+    <reporttitle>Production:->Green Coffees Used for Roasted Coffees</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <daterange id="dates" initial="19" /><!-- Year to Date -->
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print...</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = TTR("greenforroasted", "Typica - Green Coffees Used for Roasted Coffees");
+            var report = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                report.print();
+            });
+            var dateSelect = findChildObject(this, 'dates');
+            var dateQuery = new QSqlQuery;
+            dateQuery.exec("SELECT time::date FROM transactions WHERE time = (SELECT min(time) FROM transactions) OR time = (SELECT max(time) FROM transactions) ORDER BY time ASC");
+            dateQuery.next();
+            var lifetimeStartDate = dateQuery.value(0);
+            var lifetimeEndDate;
+            if(dateQuery.next()) {
+                lifetimeEndDate = dateQuery.value(0);
+            } else {
+                lifetimeEndDate = lifetimeStartDate;
+            }
+            dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+            dateQuery = dateQuery.invalidate();
+            dateSelect.rangeUpdated.connect(refresh);
+            function refresh() {
+                var dateRange = dateSelect.currentRange();
+                var startDate = dateRange[0];
+                var endDate = dateRange[dateRange.length - 1];
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", TTR("greenforroasted", "Green Coffees Used for Roasted Coffees"));
+                output.writeEndElement(); //head
+                output.writeStartElement("body");
+                output.writeTextElement("h1", TTR("greenforroasted", "Green Coffees Used for Roasted Coffees ") + startDate + "-" + endDate);
+                output.writeStartElement("ul");
+                var query = new QSqlQuery();
+                query.prepare("WITH q AS (SELECT roasted_id, unroasted_id, (SELECT name FROM items WHERE id = roasted_id) AS rname, generate_subscripts(unroasted_id, 1) AS s, sum(roasted_quantity) AS rq, min(time)::date, max(time)::date FROM roasting_log WHERE time >= :sd1 AND time < :ed1 ::date + interval '1 day' GROUP BY roasted_id, unroasted_id) SELECT q.*, (SELECT name FROM items WHERE id = unroasted_id[q.s]) || ' (' || unroasted_id[q.s] || ')' AS gname, (SELECT SUM(unroasted_quantity[q.s]) AS gq FROM roasting_log WHERE roasted_id = q.roasted_id AND unroasted_id = q.unroasted_id AND time >= :sd2 AND time < :ed2 ::date + interval '1 day') FROM q ORDER BY q.rname ASC, min ASC");
+                query.bind(":sd1", startDate);
+                query.bind(":sd2", startDate);
+                query.bind(":ed1", endDate);
+                query.bind(":ed2", endDate);
+                query.exec();
+                var prevRid = -1;
+                var prevGid = "";
+                var first = true;
+                while(query.next()) {
+                    if(query.value(0) != prevRid) { // New roasted item
+                        if(!first) {
+                            output.writeEndElement(); //ul from previous roasted item
+                            output.writeEndElement(); //ul from previous roasted item
+                        } else {
+                            first = false;
+                        }
+                        output.writeTextElement("li", query.value(2) + " (" + query.value(0) + ")");
+                        output.writeStartElement("ul");
+                        output.writeTextElement("li", query.value(4) + " pounds roasted between " + query.value(5) + " and " + query.value(6) + " with:");
+                        output.writeStartElement("ul");
+                        output.writeTextElement("li", query.value(8) + " pounds of " + query.value(7));
+                    }
+                    else { // Same roasted item
+                        if(query.value(1) != prevGid) { // New set of greens
+                            output.writeEndElement(); //ul
+                            output.writeTextElement("li", query.value(4) + " pounds roasted between " + query.value(5) + " and " + query.value(6) + " with:");
+                            output.writeStartElement("ul");
+                            output.writeTextElement("li", query.value(8) + " pounds of " + query.value(7));
+                        } else { // Same set of greens
+                            output.writeTextElement("li", query.value(8) + " pounds of " + query.value(7));
+                        }
+                    }
+                    prevRid = query.value(0);
+                    prevGid = query.value(1);
+                }
+                output.writeEndElement(); //ul
+                output.writeEndElement(); //body
+                output.writeEndElement(); //html
+                output.writeEndDocument();
+                report.setContent(buffer);
+                buffer.close();
+            }
+            refresh();
+        ]]>
+    </program>
+</window>

@@ -937,38 +937,39 @@
 		QSettings.setValue("liveColumn", 1);
         var lc = 1;
         stop.clicked.connect(function() {
-			stop.enabled = false;
-			for(var i = 0; i < adapters.length; i++)
-			{
-				adapters[i].measurement.disconnect(log.newMeasurement);
-				adapters[i].measurement.disconnect(graph.newMeasurement);
-			}
-			for(var i = 0; i < rateadapters.length; i++)
-			{
-				rateadapters[i].measurement.disconnect(graph.newMeasurement);
-			}
+            stop.enabled = false;
+            for(var i = 0; i < adapters.length; i++)
+            {
+                adapters[i].measurement.disconnect(log.newMeasurement);
+                adapters[i].measurement.disconnect(graph.newMeasurement);
+            }
+            for(var i = 0; i < rateadapters.length; i++)
+            {
+                rateadapters[i].measurement.disconnect(graph.newMeasurement);
+            }
             if(typeof(currentBatchInfo) == 'undefined') { } else {
                 lc = Number(QSettings.value("liveColumn"));
                 var duration = log.lastTime(lc);
                 var durfield = findChildObject(currentBatchInfo, 'duration');
                 durfield.text = duration;
                 log.clearOutputColumns();
-				channelSkip = 0;
-				for(var i = 0; i < channels.length; i++) {
-					if(channelVisibility[i]) {
-						if(channelType[i] == "T") {
-							log.addOutputTemperatureColumn(lc + i - channelSkip);
-						}
-						else {
-							log.addOutputControlColumn(lc + i - channelSkip);
-						}
-					} else {
-						channelSkip++;
-					}
-				}
-				log.addOutputAnnotationColumn(lc + channels.length - channelSkip);
+                channelSkip = 0;
+                for(var i = 0; i < channels.length; i++) {
+                    if(channelVisibility[i]) {
+                        if(channelType[i] == "T") {
+                            log.addOutputTemperatureColumn(lc + i - channelSkip);
+                        }
+                        else {
+                            log.addOutputControlColumn(lc + i - channelSkip);
+                        }
+                    } else {
+                        channelSkip++;
+                    }
+                }
+                log.addOutputAnnotationColumn(lc + channels.length - channelSkip);
                 var filename = log.saveTemporary();
                 currentBatchInfo.tempData = filename;
+                currentBatchInfo.endBatch();
                 var notes = findChildObject(currentBatchInfo, 'annotation');
                 for(var i = 0; i < rangetimers.length; i++)
                 {
@@ -977,20 +978,20 @@
                 currentBatchInfo.raise();
                 currentBatchInfo.activateWindow();
             }
-			if(translationChannel >= 0)
-			{
-				offsets[offsetForChannel(translationChannel)].measurement.disconnect(currentDetector.newMeasurement);
-			}
-			start.enabled = true;
-			window.windowModified = false;
-			graph.setTimeIndicatorEnabled(false);
+            if(translationChannel >= 0)
+            {
+                offsets[offsetForChannel(translationChannel)].measurement.disconnect(currentDetector.newMeasurement);
+            }
+            start.enabled = true;
+            window.windowModified = false;
+            graph.setTimeIndicatorEnabled(false);
         });
-		stop.annotation.connect(function(note, tcol, ncol) {
-			for(var i = tcol; i < ncol; i++) {
-				log.newAnnotation(note, i, ncol);
-			}
-		});
-		var quitMenu = findChildObject(this, 'quit');
+        stop.annotation.connect(function(note, tcol, ncol) {
+            for(var i = tcol; i < ncol; i++) {
+                log.newAnnotation(note, i, ncol);
+            }
+        });
+        var quitMenu = findChildObject(this, 'quit');
         quitMenu.triggered.connect(function() {
             window.close();
             Application.quit();

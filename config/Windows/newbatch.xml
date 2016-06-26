@@ -501,13 +501,20 @@
             var approval = findChildObject(this, 'approval');
             approval.checked = true;
             var target = findChildObject(this, 'target');
+            var greenCheck = function() {
+                var itemArray = table.columnArray(0, 32).split("\\s*,\\s*");
+                var weightArray = table.columnArray(1, 0).split("\\s*,\\s*");
+                return (itemArray.length == weightArray.length) && (itemArray.length > 0);
+            }
             var checkSubmitEnable = function () {
                 if(roasted.currentIndex > 0) {
                     if(timefield.text.length > 0) {
                         if(duration.text.length > 0) {
                             if(batch.tempData.length > 0) {
                                 if(green.text.length > 0) {
-                                    return true;
+                                    if(greenCheck()) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -576,7 +583,7 @@
                 q2 = q2 + selectedRoasterID;
                 q2 = q2 + ", :duration, :approval, NULL, NULL, NULL, NULL, '{";
                 q2 = q2 + fileno;
-                q2 = q2 + "}')";
+                q2 = q2 + "}') RETURNING time";
                 query2 = new QSqlQuery();
                 query2.prepare(q2);
                 query2.bind(":time", timefield.text);
@@ -584,6 +591,12 @@
                 query2.bind(":duration", duration.text);
                 query2.bind(":approval", approval.checked);
                 query2.exec();
+                if(!query2.next()) {
+                    displayError(TTR("batchWindow", "Failed to save batch to database. Please check inputs and connection and try again."));
+                    query2 = query2.invalidate();
+                    query = query.invalidate();
+                    return;
+                }
                 query2 = query2.invalidate();
                 if(target.checked) {
                     var q3 = "INSERT INTO item_files (time, item, files) VALUES(:time, :item, '{";

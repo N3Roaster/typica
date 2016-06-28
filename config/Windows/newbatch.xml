@@ -592,7 +592,7 @@
                 query2.bind(":approval", approval.checked);
                 query2.exec();
                 if(!query2.next()) {
-                    displayError(TTR("batchWindow", "Failed to save batch to database. Please check inputs and connection and try again."));
+                    displayError(TTR("batchWindow", "Database Insert Failed"), TTR("batchWindow", "Failed to save batch to database. Please check inputs and connection and try again."));
                     query2 = query2.invalidate();
                     query = query.invalidate();
                     return;

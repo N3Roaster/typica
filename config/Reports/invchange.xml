@@ -66,7 +66,7 @@
 					unitText = TTR("invchange", "Kg");
 				}
 				var query = new QSqlQuery();
-					var q = "WITH q AS (SELECT id, name, reference, COALESCE((SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :sd1)), 0)/:c1 AS starting_balance, COALESCE((SELECT sum(quantity) FROM purchase WHERE item = id AND time >= :sd2 AND time < :ed1 ::date + interval '1 day'), 0)/:c2 AS purchase, COALESCE((SELECT sum(quantity) FROM use WHERE item = id AND time >= :sd3 AND time < :ed2 ::date + interval '1 day'), 0)/:c3 AS use, COALESCE((SELECT sum(quantity) FROM sale WHERE item = id AND time >= :sd4 AND time < :ed3 ::date + interval '1 day'), 0)/:c4 AS sale, (SElECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed4 ::date + interval '1 day'))/:c5 AS quantity, (SELECT sum(cost * quantity) / sum(quantity) FROM purchase WHERE item = id) AS unit_cost FROM coffees WHERE id IN (SELECT item FROM purchase WHERE time >= :sd6 AND time < :ed5 ::date + interval '1 day') OR id IN (SELECT id FROM items WHERE (SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed6 ::date + interval '1 day')) > 0) OR id IN (SELECT DISTINCT item FROM all_transactions WHERE time > :sd7 AND time < :ed7 ::date + interval '1 day')) SELECT *, (starting_balance + purchase - use - sale - quantity) AS adjustment, starting_balance * unit_cost * :c8 AS starting_cost, purchase * unit_cost * :c9 AS purchase_cost, use * unit_cost * :c10 AS use_cost, sale * unit_cost * :c11 AS sale_cost, quantity * unit_cost * :c12 AS quantity_cost, (starting_balance + purchase - use - sale - quantity) * unit_cost * :c13 AS adjustment_cost, (SELECT sum(quantity)/:c6 FROM purchase WHERE item = id) AS total_purchase FROM q ORDER BY name";
+                                var q = "WITH q AS (SELECT id, name, reference, COALESCE((SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :sd1)), 0)/:c1 AS starting_balance, COALESCE((SELECT sum(quantity) FROM purchase WHERE item = id AND time >= :sd2 AND time < :ed1 ::date + interval '1 day'), 0)/:c2 AS purchase, COALESCE((SELECT sum(quantity) FROM use WHERE item = id AND time >= :sd3 AND time < :ed2 ::date + interval '1 day'), 0)/:c3 AS use, COALESCE((SELECT sum(quantity) FROM sale WHERE item = id AND time >= :sd4 AND time < :ed3 ::date + interval '1 day'), 0)/:c4 AS sale, COALESCE((SELECT sum(quantity) FROM loss WHERE item = id AND time >= :sd8 AND time < :ed8 ::date + interval '1 day'), 0)/:c14 AS loss, (SElECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed4 ::date + interval '1 day'))/:c5 AS quantity, (SELECT sum(cost * quantity) / sum(quantity) FROM purchase WHERE item = id) AS unit_cost FROM coffees WHERE id IN (SELECT item FROM purchase WHERE time >= :sd6 AND time < :ed5 ::date + interval '1 day') OR id IN (SELECT id FROM items WHERE (SELECT balance FROM item_history(id) WHERE time = (SELECT max(time) FROM item_history(id) WHERE time < :ed6 ::date + interval '1 day')) > 0) OR id IN (SELECT DISTINCT item FROM all_transactions WHERE time > :sd7 AND time < :ed7 ::date + interval '1 day')) SELECT *, (starting_balance + purchase - use - sale - loss - quantity) AS adjustment, starting_balance * unit_cost * :c8 AS starting_cost, purchase * unit_cost * :c9 AS purchase_cost, use * unit_cost * :c10 AS use_cost, sale * unit_cost * :c11 AS sale_cost, loss * unit_cost * :c15 AS loss_cost, quantity * unit_cost * :c12 AS quantity_cost, (starting_balance + purchase - use - sale - loss - quantity) * unit_cost * :c13 AS adjustment_cost, (SELECT sum(quantity)/:c6 FROM purchase WHERE item = id) AS total_purchase FROM q ORDER BY name";
 				query.prepare(q);
 				query.bind(":sd1", startDate);
 				query.bind(":sd2", startDate);
@@ -74,6 +74,7 @@
 				query.bind(":sd4", startDate);
 				query.bind(":sd6", startDate);
 				query.bind(":sd7", startDate);
+                                query.bind(":sd8", startDate);
 				query.bind(":ed1", endDate);
 				query.bind(":ed2", endDate);
 				query.bind(":ed3", endDate);
@@ -81,6 +82,7 @@
 				query.bind(":ed5", endDate);
 				query.bind(":ed6", endDate);
 				query.bind(":ed7", endDate);
+                                query.bind(":ed8", endDate);
 				query.bind(":c1", conversion);
 				query.bind(":c2", conversion);
 				query.bind(":c3", conversion);
@@ -93,6 +95,8 @@
 				query.bind(":c11", conversion);
 				query.bind(":c12", conversion);
 				query.bind(":c13", conversion);
+                                query.bind(":c14", conversion);
+                                query.bind(":c15", conversion);
 				query.exec();
 				output.writeStartElement("table");
 				output.writeAttribute("rules", "groups");
@@ -103,17 +107,19 @@
 				output.writeTextElement("th", TTR("invchange", "Coffee")); // 1
 				output.writeTextElement("th", TTR("invchange", "Reference")); // 2
 				output.writeTextElement("th", TTR("invchange", "Starting (") + unitText + ")"); // 3
-				output.writeTextElement("th", TTR("invchange", "Cost")); // 10
-				output.writeTextElement("th", TTR("invchange", "Purchase (") + unitText + ")"); // 4
 				output.writeTextElement("th", TTR("invchange", "Cost")); // 11
-				output.writeTextElement("th", TTR("invchange", "Use (") + unitText + ")"); // 5
+				output.writeTextElement("th", TTR("invchange", "Purchase (") + unitText + ")"); // 4
 				output.writeTextElement("th", TTR("invchange", "Cost")); // 12
-				output.writeTextElement("th", TTR("invchange", "Sale (") + unitText + ")"); // 6
+				output.writeTextElement("th", TTR("invchange", "Use (") + unitText + ")"); // 5
 				output.writeTextElement("th", TTR("invchange", "Cost")); // 13
-				output.writeTextElement("th", TTR("invchange", "Adjustment (") + unitText + ")"); // 9
-				output.writeTextElement("th", TTR("invchange", "Cost")); // 15
-				output.writeTextElement("th", TTR("invchange", "Ending (") + unitText + ")"); // 7
+				output.writeTextElement("th", TTR("invchange", "Sale (") + unitText + ")"); // 6
 				output.writeTextElement("th", TTR("invchange", "Cost")); // 14
+                                output.writeTextElement("th", TTR("invchange", "Loss (") + unitText + ")"); // 7
+                                output.writeTextElement("th", TTR("invchange", "Cost")) // 15
+				output.writeTextElement("th", TTR("invchange", "Adjustment (") + unitText + ")"); // 10
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 17
+				output.writeTextElement("th", TTR("invchange", "Ending (") + unitText + ")"); // 8
+				output.writeTextElement("th", TTR("invchange", "Cost")); // 16
 				output.writeEndElement();
 				output.writeEndElement();
 				output.writeStartElement("tbody");
@@ -128,7 +134,9 @@
 				var sum9 = 0;
 				var sum15 = 0;
 				var sum7 = 0;
-				var sum14 = 0;;
+				var sum14 = 0;
+                                var loss_sum = 0;
+                                var loss_cost_sum = 0;
 				while(query.next())
 				{
 					output.writeStartElement("tr");
@@ -141,48 +149,55 @@
 					output.writeTextElement("td", query.value(1)); //Coffee
 					output.writeTextElement("td", query.value(2)); //Reference
 					output.writeStartElement("td"); //Starting Wt
-					output.writeAttribute("title", (parseFloat(query.value(3))/parseFloat(query.value(16)) * 100).toFixed(0) + "%");
+					output.writeAttribute("title", (parseFloat(query.value(3))/parseFloat(query.value(18)) * 100).toFixed(0) + "%");
 					output.writeCDATA(parseFloat(query.value(3)).toFixed(2));
 					output.writeEndElement(); //End of Starting Wt.
-					output.writeTextElement("td", parseFloat(query.value(10)).toFixed(2)); //Starting Cost
+					output.writeTextElement("td", parseFloat(query.value(11)).toFixed(2)); //Starting Cost
 					output.writeStartElement("td"); //Purchase Wt
-					output.writeAttribute("title", (parseFloat(query.value(4))/parseFloat(query.value(16)) * 100).toFixed(0) + "%");
+					output.writeAttribute("title", (parseFloat(query.value(4))/parseFloat(query.value(18)) * 100).toFixed(0) + "%");
 					output.writeCDATA(parseFloat(query.value(4)).toFixed(2));
 					output.writeEndElement(); //End of Purchase Wt
-					output.writeTextElement("td", parseFloat(query.value(11)).toFixed(2)); //Purchase Cost
+					output.writeTextElement("td", parseFloat(query.value(12)).toFixed(2)); //Purchase Cost
 					output.writeStartElement("td"); //Use Wt
-					output.writeAttribute("title", (parseFloat(query.value(5))/parseFloat(query.value(16)) * 100).toFixed(0) + "%");
+					output.writeAttribute("title", (parseFloat(query.value(5))/parseFloat(query.value(18)) * 100).toFixed(0) + "%");
 					output.writeCDATA(parseFloat(query.value(5)).toFixed(2));
 					output.writeEndElement(); //End of Use Wt
-					output.writeTextElement("td", parseFloat(query.value(12)).toFixed(2)); //Use Cost
+					output.writeTextElement("td", parseFloat(query.value(13)).toFixed(2)); //Use Cost
 					output.writeStartElement("td"); //Sale Wt
-					output.writeAttribute("title", (parseFloat(query.value(6))/parseFloat(query.value(16)) * 100).toFixed(0) + "%");
+					output.writeAttribute("title", (parseFloat(query.value(6))/parseFloat(query.value(18)) * 100).toFixed(0) + "%");
 					output.writeCDATA(parseFloat(query.value(6)).toFixed(2));
 					output.writeEndElement(); //End of Sale Wt
-					output.writeTextElement("td", parseFloat(query.value(13)).toFixed(2)); //Sale Cost
-					output.writeStartElement("td"); //Adjustment Wt
-					output.writeAttribute("title", (parseFloat(query.value(9))/parseFloat(query.value(16)) * 100).toFixed(0) + "%");
-					output.writeCDATA(parseFloat(query.value(9)).toFixed(2));
+					output.writeTextElement("td", parseFloat(query.value(14)).toFixed(2)); //Sale Cost
+					output.writeStartElement("td"); //Loss Wt
+                                        output.writeAttribute("title", (parseFloat(query.value(7))/parseFloat(query.value(18)) * 100).toFixed(0) + "%");
+                                        output.writeCDATA(parseFloat(query.value(7)).toFixed(2));
+                                        output.writeEndElement(); //End of loss Wt;
+                                        output.writeTextElement("td", parseFloat(query.value(15)).toFixed(2)); //Loss Cost
+                                        output.writeStartElement("td"); //Adjustment Wt
+					output.writeAttribute("title", (parseFloat(query.value(10))/parseFloat(query.value(18)) * 100).toFixed(0) + "%");
+					output.writeCDATA(parseFloat(query.value(10)).toFixed(2));
 					output.writeEndElement(); //Adjustment Wt
-					output.writeTextElement("td", parseFloat(query.value(15)).toFixed(2)); //Adjustment Cost
+					output.writeTextElement("td", parseFloat(query.value(17)).toFixed(2)); //Adjustment Cost
 					output.writeStartElement("td"); //Ending Wt
-					output.writeAttribute("title", (parseFloat(query.value(7))/parseFloat(query.value(16)) * 100).toFixed(0) + "%");
-					output.writeCDATA(parseFloat(query.value(7)).toFixed(2));
+					output.writeAttribute("title", (parseFloat(query.value(8))/parseFloat(query.value(18)) * 100).toFixed(0) + "%");
+					output.writeCDATA(parseFloat(query.value(8)).toFixed(2));
 					output.writeEndElement(); //End of Ending Wt
-					output.writeTextElement("td", parseFloat(query.value(14)).toFixed(2)); //Ending Cost
+					output.writeTextElement("td", parseFloat(query.value(16)).toFixed(2)); //Ending Cost
 					output.writeEndElement();
 					sum3 += parseFloat(query.value(3));
-					sum10 += parseFloat(query.value(10));
+					sum10 += parseFloat(query.value(11));
 					sum4 += parseFloat(query.value(4));
-					sum11 += parseFloat(query.value(11));
+					sum11 += parseFloat(query.value(12));
 					sum5 += parseFloat(query.value(5));
-					sum12 += parseFloat(query.value(12));
+					sum12 += parseFloat(query.value(13));
 					sum6 += parseFloat(query.value(6));
-					sum13 += parseFloat(query.value(13));
-					sum9 += parseFloat(query.value(9));
-					sum15 += parseFloat(query.value(15));
-					sum7 += parseFloat(query.value(7));
-					sum14 += parseFloat(query.value(14));
+					sum13 += parseFloat(query.value(14));
+					sum9 += parseFloat(query.value(10));
+					sum15 += parseFloat(query.value(17));
+					sum7 += parseFloat(query.value(8));
+					sum14 += parseFloat(query.value(16));
+                                        loss_sum += parseFloat(query.value(7));
+                                        loss_cost_sum += parseFloat(query.value(15));
 				}
 				output.writeEndElement(); // tbody
 				output.writeStartElement("tfoot");
@@ -198,6 +213,8 @@
 				output.writeTextElement("td", sum12.toFixed(2));
 				output.writeTextElement("td", sum6.toFixed(2));
 				output.writeTextElement("td", sum13.toFixed(2));
+                                output.writeTextElement("td", loss_sum.toFixed(2));
+                                output.writeTextElement("td", loss_cost_sum.toFixed(2));
 				output.writeTextElement("td", sum9.toFixed(2));
 				output.writeTextElement("td", sum15.toFixed(2));
 				output.writeTextElement("td", sum7.toFixed(2));

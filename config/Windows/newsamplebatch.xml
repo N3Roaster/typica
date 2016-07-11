@@ -132,6 +132,7 @@
 			newMenu.triggered.connect(function() {
 				createWindow("sampleRoastingBatch");
 			});
+                        this.endBatch = function() {};
 			var batch = this;
 			batch.submitButton = submit;
 			var name = findChildObject(this, 'name');

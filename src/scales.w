@@ -115,12 +115,16 @@ class SerialScale : public QextSerialPort
 	public slots:
 		void tare();
 		void weigh();
+		void setWeighCommand(const QString &command);
+		void setCommandTerminator(const QString &terminator);
 	signals:
 		void newMeasurement(double weight, Units::Unit unit);
 	private slots:
 		void dataAvailable();
 	private:
 		QByteArray responseBuffer;
+		QByteArray weighCommand;
+		QByteArray commandTerminator;
 };
 
 #endif
@@ -195,19 +199,19 @@ if(responseParts.size() > 2)
 }
 double weight = responseParts[0].toDouble();
 Units::Unit unit = Units::Unitless;
-if(responseParts[1] == "lb")
+if(responseParts[1].compare("lb", Qt::CaseInsensitive) == 0)
 {
 	unit = Units::Pound;
 }
-else if(responseParts[1] == "kg")
+else if(responseParts[1].compare("kg", Qt::CaseInsensitive) == 0)
 {
 	unit = Units::Kilogram;
 }
-else if(responseParts[1] == "g")
+else if(responseParts[1].compare("g", Qt::CaseInsensitive) == 0)
 {
 	unit = Units::Gram;
 }
-else if(responseParts[1] == "oz")
+else if(responseParts[1].compare("oz", Qt::CaseInsensitive) == 0)
 {
 	unit = Units::Ounce;
 }
@@ -225,7 +229,29 @@ void SerialScale::tare()
 
 void SerialScale::weigh()
 {
-	write("!KP\x0D");
+	//write("!KP\x0D");
+	write(weighCommand + commandTerminator);
+}
+
+void SerialScale::setWeighCommand(const QString &command)
+{
+	weighCommand = command.toAscii();
+}
+
+void SerialScale::setCommandTerminator(const QString &terminator)
+{
+	if(terminator == "CRLF")
+	{
+		commandTerminator = "\x0D\x0A";
+	}
+	else if(terminator == "CR")
+	{
+		commandTerminator = "\x0D";
+	}
+	else if(terminator == "LF")
+	{
+		commandTerminator = "\x0A";
+	}
 }
 
 @ This must be available to the host environment.
@@ -380,12 +406,16 @@ class SerialScaleConfWidget : public BasicDeviceConfigurationWidget
 		void updateParity(int index);
 		void updateFlowControl(int index);
 		void updateStopBits(int index);
+		void updateWeighCommand(const QString &command);
+		void updateCommandTerminator(const QString &terminator);
 	private:
 		PortSelector *port;
 		BaudSelector *baud;
 		ParitySelector *parity;
 		FlowSelector *flow;
 		StopSelector *stop;
+		QLineEdit *weighcommand;
+		QComboBox *commandterminator;
 };
 
 @ This is very similar to other configuration widgets.
@@ -395,7 +425,8 @@ SerialScaleConfWidget::SerialScaleConfWidget(DeviceTreeModel *model,
                                              const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
   port(new PortSelector), baud(new BaudSelector), parity(new ParitySelector),
-  flow(new FlowSelector), stop(new StopSelector)
+  flow(new FlowSelector), stop(new StopSelector),
+  weighcommand(new QLineEdit("!KP")), commandterminator(new QComboBox)
 {
 	QFormLayout *layout = new QFormLayout;
 	layout->addRow(tr("Port:"), port);
@@ -415,6 +446,16 @@ SerialScaleConfWidget::SerialScaleConfWidget(DeviceTreeModel *model,
 	layout->addRow(tr("Stop Bits:"), stop);
 	connect(stop, SIGNAL(currentIndexChanged(int)),
 	        this, SLOT(updateStopBits(int)));
+	layout->addRow(tr("Weigh Command:"), weighcommand);
+	connect(weighcommand, SIGNAL(textChanged(QString)),
+	        this, SLOT(updateWeighCommand(QString)));
+	commandterminator->addItem("CRLF");
+	commandterminator->addItem("CR");
+	commandterminator->addItem("LF");
+	layout->addRow(tr("Command Terminator:"), commandterminator);
+	connect(commandterminator, SIGNAL(currentIndexChanged(QString)),
+	        this, SLOT(updateCommandTerminator(QString)));
+	
 	@<Get device configuration data for current node@>@;
 	for(int i = 0; i < configData.size(); i++)
 	{
@@ -448,12 +489,23 @@ SerialScaleConfWidget::SerialScaleConfWidget(DeviceTreeModel *model,
 		{
 			stop->setCurrentIndex(stop->findData(node.attribute("value")));
 		}
+		else if(node.attribute("name") == "weighcommand")
+		{
+			weighcommand->setText(node.attribute("value"));
+		}
+		else if(node.attribute("name") == "commandterminator")
+		{
+			commandterminator->setCurrentIndex(
+				commandterminator->findText(node.attribute("value")));
+		}
 	}
 	updatePort(port->currentText());
 	updateBaudRate(baud->currentText());
 	updateParity(parity->currentIndex());
 	updateFlowControl(flow->currentIndex());
 	updateStopBits(stop->currentIndex());
+	updateWeighCommand(weighcommand->text());
+	updateCommandTerminator(commandterminator->currentText());
 	setLayout(layout);
 }
 
@@ -483,6 +535,16 @@ void SerialScaleConfWidget::updateFlowControl(int index)
 void SerialScaleConfWidget::updateStopBits(int index)
 {
 	updateAttribute("stopbits", stop->itemData(index).toString());
+}
+
+void SerialScaleConfWidget::updateWeighCommand(const QString &command)
+{
+	updateAttribute("weighcommand", command);
+}
+
+void SerialScaleConfWidget::updateCommandTerminator(const QString &terminator)
+{
+	updateAttribute("commandterminator", terminator);
 }
 
 @ The configuration widget is registered with the configuration system.

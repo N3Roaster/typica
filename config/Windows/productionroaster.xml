@@ -628,6 +628,8 @@
 				scale.setParity(driverReference.parity);
 				scale.setStopBits(driverReference.stopbits);
 				scale.setFlowControl(driverReference.flowcontrol);
+				scale.setWeighCommand(driverReference.weighcommand);
+				scale.setCommandTerminator(driverReference.commandterminator);
 				scale.open(3);
 				window.scales.push(scale);
 			}

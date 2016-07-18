@@ -22,7 +22,7 @@ static const uint qt_meta_data_SerialScale[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -35,7 +35,9 @@ static const uint qt_meta_data_SerialScale[] = {
  // slots: signature, parameters, type, tag, flags
       60,   12,   12,   12, 0x0a,
       67,   12,   12,   12, 0x0a,
-      75,   12,   12,   12, 0x08,
+      83,   75,   12,   12, 0x0a,
+     119,  108,   12,   12, 0x0a,
+     149,   12,   12,   12, 0x08,
 
        0        // eod
 };
@@ -43,7 +45,9 @@ static const uint qt_meta_data_SerialScale[] = {
 static const char qt_meta_stringdata_SerialScale[] = {
     "SerialScale\0\0weight,unit\0"
     "newMeasurement(double,Units::Unit)\0"
-    "tare()\0weigh()\0dataAvailable()\0"
+    "tare()\0weigh()\0command\0setWeighCommand(QString)\0"
+    "terminator\0setCommandTerminator(QString)\0"
+    "dataAvailable()\0"
 };
 
 void SerialScale::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -55,7 +59,9 @@ void SerialScale::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 0: _t->newMeasurement((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< Units::Unit(*)>(_a[2]))); break;
         case 1: _t->tare(); break;
         case 2: _t->weigh(); break;
-        case 3: _t->dataAvailable(); break;
+        case 3: _t->setWeighCommand((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->setCommandTerminator((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: _t->dataAvailable(); break;
         default: ;
         }
     }
@@ -93,9 +99,9 @@ int SerialScale::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 6;
     }
     return _id;
 }

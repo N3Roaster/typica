@@ -7694,10 +7694,10 @@ static const uint qt_meta_data_SerialScaleConfWidget[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
-       1,   39, // constructors
+       1,   49, // constructors
        0,       // flags
        0,       // signalCount
 
@@ -7707,9 +7707,11 @@ static const uint qt_meta_data_SerialScaleConfWidget[] = {
       86,   80,   22,   22, 0x08,
      104,   80,   22,   22, 0x08,
      127,   80,   22,   22, 0x08,
+     155,  147,   22,   22, 0x08,
+     194,  183,   22,   22, 0x08,
 
  // constructors: signature, parameters, type, tag, flags
-     159,  147,   22,   22, 0x0e,
+     239,  227,   22,   22, 0x0e,
 
        0        // eod
 };
@@ -7719,7 +7721,10 @@ static const char qt_meta_stringdata_SerialScaleConfWidget[] = {
     "updatePort(QString)\0rate\0"
     "updateBaudRate(QString)\0index\0"
     "updateParity(int)\0updateFlowControl(int)\0"
-    "updateStopBits(int)\0model,index\0"
+    "updateStopBits(int)\0command\0"
+    "updateWeighCommand(QString)\0terminator\0"
+    "updateCommandTerminator(QString)\0"
+    "model,index\0"
     "SerialScaleConfWidget(DeviceTreeModel*,QModelIndex)\0"
 };
 
@@ -7739,6 +7744,8 @@ void SerialScaleConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c
         case 2: _t->updateParity((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 3: _t->updateFlowControl((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 4: _t->updateStopBits((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->updateWeighCommand((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 6: _t->updateCommandTerminator((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -7776,9 +7783,9 @@ int SerialScaleConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 7;
     }
     return _id;
 }

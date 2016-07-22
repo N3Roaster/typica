@@ -393,6 +393,8 @@
                 }
                 return true;
             }
+            var duration = findChildObject(this, 'duration');
+            var timefield = findChildObject(this, 'time');
             profilebutton.clicked.connect(function() {
                 var proceed = false;
                 if(validateCapacity()) {
@@ -400,6 +402,10 @@
                 } else {
                     proceed = displayWarning(TTR("batchWindow", "Suspicious Input"),
                     TTR("batchWindow", "Entered green coffee weight exceeds maximum batch size. Continue?"));
+                }
+                if((proceed == true) && (timefield.text.length != 0)) {
+                    proceed = displayWarning(TTR("batchWindow", "Batch Already Roasted"),
+                    TTR("batchWindow", "Roasting data already exists for this batch. Roasting another batch from this window will overwrite existing data. Are you sure you want to do this?"));
                 }
                 if(proceed) {
                     doLoadProfile();
@@ -484,6 +490,10 @@
                     proceed = displayWarning(TTR("batchWindow", "Suspicious Input"),
                     TTR("batchWindow", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                 }
+                if((proceed == true) && (timefield.text.length != 0)) {
+                    proceed = displayWarning(TTR("batchWindow", "Batch Already Roasted"),
+                    TTR("batchWindow", "Roasting data already exists for this batch. Roasting another batch from this window will overwrite existing data. Are you sure you want to do this?"));
+                }
                 if(proceed) {
                     doNoProfile();
                 }
@@ -495,9 +505,7 @@
                 navigationwindow.loggingWindow.activateWindow();
             }
             var submitbutton = findChildObject(this, 'submit');
-            var timefield = findChildObject(this, 'time');
             var notes = findChildObject(this, 'annotation');
-            var duration = findChildObject(this, 'duration');
             var approval = findChildObject(this, 'approval');
             approval.checked = true;
             var target = findChildObject(this, 'target');

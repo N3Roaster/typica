@@ -82,7 +82,9 @@ class DateRangeSelector : public QWidget
 @<DateRangeSelector implementation@>
 
 #ifdef __unix__
+#ifndef __linux__
 #include "moc_daterangeselector.cpp"
+#endif
 #endif
 
 @ The custom range pop up is represented as a separate class which is not to be

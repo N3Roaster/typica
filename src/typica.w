@@ -609,6 +609,7 @@ generated file empty.
 @<SerialScaleConfWidget implementation@>@/
 @<ValueAnnotation implementation@>@/
 @<ValueAnnotationConfWidget implementation@>@/
+@<ModbusNG implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -17098,7 +17099,11 @@ StopSelector::StopSelector(QWidget *parent) : QComboBox(parent)
 
 @** Configuration of Serial Devices Using Modbus RTU.
 
-\noindent One protocol that is used across a broad class of devices is called
+\noindent The following sections contain the details of older code related to
+Modbus RTU support. While the various selector widgets are shared with the new
+code, the configuration widgets and device interfaces are being replaced.
+
+One protocol that is used across a broad class of devices is called
 Modbus RTU. This protocol allows multiple devices to be chained together on a
 two wire bus which can be connected to a single serial port. The communication
 protocol involves a single message which is sent from a master device (in this
@@ -19329,6 +19334,8 @@ app.registerDeviceConfigurationWidget("modbusrtu", ModbusConfigurator::staticMet
 @<Register top level device configuration nodes@>=
 inserter = new NodeInserter(tr("Modbus RTU Device"), tr("Modbus RTU Device"), "modbusrtu", NULL);
 topLevelNodeInserters.append(inserter);
+
+@i modbus.w
 
 @i unsupportedserial.w
 

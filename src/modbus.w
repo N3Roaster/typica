@@ -378,6 +378,7 @@ class ModbusNG : public QObject
         QTimer *messageDelayTimer;
         QTimer *commTimeout;
         int scanPosition;
+        bool waiting;
         QByteArray responseBuffer;
         QList<Channel*> channels;
         QList<ModbusScanItem> scanList;
@@ -393,7 +394,7 @@ sub-tree. In this design, child nodes establish a scan list.
 @<ModbusNG implementation@>=
 ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
     QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer),
-    scanPosition(0)
+    scanPosition(0), waiting(false)
 {
     QDomElement portReferenceElement =
         model->referenceElement(model->data(index, Qt::UserRole).toString());
@@ -495,11 +496,12 @@ ModbusNG::~ModbusNG()
 
 void ModbusNG::sendNextMessage()
 {
-    if(scanList.length() > 0)
+    if(scanList.length() > 0 && !waiting)
     {
         port->write(scanList.at(scanPosition).request);
         commTimeout->start(2000);
         messageDelayTimer->start(delayTime);
+        waiting = true;
     }
 }
 
@@ -579,6 +581,7 @@ void ModbusNG::dataAvailable()
         }
     }
     responseBuffer.clear();
+    waiting = false;
     messageDelayTimer->start(delayTime);
 }
 

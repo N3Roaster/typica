@@ -18283,7 +18283,7 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &in
     Channel *pv = new Channel;
     channels.append(pv);
     pvStub.append(station);
-    pvStub.append((char)0x04);
+    pvStub.append((char)0x03);
     pvaddress = (quint16)attributes.value("pVAddress").toInt();
     char *pvac = (char*)&pvaddress;
     pvStub.append(pvac[1]);
@@ -18661,6 +18661,7 @@ void ModbusRTUDevice::sendNextMessage()
         char *check = (char*)&crc;
         message.append(check[0]);
         message.append(check[1]);
+        qDebug() << "Writing" << message.toHex();
         port->write(message);
         commTimeout->start(2000);
         messageDelayTimer->start(delayTime);

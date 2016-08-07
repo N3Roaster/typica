@@ -325,6 +325,275 @@ app.registerDeviceConfigurationWidget("modbusnginput",
 inserter = new NodeInserter(tr("ModbusNG Port"), tr("Modbus RTU Port"), "modbusngport", NULL);
 topLevelNodeInserters.append(inserter);
 
+@ While the old design only needed to deal with a small number of potential
+messages and responses, it makes sense for the new design to use a scan list
+of arbitrary length. An initial implementation can simply store the data needed
+to make requests, properly interpret the results, and output data to the
+correct channels. There is room to improve operational efficiency later by
+batching operations on adjacent addresses on the same function into a single
+request, but there are known devices in use in coffee roasters which do not
+support reading from multiple registers simultaneously, so there must also be a
+way to turn such optimizations off.
+
+@<Class declarations@>=
+enum ModbusDataFormat
+{
+    Int16,
+    FloatHL,
+    FloatLH
+};
+
+struct ModbusScanItem
+{
+    QByteArray request;
+    ModbusDataFormat format;
+    int decimalPosition;
+    Units::Unit unit;
+    mutable double lastValue;
+};
+
 @ Another class is used to handle the communication with the bus and serve as
 an integration point for \pn{}.
 
+@<Class declarations@>=
+class ModbusNG : public QObject
+{
+    Q_OBJECT
+    public:
+        ModbusNG(DeviceTreeModel *model, const QModelIndex &index);
+        ~ModbusNG();
+        QList<Channel*> channels;
+        QList<ModbusScanItem> scanList;
+        QList<QString> channelNames;
+        QList<bool> hiddenStates;
+    private slots:
+        void sendNextMessage();
+        void timeout();
+        void dataAvailable();
+    private:
+        quint16 calculateCRC(QByteArray data);
+        QextSerialPort *port;
+        int delayTime;
+        QTimer *messageDelayTimer;
+        QTimer *commTimeout;
+        int scanPosition;
+        QByteArray responseBuffer;
+};
+
+@ One of the things that the old Modbus code got right was in allowing the
+constructor to handle device configuration by accepting its configuration
+sub-tree. In this design, child nodes establish a scan list.
+
+@<ModbusNG implementation@>=
+ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
+    QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer),
+    scanPosition(0)
+{
+    QDomElement portReferenceElement =
+        model->referenceElement(model->data(index, Qt::UserRole).toString());
+    QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
+    QDomElement node;
+    QVariantMap attributes;
+    for(int i = 0; i < portConfigData.size(); i++)
+    {
+        node = portConfigData.at(i).toElement();
+        attributes.insert(node.attribute("name"), node.attribute("value"));
+    }
+    port = new QextSerialPort(attributes.value("port").toString(),
+                              QextSerialPort::EventDriven);
+    port->setBaudRate((BaudRateType)(attributes.value("baud").toInt()));
+    port->setDataBits(DATA_8);
+    port->setParity((ParityType)attributes.value("parity").toInt());
+    port->setStopBits((StopBitsType)attributes.value("stop").toInt());
+    port->setFlowControl((FlowType)attributes.value("flow").toInt());
+    delayTime = (int)(((double)(1)/(double)(attributes.value("baud").toInt())) * 144000.0);
+    messageDelayTimer->setSingleShot(true);
+    commTimeout->setSingleShot(true);
+    connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
+    connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
+    connect(port, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
+    port->open(QIODevice::ReadWrite);
+    for(int i = 0; i < model->rowCount(index); i++)
+    {
+        QModelIndex channelIndex = model->index(i, 0, index);
+        QDomElement channelReferenceElement =
+            model->referenceElement(model->data(channelIndex, Qt::UserRole).toString());
+        QDomNodeList channelConfigData =
+            channelReferenceElement.elementsByTagName("attribute");
+        QDomElement channelNode;
+        QVariantMap channelAttributes;
+        for(int j = 0; j < channelConfigData.size(); j++)
+        {
+            channelNode = channelConfigData.at(j).toElement();
+            channelAttributes.insert(channelNode.attribute("name"),
+                                     channelNode.attribute("value"));
+        }
+        ModbusScanItem scanItem;
+        QString format = channelAttributes.value("format").toString();
+        if(format == "16fixedint")
+        {
+            scanItem.format = Int16;
+        }
+        else if(format == "32floathl")
+        {
+            scanItem.format = FloatHL;
+        }
+        else if(format == "32floatlh")
+        {
+            scanItem.format = FloatLH;
+        }
+        scanItem.request.append((char)channelAttributes.value("station").toInt());
+        scanItem.request.append((char)channelAttributes.value("function").toInt());
+        quint16 startAddress = (quint16)channelAttributes.value("address").toInt();
+        char *startAddressBytes = (char*)&startAddress;
+        scanItem.request.append(startAddressBytes[1]);
+        scanItem.request.append(startAddressBytes[0]);
+        scanItem.request.append((char)0x00);
+        if(scanItem.format == Int16)
+        {
+            scanItem.request.append((char)0x01);
+        }
+        else
+        {
+            scanItem.request.append((char)0x02);
+        }
+        quint16 crc = calculateCRC(scanItem.request);
+        char *crcBytes = (char*)&crc;
+        scanItem.request.append(crcBytes[0]);
+        scanItem.request.append(crcBytes[1]);
+        scanItem.decimalPosition = channelAttributes.value("decimals").toInt();
+        if(channelAttributes.value("unit").toString() == "C")
+        {
+            scanItem.unit = Units::Celsius;
+        }
+        else
+        {
+            scanItem.unit = Units::Fahrenheit;
+        }
+        scanList.append(scanItem);
+        channels.append(new Channel);
+        channelNames.append(channelAttributes.value("column").toString());
+        hiddenStates.append(
+            channelAttributes.value("hidden").toString() == "true" ? true : false);
+    }
+}
+
+ModbusNG::~ModbusNG()
+{
+    commTimeout->stop();
+    messageDelayTimer->stop();
+    port->close();
+}
+
+void ModbusNG::sendNextMessage()
+{
+    if(scanList.length() > 0)
+    {
+        port->write(scanList.at(scanPosition).request);
+        commTimeout->start(2000);
+        messageDelayTimer->start(delayTime);
+    }
+}
+
+void ModbusNG::timeout()
+{
+    qDebug() << "Communications timeout.";
+    messageDelayTimer->start();
+}
+
+void ModbusNG::dataAvailable()
+{
+    if(messageDelayTimer->isActive())
+    {
+        messageDelayTimer->stop();
+    }
+    responseBuffer.append(port->readAll());
+    if(responseBuffer.size() < 5)
+    {
+        return;
+    }
+    if(responseBuffer.size() < 5 + responseBuffer.at(2))
+    {
+        return;
+    }
+    responseBuffer = responseBuffer.left(5 + responseBuffer.at(2));
+    commTimeout->stop();
+    if(calculateCRC(responseBuffer) == 0)
+    {
+        qDebug() << responseBuffer;
+        quint16 intresponse;
+        float floatresponse;
+        char *ibytes = (char*)&intresponse;
+        char *fbytes = (char*)&floatresponse;
+        double output;
+        switch(scanList.at(scanPosition).format)
+        {
+            case Int16:
+                ibytes[0] = responseBuffer.at(4);
+                ibytes[1] = responseBuffer.at(3);
+                output = intresponse;
+                for(int i = 0; i < scanList.at(scanPosition).decimalPosition; i++)
+                {
+                    output /= 10;
+                }
+                break;
+            case FloatHL:
+                fbytes[0] = responseBuffer.at(4);
+                fbytes[1] = responseBuffer.at(3);
+                fbytes[2] = responseBuffer.at(6);
+                fbytes[3] = responseBuffer.at(5);
+                output = floatresponse;
+                break;
+            case FloatLH:
+                fbytes[0] = responseBuffer.at(6);
+                fbytes[1] = responseBuffer.at(5);
+                fbytes[2] = responseBuffer.at(4);
+                fbytes[3] = responseBuffer.at(3);
+                output = floatresponse;
+                break;
+        }
+        if(scanList.at(scanPosition).unit == Units::Celsius)
+        {
+            output = output * 9.0 / 5.0 + 32.0;
+        }
+        scanList.at(scanPosition).lastValue = output;
+    }
+    else
+    {
+        qDebug() << "CRC failed";
+    }
+    scanPosition = (scanPosition + 1) % scanList.size();
+    if(scanPosition == 0)
+    {
+        QTime time = QTime::currentTime();
+        for(int i = 0; i < scanList.size(); i++)
+        {
+            channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Fahrenheit));
+        }
+    }
+    responseBuffer.clear();
+    messageDelayTimer->start(delayTime);
+}
+
+quint16 ModbusNG::calculateCRC(QByteArray data)
+{
+    quint16 retval = 0xFFFF;
+    int i = 0;
+    while(i < data.size())
+    {
+        retval ^= 0x00FF & (quint16)data.at(i);
+        for(int j = 0; j < 8; j++)
+        {
+            if(retval & 1)
+            {
+                retval = (retval >> 1) ^ 0xA001;
+            }
+            else
+            {
+                retval >>= 1;
+            }
+        }
+        i++;
+    }
+    return retval;
+}

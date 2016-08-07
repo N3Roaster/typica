@@ -18176,7 +18176,6 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &in
 : QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
     waiting(@[false@])@/
 {@/
-qDebug() << "Initializing Modbus RTU Device";
     QDomElement portReferenceElement = model->referenceElement(model->data(index,
         Qt::UserRole).toString());
     QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");

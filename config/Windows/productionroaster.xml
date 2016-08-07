@@ -378,6 +378,26 @@
 					tabControls.push(outputControl);
 				}
 			}
+                        else if(driverReference.driver == "modbusngport")
+                        {
+                            var device = new ModbusNG(configModel, driverIndex);
+                            modbusdevices.push(device);
+                            for(var j = 0; j < device.channelCount(); j++) {
+                                channels.push(device.getChannel(j));
+                                columnNames.push(device.channelColumnName(j));
+                                channelType.push("T");
+                                if(device.isChannelHidden(j)) {
+                                    channelVisibility.push(false);
+                                } else {
+                                    channelVisibility.push(true);
+                                    var indicator = new TemperatureDisplay;
+                                    temperatureDisplays.push(indicator);
+                                    var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+                                    device.getChannel(j).newData.connect(indicator.setValue);
+                                    indicatorPanel.addWidget(decorator);
+                                }
+                            }
+                        }
 			else if(driverReference.driver == "unsupporteddevice")
 			{
 				var device = createDevice(driverIndex);

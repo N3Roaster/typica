@@ -362,10 +362,11 @@ class ModbusNG : public QObject
     public:
         ModbusNG(DeviceTreeModel *model, const QModelIndex &index);
         ~ModbusNG();
-        QList<Channel*> channels;
-        QList<ModbusScanItem> scanList;
-        QList<QString> channelNames;
-        QList<bool> hiddenStates;
+        Q_INVOKABLE int channelCount();
+        Channel* getChannel(int);
+        Q_INVOKABLE QString channelColumnName(int);
+        Q_INVOKABLE QString channelIndicatorText(int);
+        Q_INVOKABLE bool isChannelHidden(int);
     private slots:
         void sendNextMessage();
         void timeout();
@@ -378,6 +379,11 @@ class ModbusNG : public QObject
         QTimer *commTimeout;
         int scanPosition;
         QByteArray responseBuffer;
+        QList<Channel*> channels;
+        QList<ModbusScanItem> scanList;
+        QList<QString> channelNames;
+        QList<QString> channelLabels;
+        QList<bool> hiddenStates;
 };
 
 @ One of the things that the old Modbus code got right was in allowing the
@@ -475,7 +481,9 @@ ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
         channelNames.append(channelAttributes.value("column").toString());
         hiddenStates.append(
             channelAttributes.value("hidden").toString() == "true" ? true : false);
+        channelLabels.append(model->data(channelIndex, 0).toString());
     }
+    messageDelayTimer->start();
 }
 
 ModbusNG::~ModbusNG()
@@ -520,7 +528,6 @@ void ModbusNG::dataAvailable()
     commTimeout->stop();
     if(calculateCRC(responseBuffer) == 0)
     {
-        qDebug() << responseBuffer;
         quint16 intresponse;
         float floatresponse;
         char *ibytes = (char*)&intresponse;
@@ -596,4 +603,83 @@ quint16 ModbusNG::calculateCRC(QByteArray data)
         i++;
     }
     return retval;
+}
+
+int ModbusNG::channelCount()
+{
+    return channels.size();
+}
+
+Channel* ModbusNG::getChannel(int channel)
+{
+    return channels.at(channel);
+}
+
+QString ModbusNG::channelColumnName(int channel)
+{
+    return channelNames.at(channel);
+}
+
+QString ModbusNG::channelIndicatorText(int channel)
+{
+    return channelLabels.at(channel);
+}
+
+bool ModbusNG::isChannelHidden(int channel)
+{
+    return hiddenStates.at(channel);
+}
+
+@ This class must be exposed to the host environment.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructModbusNG(QScriptContext *context, QScriptEngine *engine);
+void setModbusNGProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue ModbusNG_getChannel(QScriptContext *context, QScriptEngine *engine);
+
+@ The host environment is informed of the constructor.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructModbusNG);
+value = engine->newQMetaObject(&ModbusNG::staticMetaObject, constructor);
+engine->globalObject().setProperty("ModbusNG", value);
+
+@ The constructor takes the configuration model and the index to the device as
+arguments.
+
+@<Functions for scripting@>=
+QScriptValue constructModbusNG(QScriptContext *context, QScriptEngine *engine)
+{
+    QScriptValue object;
+    if(context->argumentCount() == 2)
+    {
+        object = engine->newQObject(new ModbusNG(argument<DeviceTreeModel *>(0, context),
+                                                 argument<QModelIndex>(1, context)),
+                                    QScriptEngine::ScriptOwnership);
+        setModbusNGProperties(object, engine);
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments passed to "@|
+            "ModbusNG constructor.");
+    }
+    return object;
+}
+
+void setModbusNGProperties(QScriptValue value, QScriptEngine *engine)
+{
+    setQObjectProperties(value, engine);
+    value.setProperty("getChannel", engine->newFunction(ModbusNG_getChannel));
+}
+
+QScriptValue ModbusNG_getChannel(QScriptContext *context, QScriptEngine *engine)
+{
+    ModbusNG *self = getself<ModbusNG *>(context);
+    QScriptValue object;
+    if(self)
+    {
+        object = engine->newQObject(self->getChannel(argument<int>(0, context)));
+        setChannelProperties(object, engine);
+    }
+    return object;
 }

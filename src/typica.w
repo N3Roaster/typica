@@ -18283,7 +18283,7 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &in
     Channel *pv = new Channel;
     channels.append(pv);
     pvStub.append(station);
-    pvStub.append((char)0x03);
+    pvStub.append((char)0x04);
     pvaddress = (quint16)attributes.value("pVAddress").toInt();
     char *pvac = (char*)&pvaddress;
     pvStub.append(pvac[1]);

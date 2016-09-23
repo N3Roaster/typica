@@ -457,6 +457,25 @@
 				annotationPanel.addWidget(button);
 				tabControls.push(button);
 			}
+                        else if(driverReference.driver == "thresholdannotation")
+                        {
+                            var noteDetector = new ThresholdDetector();
+                            var noteEmitter = new Annotator(driverReference.annotation);
+                            noteDetector.setThreshold(Number(driverReference.value));
+                            for(var j = 0; j < columnNames.length; j++) {
+                                if(columnNames[j] == driverReference.source) {
+                                    channels[j].newData.connect(noteDetector.newMeasurement);
+                                    break;
+                                }
+                            }
+                            if(Number(driverReference.direction) == 1) {
+                                noteDetector.setEdgeDirection(ThresholdDetector.Descending);
+                            } else {
+                                noteDetector.setEdgeDirection(ThresholdDetector.Ascending);
+                            }
+                            noteDetector.timeForValue.connect(noteEmitter.annotate);
+                            annotationButtons.push(noteEmitter);
+                        }
 			else if(driverReference.driver == "valueannotation")
 			{
 				var checker = new ValueAnnotation;

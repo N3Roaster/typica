@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'typica.cpp'
 **
-** Created by: The Qt Meta Object Compiler version 63 (Qt 4.8.6)
+** Created by: The Qt Meta Object Compiler version 63 (Qt 4.8.7)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -9,7 +9,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'typica.cpp' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.6. It"
+#error "This file was generated using the moc from 4.8.7. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -6081,6 +6081,297 @@ int ModbusConfigurator::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     }
     return _id;
 }
+static const uint qt_meta_data_ModbusNGConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       6,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   44, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      26,   20,   19,   19, 0x08,
+      46,   20,   19,   19, 0x08,
+      70,   20,   19,   19, 0x08,
+      88,   20,   19,   19, 0x08,
+     111,   20,   19,   19, 0x08,
+     131,   19,   19,   19, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+     154,  142,   19,   19, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_ModbusNGConfWidget[] = {
+    "ModbusNGConfWidget\0\0value\0updatePort(QString)\0"
+    "updateBaudRate(QString)\0updateParity(int)\0"
+    "updateFlowControl(int)\0updateStopBits(int)\0"
+    "addInput()\0model,index\0"
+    "ModbusNGConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void ModbusNGConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { ModbusNGConfWidget *_r = new ModbusNGConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        ModbusNGConfWidget *_t = static_cast<ModbusNGConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updatePort((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->updateBaudRate((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->updateParity((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: _t->updateFlowControl((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: _t->updateStopBits((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->addInput(); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData ModbusNGConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject ModbusNGConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_ModbusNGConfWidget,
+      qt_meta_data_ModbusNGConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &ModbusNGConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *ModbusNGConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *ModbusNGConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_ModbusNGConfWidget))
+        return static_cast<void*>(const_cast< ModbusNGConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int ModbusNGConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 6)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 6;
+    }
+    return _id;
+}
+static const uint qt_meta_data_ModbusNGInputConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       8,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   54, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      31,   25,   24,   24, 0x08,
+      50,   25,   24,   24, 0x08,
+      69,   25,   24,   24, 0x08,
+      89,   25,   24,   24, 0x08,
+     107,   25,   24,   24, 0x08,
+     127,   25,   24,   24, 0x08,
+     143,   25,   24,   24, 0x08,
+     169,   25,   24,   24, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+     200,  188,   24,   24, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_ModbusNGInputConfWidget[] = {
+    "ModbusNGInputConfWidget\0\0value\0"
+    "updateStation(int)\0updateAddress(int)\0"
+    "updateFunction(int)\0updateFormat(int)\0"
+    "updateDecimals(int)\0updateUnit(int)\0"
+    "updateColumnName(QString)\0updateHidden(bool)\0"
+    "model,index\0"
+    "ModbusNGInputConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void ModbusNGInputConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { ModbusNGInputConfWidget *_r = new ModbusNGInputConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        ModbusNGInputConfWidget *_t = static_cast<ModbusNGInputConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateStation((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 1: _t->updateAddress((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 2: _t->updateFunction((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: _t->updateFormat((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: _t->updateDecimals((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->updateUnit((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 6: _t->updateColumnName((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 7: _t->updateHidden((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData ModbusNGInputConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject ModbusNGInputConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_ModbusNGInputConfWidget,
+      qt_meta_data_ModbusNGInputConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &ModbusNGInputConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *ModbusNGInputConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *ModbusNGInputConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_ModbusNGInputConfWidget))
+        return static_cast<void*>(const_cast< ModbusNGInputConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int ModbusNGInputConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 8)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 8;
+    }
+    return _id;
+}
+static const uint qt_meta_data_ModbusNG[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       7,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      10,    9,    9,    9, 0x08,
+      28,    9,    9,    9, 0x08,
+      38,    9,    9,    9, 0x08,
+
+ // methods: signature, parameters, type, tag, flags
+      58,    9,   54,    9, 0x02,
+      81,    9,   73,    9, 0x02,
+     104,    9,   73,    9, 0x02,
+     135,    9,  130,    9, 0x02,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_ModbusNG[] = {
+    "ModbusNG\0\0sendNextMessage()\0timeout()\0"
+    "dataAvailable()\0int\0channelCount()\0"
+    "QString\0channelColumnName(int)\0"
+    "channelIndicatorText(int)\0bool\0"
+    "isChannelHidden(int)\0"
+};
+
+void ModbusNG::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        ModbusNG *_t = static_cast<ModbusNG *>(_o);
+        switch (_id) {
+        case 0: _t->sendNextMessage(); break;
+        case 1: _t->timeout(); break;
+        case 2: _t->dataAvailable(); break;
+        case 3: { int _r = _t->channelCount();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 4: { QString _r = _t->channelColumnName((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 5: { QString _r = _t->channelIndicatorText((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 6: { bool _r = _t->isChannelHidden((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData ModbusNG::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject ModbusNG::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_ModbusNG,
+      qt_meta_data_ModbusNG, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &ModbusNG::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *ModbusNG::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *ModbusNG::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_ModbusNG))
+        return static_cast<void*>(const_cast< ModbusNG*>(this));
+    return QObject::qt_metacast(_clname);
+}
+
+int ModbusNG::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 7)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 7;
+    }
+    return _id;
+}
 static const uint qt_meta_data_UnsupportedSerialDeviceConfWidget[] = {
 
  // content:
@@ -7976,6 +8267,195 @@ int ValueAnnotation::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 
 // SIGNAL 0
 void ValueAnnotation::annotation(QString _t1, int _t2, int _t3)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+static const uint qt_meta_data_ThresholdAnnotationConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       4,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   34, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      38,   31,   30,   30, 0x08,
+      72,   66,   30,   30, 0x08,
+     102,   96,   30,   30, 0x08,
+     128,  123,   30,   30, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+     166,  154,   30,   30, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_ThresholdAnnotationConfWidget[] = {
+    "ThresholdAnnotationConfWidget\0\0source\0"
+    "updateSourceColumn(QString)\0value\0"
+    "updateThreshold(double)\0index\0"
+    "updateDirection(int)\0note\0"
+    "updateAnnotation(QString)\0model,index\0"
+    "ThresholdAnnotationConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void ThresholdAnnotationConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { ThresholdAnnotationConfWidget *_r = new ThresholdAnnotationConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        ThresholdAnnotationConfWidget *_t = static_cast<ThresholdAnnotationConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateSourceColumn((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->updateThreshold((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 2: _t->updateDirection((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: _t->updateAnnotation((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData ThresholdAnnotationConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject ThresholdAnnotationConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_ThresholdAnnotationConfWidget,
+      qt_meta_data_ThresholdAnnotationConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &ThresholdAnnotationConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *ThresholdAnnotationConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *ThresholdAnnotationConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_ThresholdAnnotationConfWidget))
+        return static_cast<void*>(const_cast< ThresholdAnnotationConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int ThresholdAnnotationConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 4)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 4;
+    }
+    return _id;
+}
+static const uint qt_meta_data_Annotator[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       6,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      44,   11,   10,   10, 0x05,
+
+ // slots: signature, parameters, type, tag, flags
+      83,   72,   10,   10, 0x0a,
+     117,  106,   10,   10, 0x0a,
+     160,  143,   10,   10, 0x0a,
+     185,   10,   10,   10, 0x0a,
+     196,   10,   10,   10, 0x08,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_Annotator[] = {
+    "Annotator\0\0annotation,tempcolumn,notecolumn\0"
+    "annotation(QString,int,int)\0annotation\0"
+    "setAnnotation(QString)\0tempcolumn\0"
+    "setTemperatureColumn(int)\0annotationcolumn\0"
+    "setAnnotationColumn(int)\0annotate()\0"
+    "catchTimer()\0"
+};
+
+void Annotator::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        Annotator *_t = static_cast<Annotator *>(_o);
+        switch (_id) {
+        case 0: _t->annotation((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 1: _t->setAnnotation((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->setTemperatureColumn((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: _t->setAnnotationColumn((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: _t->annotate(); break;
+        case 5: _t->catchTimer(); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData Annotator::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject Annotator::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_Annotator,
+      qt_meta_data_Annotator, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &Annotator::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *Annotator::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *Annotator::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_Annotator))
+        return static_cast<void*>(const_cast< Annotator*>(this));
+    return QObject::qt_metacast(_clname);
+}
+
+int Annotator::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 6)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 6;
+    }
+    return _id;
+}
+
+// SIGNAL 0
+void Annotator::annotation(QString _t1, int _t2, int _t3)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

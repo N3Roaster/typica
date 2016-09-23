@@ -610,6 +610,8 @@ generated file empty.
 @<ValueAnnotation implementation@>@/
 @<ValueAnnotationConfWidget implementation@>@/
 @<ModbusNG implementation@>@/
+@<ThresholdAnnotationConfWidget implementation@>@/
+@<Annotator implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -19987,6 +19989,8 @@ app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::stat
 @i scales.w
 
 @i valueannotation.w
+
+@i thresholdannotation.w
 
 @** Local changes.
 

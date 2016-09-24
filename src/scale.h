@@ -1,4 +1,4 @@
-/*1007:*/
+/*1019:*/
 #line 103 "./scales.w"
 
 #ifndef TypicaScaleInclude
@@ -15,14 +15,18 @@ SerialScale(const QString&port);
 public slots:
 void tare();
 void weigh();
+void setWeighCommand(const QString&command);
+void setCommandTerminator(const QString&terminator);
 signals:
 void newMeasurement(double weight,Units::Unit unit);
 private slots:
 void dataAvailable();
 private:
 QByteArray responseBuffer;
+QByteArray weighCommand;
+QByteArray commandTerminator;
 };
 
 #endif
 
-/*:1007*/
+/*:1019*/

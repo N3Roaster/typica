@@ -39,23 +39,8 @@ ThresholdAnnotationConfWidget::ThresholdAnnotationConfWidget(DeviceTreeModel *mo
     QLineEdit *source = new QLineEdit;
     layout->addRow(tr("Source column name:"), source);
     QDoubleSpinBox *value = new QDoubleSpinBox;
-
-@ A |QDoubleSpinBox| is used for entering the value. By default this allows for
-entering data in a range from 0 to 99.99, however this range is inadequate for
-many coffee roasting applications. Instead, we allow the full range of the
-underlying data type, but as this might be different on different platforms,
-another header is required.
-
-@<Header files to include@>=
-#include <limits>
-
-@ The number of decimal places is limited to 2, however this is an arbitrary
-decision which can be raised later if needed.
-
-@<ThresholdAnnotationConfWidget implementation@>=
-
-    value->setMinimum(std::numeric_limits<double>::min());
-    value->setMaximum(std::numeric_limits<double>::max());
+    value->setMinimum(-9999.99);
+    value->setMaximum(9999.99);
     value->setDecimals(2);
     layout->addRow(tr("Threshold value:"), value);
     QComboBox *direction = new QComboBox;

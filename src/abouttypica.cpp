@@ -17,7 +17,7 @@ aboutFile.close();
 setCentralWidget(banner);
 }
 
-#line 6592 "./typica.w"
+#line 6595 "./typica.w"
 
 /*:276*/
 #line 36 "./abouttypica.w"

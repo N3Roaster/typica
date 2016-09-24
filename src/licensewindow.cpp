@@ -11,7 +11,7 @@
 #include <QVariant> 
 #include <QUrl> 
 
-#line 4774 "./typica.w"
+#line 4777 "./typica.w"
 
 /*:213*/
 #line 37 "./licensewindow.w"

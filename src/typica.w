@@ -8222,6 +8222,7 @@ class ThresholdDetector : public QObject@/
     signals:@/
         void timeForValue(double);
     private:@/
+        bool previousValueValid;
         double previousValue;
         double threshold;
         EdgeDirection currentDirection;
@@ -8230,12 +8231,19 @@ class ThresholdDetector : public QObject@/
 @ This class emits the time in seconds when a given measurement crosses the
 threshold value in the appropriate direction.
 
+This was previously written with |previousValue| initialized negative and a
+check that |previousValue| was non-negative. When the |ThresholdDetector| is
+connected to a data source representing temperature measurements this is a
+reasonable choice, however it breaks when connected to a rate of change series.
+To make this more generally correct, a boolean is checked to determine if a
+previous value has been set.
+
 @<ThresholdDetector Implementation@>=
 void ThresholdDetector::newMeasurement(Measurement measure)
 {
     if((currentDirection == Ascending && previousValue < threshold &&
-       previousValue >= 0) || (currentDirection == Descending &&
-       previousValue > threshold && previousValue >= 0))
+       previousValueValid) || (currentDirection == Descending &&
+       previousValue > threshold && previousValueValid))
     {
         if((currentDirection == Ascending && measure.temperature() >= threshold) ||
            (currentDirection == Descending && measure.temperature() <= threshold))
@@ -8248,9 +8256,11 @@ void ThresholdDetector::newMeasurement(Measurement measure)
         }
     }
     previousValue = measure.temperature();
+    previousValueValid = true;
 }
 
 ThresholdDetector::ThresholdDetector(double value) : QObject(NULL),
+    previousValueValid(false),
     previousValue(-1), threshold(value), currentDirection(Ascending)
 {
     /* Nothing needs to be done here. */

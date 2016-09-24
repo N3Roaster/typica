@@ -473,7 +473,14 @@
                             } else {
                                 noteDetector.setEdgeDirection(ThresholdDetector.Ascending);
                             }
-                            noteDetector.timeForValue.connect(noteEmitter.annotate);
+                            var scope = new Object;
+                            scope.invoke = function() {
+                                if(timer.running) {
+                                    arguments.callee.noteEmitter.annotate();
+                                }
+                            }
+                            scope.invoke.noteEmitter = noteEmitter;
+                            noteDetector.timeForValue.connect(scope.invoke);
                             annotationButtons.push(noteEmitter);
                         }
 			else if(driverReference.driver == "valueannotation")

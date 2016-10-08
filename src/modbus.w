@@ -376,12 +376,14 @@ class ModbusNG : public QObject
         void sendNextMessage();
         void timeout();
         void dataAvailable();
+        void rateLimitTimeout();
     private:
         quint16 calculateCRC(QByteArray data);
         QextSerialPort *port;
         int delayTime;
         QTimer *messageDelayTimer;
         QTimer *commTimeout;
+        QTimer *rateLimiter;
         int scanPosition;
         bool waiting;
         QByteArray responseBuffer;
@@ -400,7 +402,7 @@ sub-tree. In this design, child nodes establish a scan list.
 @<ModbusNG implementation@>=
 ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
     QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer),
-    scanPosition(0), waiting(false)
+    rateLimiter(new QTimer), scanPosition(0), waiting(false)
 {
     QDomElement portReferenceElement =
         model->referenceElement(model->data(index, Qt::UserRole).toString());
@@ -422,9 +424,12 @@ ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
     delayTime = (int)(((double)(1)/(double)(attributes.value("baud").toInt())) * 144000.0);
     messageDelayTimer->setSingleShot(true);
     commTimeout->setSingleShot(true);
+    rateLimiter->setSingleShot(true);
+    rateLimiter->setInterval(0);
     connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
     connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
     connect(port, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
+    connect(rateLimiter, SIGNAL(timeout()), this, SLOT(rateLimitTimeout()));
     if(!port->open(QIODevice::ReadWrite))
     {
 	    qDebug() << "Failed to open serial port";
@@ -527,6 +532,11 @@ void ModbusNG::timeout()
     messageDelayTimer->start();
 }
 
+void ModbusNG::rateLimitTimeout()
+{
+	messageDelayTimer->start();
+}
+
 void ModbusNG::dataAvailable()
 {
     if(messageDelayTimer->isActive())
@@ -605,7 +615,14 @@ void ModbusNG::dataAvailable()
     }
     responseBuffer.clear();
     waiting = false;
-    messageDelayTimer->start(delayTime);
+    if(scanPosition == 0)
+    {
+	    rateLimiter->start();
+    }
+    else
+    {
+	    messageDelayTimer->start(delayTime);
+    }
 }
 
 quint16 ModbusNG::calculateCRC(QByteArray data)

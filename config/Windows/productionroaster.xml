@@ -52,6 +52,9 @@
         var window = this;
         var targetOffset = 0;
         var gtrans = 0;
+		var translationdelay = new Timer;
+		translationdelay.interval = 0;
+		translationdelay.singleShot = true;
         var targetDetector = new ThresholdDetector;
         window.targetcolumnname = "";
         var currentDetector = new ThresholdDetector;
@@ -385,12 +388,16 @@
                             for(var j = 0; j < device.channelCount(); j++) {
                                 channels.push(device.getChannel(j));
                                 columnNames.push(device.channelColumnName(j));
-                                channelType.push("T");
+                                channelType.push(device.channelType(j));
                                 if(device.isChannelHidden(j)) {
                                     channelVisibility.push(false);
                                 } else {
                                     channelVisibility.push(true);
                                     var indicator = new TemperatureDisplay;
+									if(device.channelType(j) == "C") {
+										indicator.setDisplayUnits(Units.Unitless);
+										indicator.digitCount = 6;
+									}
                                     temperatureDisplays.push(indicator);
                                     var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
                                     device.getChannel(j).newData.connect(indicator.setValue);
@@ -592,6 +599,10 @@
 			{
 				var colname = driverReference.column;
 				window.targetcolumnname = colname;
+				if(driverReference.delay)
+				{
+					translationdelay.interval = Number(driverReference.delay) * 1000;
+				}
 				for(var j = 0; j < columnNames.length; j++)
 				{
 					if(columnNames[j] == colname)
@@ -926,6 +937,9 @@
 			}
 			return retval;
 		};
+		translationdelay.timeout.connect(function() {
+			offsets[offsetForChannel(translationChannel)].measurement.connect(currentDetector.newMeasurement);
+		});
         start.clicked.connect(function() {
 			start.enabled = false;
 			hasTranslated = false;
@@ -956,7 +970,7 @@
             }
 			if(translationChannel >= 0)
 			{
-				offsets[offsetForChannel(translationChannel)].measurement.connect(currentDetector.newMeasurement);
+				translationdelay.start();
 			}
 			if(typeof(externtrans) != 'undefined') {
 				externtrans.display(0);

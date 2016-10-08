@@ -188,6 +188,7 @@ ModbusNGInputConfWidget::ModbusNGInputConfWidget(DeviceTreeModel *model, const Q
     QComboBox *unit = new QComboBox;
     unit->addItem("Celsius", "C");
     unit->addItem("Fahrenheit", "F");
+    unit->addItem("Control", "Control");
     unit->setCurrentIndex(1);
     layout->addRow(tr("Unit"), unit);
     QLineEdit *column = new QLineEdit;
@@ -299,6 +300,9 @@ void ModbusNGInputConfWidget::updateUnit(int value)
         case 1:
             updateAttribute("unit", "F");
             break;
+        case 2:
+	        updateAttribute("unit", "Control");
+	        break;
     }
 }
 
@@ -367,6 +371,7 @@ class ModbusNG : public QObject
         Q_INVOKABLE QString channelColumnName(int);
         Q_INVOKABLE QString channelIndicatorText(int);
         Q_INVOKABLE bool isChannelHidden(int);
+        Q_INVOKABLE QString channelType(int);
     private slots:
         void sendNextMessage();
         void timeout();
@@ -385,6 +390,7 @@ class ModbusNG : public QObject
         QList<QString> channelNames;
         QList<QString> channelLabels;
         QList<bool> hiddenStates;
+        QList<QString> channelTypeList;
 };
 
 @ One of the things that the old Modbus code got right was in allowing the
@@ -419,7 +425,10 @@ ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
     connect(messageDelayTimer, SIGNAL(timeout()), this, SLOT(sendNextMessage()));
     connect(commTimeout, SIGNAL(timeout()), this, SLOT(timeout()));
     connect(port, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
-    port->open(QIODevice::ReadWrite);
+    if(!port->open(QIODevice::ReadWrite))
+    {
+	    qDebug() << "Failed to open serial port";
+    }
     for(int i = 0; i < model->rowCount(index); i++)
     {
         QModelIndex channelIndex = model->index(i, 0, index);
@@ -472,10 +481,17 @@ ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
         if(channelAttributes.value("unit").toString() == "C")
         {
             scanItem.unit = Units::Celsius;
+            channelTypeList.append("T");
+        }
+        else if(channelAttributes.value("unit").toString() == "F")
+        {
+            scanItem.unit = Units::Fahrenheit;
+            channelTypeList.append("T");
         }
         else
         {
-            scanItem.unit = Units::Fahrenheit;
+	        scanItem.unit = Units::Unitless;
+	        channelTypeList.append("C");
         }
         scanList.append(scanItem);
         channels.append(new Channel);
@@ -577,7 +593,14 @@ void ModbusNG::dataAvailable()
         QTime time = QTime::currentTime();
         for(int i = 0; i < scanList.size(); i++)
         {
-            channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Fahrenheit));
+	        if(scanList.at(scanPosition).unit == Units::Unitless)
+	        {
+		        channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Unitless));
+	        }
+	        else
+	        {
+	            channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Fahrenheit));
+            }
         }
     }
     responseBuffer.clear();
@@ -631,6 +654,11 @@ QString ModbusNG::channelIndicatorText(int channel)
 bool ModbusNG::isChannelHidden(int channel)
 {
     return hiddenStates.at(channel);
+}
+
+QString ModbusNG::channelType(int channel)
+{
+	return channelTypeList.at(channel);
 }
 
 @ This class must be exposed to the host environment.

@@ -840,6 +840,41 @@ void setQLayoutItemProperties(QScriptValue, QScriptEngine *)
     /* Nothing needs to be done here. */
 }
 
+@* Timers.
+
+\noindent Some features in Typica require access to functionality similar to
+what |QTimer| provides from the host environment. This includes allowing
+script devices to periodically poll connected hardware and allowing a safety
+delay on profile translation.
+
+<@Function prototypes for scripting@>=
+void setQTimerProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue constructQTimer(QScriptContext *context, QScriptEngine *engine);
+
+@ The host environment is informed of the constructor.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQTimer);
+value = engine->newQMetaObject(&QTimer::staticMetaObject, constructor);
+engine->globalObject().setProperty("Timer", value);
+
+@ Everything that we are interested in here is a signal, slot, or property so
+there is little else to do.
+
+@<Functions for scripting@>=
+void setQTimerProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQObjectProperties(value, engine);
+}
+
+QScriptValue constructQTimer(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QTimer);
+	setQTimerProperties(object, engine);
+	return object;
+}
+
+
 @* Scripting QWidget.
 
 \noindent The first interesting class in this hierarchy is |QWidget|. This is
@@ -19917,9 +19952,11 @@ class TranslationConfWidget : public BasicDeviceConfigurationWidget
     @[private slots@]:@/
         void updateMatchingColumn(const QString &column);
         void updateTemperature();
+        void updateDelay();
     private:@/
         QDoubleSpinBox *temperatureValue;
         QComboBox *unitSelector;
+        QSpinBox *delaySelector;
 };
 
 @ The constructor sets up our user interface.
@@ -19927,7 +19964,8 @@ class TranslationConfWidget : public BasicDeviceConfigurationWidget
 @<TranslationConfWidget implementation@>=
 TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
-    temperatureValue(new QDoubleSpinBox), unitSelector(new QComboBox)
+    temperatureValue(new QDoubleSpinBox), unitSelector(new QComboBox),
+    delaySelector(new QSpinBox)
 {
     unitSelector->addItem("Fahrenheit");
     unitSelector->addItem("Celsius");
@@ -19938,6 +19976,7 @@ TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QMode
     layout->addRow(tr("Column to match:"), column);
     layout->addRow(tr("Unit:"), unitSelector);
     layout->addRow(tr("Value:"), temperatureValue);
+    layout->addRow(tr("Start of batch safety delay:"), delaySelector);
     @<Get device configuration data for current node@>@;
     for(int i = 0; i < configData.size(); i++)
     {
@@ -19954,12 +19993,18 @@ TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QMode
         {
             temperatureValue->setValue(node.attribute("value").toDouble());
         }
+        else if(node.attribute("name") == "delay")
+        {
+	        delaySelector->setValue(node.attribute("value").toInt());
+        }
     }
     updateMatchingColumn(column->text());
     updateTemperature();
+    updateDelay();
     connect(column, SIGNAL(textEdited(QString)), this, SLOT(updateMatchingColumn(QString)));
     connect(unitSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTemperature()));
     connect(temperatureValue, SIGNAL(valueChanged(double)), this, SLOT(updateTemperature()));
+    connect(delaySelector, SIGNAL(valueChanged(int)), this, SLOT(updateDelay()));
     setLayout(layout);
 }
 
@@ -19985,6 +20030,11 @@ void TranslationConfWidget::updateTemperature()
 void TranslationConfWidget::updateMatchingColumn(const QString &column)
 {
     updateAttribute("column", column);
+}
+
+void TranslationConfWidget::updateDelay()
+{
+	updateAttribute("delay", QString("%1").arg(delaySelector->value()));
 }
 
 @ This is registered with the configuration system.

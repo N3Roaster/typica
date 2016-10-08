@@ -634,6 +634,7 @@
 							}
 							gtrans = 0;
 							indicator.display(0);
+							hasTranslated = false;
 						});
 					}
 				}

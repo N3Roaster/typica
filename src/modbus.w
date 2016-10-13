@@ -393,6 +393,7 @@ class ModbusNG : public QObject
         QList<QString> channelLabels;
         QList<bool> hiddenStates;
         QList<QString> channelTypeList;
+        QVector<double> lastMeasurement;
 };
 
 @ One of the things that the old Modbus code got right was in allowing the
@@ -499,6 +500,7 @@ ModbusNG::ModbusNG(DeviceTreeModel *model, const QModelIndex &index) :
 	        channelTypeList.append("C");
         }
         scanList.append(scanItem);
+        lastMeasurement.append(0.0);
         channels.append(new Channel);
         channelNames.append(channelAttributes.value("column").toString());
         hiddenStates.append(
@@ -601,15 +603,28 @@ void ModbusNG::dataAvailable()
     if(scanPosition == 0)
     {
         QTime time = QTime::currentTime();
+        bool doOutput = false;
         for(int i = 0; i < scanList.size(); i++)
         {
-	        if(scanList.at(scanPosition).unit == Units::Unitless)
+	        if(scanList.at(i).lastValue != lastMeasurement.at(i))
 	        {
-		        channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Unitless));
+		        doOutput = true;
+		        break;
 	        }
-	        else
+        }
+        if(doOutput)
+        {
+	        for(int i = 0; i < scanList.size(); i++)
 	        {
-	            channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Fahrenheit));
+		        lastMeasurement[i] = scanList.at(i).lastValue;
+		        if(scanList.at(scanPosition).unit == Units::Unitless)
+		        {
+			        channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Unitless));
+		        }
+		        else
+		        {
+		            channels.at(i)->input(Measurement(scanList.at(i).lastValue, time, Units::Fahrenheit));
+	            }
             }
         }
     }

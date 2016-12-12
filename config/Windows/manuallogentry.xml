@@ -1,0 +1,117 @@
+<window id="manualLogEntry">
+	<layout type="horizontal"><!-- Top horizontal layout -->
+		<layout type="vertical"><!-- Left vertical layout -->
+			<layout type="horizontal">
+				<label>Batch Type:</label>
+				<sqldrop id="batchType" />
+				<stretch />
+			</layout>
+			<label>Green Coffee:</label>
+			<layout type="stack" id="greenInfoLayout"><!-- Green information -->
+				<page id="sampleGreen">
+					<layout type="vertical">
+						<layout type="grid">
+							<row>
+								<column><label>Name:</label></column>
+								<column><line id="sampleGreenName" /></column>
+							</row>
+							<row>
+								<column><label>Weight:</label></column>
+								<column><line id="sampleGreenWeight" /></column>
+								<column><sqldrop id="sampleGreenUnit" /></column>
+							</row>
+							<row>
+								<column><label>Vendor:</label></column>
+								<column><line id="sampleGreenVendor" /></column>
+							</row>
+							<row>
+								<column><label>Arrival Date:</label></column>
+								<column><line id="sampleGreenArrivalDate" /></column>
+							</row>
+						</layout>
+						<label>Additional Details:</label>
+						<sqltablearray columns="2" id="attributes">
+							<column name="Attribute" />
+							<column name="Value" />
+						</sqltablearray>
+					</layout>
+				</page>
+				<page id="productionGreen">
+					<layout type="vertical">
+						<layout type="horizontal">
+							<label>Unit:</label>
+							<sqldrop id="productionGreenUnit" />
+							<stretch />
+						</layout>
+						<sqltablearray columns="2" id="productionGreenTable">
+							<column name="Coffee" delegate="sql" showdata="true" null="true" nulltext="Delete" nulldata="delete" data="0" display="1">
+								<![CDATA[SELECT id, name FROM coffees WHERE quantity <> 0 ORDER BY name]]>
+							</column>
+							<column name="Weight" delegate="numeric" />
+						</sqltablearray>
+					</layout>
+				</page>
+			</layout><!-- End of green information -->
+			<label>Roasting Details:</label>
+			<layout type="grid">
+				<row>
+					<column><label>Item:</label></column>
+					<column>
+						<sqldrop data="0" display="1" showdata="true" id="roastedItem">
+							<null />
+							<query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
+						</sqldrop>
+					</column>
+				</row>
+				<row>
+					<column><label>Weight:</label></column>
+					<column><line id="roastedWeight" validator="numeric" /></column>
+				</row>
+				<row>
+					<column><label>Time:</label></column>
+					<column><line id="roastTime" /></column>
+				</row>
+				<row>
+					<column><label>Duration:</label></column>
+					<column><line id="roastDuration" /></column>
+				</row>
+			</layout>
+		</layout><!-- End of left vertical layout -->
+	</layout><!-- End of top horizontal layout -->
+	<program>
+	<![CDATA[
+		greenInfoLayout = findChildObject(this, 'greenInfoLayout');
+		roastedItem = findChildObject(this, 'roastedItem');
+		batchType = findChildObject(this, 'batchType');
+		batchType.addItem("Sample");
+		batchType.addItem("Production");
+		batchType['currentIndexChanged(int)'].connect(function(batchTypeIndex) {
+			QSettings.setValue("script/manual_batchType", batchTypeIndex);
+			greenInfoLayout.setCurrentIndex(batchTypeIndex);
+			roastedItem.enabled = (batchTypeIndex == 1);
+		});
+		batchType.setCurrentIndex(QSettings.value("script/manual_batchType", 1));
+		roastedItem.enabled = (batchTypeIndex == 1);
+		sampleGreenUnit = findChildObject(this, 'sampleGreenUnit');
+		sampleGreenUnit.addItem("g");
+		sampleGreenUnit.addItem("Kg");
+		sampleGreenUnit.addItem("oz");
+		sampleGreenUnit.addItem("lb");
+		sampleGreenUnit.currentIndex = (QSettings.value("script/manual_unit", sampleGreenUnit.findText("lb")));
+		productionGreenUnit = findChildObject(this, 'productionGreenUnit');
+		productionGreenUnit.addItem("g");
+		productionGreenUnit.addItem("Kg");
+		productionGreenUnit.addItem("oz");
+		productionGreenUnit.addItem("lb");
+		productionGreenUnit.currentIndex = (QSettings.value("script/manual_unit", productionGreenUnit.findText("lb")));
+		sampleGreenUnit['currentIndexChanged(int)'].connect(function(greenUnitIndex) {
+			QSettings.setValue("script/manual_unit", greenUnitIndex);
+			productionGreenUnit.setCurrentIndex(greenUnitIndex);
+		});
+		productionGreenUnit['currentIndexChanged(int)'].connect(function(greenUnitIndex) {
+			QSettings.setValue("script/manual_unit", greenUnitIndex);
+			sampleGreenUnit.setCurrentIndex(greenUnitIndex);
+		});
+	]]>
+	</program>
+</window>

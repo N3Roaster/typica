@@ -13543,15 +13543,20 @@ SqlConnectionSetup::SqlConnectionSetup() :
     cancelButton(new QPushButton(tr("Cancel"))),
     connectButton(new QPushButton(tr("Connect")))@/
 {
+	QSettings settings;
     driver->addItem("PostgreSQL", "QPSQL");
     formLayout->addRow(tr("Database driver:"), driver);
     formLayout->addRow(tr("Host name:"), hostname);
+    hostname->setText(settings.value("database/hostname").toString());
     formLayout->addRow(tr("Port number:"), portnumber);
-    portnumber->setText("5432");
+    portnumber->setText(settings.value("database/portnumber", "5432").toString());
     formLayout->addRow(tr("Database name:"), dbname);
+    dbname->setText(settings.value("database/dbname").toString());
     formLayout->addRow(tr("User name:"), user);
+    user->setText(settings.value("database/user").toString());
     password->setEchoMode(QLineEdit::Password);
     formLayout->addRow(tr("Password:"), password);
+    password->setText(settings.value("database/password").toString());
     layout->addLayout(formLayout);
     buttons->addStretch(1);
     buttons->addWidget(cancelButton);

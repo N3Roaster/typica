@@ -4571,6 +4571,8 @@ void addCalendarToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                          QStack<QLayout *> *layoutStack);
 void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                         QStack<QLayout *> *layoutStack);
+void addTimeEditToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
+                         QStack<QLayout *> *layoutStack);
 
 @ The functions for creating windows must be made available to the scripting
 engine.
@@ -5049,6 +5051,10 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
             else if(currentElement.tagName() == "calendar")
             {
                 addCalendarToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "timeedit")
+            {
+	            addTimeEditToLayout(currentElement, widgetStack, layoutStack);
             }
             else if(currentElement.tagName() == "decoration")
             {
@@ -6202,6 +6208,43 @@ QScriptValue QDateTimeEdit_month(QScriptContext *context,
                                  QScriptEngine *engine);
 QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *engine);
+
+@ Sometimes it can be useful to allow editing a time or duration value without
+a date field. For this, a |QTimeEdit| can be used.
+
+@<Functions for scripting@>=
+void addTimeEditToLayout(QDomElement element, QStack<QWidget *> *,@|
+                         QStack<QLayout *> *layoutStack)
+{
+	QTimeEdit *edit = new QTimeEdit;
+	if(element.hasAttribute("displayFormat"))
+	{
+		edit->setDisplayFormat(element.attribute("displayFormat"));
+	}
+	else
+	{
+		edit->setDisplayFormat("mm:ss.zzz");
+	}
+	if(element.hasAttribute("id"))
+	{
+		edit->setObjectName(element.attribute("id"));
+	}
+	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+	layout->addWidget(edit);
+}
+
+@ Additional properties are added as a |QTimeEdit| is a |QDateTimeEdit|.
+
+@<Functions for scripting@>=
+void setQTimeEditProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQDateTimeEditProperties(value, engine);
+}
+
+@ A function prototype is needed.
+
+@<Function prototypes for scripting@>=
+void setQTimeEditProperties(QScriptValue value, QScriptEngine *engine);
 
 @ In order to get to objects created from the XML description, it is necessary
 to provide a function that can be called to retrieve children of a given widget.

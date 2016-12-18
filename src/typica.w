@@ -4917,6 +4917,80 @@ void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
     }
 }
 
+@ A common use of stacked layouts is in the creation of tabbed interfaces, but
+there are also many uses in \pn{} where the tabs are not required. Therefore,
+tab bar creation requires a separate XML element.
+
+@<Additional box layout elements@>=
+else if(currentElement.tagName() == "tabbar")
+{
+	addTabBarToLayout(currentElement, widgetStack, layoutStack);
+}
+
+@ The function used to create this follows the usual pattern.
+
+@<Functions for scripting@>=
+void addTabBarToLayout(QDomElement element, QStack<QWidget*> *, QStack<QLayout*> *layoutStack)
+{
+	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+	QTabBar *widget = new QTabBar;
+	layout->addWidget(widget);
+	if(!element.attribute("id").isEmpty())
+	{
+		widget->setObjectName(element.attribute("id"));
+	}
+}
+
+@ Rather than define the tab set in XML, this is left to the host environment.
+This means that some additional scripting support is required.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQTabBar);
+value = engine->newQMetaObject(&QTabBar::staticMetaObject, constructor);
+engine->globalObject().setProperty("QTabBar", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQTabBar(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QTabBar);
+	setQTabBarProperties(object, engine);
+	return object;
+}
+
+@ There are many functions that I might want to some day add support for, but
+the immediate need is just creating the tabs in the first place.
+
+@<Functions for scripting@>=
+void setQTabBarProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQWidgetProperties(value, engine);
+	value.setProperty("addTab", engine->newFunction(QTabBar_addTab));
+}
+
+QScriptValue QTabBar_addTab(QScriptContext *context, QScriptEngine *)
+{
+	QTabBar *self = getself<QTabBar *>(context);
+	if(context->argumentCount() > 0)
+	{
+		self->addTab(argument<QString>(0, context));
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+		                    "QTabBar::addTab().");
+	}
+	return QScriptValue();
+}
+
+@ Function prototypes are needed.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructQTabBar(QScriptContext *context, QScriptEngine *engine);
+void setQTabBarProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QTabBar_addTab(QScriptContext *context, QScriptEngine *engine);
+
 @ Using a grid layout is a bit different from using a box layout. Child elements
 with various attributes are required to take full advantage of this layout type.
 All direct children of a grid layout element should be {\tt <row>} elements
@@ -6384,6 +6458,10 @@ else if(className == "QLineEdit")
 else if(className == "QSvgWidget")
 {
     setQSvgWidgetProperties(value, engine);
+}
+else if(className == "QTabBar")
+{
+	setQTabBarProperties(value, engine);
 }
 
 @ In the list of classes, the SaltTable entry is for a class which does not

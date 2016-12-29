@@ -810,15 +810,25 @@ The first of these is |QObject|.
 
 @<Function prototypes for scripting@>=
 void setQObjectProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QObject_setProperty(QScriptContext *context, QScriptEngine *engine);
 
-@ As there are no properties that need to be set for this class and as this
-class does not inherit any other class, nothing needs to be done in this method.
-It will, however, be called by subclasses in case this changes in the future.
+@ Attaching properties to a |QScriptValue| that wraps a |QObject| does not
+create a dynamic property on the underlying |QObject| by default. This can
+cause issues with certain interactions between script and native code. Rather
+than change every wrapper, we can instead expose a |setProperty()| method.
 
 @<Functions for scripting@>=
-void setQObjectProperties(QScriptValue, QScriptEngine *)
+void setQObjectProperties(QScriptValue value, QScriptEngine *engine)
 {
-    /* Nothing needs to be done here. */
+    value.setProperty("setProperty", engine->newFunction(QObject_setProperty));
+}
+
+QScriptValue QObject_setProperty(QScriptContext *context, QScriptEngine *)
+{
+	QObject *self = getself<QObject *>(context);
+	self->setProperty(argument<QString>(0, context).toUtf8().constData(),
+	                  argument<QVariant>(1, context));
+    return QScriptValue();
 }
 
 @ The same can be done for |QPaintDevice| and |QLayoutItem|.
@@ -4803,6 +4813,10 @@ while(j < menuItems.count())
         else if(itemElement.tagName() == "separator")
         {
             menu->addSeparator();
+        }
+        else if(itemElement.tagName() == "plugins")
+        {
+	        @<Process plugin item@>@;
         }
     }
     j++;
@@ -14466,6 +14480,8 @@ void setQTextEditProperties(QScriptValue value, QScriptEngine *engine)
     setQAbstractScrollAreaProperties(value, engine);
     value.setProperty("print", engine->newFunction(QTextEdit_print));
 }
+
+@i plugins.w
 
 @i daterangeselector.w
 

@@ -1,85 +1,155 @@
 <window id="manualLogEntry">
-	<layout type="horizontal"><!-- Top horizontal layout -->
-		<layout type="vertical"><!-- Left vertical layout -->
-			<layout type="horizontal">
-				<label>Batch Type:</label>
-				<sqldrop id="batchType" />
-				<stretch />
-			</layout>
-			<label>Green Coffee:</label>
-			<layout type="stack" id="greenInfoLayout"><!-- Green information -->
-				<page id="sampleGreen">
-					<layout type="vertical">
-						<layout type="grid">
-							<row>
-								<column><label>Name:</label></column>
-								<column><line id="sampleGreenName" /></column>
-							</row>
-							<row>
-								<column><label>Weight:</label></column>
-								<column><line id="sampleGreenWeight" /></column>
-								<column><sqldrop id="sampleGreenUnit" /></column>
-							</row>
-							<row>
-								<column><label>Vendor:</label></column>
-								<column><line id="sampleGreenVendor" /></column>
-							</row>
-							<row>
-								<column><label>Arrival Date:</label></column>
-								<column><line id="sampleGreenArrivalDate" /></column>
-							</row>
-						</layout>
-						<label>Additional Details:</label>
-						<sqltablearray columns="2" id="attributes">
-							<column name="Attribute" />
-							<column name="Value" />
-						</sqltablearray>
+	<menu name="File">
+		<plugins id="pluginMenu" title="Import" src="ImportFilters" preRun="pluginContext.preRun();" postRun="pluginContext.postRun();"/>
+		<separator />
+		<item id="quitItem" shortcut="ctrl+Q">Quit</item>
+	</menu>
+	<layout type="vertical">
+		<tabbar id="tabs"/>
+		<layout type="stack" id="pages">
+			<page>
+				<layout type="vertical">
+					<layout type="horizontal">
+						<label>Batch Type:</label>
+						<sqldrop id="batchType" />
+						<label>Machine:</label>
+						<sqldrop id="machineSelector" />
+						<stretch />
 					</layout>
-				</page>
-				<page id="productionGreen">
-					<layout type="vertical">
-						<layout type="horizontal">
-							<label>Unit:</label>
-							<sqldrop id="productionGreenUnit" />
-							<stretch />
-						</layout>
-						<sqltablearray columns="2" id="productionGreenTable">
-							<column name="Coffee" delegate="sql" showdata="true" null="true" nulltext="Delete" nulldata="delete" data="0" display="1">
-								<![CDATA[SELECT id, name FROM coffees WHERE quantity <> 0 ORDER BY name]]>
+					<label>Green Coffee:</label>
+					<layout type="stack" id="greenInfoLayout">
+						<page id="sampleGreen">
+							<layout type="vertical">
+								<layout type="grid">
+									<row>
+										<column><label>Name:</label></column>
+										<column><line id="sampleGreenName" /></column>
+									</row>
+									<row>
+										<column><label>Weight:</label></column>
+										<column><line id="sampleGreenWeight" /></column>
+										<column><sqldrop id="sampleGreenUnit" /></column>
+									</row>
+									<row>
+										<column><label>Vendor:</label></column>
+										<column><line id="sampleGreenVendor" /></column>
+									</row>
+									<row>
+										<column><label>Arrival Date:</label></column>
+										<column><line id="sampleGreenArrivalDate" /></column>
+									</row>
+								</layout>
+								<label>Additional Details:</label>
+								<sqltablearray columns="2" id="attributes">
+									<column name="Attribute" />
+									<column name="Value" />
+								</sqltablearray>
+							</layout>
+						</page>
+						<page id="productionGreen">
+							<layout type="vertical">
+								<layout type="horizontal">
+									<label>Unit:</label>
+									<sqldrop id="productionGreenUnit" />
+									<stretch />
+								</layout>
+								<sqltablearray columns="2" id="productionGreenTable">
+									<column name="Coffee" delegate="sql" showdata="true" null="true" nulltext="Delete" nulldata="delete" data="0" display="1">
+										<![CDATA[SELECT id, name FROM coffees WHERE quantity <> 0 ORDER BY name]]>
+									</column>
+									<column name="Weight" delegate="numeric" />
+								</sqltablearray>
+							</layout>
+						</page>
+					</layout>
+					<label>Roasting Details:</label>
+					<layout type="grid">
+						<row>
+							<column><label>Item:</label></column>
+							<column>
+								<sqldrop data="0" display="1" showdata="true" id="roastedItem">
+									<null />
+									<query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
+								</sqldrop>
 							</column>
-							<column name="Weight" delegate="numeric" />
-						</sqltablearray>
+						</row>
+						<row>
+							<column><label>Weight:</label></column>
+							<column><line id="roastedWeight" validator="numeric" /></column>
+						</row>
+						<row>
+							<column><label>Time:</label></column>
+							<column><calendar id="roastTime" time="true"/></column>
+						</row>
+						<row>
+							<column><label>Duration:</label></column>
+							<column><timeedit id="roastDuration" /></column>
+						</row>
+						<row>
+							<column><label>Notes:</label></column>
+							<column><textarea id="notes" /></column>
+						</row>
 					</layout>
-				</page>
-			</layout><!-- End of green information -->
-			<label>Roasting Details:</label>
-			<layout type="grid">
-				<row>
-					<column><label>Item:</label></column>
-					<column>
-						<sqldrop data="0" display="1" showdata="true" id="roastedItem">
-							<null />
-							<query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
-						</sqldrop>
-					</column>
-				</row>
-				<row>
-					<column><label>Weight:</label></column>
-					<column><line id="roastedWeight" validator="numeric" /></column>
-				</row>
-				<row>
-					<column><label>Time:</label></column>
-					<column><line id="roastTime" /></column>
-				</row>
-				<row>
-					<column><label>Duration:</label></column>
-					<column><line id="roastDuration" /></column>
-				</row>
-			</layout>
-		</layout><!-- End of left vertical layout -->
-	</layout><!-- End of top horizontal layout -->
+				</layout>
+			</page>
+			<page>
+				<layout type="vertical">
+					<splitter type="horizontal" id="roastdatasplit">
+						<measurementtable id="log" />
+						<graph id="graph" />
+					</splitter>
+				</layout>
+			</page>
+			<page>
+				
+			</page>
+		</layout>
+		<layout type="horizontal">
+			<stretch />
+			<button name="Submit" id="submit" type="push" />
+		</layout>
+	</layout>
 	<program>
 	<![CDATA[
+		var window = this;
+		this.windowTitle = "Typica - Manual Log Entry";
+		quitItem = findChildObject(this, 'quitItem');
+		quitItem.triggered.connect(function() {
+			Application.quit();
+		});
+		pluginContext = {};
+		pluginContext.table = findChildObject(this, 'log');
+		pluginContext.graph = findChildObject(this, 'graph');
+		pluginContext.preRun = function() {
+			var filename = QFileDialog.getOpenFileName(window, TTR("manualLogEntry", "Import"), QSettings.value('script/lastDir', '') + '/');
+			var file = new QFile(filename);
+			if(file.open(1)) {
+				pluginContext.data = file.readToString();
+				file.close();
+				pluginContext.table.clear();
+				pluginContext.graph.clear();
+				QSettings.setValue("script/lastDir", dir(filename));
+			} else {
+				throw new Error("Failed to open file, aborting import.");
+			}
+		};
+		pluginContext.postRun = function() {
+			
+		};
+		pluginContext.newMeasurement = function(m, c) {
+			pluginContext.table.newMeasurement(m, c);
+			pluginContext.graph.newMeasurement(m, c);
+		}
+		pluginMenu = findChildObject(this, 'pluginMenu');
+		pluginMenu.setProperty("activationObject", pluginContext);
+		tabs = findChildObject(this, 'tabs');
+		tabs.addTab("Batch Data");
+		tabs.addTab("Roast Data");
+		tabs.addTab("Roast Data Configuration");
+		pages = findChildObject(this, 'pages');
+		tabs.currentChanged.connect(function(index) {
+			pages.setCurrentIndex(index);
+		});
 		greenInfoLayout = findChildObject(this, 'greenInfoLayout');
 		roastedItem = findChildObject(this, 'roastedItem');
 		batchType = findChildObject(this, 'batchType');
@@ -91,7 +161,13 @@
 			roastedItem.enabled = (batchTypeIndex == 1);
 		});
 		batchType.setCurrentIndex(QSettings.value("script/manual_batchType", 1));
-		roastedItem.enabled = (batchTypeIndex == 1);
+		var machineSelector = findChildObject(this, 'machineSelector');
+        var machineModel = new DeviceTreeModel;
+        machineSelector.setModel(machineModel);
+        machineSelector.currentIndex = QSettings.value("script/manualMachineSelection", 0);
+        machineSelector['currentIndexChanged(int)'].connect(function(index) {
+            QSettings.setValue("script/manualMachineSelection", index);
+        });
 		sampleGreenUnit = findChildObject(this, 'sampleGreenUnit');
 		sampleGreenUnit.addItem("g");
 		sampleGreenUnit.addItem("Kg");

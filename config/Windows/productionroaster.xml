@@ -45,13 +45,15 @@
         <item id="manual" shortcut="Ctrl+E">Manual Entry</item>
     </menu>
 	<menu name="Graph">
-		<item id="unshift">Reset Translation</item>
-	</menu>
+		<item id="reshift" shortcut="Ctrl+T">Set Translation</item>
+		<item id="unshift" shortcut="Ctrl+R">Reset Translation</item>
+	</menu>roaster@wilsonscoffee.com
     <program>
     <![CDATA[
         var window = this;
         var targetOffset = 0;
         var gtrans = 0;
+		var oldtrans = 0;
 		var translationdelay = new Timer;
 		translationdelay.interval = 0;
 		translationdelay.singleShot = true;
@@ -59,6 +61,10 @@
         window.targetcolumnname = "";
         var currentDetector = new ThresholdDetector;
         var translationChannel = -1;
+		var resetTranslation = findChildObject(this, 'unshift');
+		var setTranslation = findChildObject(this, 'reshift');
+		resetTranslation.enabled = false;
+		setTranslation.enabled = false;
         targetDetector.timeForValue.connect(function(value) {
             targetOffset = value;
         });
@@ -100,40 +106,40 @@
 	var hasTranslated = false;
 	var externtrans = undefined;
 	window.translateLoadedSeries = function(translation) {
-            var lc = Number(QSettings.value("liveColumn"));
-            for(var i = 1; i < lc - 1; i++)
-            {
-                graph.setSeriesTranslation(i, translation);
-            }
+	    var lc = Number(QSettings.value("liveColumn"));
+        for(var i = 1; i < lc - 1; i++)
+        {
+            graph.setSeriesTranslation(i, translation);
+        }
 	};
 	window.translateCurrentSeries = function(translation) {
-            var lc = Number(QSettings.value("liveColumn"));
-            for(var i = 0; i < columnNames.length; i++)
-            {
-                graph.setSeriesTranslation(lc + i, translation);
-            }
+        var lc = Number(QSettings.value("liveColumn"));
+        for(var i = 0; i < columnNames.length; i++)
+        {
+            graph.setSeriesTranslation(lc + i, translation);
+        }
 	};
 	var selectedRoasterName = configModel.data(rootIndex, 0);
 	var machineReference = configModel.referenceElement(configModel.data(rootIndex, 32));
 	var selectedRoasterID = machineReference.databaseid;
-        var checkCapacity = machineReference.checkcapacity;
-        var maxCapacity = machineReference.capacity;
-        var capacityUnit = machineReference.capacityunit;
-        var poundsCapacity;
-        var convertToPounds = function(w, u) {
-            switch(u) {
-                case "g":
-                    return w * 0.0022;
-                case "oz":
-                    return w * 0.0625;
-                case "Kg":
-                    return w * 2.2;
-            }
-            return w;
-        };
-        if(checkCapacity == "true") {
-            poundsCapacity = convertToPounds(maxCapacity, capacityUnit);
+    var checkCapacity = machineReference.checkcapacity;
+    var maxCapacity = machineReference.capacity;
+    var capacityUnit = machineReference.capacityunit;
+    var poundsCapacity;
+    var convertToPounds = function(w, u) {
+        switch(u) {
+            case "g":
+                return w * 0.0022;
+            case "oz":
+                return w * 0.0625;
+            case "Kg":
+                return w * 2.2;
         }
+        return w;
+    };
+    if(checkCapacity == "true") {
+        poundsCapacity = convertToPounds(maxCapacity, capacityUnit);
+    }
 	if(configModel.hasChildren(rootIndex)) {
 		for(var i = 0; i < configModel.rowCount(rootIndex); i++) {
 			var driverIndex = configModel.index(i, 0, rootIndex);
@@ -381,30 +387,30 @@
 					tabControls.push(outputControl);
 				}
 			}
-                        else if(driverReference.driver == "modbusngport")
-                        {
-                            var device = new ModbusNG(configModel, driverIndex);
-                            modbusdevices.push(device);
-                            for(var j = 0; j < device.channelCount(); j++) {
-                                channels.push(device.getChannel(j));
-                                columnNames.push(device.channelColumnName(j));
-                                channelType.push(device.channelType(j));
-                                if(device.isChannelHidden(j)) {
-                                    channelVisibility.push(false);
-                                } else {
-                                    channelVisibility.push(true);
-                                    var indicator = new TemperatureDisplay;
-									if(device.channelType(j) == "C") {
-										indicator.setDisplayUnits(Units.Unitless);
-										indicator.digitCount = 6;
-									}
-                                    temperatureDisplays.push(indicator);
-                                    var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
-                                    device.getChannel(j).newData.connect(indicator.setValue);
-                                    indicatorPanel.addWidget(decorator);
-                                }
-                            }
-                        }
+            else if(driverReference.driver == "modbusngport")
+            {
+                var device = new ModbusNG(configModel, driverIndex);
+                modbusdevices.push(device);
+                for(var j = 0; j < device.channelCount(); j++) {
+                    channels.push(device.getChannel(j));
+                    columnNames.push(device.channelColumnName(j));
+                    channelType.push(device.channelType(j));
+                    if(device.isChannelHidden(j)) {
+                        channelVisibility.push(false);
+                    } else {
+                        channelVisibility.push(true);
+                        var indicator = new TemperatureDisplay;
+						if(device.channelType(j) == "C") {
+							indicator.setDisplayUnits(Units.Unitless);
+							indicator.digitCount = 6;
+						}
+                        temperatureDisplays.push(indicator);
+                        var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+                        device.getChannel(j).newData.connect(indicator.setValue);
+                        indicatorPanel.addWidget(decorator);
+                    }
+                }
+            }
 			else if(driverReference.driver == "unsupporteddevice")
 			{
 				var device = createDevice(driverIndex);
@@ -464,32 +470,32 @@
 				annotationPanel.addWidget(button);
 				tabControls.push(button);
 			}
-                        else if(driverReference.driver == "thresholdannotation")
-                        {
-                            var noteDetector = new ThresholdDetector();
-                            var noteEmitter = new Annotator(driverReference.annotation);
-                            noteDetector.setThreshold(Number(driverReference.value));
-                            for(var j = 0; j < columnNames.length; j++) {
-                                if(columnNames[j] == driverReference.source) {
-                                    channels[j].newData.connect(noteDetector.newMeasurement);
-                                    break;
-                                }
-                            }
-                            if(Number(driverReference.direction) == 1) {
-                                noteDetector.setEdgeDirection(ThresholdDetector.Descending);
-                            } else {
-                                noteDetector.setEdgeDirection(ThresholdDetector.Ascending);
-                            }
-                            var scope = new Object;
-                            scope.invoke = function() {
-                                if(timer.running) {
-                                    arguments.callee.noteEmitter.annotate();
-                                }
-                            }
-                            scope.invoke.noteEmitter = noteEmitter;
-                            noteDetector.timeForValue.connect(scope.invoke);
-                            annotationButtons.push(noteEmitter);
-                        }
+            else if(driverReference.driver == "thresholdannotation")
+            {
+                var noteDetector = new ThresholdDetector();
+                var noteEmitter = new Annotator(driverReference.annotation);
+                noteDetector.setThreshold(Number(driverReference.value));
+                for(var j = 0; j < columnNames.length; j++) {
+                    if(columnNames[j] == driverReference.source) {
+                        channels[j].newData.connect(noteDetector.newMeasurement);
+                        break;
+                    }
+                }
+                if(Number(driverReference.direction) == 1) {
+                    noteDetector.setEdgeDirection(ThresholdDetector.Descending);
+                } else {
+                    noteDetector.setEdgeDirection(ThresholdDetector.Ascending);
+                }
+                var scope = new Object;
+                scope.invoke = function() {
+                    if(timer.running) {
+                        arguments.callee.noteEmitter.annotate();
+                    }
+                }
+                scope.invoke.noteEmitter = noteEmitter;
+                noteDetector.timeForValue.connect(scope.invoke);
+                annotationButtons.push(noteEmitter);
+            }
 			else if(driverReference.driver == "valueannotation")
 			{
 				var checker = new ValueAnnotation;
@@ -634,8 +640,8 @@
 								}
 							}
 							hasTranslated = true;
+							resetTranslation.enabled = true;
 						});
-						var resetTranslation = findChildObject(this, 'unshift');
 						resetTranslation.triggered.connect(function() {
 							if(gtrans > 0) {
 								window.translateLoadedSeries(-gtrans);
@@ -643,9 +649,24 @@
 							else {
 								window.translateCurrentSeries(gtrans);
 							}
+							oldtrans = gtrans;
 							gtrans = 0;
-							indicator.display(0);
+							externtrans.display(0);
 							hasTranslated = false;
+							setTranslation.enabled = true;
+						});
+						setTranslation.triggered.connect(function() {
+							externtrans.display(oldtrans);
+							gtrans = oldtrans;
+							if(gtrans > 0) {
+								window.translateLoadedSeries(gtrans);
+							}
+							else {
+								window.translateCurrentSeries(-gtrans);
+							}
+							hasTranslated = true;
+							resetTranslation.enabled = true;
+							setTranslation.enabled = false;
 						});
 					}
 				}
@@ -691,151 +712,151 @@
 				scale.open(3);
 				window.scales.push(scale);
 			}
-                        else if(driverReference.driver == "coolingtimer")
+            else if(driverReference.driver == "coolingtimer")
+            {
+                var coolingTimer = new TimerDisplay();
+                coolingTimer.setDisplayFormat("mm:ss");
+                var decorator = new WidgetDecorator(coolingTimer, configModel.data(driverIndex, 0), 2);
+                indicatorPanel.addWidget(decorator);
+                coolingTimer.setTimerMode(1);
+                coolingTimer.setAutoReset(true);
+                var timeValue = new QTime();
+                timeValue = timeValue.fromString(driverReference.reset, "mm:ss");
+                coolingTimer.setResetValue(timeValue);
+                stop.clicked.connect(coolingTimer.startTimer);
+            }
+            else if(driverReference.driver == "rangetimer")
+            {
+                rangetimers.push(new TimerDisplay());
+                var rangeTimer = rangetimers[rangetimers.length - 1];
+                rangeTimer.setDisplayFormat("mm:ss");
+                var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
+                indicatorPanel.addWidget(decorator);
+                stop.clicked.connect(rangeTimer.stopTimer);
+                start.clicked.connect(rangeTimer.reset);
+                if(driverReference.starttrigger == "batch")
+                {
+                    start.clicked.connect(rangeTimer.startTimer);
+                }
+                else if(driverReference.starttrigger == "manual")
+                {
+                    var startButton = new AnnotationButton(driverReference.startbuttontext);
+                    startButton.clicked.connect(rangeTimer.startTimer);
+                    annotationPanel.addWidget(startButton);
+                    tabControls.push(button);
+                }
+                else if(driverReference.starttrigger == "value")
+                {
+                    var startTrigger = new ThresholdDetector();
+                    startTrigger.setThreshold(Number(driverReference.startvalue));
+                    var scope = new Object;
+                    scope.invoke = function() {
+                        if(timer.running && !(arguments.callee.rangeTimer.running))
                         {
-                            var coolingTimer = new TimerDisplay();
-                            coolingTimer.setDisplayFormat("mm:ss");
-                            var decorator = new WidgetDecorator(coolingTimer, configModel.data(driverIndex, 0), 2);
-                            indicatorPanel.addWidget(decorator);
-                            coolingTimer.setTimerMode(1);
-                            coolingTimer.setAutoReset(true);
-                            var timeValue = new QTime();
-                            timeValue = timeValue.fromString(driverReference.reset, "mm:ss");
-                            coolingTimer.setResetValue(timeValue);
-                            stop.clicked.connect(coolingTimer.startTimer);
+                            arguments.callee.rangeTimer.startTimer();
                         }
-                        else if(driverReference.driver == "rangetimer")
+                    };
+                    scope.invoke.rangeTimer = rangeTimer;
+                    startTrigger.timeForValue.connect(scope.invoke);
+                    for(var j = 0; j < columnNames.length; j++)
+                    {
+                        if(columnNames[j] == driverReference.startcolumnname)
+	                    {
+                            channels[j].newData.connect(startTrigger.newMeasurement);
+                        }
+                    }
+                }
+                stop.clicked.connect(rangeTimer.stopTimer)
+                if(driverReference.stoptrigger == "manual")
+                {
+                    var stopButton = new AnnotationButton(driverReference.stopbuttontext);
+                    stopButton.clicked.connect(rangeTimer.stopTimer);
+                    annotationPanel.addWidget(stopButton);
+                    tabControls.push(button);
+                }
+                else if(driverReference.stoptrigger == "value")
+                {
+                    var stopTrigger = new ThresholdDetector();
+                    stopTrigger.setThreshold(Number(driverReference.stopvalue));
+                    stopTrigger.timeForValue.connect(rangeTimer.stopTimer);
+                    for(var j = 0; j < columnNames.length; j++)
+                    {
+                        if(columnNames[j] == driverReference.stopcolumnname)
                         {
-                            rangetimers.push(new TimerDisplay());
-                            var rangeTimer = rangetimers[rangetimers.length - 1];
-                            rangeTimer.setDisplayFormat("mm:ss");
-                            var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
-                            indicatorPanel.addWidget(decorator);
-                            stop.clicked.connect(rangeTimer.stopTimer);
-                            start.clicked.connect(rangeTimer.reset);
-                            if(driverReference.starttrigger == "batch")
-                            {
-                                start.clicked.connect(rangeTimer.startTimer);
-                            }
-                            else if(driverReference.starttrigger == "manual")
-                            {
-                                var startButton = new AnnotationButton(driverReference.startbuttontext);
-                                startButton.clicked.connect(rangeTimer.startTimer);
-                                annotationPanel.addWidget(startButton);
-                                tabControls.push(button);
-                            }
-                            else if(driverReference.starttrigger == "value")
-                            {
-                                var startTrigger = new ThresholdDetector();
-                                startTrigger.setThreshold(Number(driverReference.startvalue));
-                                var scope = new Object;
-                                scope.invoke = function() {
-                                    if(timer.running && !(arguments.callee.rangeTimer.running))
-                                    {
-                                        arguments.callee.rangeTimer.startTimer();
-                                    }
-                                };
-                                scope.invoke.rangeTimer = rangeTimer;
-                                startTrigger.timeForValue.connect(scope.invoke);
-                                for(var j = 0; j < columnNames.length; j++)
-                                {
-                                    if(columnNames[j] == driverReference.startcolumnname)
-                                    {
-                                        channels[j].newData.connect(startTrigger.newMeasurement);
-                                    }
-                                }
-                            }
-                            stop.clicked.connect(rangeTimer.stopTimer)
-                            if(driverReference.stoptrigger == "manual")
-                            {
-                                var stopButton = new AnnotationButton(driverReference.stopbuttontext);
-                                stopButton.clicked.connect(rangeTimer.stopTimer);
-                                annotationPanel.addWidget(stopButton);
-                                tabControls.push(button);
-                            }
-                            else if(driverReference.stoptrigger == "value")
-                            {
-                                var stopTrigger = new ThresholdDetector();
-                                stopTrigger.setThreshold(Number(driverReference.stopvalue));
-                                stopTrigger.timeForValue.connect(rangeTimer.stopTimer);
-                                for(var j = 0; j < columnNames.length; j++)
-                                {
-                                    if(columnNames[j] == driverReference.stopcolumnname)
-                                    {
-                                        channels[j].newData.connect(stopTrigger.newMeasurement);
-                                    }
-                                }
-                            }
-                            rangeTimer.reportingName = configModel.data(driverIndex, 0);
-                            rangeTimer.report = function() {
-                                return "" + this.reportingName + ": " + this.value;
-                            };
+                            channels[j].newData.connect(stopTrigger.newMeasurement);
                         }
-                        else if(driverReference.driver = "multirangetimer")
-                        {
-                            var rangeTimer = new TimerDisplay();
-                            rangeTimer.setDisplayFormat("mm:ss");
-                            var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
-                            indicatorPanel.addWidget(decorator);
-                            var rangenames = driverReference.rangenames;
-                            var endtemps = driverReference.endtemps;
-                            var names = rangenames.slice(2, rangenames.length - 2).split(", ");
-                            rangeTimer.rangeNames = new Array();
-                            for(var j = 0; j < names.length; j++)
-                            {
-                                var name = names[j].slice(1, names[j].length - 1);
-                                rangeTimer.rangeNames.push(name);
-                            }
-                            rangeTimer.rangeEnds = new Array();
-                            var ends = endtemps.slice(2, endtemps.length - 2).split(", ");
-                            for(var j = 0; j < ends.length; j++)
-                            {
-                                rangeTimer.rangeEnds.push(Number(ends[j]));
-                            }
-                            rangeTimer.currentRange = 0;
-                            rangeTimer.results = new Array();
-                            rangeTimer.trigger = new ThresholdDetector();
-                            for(var j = 0; j < columnNames.length; j++)
-                            {
-                                if(columnNames[j] == driverReference.trigger)
-                                {
-                                    channels[j].newData.connect(rangeTimer.trigger.newMeasurement);
-                                }
-                            }
-                            rangeTimer.startRanges = function() {
-                                arguments.callee.timer.currentRange = 0;
-                                arguments.callee.timer.results.splice(0, arguments.callee.timer.results.length);
-                                arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[0]);
-                            };
-                            rangeTimer.startRanges.timer = rangeTimer;
-                            start.clicked.connect(rangeTimer.startTimer);
-                            start.clicked.connect(rangeTimer.startRanges);
-                            rangeTimer.transition = function() {
-                                arguments.callee.timer.stopTimer();
-                                arguments.callee.timer.results.push(arguments.callee.timer.value);
-                                arguments.callee.timer.reset();
-                                arguments.callee.timer.startTimer();
-                                arguments.callee.timer.currentRange++;
-                                if(arguments.callee.timer.currentRange <= arguments.callee.timer.rangeEnds.length)
-                                {
-                                    arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[arguments.callee.timer.currentRange]);
-                                }
-                            };
-                            rangeTimer.transition.timer = rangeTimer;
-                            rangeTimer.trigger.timeForValue.connect(rangeTimer.transition);
-                            stop.clicked.connect(rangeTimer.transition);
-                            stop.clicked.connect(rangeTimer.stopTimer);
-                            rangeTimer.report = function() {
-                                var retval = "";
-                                for(var j = 0; j < arguments.callee.timer.results.length; j++)
-                                {
-                                    retval += arguments.callee.timer.rangeNames[j] + ": " + arguments.callee.timer.results[j] + "\n";
-                                }
-                                return retval;
-                            };
-                            rangeTimer.report.timer = rangeTimer;
-                            rangetimers.push(rangeTimer);
-                        }
+                    }
+                }
+                rangeTimer.reportingName = configModel.data(driverIndex, 0);
+                rangeTimer.report = function() {
+                    return "" + this.reportingName + ": " + this.value;
+                };
+            }
+            else if(driverReference.driver = "multirangetimer")
+            {
+                var rangeTimer = new TimerDisplay();
+                rangeTimer.setDisplayFormat("mm:ss");
+                var decorator = new WidgetDecorator(rangeTimer, configModel.data(driverIndex, 0), 2);
+                indicatorPanel.addWidget(decorator);
+                var rangenames = driverReference.rangenames;
+                var endtemps = driverReference.endtemps;
+                var names = rangenames.slice(2, rangenames.length - 2).split(", ");
+                rangeTimer.rangeNames = new Array();
+                for(var j = 0; j < names.length; j++)
+                {
+                    var name = names[j].slice(1, names[j].length - 1);
+                    rangeTimer.rangeNames.push(name);
+                }
+                rangeTimer.rangeEnds = new Array();
+                var ends = endtemps.slice(2, endtemps.length - 2).split(", ");
+                for(var j = 0; j < ends.length; j++)
+                {
+                    rangeTimer.rangeEnds.push(Number(ends[j]));
+                }
+                rangeTimer.currentRange = 0;
+                rangeTimer.results = new Array();
+                rangeTimer.trigger = new ThresholdDetector();
+                for(var j = 0; j < columnNames.length; j++)
+                {
+                    if(columnNames[j] == driverReference.trigger)
+                    {
+                        channels[j].newData.connect(rangeTimer.trigger.newMeasurement);
+                    }
+                }
+                rangeTimer.startRanges = function() {
+                    arguments.callee.timer.currentRange = 0;
+                    arguments.callee.timer.results.splice(0, arguments.callee.timer.results.length);
+                    arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[0]);
+                };
+                rangeTimer.startRanges.timer = rangeTimer;
+                start.clicked.connect(rangeTimer.startTimer);
+                start.clicked.connect(rangeTimer.startRanges);
+                rangeTimer.transition = function() {
+                    arguments.callee.timer.stopTimer();
+                    arguments.callee.timer.results.push(arguments.callee.timer.value);
+                    arguments.callee.timer.reset();
+                    arguments.callee.timer.startTimer();
+                    arguments.callee.timer.currentRange++;
+                    if(arguments.callee.timer.currentRange <= arguments.callee.timer.rangeEnds.length)
+                    {
+                        arguments.callee.timer.trigger.setThreshold(arguments.callee.timer.rangeEnds[arguments.callee.timer.currentRange]);
+                    }
+                };
+                rangeTimer.transition.timer = rangeTimer;
+                rangeTimer.trigger.timeForValue.connect(rangeTimer.transition);
+                stop.clicked.connect(rangeTimer.transition);
+                stop.clicked.connect(rangeTimer.stopTimer);
+                rangeTimer.report = function() {
+                    var retval = "";
+                    for(var j = 0; j < arguments.callee.timer.results.length; j++)
+                    {
+                        retval += arguments.callee.timer.rangeNames[j] + ": " + arguments.callee.timer.results[j] + "\n";
+                    }
+                    return retval;
+                };
+                rangeTimer.report.timer = rangeTimer;
+                rangetimers.push(rangeTimer);
+            }
 		}
 	}
 	for(var i = 1; i < tabControls.length; i++)
@@ -943,6 +964,8 @@
         start.clicked.connect(function() {
 			start.enabled = false;
 			hasTranslated = false;
+			resetTranslation.enabled = false;
+			setTranslation.enabled = false;
             var epoch = new QTime();
             epoch = epoch.currentTime();
 			for(var i = 0; i < offsets.length; i++)
@@ -1108,6 +1131,8 @@
 			if(typeof(externtrans) != 'undefined') {
 				externtrans.display(0);
 			}
+			resetTranslation.enabled = false;
+			setTranslation.enabled = false;
         });
 		var openMenu = findChildObject(this, 'open');
         var compareMenu = findChildObject(this, 'compare');
@@ -1148,6 +1173,8 @@
 						targetDetector.newMeasurement(data);
 					}
 				});
+				resetTranslation.enabled = false;
+				setTranslation.enabled = false;
                 input.annotation.connect(log.newAnnotation);
 				input.annotation.connect(function(note, tcol, ncol) {
 					for(var i = tcol; i < ncol; i++) {

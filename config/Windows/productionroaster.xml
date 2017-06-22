@@ -1066,7 +1066,11 @@
             }
             if(translationChannel >= 0)
             {
-                offsets[offsetForChannel(translationChannel)].measurement.disconnect(currentDetector.newMeasurement);
+				if(translationdelay.active) {
+					translationdelay.stop();
+				} else {
+					offsets[offsetForChannel(translationChannel)].measurement.disconnect(currentDetector.newMeasurement);
+				}
             }
             start.enabled = true;
             window.windowModified = false;

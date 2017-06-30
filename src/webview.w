@@ -31,7 +31,7 @@ class TypicaWebView : public QWebView@/
 	public:@/
 		TypicaWebView();
 		@[Q_INVOKABLE@,@, void@]@, load(const QString &url);@t\2\2@>@/
-		@[Q_INVOKABLE@,@, void@]@, print();@t\2\2@>@/
+		@[Q_INVOKABLE@,@, void@]@, print(const QString &printerName = QString());@t\2\2@>@/
 		@[Q_INVOKABLE@,@, void@]@, setHtml(const QString &html, const QUrl &baseUrl = QUrl());@t\2\2@>@/
 		@[Q_INVOKABLE@,@, void@]@, setContent(QIODevice *device);@t\2\2@>@/
 		@[Q_INVOKABLE@,@, QString@]@, saveXml();@t\2\2@>@/
@@ -115,16 +115,6 @@ void TypicaWebView::load(const QString &url)
 	QWebView::load(QUrl(url));
 }
 
-void TypicaWebView::print()
-{
-	QPrinter *printer = new QPrinter(QPrinter::HighResolution);
-	QPrintDialog printDialog(printer, NULL);
-	if(printDialog.exec() == QDialog::Accepted)
-	{
-		QWebView::print(printer);
-	}
-}
-
 void TypicaWebView::setHtml(const QString &html, const QUrl &baseUrl)
 {
 	QWebView::setHtml(html, baseUrl);
@@ -142,6 +132,26 @@ void TypicaWebView::setContent(QIODevice *device)
 QString TypicaWebView::saveXml()
 {
 	return page()->currentFrame()->documentElement().toOuterXml();
+}
+
+@ Print functionality has been extended to allow an optional argument. If the
+name of a printer is passed in, the print dialog will be bypassed.
+
+@<TypicaWebView implementation@>=
+void TypicaWebView::print(const QString &printerName)
+{
+	QPrinter *printer = new QPrinter(QPrinter::HighResolution);
+	if(!printerName.isEmpty())
+	{
+		printer->setPrinterName(printerName);
+		QWebView::print(printer);
+		return;
+	}
+	QPrintDialog printDialog(printer, NULL);
+	if(printDialog.exec() == QDialog::Accepted)
+	{
+		QWebView::print(printer);
+	}
 }
 
 @ Web views are exposed to the host environment in the usual manner.

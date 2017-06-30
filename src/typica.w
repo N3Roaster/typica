@@ -12752,6 +12752,8 @@ void CSVOutput::setDevice(QIODevice *device)
 
 @i webview.w
 
+@i printerselector.w
+
 @* The Application class.
 
 The |Application| class represents the \pn{} program. It is responsible for

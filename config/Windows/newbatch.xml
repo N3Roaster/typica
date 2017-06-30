@@ -84,7 +84,13 @@
             </layout>
             <stretch />
         </layout>
-		<webview id="batchTag" />
+		<layout type="vertical">
+			<webview id="batchTag" />
+			<layout type="horizontal">
+				<printerselector id="printerlist" />
+				<button name="Print" id="printbutton" type="push" />
+			</layout>
+		</layout>
     </layout>
     <program>
         <![CDATA[
@@ -667,7 +673,7 @@ print("Tag redrawn");
 				output.writeAttribute("id", "container");
 				output.writeEndElement();
 				output.writeStartElement("script");
-				var tag = {g: "Typica", m: Number(selectedRoasterID), r: 1};
+				var tag = {g: "Typica", m: Number(selectedRoasterID), v: 1};
 				if(timefield.text.length > 0) {
 					tag.t = timefield.text;
 				}
@@ -693,6 +699,15 @@ print("Tag redrawn");
             printMenu.triggered.connect(function() {
                 batchTag.print();
             });
+			var printers = findChildObject(this, 'printerlist');
+			printers.currentIndex = printers.findText(QSettings.value("script/batchtagprinter"));
+			printers['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/batchtagprinter", printers.currentText);
+            });
+			var printbutton = findChildObject(this, 'printbutton');
+			printbutton.clicked.connect(function() {
+				batchTag.print(printers.currentText);
+			});
         ]]>
     </program>
 </window>

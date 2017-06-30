@@ -61,11 +61,15 @@ PrinterSelector::PrinterSelector() : QComboBox(NULL)
 }
 
 @ The host environment is informed of this class in the usual way starting with
-a constructor function prototype.
+a constructor function prototype. Another prototype is also needed for adding
+this to a layout from XML.
 
 @<Function prototypes for scripting@>=
 QScriptValue constructPrinterSelector(QScriptContext *context,
                                       QScriptEngine *engine);
+void addPrinterSelectorToLayout(QDomElement element,
+                                QStack<QWidget *> *widgetStack,
+                                QStack<QLayout *> *layoutStack);
 
 @ The engine is informed of this function.
 
@@ -85,3 +89,28 @@ QScriptValue constructPrinterSelector(QScriptContext *, QScriptEngine *engine)
 	setQComboBoxProperties(object, engine);
 	return object;
 }
+
+@ It should also be possible to add this to a layout from the XML portion of
+the configuration document.
+
+@<Functions for scripting@>=
+void addPrinterSelectorToLayout(QDomElement element, QStack<QWidget *> *,
+                                QStack<QLayout *> *layoutStack)
+{
+	PrinterSelector *selector = new PrinterSelector;
+	if(element.hasAttribute("id"))
+	{
+		selector->setObjectName(element.attribute("id"));
+	}
+	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+	layout->addWidget(selector);
+}
+
+@ This is added in the usual way.
+
+@<Additional box layout elements@>=
+else if(currentElement.tagName() == "printerselector")
+{
+	addPrinterSelectorToLayout(currentElement, widgetStack, layoutStack);
+}
+

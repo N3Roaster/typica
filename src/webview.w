@@ -135,7 +135,11 @@ QString TypicaWebView::saveXml()
 }
 
 @ Print functionality has been extended to allow an optional argument. If the
-name of a printer is passed in, the print dialog will be bypassed.
+name of a printer is passed in, the print dialog will be bypassed. Note that
+when bypassing the print dialog, page margins are set to 0. This is intentional
+as the use case is for printing to more specialized printers where default page
+margins are not appropriate and CSS can be customized to ensure that all
+information fits in the printable area with the assumption of no margin.
 
 @<TypicaWebView implementation@>=
 void TypicaWebView::print(const QString &printerName)
@@ -144,6 +148,7 @@ void TypicaWebView::print(const QString &printerName)
 	if(!printerName.isEmpty())
 	{
 		printer->setPrinterName(printerName);
+		printer->setFullPage(true);
 		QWebView::print(printer);
 		return;
 	}

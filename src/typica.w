@@ -6477,6 +6477,10 @@ else if(className == "QTabBar")
 {
 	setQTabBarProperties(value, engine);
 }
+else if(className == "PrinterSelector")
+{
+	setQComboBoxProperties(value, engine);
+}
 
 @ In the list of classes, the SaltTable entry is for a class which does not
 strictly exist on its own. It is, however, useful to provide some custom

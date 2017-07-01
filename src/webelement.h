@@ -1,5 +1,5 @@
-/*566:*/
-#line 248 "./webview.w"
+/*579:*/
+#line 263 "./webview.w"
 
 #include <QWebElement> 
 #include <QObject> 
@@ -27,4 +27,4 @@ QWebElement e;
 
 #endif
 
-/*:566*/
+/*:579*/

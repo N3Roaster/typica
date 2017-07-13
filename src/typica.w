@@ -4377,6 +4377,9 @@ Starting with version 1.4, we check for a command line option with the path to
 the configuration file and load that instead of prompting for the information
 if possible.
 
+Starting with version 1.8, if there is not a -c argument, Typica will first
+search a small number of locations relative to the executable.
+
 @<Load the application configuration@>=
 QStringList arguments = QCoreApplication::arguments();
 int position = arguments.indexOf("-c");
@@ -4387,6 +4390,16 @@ if(position != -1)
     {
         filename = arguments.at(position + 1);
     }
+} else {
+	QDir checkPath(QCoreApplication::applicationDirPath() + "/../config/");
+	if(checkPath.exists("config.xml")) {
+		filename = checkPath.filePath("config.xml");
+	} else {
+		checkPath = QDir(QCoreApplication::applicationDirPath() + "/config/");
+		if(checkPath.exists("config.xml")) {
+			filename  = checkPath.filePath("config.xml");
+		}
+	}
 }
 if(filename.isEmpty())
 {
@@ -4411,6 +4424,8 @@ if(!filename.isEmpty())
     {
         app.configuration()->setContent(&file, true);
     }
+} else {
+	return 1;
 }
 @<Substitute included fragments@>@;
 

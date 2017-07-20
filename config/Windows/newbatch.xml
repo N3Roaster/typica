@@ -307,7 +307,6 @@
             var profilebutton = findChildObject(this, 'load');
             profilebutton.setEnabled(false);
             roasted['currentIndexChanged(int)'].connect(function() {
-print("Roasted coffee item changed");
                 table.clear();
                 var query = new QSqlQuery();
                 var q = "SELECT EXISTS(SELECT 1 FROM item_files WHERE item = ";
@@ -332,16 +331,13 @@ print("Roasted coffee item changed");
                 var title = "Typica - [*]New Batch (";
                 title = title + roasted.currentText;
                 title = title + ")";
-print("Updating window title");
                 batch.windowTitle = title;
-print("Checking green coffees");
                 q = "SELECT unroasted_id FROM roasting_log WHERE roasted_id = ";
                 q = q + roasted.currentData();
                 q = q + " AND time = (SELECT max(time) FROM roasting_log WHERE roasted_id = ";
                 q = q + roasted.currentData();
                 q = q + ")";
                 query.exec(q);
-print("Updating green table");
                 if(query.next())
                 {
                     var unroasted_items = sqlToArray(query.value(0));
@@ -371,13 +367,11 @@ print("Updating green table");
                         }
                     }
                 }
-print("About to query product spec");
                 query.prepare("SELECT loss, tolerance, notes FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
                 query.bind(":id1", roasted.currentData());
                 query.bind(":id2", roasted.currentData());
                 query.exec();
                 var lossSpecDescription = "";
-print("About to read loss spec");
                 if(query.next()) {
                     if(query.value(0).length > 0) {
                         lossSpecDescription += (Number(query.value(0)) * 100).toFixed(2);
@@ -399,13 +393,8 @@ print("About to read loss spec");
                     lossspec.text = "";
                     specnotes.plainText = "";
                 }
-print("Updated roast spec");
-                //roastestimate.text = "";
-print("Cleared roast estimate");
                 query = query.invalidate();
-print("About to redraw tag");
 				drawTag();
-print("Tag redrawn");
             });
             var validateCapacity = function() {
                 if(checkCapacity == "true") {

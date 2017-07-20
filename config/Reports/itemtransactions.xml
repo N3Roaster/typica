@@ -222,7 +222,7 @@
                     }, 0));
                     output.writeEndElement();
                     output.writeEndElement();
-                    query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason FROM item_history(:item) WHERE time >= :sd AND time < :ed ::date + interval '1 day'");
+                    query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason, (SELECT person FROM transactions WHERE time = item_history.time AND item = item_history.item) FROM item_history(:item) WHERE time >= :sd AND time < :ed ::date + interval '1 day'");
                     query.bind(":sd", startDate);
                     query.bind(":ed", endDate);
                     switch(unitBox.currentIndex)
@@ -245,6 +245,7 @@
                     output.writeTextElement("th", TTR("item_transactions", "Quantity"));
                     output.writeTextElement("th", TTR("item_transactions", "Balance"));
                     output.writeTextElement("th", TTR("item_transactions", "Record"));
+					output.writeTextElement("th", TTR("item_transactions", "Person"));
                     output.writeEndElement(); // tr
                     var prev_balance = "0";
                     var prev_prec = 0;
@@ -297,6 +298,7 @@
                         } else {
                             output.writeTextElement("td", "");
                         }
+						output.writeTextElement("td", query.value(10));
                         output.writeEndElement(); // tr
                     }
                     output.writeEndElement(); // table

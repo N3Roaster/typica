@@ -4,6 +4,17 @@
 		<separator />
 		<item id="quitItem" shortcut="ctrl+Q">Quit</item>
 	</menu>
+	<menu name="Log">
+        <item id="clear" shortcut="Ctrl+L">Clear Log</item>
+        <separator />
+        <item id="ms">Millisecond View</item>
+        <item id="1s">1 Second View</item>
+        <item id="5s">5 Second View</item>
+        <item id="10s">10 Second View</item>
+        <item id="15s">15 Second View</item>
+        <item id="30s">30 Second View</item>
+        <item id="1m">1 Minute View</item>
+    </menu>
 	<layout type="vertical">
 		<tabbar id="tabs"/>
 		<layout type="stack" id="pages">
@@ -27,7 +38,7 @@
 									</row>
 									<row>
 										<column><label>Weight:</label></column>
-										<column><line id="sampleGreenWeight" /></column>
+										<column><line id="sampleGreenWeight" validator="numeric">0.0</line></column>
 										<column><sqldrop id="sampleGreenUnit" /></column>
 									</row>
 									<row>
@@ -36,7 +47,7 @@
 									</row>
 									<row>
 										<column><label>Arrival Date:</label></column>
-										<column><line id="sampleGreenArrivalDate" /></column>
+										<column><calendar id="sampleGreenArrivalDate" /></column>
 									</row>
 								</layout>
 								<label>Additional Details:</label>
@@ -75,7 +86,7 @@
 						</row>
 						<row>
 							<column><label>Weight:</label></column>
-							<column><line id="roastedWeight" validator="numeric" /></column>
+							<column><line id="roastedWeight" validator="numeric">0.0</line></column>
 						</row>
 						<row>
 							<column><label>Time:</label></column>
@@ -94,14 +105,24 @@
 			</page>
 			<page>
 				<layout type="vertical">
+					<layout type="horizontal">
+						<label>Time Increment (s):</label>
+						<line id="timeincrement" validator="numeric">30</line>
+						<stretch />
+						<label>Time:</label>
+						<timeedit id="currenttime" />
+						<stretch />
+						<label>Temperature:</label>
+						<line id="currenttemperature" validator="numeric" />
+						<label>Note:</label>
+						<line id="currentnote" />
+						<button name="Add Measurement" id="addmeasurement" type="push" />
+					</layout>
 					<splitter type="horizontal" id="roastdatasplit">
 						<measurementtable id="log" />
 						<graph id="graph" />
 					</splitter>
 				</layout>
-			</page>
-			<page>
-				
 			</page>
 		</layout>
 		<layout type="horizontal">
@@ -113,12 +134,21 @@
 	<![CDATA[
 		var window = this;
 		this.windowTitle = "Typica - Manual Log Entry";
+		window.windowReady.connect(function() {
+			if(machineModel.rowCount() == 0) {
+				displayError(TTR("manualLogEntry", "Configuration Required"),
+				TTR("manualLogEntry", "Please configure a roaster."));
+				window.close();
+			}
+		});
 		quitItem = findChildObject(this, 'quitItem');
 		quitItem.triggered.connect(function() {
 			Application.quit();
 		});
 		pluginContext = {};
 		pluginContext.table = findChildObject(this, 'log');
+		pluginContext.table.setHeaderData(1, "Temp");
+		pluginContext.table.setHeaderData(2, "Note");
 		pluginContext.graph = findChildObject(this, 'graph');
 		pluginContext.preRun = function() {
 			var filename = QFileDialog.getOpenFileName(window, TTR("manualLogEntry", "Import"), QSettings.value('script/lastDir', '') + '/');
@@ -145,7 +175,6 @@
 		tabs = findChildObject(this, 'tabs');
 		tabs.addTab("Batch Data");
 		tabs.addTab("Roast Data");
-		tabs.addTab("Roast Data Configuration");
 		pages = findChildObject(this, 'pages');
 		tabs.currentChanged.connect(function(index) {
 			pages.setCurrentIndex(index);
@@ -187,6 +216,117 @@
 		productionGreenUnit['currentIndexChanged(int)'].connect(function(greenUnitIndex) {
 			QSettings.setValue("script/manual_unit", greenUnitIndex);
 			sampleGreenUnit.setCurrentIndex(greenUnitIndex);
+		});
+		timeincrement = findChildObject(this, 'timeincrement');
+		currenttime = findChildObject(this, 'currenttime');
+		currenttemperature = findChildObject(this, 'currenttemperature');
+		currentnote = findChildObject(this, 'currentnote');
+		addmeasurement = findChildObject(this, 'addmeasurement');
+		addmeasurement.clicked.connect(function() {
+			pluginContext.newMeasurement(new Measurement(Number(currenttemperature.text), currenttime.time), 1);
+			if(currentnote.text.length > 0) {
+				pluginContext.table.newAnnotation(currentnote.text, 1, 2);
+			}
+			currentnote.text = "";
+			var t = QTime();
+			t = t.fromString(currenttime.time, "hh:mm:ss");
+			t = t.addSecs(30);
+			currenttime.time = t;
+			currenttemperature.text = "";
+		});
+		currenttemperature.returnPressed.connect(addmeasurement.clicked);
+		currentnote.returnPressed.connect(addmeasurement.clicked);
+		var v1 = findChildObject(this, 'ms');
+        v1.triggered.connect(pluginContext.table.LOD_ms);
+        var v2 = findChildObject(this, '1s');
+        v2.triggered.connect(pluginContext.table.LOD_1s);
+        var v3 = findChildObject(this, '5s');
+        v3.triggered.connect(pluginContext.table.LOD_5s);
+        var v4 = findChildObject(this, '10s');
+        v4.triggered.connect(pluginContext.table.LOD_10s);
+        var v5 = findChildObject(this, '15s');
+        v5.triggered.connect(pluginContext.table.LOD_15s);
+        var v6 = findChildObject(this, '30s');
+        v6.triggered.connect(pluginContext.table.LOD_30s);
+        var v7 = findChildObject(this, '1m');
+        v7.triggered.connect(pluginContext.table.LOD_1m);
+		var clear = findChildObject(this, 'clear');
+        clear.triggered.connect(pluginContext.table.clear);
+        clear.triggered.connect(pluginContext.graph.clear);
+		clear.triggered.connect(function() {
+			currenttime.time = QTime(0, 0, 0, 0);
+			currenttemperature.text = "";
+			currentnote.text = "";
+		});
+		var sampleGreenName = findChildObject(this, 'sampleGreenName');
+		var sampleGreenWeight = findChildObject(this, 'sampleGreenWeight');
+		var productionGreenTable = findChildObject(this, 'productionGreenTable');
+		var greenModel = productionGreenTable.model();
+		var greenTotal = 0.0;
+		var updateGreenTable = function() {
+			var deleteRow = -1;
+			while((deleteRow = productionGreenTable.findData("delete", 0)) > -1) {
+				if(productionGreenTable.data(deleteRow, 0, 0) == "Delete") {
+					productionGreenTable.removeRow(productionGreenTable.findData("delete", 0));
+				} else {
+					break;
+				}
+			}
+			greenTotal = productionGreenTable.columnSum(1, 0);
+			productionGreenTable.resizeColumnToContents(0);
+		};
+		greenModel.dataChanged.connect(updateGreenTable);
+		var validateInputs = function() {
+			if(batchType.currentIndex == 0) {
+				/* Sample batch */
+				if(sampleGreenName.text.length == 0) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "Data Entry Error"),
+					TTR("manualLogEntry", "Please enter a green coffee name."));
+					return false;
+				}
+				if(Number(sampleGreenWeight.text) <= 0 || isNaN(sampleGreenWeight.text)) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "Data Entry Error"),
+					TTR("manualLogEntry", "Green coffee weight must be a number greater than 0."));
+					return false;
+				}
+			} else {
+				/* Production batch */
+				var itemArray = productionGreenTable.columnArray(0, 32).split("\\s*,\\s*");
+				var weightArray = productionGreenTable.columnArray(1, 0).split("\\s*,\\s*");
+				if((itemArray.length != weightArray.length) || (itemArray.length == 0)) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "Data Entry Error"),
+					TTR("manualLogEntry", "Please check that at least one green coffee has been selected and each green coffee has a valid weight"));
+					return false;
+				}
+				if(Number(greenTotal) <= 0) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "DataEntryError"),
+					TTR("manualLogEntry", "Total green coffee weight must be a number greater than 0."));
+					return false;
+				}
+				if(roastedItem.currentIndex == 0) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "DataEntryError"),
+					TTR("manualLogEntry", "Please select a roasted coffee item."));
+					return false;
+				}
+			}
+			return true;
+		};
+		var roastDataExists = function() {
+			return (pluginContext.table.rowCount() > 0);
+		}
+		var doSubmit = function() {
+			window.close();
+		}
+		var submit = findChildObject(this, 'submit');
+		submit.clicked.connect(function() {
+			if(validateInputs()) {
+				doSubmit();
+			}
 		});
 	]]>
 	</program>

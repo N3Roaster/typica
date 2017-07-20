@@ -1039,6 +1039,15 @@ considered depreciated.
 Version 1.6 adds a new property for handling the |windowModified| property
 such that an appropriate prompt is provided to confirm or cancel close events.
 
+Version 1.8 adds a new |setupFinished()| slot which is called after the
+initial |show()| at the end of window creation. This emits a |windowReady()|
+signal. Scripts can connect to this signal to perform tasks that must happen
+after the window has fully finished opening. The initial use for this is
+validating that all required configuration has been performed for a given
+window to be useful and, if not, immediately closing that. Without this, a
+call to |close()| in the script is reversed when the function creating the
+window calls |show()|.
+
 @<Class declarations@>=
 class ScriptQMainWindow : public QMainWindow@/
 {@t\1@>@/
@@ -1052,12 +1061,14 @@ class ScriptQMainWindow : public QMainWindow@/
         void saveSizeAndPosition(const QString &key);
         void restoreSizeAndPosition(const QString &key);
         void displayStatus(const QString &message = QString());
-        void setClosePrompt(QString prompt);@/
+        void setClosePrompt(QString prompt);
+        void setupFinished();@/
+    signals:@/
+        void aboutToClose(void);
+        void windowReady(void);@/
     protected:@/
         void closeEvent(QCloseEvent *event);
         void showEvent(QShowEvent *event);@/
-    signals:@/
-        void aboutToClose(void);@/
     private:@/
         QString cprompt;@t\2@>@/
 }@t\kern-3pt@>;
@@ -1116,6 +1127,11 @@ void ScriptQMainWindow::showEvent(QShowEvent *event)
 void ScriptQMainWindow::show()
 {
     QMainWindow::show();
+}
+
+void ScriptQMainWindow::setupFinished()
+{
+	emit windowReady();
 }
 
 @ When a close event occurs, we check the |windowModified| property to
@@ -4706,6 +4722,7 @@ if(element.hasChildNodes())
 }
 @<Insert help menu@>@;
 window->show();
+window->setupFinished();
 
 @ Three element types make sense as top level children of a {\tt <window>}
 element. An element representing a layout element can be used to apply that
@@ -9158,6 +9175,9 @@ space, but it is very fast and simple to code.
 Starting in version 1.4, column sizes are persisted automatically using the
 same method as described in the section on |SqlQueryView|.
 
+Starting in version 1.8, |rowCount()| is |Q_INVOKABLE|. This allows the manual
+log entry interface to easily determine if any roasting data exists to save.
+
 @<Class declarations@>=
 class MeasurementModel;@/
 class ZoomLog : public QTableView@/
@@ -9172,7 +9192,7 @@ class ZoomLog : public QTableView@/
     public:@/
         ZoomLog();
         QVariant data(int row, int column) const;
-        int rowCount();
+        @[Q_INVOKABLE@,@, int rowCount();
         bool saveXML(QIODevice *device);
         bool saveCSV(QIODevice *device);
         QString lastTime(int series);
@@ -9304,11 +9324,11 @@ annotation associated with it. The solution in this case is to synthesize
 measurements so that the |ZoomLog| thinks it gets at least one measurement
 every second.
 
-The current approach simply replicates the last measurement every second until
-the time for the most recent measurement is reached, however it would likely be
-better to interpolate values between the two most recent real measurements as
-this would match the graphic representation rather than altering it when later
-reviewing the batch.
+Prior to version 1.8 this simply replicated the last measurement every second
+until the time for the most recent measurement was reached, however this yields
+problematic results when loading saved data or attempting to use this view for
+manual data entry. The current behavior performs a linear interpolation which
+will match the graph.
 
 @<Synthesize measurements for slow hardware@>=
 if(lastMeasurement.contains(tempcolumn))
@@ -9316,14 +9336,23 @@ if(lastMeasurement.contains(tempcolumn))
     if(lastMeasurement[tempcolumn].time() < measure.time())
     {
         QList<QTime> timelist;
+        QList<double> templist;
+        QTime z = QTime(0, 0, 0, 0);
+        double ptime = (double)(z.secsTo(lastMeasurement[tempcolumn].time()));
+        double ptemp = lastMeasurement[tempcolumn].temperature();
+        double ctime = (double)(z.secsTo(measure.time()));
+        double ctemp = measure.temperature();
         for(QTime i = lastMeasurement.value(tempcolumn).time().addSecs(1); i < measure.time(); i = i.addSecs(1))
         {
             timelist.append(i);
+            double v = ((ptemp * (ctime - z.secsTo(i))) + (ctemp * (z.secsTo(i) - ptime))) / (ctime - ptime);
+            templist.append(v);
         }
         for(int i = 0; i < timelist.size(); i++)
         {
             Measurement synthesized = measure;
             synthesized.setTime(timelist[i]);
+            synthesized.setTemperature(templist[i]);
             newMeasurement(synthesized, tempcolumn);
         }
     }
@@ -15536,7 +15565,7 @@ class DeviceTreeModel : public QAbstractItemModel@/
         QModelIndex index(int row, int column,
                           const QModelIndex &parent = QModelIndex()) const;
         QModelIndex parent(const QModelIndex &child) const;
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
         int columnCount(const QModelIndex &parent = QModelIndex()) const;
         bool setData(const QModelIndex &index, const QVariant &value,
                      int role);

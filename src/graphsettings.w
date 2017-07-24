@@ -62,6 +62,10 @@ class GraphSettingsRelativeTab : public QWidget@/
 @ The constructor sets up the interface and restores any previous values from
 settings.
 
+The default grid line position has been updated since version 1.8 to match the
+number of grid lines present when viewing the graph in Fahrenheit and to
+present a slightly wider range where most measurements are expected.
+
 @<GraphSettingsWidget implementation@>=
 GraphSettingsRelativeTab::GraphSettingsRelativeTab() : QWidget(NULL),
 	colorEdit(new QLineEdit)
@@ -101,7 +105,7 @@ GraphSettingsRelativeTab::GraphSettingsRelativeTab() : QWidget(NULL),
 	QHBoxLayout *axisLayout = new QHBoxLayout;
 	QLabel *axisLabel = new QLabel(tr("Grid line positions (comma separated):"));
 	QLineEdit *axisEdit = new QLineEdit;
-	axisEdit->setText(settings.value("settings/graph/relative/grid", "-300, -100, -10, 0, 10, 30, 50").toString());
+	axisEdit->setText(settings.value("settings/graph/relative/grid", "-300, -100, 0, 30, 65, 100").toString());
 	updateAxisSetting(axisEdit->text());
 	connect(axisEdit, SIGNAL(textChanged(QString)), this, SLOT(updateAxisSetting(QString)));
 	axisLayout->addWidget(axisLabel);

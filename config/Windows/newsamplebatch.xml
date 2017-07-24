@@ -132,7 +132,7 @@
 			newMenu.triggered.connect(function() {
 				createWindow("sampleRoastingBatch");
 			});
-                        this.endBatch = function() {};
+            this.endBatch = function() {};
 			var batch = this;
 			batch.submitButton = submit;
 			var name = findChildObject(this, 'name');
@@ -180,27 +180,27 @@
 			stop.clicked.connect(function() {
 				submit.setEnabled(true);
 			});
-                        var validateCapacity = function() {
-                            if(checkCapacity == "true") {
-                                if(convertToPounds(parseFloat(green.text), GunitBox.currentText) > poundsCapacity) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        }
-                        roastButton.clicked.connect(function() {
-                            var proceed = false;
-                            if(validateCapacity()) {
-                                proceed = true;
-                            } else {
-                                proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
+            var validateCapacity = function() {
+                if(checkCapacity == "true") {
+                    if(convertToPounds(parseFloat(green.text), GunitBox.currentText) > poundsCapacity) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            roastButton.clicked.connect(function() {
+                var proceed = false;
+                if(validateCapacity()) {
+                    proceed = true;
+                } else {
+                    proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
                                 TTR("sampleRoastingBatch", "Entered green coffee weight exceeds maximum batch size. Continue?"));
-                            }
-                            if(proceed) {
-                                doRoast();
-                            }
-                        });
-                        var doRoast = function() {
+                }
+                if(proceed) {
+                    doRoast();
+                }
+                });
+                var doRoast = function() {
 				var lc = 1;
 				currentBatchInfo = batch;
 				query = new QSqlQuery();
@@ -271,19 +271,19 @@
 			var vendor = findChildObject(this, 'vendor');
 			var attributes = findChildObject(this, 'attributes');
 			var target = findChildObject(this, 'target');
-                        submit.clicked.connect(function() {
-                            var proceed = false;
-                            if(validateCapacity()) {
-                                proceed = true;
-                            } else {
-                                proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
+            submit.clicked.connect(function() {
+                var proceed = false;
+                if(validateCapacity()) {
+                    proceed = true;
+                } else {
+                    proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
                                 TTR("sampleRoastingBatch", "Entered green coffee weight exceeds maximum batch size. Continue?"));
-                            }
-                            if(proceed) {
-                                doSubmit();
-                            }
-                        });
-                        var doSubmit = function() {
+                }
+                if(proceed) {
+                    doSubmit();
+                }
+            });
+            var doSubmit = function() {
 				query = new QSqlQuery();
 				query.prepare("INSERT INTO files (id, name, type, note, file) VALUES(DEFAULT, :name, 'profile', NULL, :data) RETURNING id");
 				query.bind(":name", timefield.text + " " + name.text + " " + profileName.currentText);

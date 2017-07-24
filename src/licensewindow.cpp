@@ -1,7 +1,7 @@
-/*209:*/
+/*212:*/
 #line 36 "./licensewindow.w"
 
-/*213:*/
+/*216:*/
 #line 97 "./licensewindow.w"
 
 #include "licensewindow.h"
@@ -11,12 +11,12 @@
 #include <QVariant> 
 #include <QUrl> 
 
-#line 4777 "./typica.w"
+#line 4828 "./typica.w"
 
-/*:213*/
+/*:216*/
 #line 37 "./licensewindow.w"
 
-/*210:*/
+/*213:*/
 #line 43 "./licensewindow.w"
 
 LicenseWindow::LicenseWindow()
@@ -25,7 +25,7 @@ LicenseWindow::LicenseWindow()
 QSplitter*split= new QSplitter;
 QListWidget*projects= new QListWidget;
 
-/*212:*/
+/*215:*/
 #line 79 "./licensewindow.w"
 
 QListWidgetItem*item= new QListWidgetItem("Typica",projects);
@@ -43,7 +43,7 @@ item->setData(Qt::UserRole,QVariant(QUrl("qrc:/resources/html/licenses/qextseria
 item= new QListWidgetItem("Qt",projects);
 item->setData(Qt::UserRole,QVariant(QUrl("qrc:/resources/html/licenses/qt.html")));
 
-/*:212*/
+/*:215*/
 #line 50 "./licensewindow.w"
 
 connect(projects,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
@@ -54,7 +54,7 @@ split->addWidget(view);
 setCentralWidget(split);
 }
 
-/*:210*//*211:*/
+/*:213*//*214:*/
 #line 64 "./licensewindow.w"
 
 void LicenseWindow::setWebView(QListWidgetItem*current,QListWidgetItem*)
@@ -62,8 +62,8 @@ void LicenseWindow::setWebView(QListWidgetItem*current,QListWidgetItem*)
 view->load(current->data(Qt::UserRole).toUrl());
 }
 
-/*:211*/
+/*:214*/
 #line 38 "./licensewindow.w"
 
 
-/*:209*/
+/*:212*/

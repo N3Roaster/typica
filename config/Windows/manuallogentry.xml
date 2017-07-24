@@ -1,0 +1,434 @@
+<window id="manualLogEntry">
+	<menu name="File">
+		<plugins id="pluginMenu" title="Import" src="ImportFilters" preRun="pluginContext.preRun();" postRun="pluginContext.postRun();"/>
+		<separator />
+		<item id="quitItem" shortcut="ctrl+Q">Quit</item>
+	</menu>
+	<menu name="Log">
+        <item id="clear" shortcut="Ctrl+L">Clear Log</item>
+        <separator />
+        <item id="ms">Millisecond View</item>
+        <item id="1s">1 Second View</item>
+        <item id="5s">5 Second View</item>
+        <item id="10s">10 Second View</item>
+        <item id="15s">15 Second View</item>
+        <item id="30s">30 Second View</item>
+        <item id="1m">1 Minute View</item>
+    </menu>
+	<layout type="vertical">
+		<tabbar id="tabs"/>
+		<layout type="stack" id="pages">
+			<page>
+				<layout type="vertical">
+					<layout type="horizontal">
+						<label>Batch Type:</label>
+						<sqldrop id="batchType" />
+						<label>Machine:</label>
+						<sqldrop id="machineSelector" />
+						<stretch />
+					</layout>
+					<label>Green Coffee:</label>
+					<layout type="stack" id="greenInfoLayout">
+						<page id="sampleGreen">
+							<layout type="vertical">
+								<layout type="grid">
+									<row>
+										<column><label>Name:</label></column>
+										<column><line id="sampleGreenName" /></column>
+									</row>
+									<row>
+										<column><label>Weight:</label></column>
+										<column><line id="sampleGreenWeight" validator="numeric">0.0</line></column>
+										<column><sqldrop id="sampleGreenUnit" /></column>
+									</row>
+									<row>
+										<column><label>Vendor:</label></column>
+										<column><line id="sampleGreenVendor" /></column>
+									</row>
+									<row>
+										<column><label>Arrival Date:</label></column>
+										<column><calendar id="sampleGreenArrivalDate" /></column>
+									</row>
+								</layout>
+								<label>Additional Details:</label>
+								<sqltablearray columns="2" id="attributes">
+									<column name="Attribute" />
+									<column name="Value" />
+								</sqltablearray>
+							</layout>
+						</page>
+						<page id="productionGreen">
+							<layout type="vertical">
+								<layout type="horizontal">
+									<label>Unit:</label>
+									<sqldrop id="productionGreenUnit" />
+									<stretch />
+								</layout>
+								<sqltablearray columns="2" id="productionGreenTable">
+									<column name="Coffee" delegate="sql" showdata="true" null="true" nulltext="Delete" nulldata="delete" data="0" display="1">
+										<![CDATA[SELECT id, name FROM coffees WHERE quantity <> 0 ORDER BY name]]>
+									</column>
+									<column name="Weight" delegate="numeric" />
+								</sqltablearray>
+							</layout>
+						</page>
+					</layout>
+					<label>Roasting Details:</label>
+					<layout type="grid">
+						<row>
+							<column><label>Item:</label></column>
+							<column>
+								<sqldrop data="0" display="1" showdata="true" id="roastedItem">
+									<null />
+									<query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
+								</sqldrop>
+							</column>
+						</row>
+						<row>
+							<column><label>Weight:</label></column>
+							<column><line id="roastedWeight" validator="numeric">0.0</line></column>
+						</row>
+						<row>
+							<column><label>Time:</label></column>
+							<column><calendar id="roastTime" time="true"/></column>
+						</row>
+						<row>
+							<column><label>Duration:</label></column>
+							<column><timeedit id="roastDuration" /></column>
+						</row>
+						<row>
+							<column><label>Notes:</label></column>
+							<column><textarea id="notes" /></column>
+						</row>
+					</layout>
+				</layout>
+			</page>
+			<page>
+				<layout type="vertical">
+					<layout type="horizontal">
+						<label>Time Increment (s):</label>
+						<line id="timeincrement" validator="numeric">30</line>
+						<stretch />
+						<label>Time:</label>
+						<timeedit id="currenttime" />
+						<stretch />
+						<label>Temperature:</label>
+						<line id="currenttemperature" validator="numeric" />
+						<label>Note:</label>
+						<line id="currentnote" />
+						<button name="Add Measurement" id="addmeasurement" type="push" />
+					</layout>
+					<splitter type="horizontal" id="roastdatasplit">
+						<measurementtable id="log" />
+						<graph id="graph" />
+					</splitter>
+				</layout>
+			</page>
+		</layout>
+		<layout type="horizontal">
+			<stretch />
+			<button name="Submit" id="submit" type="push" />
+		</layout>
+	</layout>
+	<program>
+	<![CDATA[
+		var window = this;
+		this.windowTitle = "Typica - Manual Log Entry";
+		window.windowReady.connect(function() {
+			if(machineModel.rowCount() == 0) {
+				displayError(TTR("manualLogEntry", "Configuration Required"),
+				TTR("manualLogEntry", "Please configure a roaster."));
+				window.close();
+			}
+		});
+		quitItem = findChildObject(this, 'quitItem');
+		quitItem.triggered.connect(function() {
+			Application.quit();
+		});
+		pluginContext = {};
+		pluginContext.table = findChildObject(this, 'log');
+		pluginContext.table.setHeaderData(1, "Temp");
+		pluginContext.table.setHeaderData(2, "Note");
+		pluginContext.graph = findChildObject(this, 'graph');
+		pluginContext.preRun = function() {
+			var filename = QFileDialog.getOpenFileName(window, TTR("manualLogEntry", "Import"), QSettings.value('script/lastDir', '') + '/');
+			var file = new QFile(filename);
+			if(file.open(1)) {
+				pluginContext.data = file.readToString();
+				file.close();
+				pluginContext.table.clear();
+				pluginContext.graph.clear();
+				QSettings.setValue("script/lastDir", dir(filename));
+			} else {
+				throw new Error("Failed to open file, aborting import.");
+			}
+		};
+		pluginContext.postRun = function() {
+			
+		};
+		pluginContext.newMeasurement = function(m, c) {
+			pluginContext.table.newMeasurement(m, c);
+			pluginContext.graph.newMeasurement(m, c);
+		}
+		pluginMenu = findChildObject(this, 'pluginMenu');
+		pluginMenu.setProperty("activationObject", pluginContext);
+		tabs = findChildObject(this, 'tabs');
+		tabs.addTab("Batch Data");
+		tabs.addTab("Roast Data");
+		pages = findChildObject(this, 'pages');
+		tabs.currentChanged.connect(function(index) {
+			pages.setCurrentIndex(index);
+		});
+		greenInfoLayout = findChildObject(this, 'greenInfoLayout');
+		roastedItem = findChildObject(this, 'roastedItem');
+		batchType = findChildObject(this, 'batchType');
+		batchType.addItem("Sample");
+		batchType.addItem("Production");
+		batchType['currentIndexChanged(int)'].connect(function(batchTypeIndex) {
+			QSettings.setValue("script/manual_batchType", batchTypeIndex);
+			greenInfoLayout.setCurrentIndex(batchTypeIndex);
+			roastedItem.enabled = (batchTypeIndex == 1);
+		});
+		batchType.setCurrentIndex(QSettings.value("script/manual_batchType", 1));
+		var machineSelector = findChildObject(this, 'machineSelector');
+        var machineModel = new DeviceTreeModel;
+        machineSelector.setModel(machineModel);
+        machineSelector.currentIndex = QSettings.value("script/manualMachineSelection", 0);
+        machineSelector['currentIndexChanged(int)'].connect(function(index) {
+            QSettings.setValue("script/manualMachineSelection", index);
+        });
+		sampleGreenUnit = findChildObject(this, 'sampleGreenUnit');
+		sampleGreenUnit.addItem("g");
+		sampleGreenUnit.addItem("Kg");
+		sampleGreenUnit.addItem("oz");
+		sampleGreenUnit.addItem("lb");
+		sampleGreenUnit.currentIndex = (QSettings.value("script/manual_unit", sampleGreenUnit.findText("lb")));
+		productionGreenUnit = findChildObject(this, 'productionGreenUnit');
+		productionGreenUnit.addItem("g");
+		productionGreenUnit.addItem("Kg");
+		productionGreenUnit.addItem("oz");
+		productionGreenUnit.addItem("lb");
+		productionGreenUnit.currentIndex = (QSettings.value("script/manual_unit", productionGreenUnit.findText("lb")));
+		sampleGreenUnit['currentIndexChanged(int)'].connect(function(greenUnitIndex) {
+			QSettings.setValue("script/manual_unit", greenUnitIndex);
+			productionGreenUnit.setCurrentIndex(greenUnitIndex);
+		});
+		productionGreenUnit['currentIndexChanged(int)'].connect(function(greenUnitIndex) {
+			QSettings.setValue("script/manual_unit", greenUnitIndex);
+			sampleGreenUnit.setCurrentIndex(greenUnitIndex);
+		});
+		timeincrement = findChildObject(this, 'timeincrement');
+		currenttime = findChildObject(this, 'currenttime');
+		currenttemperature = findChildObject(this, 'currenttemperature');
+		currentnote = findChildObject(this, 'currentnote');
+		addmeasurement = findChildObject(this, 'addmeasurement');
+		addmeasurement.clicked.connect(function() {
+			pluginContext.newMeasurement(new Measurement(Number(currenttemperature.text), currenttime.time), 1);
+			if(currentnote.text.length > 0) {
+				pluginContext.table.newAnnotation(currentnote.text, 1, 2);
+			}
+			currentnote.text = "";
+			var t = QTime();
+			t = t.fromString(currenttime.time, "hh:mm:ss");
+			t = t.addSecs(30);
+			currenttime.time = t;
+			currenttemperature.text = "";
+		});
+		currenttemperature.returnPressed.connect(addmeasurement.clicked);
+		currentnote.returnPressed.connect(addmeasurement.clicked);
+		var v1 = findChildObject(this, 'ms');
+        v1.triggered.connect(pluginContext.table.LOD_ms);
+        var v2 = findChildObject(this, '1s');
+        v2.triggered.connect(pluginContext.table.LOD_1s);
+        var v3 = findChildObject(this, '5s');
+        v3.triggered.connect(pluginContext.table.LOD_5s);
+        var v4 = findChildObject(this, '10s');
+        v4.triggered.connect(pluginContext.table.LOD_10s);
+        var v5 = findChildObject(this, '15s');
+        v5.triggered.connect(pluginContext.table.LOD_15s);
+        var v6 = findChildObject(this, '30s');
+        v6.triggered.connect(pluginContext.table.LOD_30s);
+        var v7 = findChildObject(this, '1m');
+        v7.triggered.connect(pluginContext.table.LOD_1m);
+		var clear = findChildObject(this, 'clear');
+        clear.triggered.connect(pluginContext.table.clear);
+        clear.triggered.connect(pluginContext.graph.clear);
+		clear.triggered.connect(function() {
+			currenttime.time = QTime(0, 0, 0, 0);
+			currenttemperature.text = "";
+			currentnote.text = "";
+		});
+		var sampleGreenName = findChildObject(this, 'sampleGreenName');
+		var sampleGreenWeight = findChildObject(this, 'sampleGreenWeight');
+		var productionGreenTable = findChildObject(this, 'productionGreenTable');
+		var greenModel = productionGreenTable.model();
+		var greenTotal = 0.0;
+		var updateGreenTable = function() {
+			var deleteRow = -1;
+			while((deleteRow = productionGreenTable.findData("delete", 0)) > -1) {
+				if(productionGreenTable.data(deleteRow, 0, 0) == "Delete") {
+					productionGreenTable.removeRow(productionGreenTable.findData("delete", 0));
+				} else {
+					break;
+				}
+			}
+			greenTotal = productionGreenTable.columnSum(1, 0);
+			productionGreenTable.resizeColumnToContents(0);
+		};
+		greenModel.dataChanged.connect(updateGreenTable);
+		var validateInputs = function() {
+			if(batchType.currentIndex == 0) {
+				/* Sample batch */
+				if(sampleGreenName.text.length == 0) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "Data Entry Error"),
+					TTR("manualLogEntry", "Please enter a green coffee name."));
+					return false;
+				}
+				if(Number(sampleGreenWeight.text) <= 0 || isNaN(sampleGreenWeight.text)) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "Data Entry Error"),
+					TTR("manualLogEntry", "Green coffee weight must be a number greater than 0."));
+					return false;
+				}
+			} else {
+				/* Production batch */
+				var itemArray = productionGreenTable.columnArray(0, 32).split("\\s*,\\s*");
+				var weightArray = productionGreenTable.columnArray(1, 0).split("\\s*,\\s*");
+				if((itemArray.length != weightArray.length) || (itemArray.length == 0)) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "Data Entry Error"),
+					TTR("manualLogEntry", "Please check that at least one green coffee has been selected and each green coffee has a valid weight"));
+					return false;
+				}
+				if(Number(greenTotal) <= 0) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "DataEntryError"),
+					TTR("manualLogEntry", "Total green coffee weight must be a number greater than 0."));
+					return false;
+				}
+				if(roastedItem.currentIndex == 0) {
+					tabs.setCurrentIndex(0);
+					displayError(TTR("manualLogEntry", "DataEntryError"),
+					TTR("manualLogEntry", "Please select a roasted coffee item."));
+					return false;
+				}
+			}
+			return true;
+		};
+		var roastDataExists = function() {
+			return (pluginContext.table.rowCount() > 0);
+		}
+		var roastTime = findChildObject(this, 'roastTime');
+		var attributes = findChildObject(this, 'attributes');
+		var sampleGreenArrivalDate = findChildObject(this, 'sampleGreenArrivalDate');
+		var convertToPounds = function(w, u) {
+			switch(u) {
+				case "g":
+					return w * 0.0022;
+				case "oz":
+					return w * 0.0625;
+				case "Kg":
+					return w * 2.2;
+			}
+			return w;
+		};
+		var roastedWeight = findChildObject(this, 'roastedWeight');
+		var notes = findChildObject(this, 'notes');
+		var roastDuration = findChildObject(this, 'roastDuration');
+		var doSubmit = function() {
+			var fileID = -1;
+			var query = new QSqlQuery();
+			if(roastDataExists()) {
+				var buffer = new QBuffer;
+				buffer.open(3);
+				pluginContext.table.saveXML(buffer);
+				var q = "INSERT INTO files (id, name, type, note, file) VALUES (default, :name, 'profile', NULL, :data) RETURNING id";
+				query.prepare(q);
+				query.bind(":name", roastTime.text + " Manual Entry");
+				query.bindDeviceData(":data", buffer);
+				query.exec();
+				query.next();
+				fileID = Number(query.value(0));
+			}
+			var rootIndex = machineModel.index(machineSelector.currentIndex, 0);
+			var selectedRoasterName = machineModel.data(rootIndex, 0);
+			var machineReference = machineModel.referenceElement(machineModel.data(rootIndex, 32));
+			var selectedRoasterID = machineReference.databaseid;
+			query.exec("SELECT 1 FROM machine WHERE id = " + selectedRoasterID);
+			if(!query.next()) {
+				query.prepare("INSERT INTO machine (id, name) VALUES (:id, :name)");
+				query.bind(":id", selectedRoasterID);
+				query.bind(":name", selectedRoasterName);
+				query.exec();
+			}
+			if(batchType.currentIndex == 0) {
+				/* Sample roast */
+				var attnames = sqlToArray(attributes.columnArray(0, 0));
+				for(var i = 0; i < attnames.length; i++) {
+					var attname = attnames[i];
+					if(attname[0] == '{') {
+						attname = attname.substr(1);
+					}
+					if(attname[0] == ' ') {
+						attname = attname.substr(1);
+					}
+					if(attname[attname.length - 1] == '}') {
+						attname = attname.substr(0, attname.length - 1);
+					}
+					if(attname.length == 0) {
+						break;
+					}
+					query.prepare("SELECT id FROM item_attributes WHERE name = :name");
+					query.bind(":name", attname);
+					query.exec();
+					if(query.next()) {
+						attributes.setData(i, 0, query.value(0), 32);
+					} else {
+						query.prepare("INSERT INTO item_attributes(id, name) VALUES (DEFAULT, :name) RETURNING id");
+						query.bind(":name", attname);
+						query.exec();
+						query.next();
+						attributes.setData(i, 0, query.value(0), 32);
+					}
+				}
+				query.prepare("INSERT INTO coffee_sample_items(id, name, reference, unit, quantity, category, arrival, vendor, attribute_ids, attribute_values) VALUES (DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Green Sample', :arrival, :vendor, :attrids, :attrvals) RETURNING id");
+				query.bind(":name", sampleGreenName.text);
+				query.bind(":arrival", sampleGreenArrival.date);
+				query.bind(":attrids", attributes.bindableColumnArray(0, 32));
+				query.bind(":attrvals", attributes.bindableQuotedColumnArray(1, 0));
+				query.exec();
+				query.next();
+				var greenId = query.value(0);
+				query.prepare("INSERT INTO items (id, name, reference, unit, quantity, category) VALUES (DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Roasted Sample') RETURNING id");
+				query.bind(":name", sampleGreenName.text + " Roasted Sample");
+				query.exec();
+				query.next();
+				var roastedId = query.value(0);
+				query.prepare("INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES (:time, :unroastedids, :greens, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files)");
+				query.bind(":time", roastTime.text);
+				query.bind(":unroastedids", "{" + greenId + "}");
+				query.bind(":greens", "{" + convertToPounds(parseFloat(sampleGreenWeight.text), sampleGreenUnit.currentText) + "}");
+				query.bind(":green", convertToPounds(parseFloat(sampleGreenWeight.text), sampleGreenUnit.currentText));
+				query.bind("roastedid", Number(roastedId));
+				query.bind("roasted", convertToPounds(parseFloat(roastedWeight.text), sampleGreenUnit.currentText));
+				query.bind(":note", notes.plainText);
+				query.bind(":machine", Number(selectedRoasterID));
+				query.bind(":duration", roastDuration.text);
+				query.bind(":files", "{" + fileID + "}");
+				query.exec();
+			} else {
+				/* Production roast */
+			}
+			query = query.invalidate();
+			window.close();
+		}
+		var submit = findChildObject(this, 'submit');
+		submit.clicked.connect(function() {
+			if(validateInputs()) {
+				doSubmit();
+			}
+		});
+	]]>
+	</program>
+</window>

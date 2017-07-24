@@ -33,6 +33,7 @@
     <include src="Windows/newsamplebatch.xml" />
     <include src="Windows/editreminder.xml" />
     <include src="Windows/roastspec.xml" />
+	<include src="Windows/manuallogentry.xml" />
     <program>
         <![CDATA[
             Windows = new Object();

@@ -13,6 +13,11 @@
                 <button name="Roast Coffee" id="roast" type="push" />
             </column>
         </row>
+		<row>
+			<column>
+				<button name="Manual Roasting Log Entry" id="manual" type="push" />
+			</column>
+		</row>
         <row>
             <column>
                 <button name="Purchase Green Coffee" id="green" type="push" />
@@ -87,6 +92,10 @@
             QSettings.setValue("database/user", "");
             QSettings.setValue("database/password", "");
         });
+		var manual = findChildObject(this, 'manual');
+		manual.clicked.connect(function() {
+			createWindow("manualLogEntry");
+		});
         var profilehistory = findChildObject(this, 'profilehistory');
         profilehistory.clicked.connect(function() {
                 createWindow("profilehistory");

@@ -810,15 +810,25 @@ The first of these is |QObject|.
 
 @<Function prototypes for scripting@>=
 void setQObjectProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QObject_setProperty(QScriptContext *context, QScriptEngine *engine);
 
-@ As there are no properties that need to be set for this class and as this
-class does not inherit any other class, nothing needs to be done in this method.
-It will, however, be called by subclasses in case this changes in the future.
+@ Attaching properties to a |QScriptValue| that wraps a |QObject| does not
+create a dynamic property on the underlying |QObject| by default. This can
+cause issues with certain interactions between script and native code. Rather
+than change every wrapper, we can instead expose a |setProperty()| method.
 
 @<Functions for scripting@>=
-void setQObjectProperties(QScriptValue, QScriptEngine *)
+void setQObjectProperties(QScriptValue value, QScriptEngine *engine)
 {
-    /* Nothing needs to be done here. */
+    value.setProperty("setProperty", engine->newFunction(QObject_setProperty));
+}
+
+QScriptValue QObject_setProperty(QScriptContext *context, QScriptEngine *)
+{
+	QObject *self = getself<QObject *>(context);
+	self->setProperty(argument<QString>(0, context).toUtf8().constData(),
+	                  argument<QVariant>(1, context));
+    return QScriptValue();
 }
 
 @ The same can be done for |QPaintDevice| and |QLayoutItem|.
@@ -1029,6 +1039,15 @@ considered depreciated.
 Version 1.6 adds a new property for handling the |windowModified| property
 such that an appropriate prompt is provided to confirm or cancel close events.
 
+Version 1.8 adds a new |setupFinished()| slot which is called after the
+initial |show()| at the end of window creation. This emits a |windowReady()|
+signal. Scripts can connect to this signal to perform tasks that must happen
+after the window has fully finished opening. The initial use for this is
+validating that all required configuration has been performed for a given
+window to be useful and, if not, immediately closing that. Without this, a
+call to |close()| in the script is reversed when the function creating the
+window calls |show()|.
+
 @<Class declarations@>=
 class ScriptQMainWindow : public QMainWindow@/
 {@t\1@>@/
@@ -1042,12 +1061,14 @@ class ScriptQMainWindow : public QMainWindow@/
         void saveSizeAndPosition(const QString &key);
         void restoreSizeAndPosition(const QString &key);
         void displayStatus(const QString &message = QString());
-        void setClosePrompt(QString prompt);@/
+        void setClosePrompt(QString prompt);
+        void setupFinished();@/
+    signals:@/
+        void aboutToClose(void);
+        void windowReady(void);@/
     protected:@/
         void closeEvent(QCloseEvent *event);
         void showEvent(QShowEvent *event);@/
-    signals:@/
-        void aboutToClose(void);@/
     private:@/
         QString cprompt;@t\2@>@/
 }@t\kern-3pt@>;
@@ -1106,6 +1127,11 @@ void ScriptQMainWindow::showEvent(QShowEvent *event)
 void ScriptQMainWindow::show()
 {
     QMainWindow::show();
+}
+
+void ScriptQMainWindow::setupFinished()
+{
+	emit windowReady();
 }
 
 @ When a close event occurs, we check the |windowModified| property to
@@ -4367,6 +4393,9 @@ Starting with version 1.4, we check for a command line option with the path to
 the configuration file and load that instead of prompting for the information
 if possible.
 
+Starting with version 1.8, if there is not a -c argument, Typica will first
+search a small number of locations relative to the executable.
+
 @<Load the application configuration@>=
 QStringList arguments = QCoreApplication::arguments();
 int position = arguments.indexOf("-c");
@@ -4377,6 +4406,16 @@ if(position != -1)
     {
         filename = arguments.at(position + 1);
     }
+} else {
+	QDir checkPath(QCoreApplication::applicationDirPath() + "/../config/");
+	if(checkPath.exists("config.xml")) {
+		filename = checkPath.filePath("config.xml");
+	} else {
+		checkPath = QDir(QCoreApplication::applicationDirPath() + "/config/");
+		if(checkPath.exists("config.xml")) {
+			filename  = checkPath.filePath("config.xml");
+		}
+	}
 }
 if(filename.isEmpty())
 {
@@ -4401,6 +4440,8 @@ if(!filename.isEmpty())
     {
         app.configuration()->setContent(&file, true);
     }
+} else {
+	return 1;
 }
 @<Substitute included fragments@>@;
 
@@ -4571,6 +4612,8 @@ void addCalendarToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                          QStack<QLayout *> *layoutStack);
 void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                         QStack<QLayout *> *layoutStack);
+void addTimeEditToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
+                         QStack<QLayout *> *layoutStack);
 
 @ The functions for creating windows must be made available to the scripting
 engine.
@@ -4679,6 +4722,7 @@ if(element.hasChildNodes())
 }
 @<Insert help menu@>@;
 window->show();
+window->setupFinished();
 
 @ Three element types make sense as top level children of a {\tt <window>}
 element. An element representing a layout element can be used to apply that
@@ -4802,6 +4846,10 @@ while(j < menuItems.count())
         {
             menu->addSeparator();
         }
+        else if(itemElement.tagName() == "plugins")
+        {
+	        @<Process plugin item@>@;
+        }
     }
     j++;
 }
@@ -4914,6 +4962,80 @@ void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
         }
     }
 }
+
+@ A common use of stacked layouts is in the creation of tabbed interfaces, but
+there are also many uses in \pn{} where the tabs are not required. Therefore,
+tab bar creation requires a separate XML element.
+
+@<Additional box layout elements@>=
+else if(currentElement.tagName() == "tabbar")
+{
+	addTabBarToLayout(currentElement, widgetStack, layoutStack);
+}
+
+@ The function used to create this follows the usual pattern.
+
+@<Functions for scripting@>=
+void addTabBarToLayout(QDomElement element, QStack<QWidget*> *, QStack<QLayout*> *layoutStack)
+{
+	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+	QTabBar *widget = new QTabBar;
+	layout->addWidget(widget);
+	if(!element.attribute("id").isEmpty())
+	{
+		widget->setObjectName(element.attribute("id"));
+	}
+}
+
+@ Rather than define the tab set in XML, this is left to the host environment.
+This means that some additional scripting support is required.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQTabBar);
+value = engine->newQMetaObject(&QTabBar::staticMetaObject, constructor);
+engine->globalObject().setProperty("QTabBar", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQTabBar(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QTabBar);
+	setQTabBarProperties(object, engine);
+	return object;
+}
+
+@ There are many functions that I might want to some day add support for, but
+the immediate need is just creating the tabs in the first place.
+
+@<Functions for scripting@>=
+void setQTabBarProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQWidgetProperties(value, engine);
+	value.setProperty("addTab", engine->newFunction(QTabBar_addTab));
+}
+
+QScriptValue QTabBar_addTab(QScriptContext *context, QScriptEngine *)
+{
+	QTabBar *self = getself<QTabBar *>(context);
+	if(context->argumentCount() > 0)
+	{
+		self->addTab(argument<QString>(0, context));
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+		                    "QTabBar::addTab().");
+	}
+	return QScriptValue();
+}
+
+@ Function prototypes are needed.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructQTabBar(QScriptContext *context, QScriptEngine *engine);
+void setQTabBarProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QTabBar_addTab(QScriptContext *context, QScriptEngine *engine);
 
 @ Using a grid layout is a bit different from using a box layout. Child elements
 with various attributes are required to take full advantage of this layout type.
@@ -5049,6 +5171,10 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
             else if(currentElement.tagName() == "calendar")
             {
                 addCalendarToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "timeedit")
+            {
+	            addTimeEditToLayout(currentElement, widgetStack, layoutStack);
             }
             else if(currentElement.tagName() == "decoration")
             {
@@ -6203,6 +6329,43 @@ QScriptValue QDateTimeEdit_month(QScriptContext *context,
 QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *engine);
 
+@ Sometimes it can be useful to allow editing a time or duration value without
+a date field. For this, a |QTimeEdit| can be used.
+
+@<Functions for scripting@>=
+void addTimeEditToLayout(QDomElement element, QStack<QWidget *> *,@|
+                         QStack<QLayout *> *layoutStack)
+{
+	QTimeEdit *edit = new QTimeEdit;
+	if(element.hasAttribute("displayFormat"))
+	{
+		edit->setDisplayFormat(element.attribute("displayFormat"));
+	}
+	else
+	{
+		edit->setDisplayFormat("mm:ss.zzz");
+	}
+	if(element.hasAttribute("id"))
+	{
+		edit->setObjectName(element.attribute("id"));
+	}
+	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+	layout->addWidget(edit);
+}
+
+@ Additional properties are added as a |QTimeEdit| is a |QDateTimeEdit|.
+
+@<Functions for scripting@>=
+void setQTimeEditProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQDateTimeEditProperties(value, engine);
+}
+
+@ A function prototype is needed.
+
+@<Function prototypes for scripting@>=
+void setQTimeEditProperties(QScriptValue value, QScriptEngine *engine);
+
 @ In order to get to objects created from the XML description, it is necessary
 to provide a function that can be called to retrieve children of a given widget.
 When providing such an object to the script, it is necessary to determine the
@@ -6341,6 +6504,14 @@ else if(className == "QLineEdit")
 else if(className == "QSvgWidget")
 {
     setQSvgWidgetProperties(value, engine);
+}
+else if(className == "QTabBar")
+{
+	setQTabBarProperties(value, engine);
+}
+else if(className == "PrinterSelector")
+{
+	setQComboBoxProperties(value, engine);
 }
 
 @ In the list of classes, the SaltTable entry is for a class which does not
@@ -9004,6 +9175,9 @@ space, but it is very fast and simple to code.
 Starting in version 1.4, column sizes are persisted automatically using the
 same method as described in the section on |SqlQueryView|.
 
+Starting in version 1.8, |rowCount()| is |Q_INVOKABLE|. This allows the manual
+log entry interface to easily determine if any roasting data exists to save.
+
 @<Class declarations@>=
 class MeasurementModel;@/
 class ZoomLog : public QTableView@/
@@ -9018,7 +9192,7 @@ class ZoomLog : public QTableView@/
     public:@/
         ZoomLog();
         QVariant data(int row, int column) const;
-        int rowCount();
+        @[Q_INVOKABLE@,@, int rowCount();
         bool saveXML(QIODevice *device);
         bool saveCSV(QIODevice *device);
         QString lastTime(int series);
@@ -9150,11 +9324,11 @@ annotation associated with it. The solution in this case is to synthesize
 measurements so that the |ZoomLog| thinks it gets at least one measurement
 every second.
 
-The current approach simply replicates the last measurement every second until
-the time for the most recent measurement is reached, however it would likely be
-better to interpolate values between the two most recent real measurements as
-this would match the graphic representation rather than altering it when later
-reviewing the batch.
+Prior to version 1.8 this simply replicated the last measurement every second
+until the time for the most recent measurement was reached, however this yields
+problematic results when loading saved data or attempting to use this view for
+manual data entry. The current behavior performs a linear interpolation which
+will match the graph.
 
 @<Synthesize measurements for slow hardware@>=
 if(lastMeasurement.contains(tempcolumn))
@@ -9162,14 +9336,23 @@ if(lastMeasurement.contains(tempcolumn))
     if(lastMeasurement[tempcolumn].time() < measure.time())
     {
         QList<QTime> timelist;
+        QList<double> templist;
+        QTime z = QTime(0, 0, 0, 0);
+        double ptime = (double)(z.secsTo(lastMeasurement[tempcolumn].time()));
+        double ptemp = lastMeasurement[tempcolumn].temperature();
+        double ctime = (double)(z.secsTo(measure.time()));
+        double ctemp = measure.temperature();
         for(QTime i = lastMeasurement.value(tempcolumn).time().addSecs(1); i < measure.time(); i = i.addSecs(1))
         {
             timelist.append(i);
+            double v = ((ptemp * (ctime - z.secsTo(i))) + (ctemp * (z.secsTo(i) - ptime))) / (ctime - ptime);
+            templist.append(v);
         }
         for(int i = 0; i < timelist.size(); i++)
         {
             Measurement synthesized = measure;
             synthesized.setTime(timelist[i]);
+            synthesized.setTemperature(templist[i]);
             newMeasurement(synthesized, tempcolumn);
         }
     }
@@ -12617,6 +12800,8 @@ void CSVOutput::setDevice(QIODevice *device)
 
 @i webview.w
 
+@i printerselector.w
+
 @* The Application class.
 
 The |Application| class represents the \pn{} program. It is responsible for
@@ -14346,6 +14531,8 @@ void setQTextEditProperties(QScriptValue value, QScriptEngine *engine)
     value.setProperty("print", engine->newFunction(QTextEdit_print));
 }
 
+@i plugins.w
+
 @i daterangeselector.w
 
 @** An area for repeated user interface elements.
@@ -15378,7 +15565,7 @@ class DeviceTreeModel : public QAbstractItemModel@/
         QModelIndex index(int row, int column,
                           const QModelIndex &parent = QModelIndex()) const;
         QModelIndex parent(const QModelIndex &child) const;
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
         int columnCount(const QModelIndex &parent = QModelIndex()) const;
         bool setData(const QModelIndex &index, const QVariant &value,
                      int role);

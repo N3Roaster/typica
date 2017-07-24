@@ -3096,6 +3096,80 @@ int ReportTable::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     }
     return _id;
 }
+static const uint qt_meta_data_PluginAction[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       1,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      14,   13,   13,   13, 0x08,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_PluginAction[] = {
+    "PluginAction\0\0runScript()\0"
+};
+
+void PluginAction::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        PluginAction *_t = static_cast<PluginAction *>(_o);
+        switch (_id) {
+        case 0: _t->runScript(); break;
+        default: ;
+        }
+    }
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData PluginAction::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject PluginAction::staticMetaObject = {
+    { &QAction::staticMetaObject, qt_meta_stringdata_PluginAction,
+      qt_meta_data_PluginAction, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &PluginAction::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *PluginAction::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *PluginAction::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_PluginAction))
+        return static_cast<void*>(const_cast< PluginAction*>(this));
+    return QAction::qt_metacast(_clname);
+}
+
+int PluginAction::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QAction::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 1)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 1;
+    }
+    return _id;
+}
 static const uint qt_meta_data_FormArray[] = {
 
  // content:
@@ -6283,7 +6357,7 @@ static const uint qt_meta_data_ModbusNG[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -6294,22 +6368,24 @@ static const uint qt_meta_data_ModbusNG[] = {
       10,    9,    9,    9, 0x08,
       28,    9,    9,    9, 0x08,
       38,    9,    9,    9, 0x08,
+      54,    9,    9,    9, 0x08,
 
  // methods: signature, parameters, type, tag, flags
-      58,    9,   54,    9, 0x02,
-      81,    9,   73,    9, 0x02,
-     104,    9,   73,    9, 0x02,
-     135,    9,  130,    9, 0x02,
+      77,    9,   73,    9, 0x02,
+     100,    9,   92,    9, 0x02,
+     123,    9,   92,    9, 0x02,
+     154,    9,  149,    9, 0x02,
+     175,    9,   92,    9, 0x02,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_ModbusNG[] = {
     "ModbusNG\0\0sendNextMessage()\0timeout()\0"
-    "dataAvailable()\0int\0channelCount()\0"
-    "QString\0channelColumnName(int)\0"
-    "channelIndicatorText(int)\0bool\0"
-    "isChannelHidden(int)\0"
+    "dataAvailable()\0rateLimitTimeout()\0"
+    "int\0channelCount()\0QString\0"
+    "channelColumnName(int)\0channelIndicatorText(int)\0"
+    "bool\0isChannelHidden(int)\0channelType(int)\0"
 };
 
 void ModbusNG::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -6321,14 +6397,17 @@ void ModbusNG::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         case 0: _t->sendNextMessage(); break;
         case 1: _t->timeout(); break;
         case 2: _t->dataAvailable(); break;
-        case 3: { int _r = _t->channelCount();
+        case 3: _t->rateLimitTimeout(); break;
+        case 4: { int _r = _t->channelCount();
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
-        case 4: { QString _r = _t->channelColumnName((*reinterpret_cast< int(*)>(_a[1])));
+        case 5: { QString _r = _t->channelColumnName((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 5: { QString _r = _t->channelIndicatorText((*reinterpret_cast< int(*)>(_a[1])));
+        case 6: { QString _r = _t->channelIndicatorText((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 6: { bool _r = _t->isChannelHidden((*reinterpret_cast< int(*)>(_a[1])));
+        case 7: { bool _r = _t->isChannelHidden((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 8: { QString _r = _t->channelType((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
         default: ;
         }
     }
@@ -6366,9 +6445,9 @@ int ModbusNG::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 9;
     }
     return _id;
 }
@@ -7350,19 +7429,20 @@ static const uint qt_meta_data_TranslationConfWidget[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
-       1,   24, // constructors
+       1,   29, // constructors
        0,       // flags
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
       30,   23,   22,   22, 0x08,
       60,   22,   22,   22, 0x08,
+      80,   22,   22,   22, 0x08,
 
  // constructors: signature, parameters, type, tag, flags
-      92,   80,   22,   22, 0x0e,
+     106,   94,   22,   22, 0x0e,
 
        0        // eod
 };
@@ -7370,7 +7450,8 @@ static const uint qt_meta_data_TranslationConfWidget[] = {
 static const char qt_meta_stringdata_TranslationConfWidget[] = {
     "TranslationConfWidget\0\0column\0"
     "updateMatchingColumn(QString)\0"
-    "updateTemperature()\0model,index\0"
+    "updateTemperature()\0updateDelay()\0"
+    "model,index\0"
     "TranslationConfWidget(DeviceTreeModel*,QModelIndex)\0"
 };
 
@@ -7387,6 +7468,7 @@ void TranslationConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c
         switch (_id) {
         case 0: _t->updateMatchingColumn((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 1: _t->updateTemperature(); break;
+        case 2: _t->updateDelay(); break;
         default: ;
         }
     }
@@ -7424,9 +7506,9 @@ int TranslationConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
 }

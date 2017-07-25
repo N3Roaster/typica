@@ -20236,6 +20236,8 @@ app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::stat
 
 @i rate.w
 
+@i mergeseries.w
+
 @i dataqsdk.w
 
 @i scales.w

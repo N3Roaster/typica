@@ -697,6 +697,37 @@
 						}
 					}
 				}
+				else if(driverReference.driver == "mergeseries")
+				{
+					var mergeSeries;
+					var indicator = new TemperatureDisplay;
+					if(driverReference.type == "Difference") {
+						mergeSeries = new DifferenceSeries();
+						indicator.setRelativeMode(true);
+					} else {
+						mergeSeries = new MeanSeries();
+					}
+					var firstColumn = driverReference.column1;
+					var secondColumn = driverReference.column2;
+					for(var j = 0; j < columnNames.length; j++) {
+						if(columnNames[j] == firstColumn) {
+							channels[j].newData.connect(mergeSeries.in1);
+						} else if (columnNames[j] == secondColumn) {
+							channels[j].newData.connect(mergeSeries.in2);
+						}
+					}
+					indicator.display(0);
+					indicator.digitCount = 9;
+					var decorator = new WidgetDecorator(indicator, configModel.data(driverIndex, 0), 2);
+					indicatorPanel.addWidget(decorator);
+					mergeSeries.newData.connect(indicator.setValue);
+					temperatureDisplays.push(indicator);
+					channels.push(mergeSeries);
+					// This cannot at present be configured to be hidden.
+					channelVisibility.push(true);
+					channelType.push("T");
+					columnNames.push(driverReference.output);
+				}
 				else if(driverReference.driver == "scale")
 				{
 					var scale = new SerialScale(driverReference.port);

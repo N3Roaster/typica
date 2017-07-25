@@ -21,37 +21,40 @@ static const uint qt_meta_data_ScriptQMainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
-       1,   49, // properties
+       9,   14, // methods
+       1,   59, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       2,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
       19,   18,   18,   18, 0x05,
+      34,   18,   18,   18, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      34,   18,   18,   18, 0x0a,
-      45,   41,   18,   18, 0x0a,
-      74,   41,   18,   18, 0x0a,
-     114,  106,   18,   18, 0x0a,
-     137,   18,   18,   18, 0x2a,
-     160,  153,   18,   18, 0x0a,
+      48,   18,   18,   18, 0x0a,
+      59,   55,   18,   18, 0x0a,
+      88,   55,   18,   18, 0x0a,
+     128,  120,   18,   18, 0x0a,
+     151,   18,   18,   18, 0x2a,
+     174,  167,   18,   18, 0x0a,
+     198,   18,   18,   18, 0x0a,
 
  // properties: name, type, flags
-     192,  184, 0x0a095103,
+     222,  214, 0x0a095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_ScriptQMainWindow[] = {
     "ScriptQMainWindow\0\0aboutToClose()\0"
-    "show()\0key\0saveSizeAndPosition(QString)\0"
+    "windowReady()\0show()\0key\0"
+    "saveSizeAndPosition(QString)\0"
     "restoreSizeAndPosition(QString)\0message\0"
     "displayStatus(QString)\0displayStatus()\0"
-    "prompt\0setClosePrompt(QString)\0QString\0"
-    "closePrompt\0"
+    "prompt\0setClosePrompt(QString)\0"
+    "setupFinished()\0QString\0closePrompt\0"
 };
 
 void ScriptQMainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -61,12 +64,14 @@ void ScriptQMainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         ScriptQMainWindow *_t = static_cast<ScriptQMainWindow *>(_o);
         switch (_id) {
         case 0: _t->aboutToClose(); break;
-        case 1: _t->show(); break;
-        case 2: _t->saveSizeAndPosition((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 3: _t->restoreSizeAndPosition((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 4: _t->displayStatus((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 5: _t->displayStatus(); break;
-        case 6: _t->setClosePrompt((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 1: _t->windowReady(); break;
+        case 2: _t->show(); break;
+        case 3: _t->saveSizeAndPosition((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->restoreSizeAndPosition((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: _t->displayStatus((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 6: _t->displayStatus(); break;
+        case 7: _t->setClosePrompt((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 8: _t->setupFinished(); break;
         default: ;
         }
     }
@@ -104,9 +109,9 @@ int ScriptQMainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 9;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {
@@ -142,6 +147,12 @@ int ScriptQMainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 void ScriptQMainWindow::aboutToClose()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, 0);
+}
+
+// SIGNAL 1
+void ScriptQMainWindow::windowReady()
+{
+    QMetaObject::activate(this, &staticMetaObject, 1, 0);
 }
 static const uint qt_meta_data_NumericDelegate[] = {
 
@@ -1470,7 +1481,7 @@ static const uint qt_meta_data_ZoomLog[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      23,   14, // methods
+      24,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -1502,7 +1513,8 @@ static const uint qt_meta_data_ZoomLog[] = {
      549,    8,    8,    8, 0x0a,
 
  // methods: signature, parameters, type, tag, flags
-     585,    8,  573,    8, 0x02,
+     577,    8,  573,    8, 0x02,
+     600,    8,  588,    8, 0x02,
 
        0        // eod
 };
@@ -1525,8 +1537,8 @@ static const char qt_meta_stringdata_ZoomLog[] = {
     "clearOutputColumns()\0scale\0"
     "setDisplayUnits(Units::Unit)\0"
     "addToCurrentColumnSet(int)\0"
-    "clearCurrentColumnSet()\0Units::Unit\0"
-    "displayUnits()\0"
+    "clearCurrentColumnSet()\0int\0rowCount()\0"
+    "Units::Unit\0displayUnits()\0"
 };
 
 void ZoomLog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -1557,7 +1569,9 @@ void ZoomLog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 19: _t->setDisplayUnits((*reinterpret_cast< Units::Unit(*)>(_a[1]))); break;
         case 20: _t->addToCurrentColumnSet((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 21: _t->clearCurrentColumnSet(); break;
-        case 22: { Units::Unit _r = _t->displayUnits();
+        case 22: { int _r = _t->rowCount();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 23: { Units::Unit _r = _t->displayUnits();
             if (_a[0]) *reinterpret_cast< Units::Unit*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -1596,9 +1610,9 @@ int ZoomLog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 23)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 23;
+        _id -= 24;
     }
     return _id;
 }
@@ -3102,21 +3116,29 @@ static const uint qt_meta_data_PluginAction[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
-       0,    0, // properties
+       3,   14, // methods
+       2,   29, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      14,   13,   13,   13, 0x08,
+      21,   14,   13,   13, 0x0a,
+      40,   14,   13,   13, 0x0a,
+      60,   13,   13,   13, 0x08,
+
+ // properties: name, type, flags
+      80,   72, 0x0a095103,
+      87,   72, 0x0a095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_PluginAction[] = {
-    "PluginAction\0\0runScript()\0"
+    "PluginAction\0\0script\0setPreRun(QString)\0"
+    "setPostRun(QString)\0runScript()\0QString\0"
+    "preRun\0postRun\0"
 };
 
 void PluginAction::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3125,11 +3147,12 @@ void PluginAction::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         Q_ASSERT(staticMetaObject.cast(_o));
         PluginAction *_t = static_cast<PluginAction *>(_o);
         switch (_id) {
-        case 0: _t->runScript(); break;
+        case 0: _t->setPreRun((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->setPostRun((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->runScript(); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData PluginAction::staticMetaObjectExtraData = {
@@ -3164,10 +3187,39 @@ int PluginAction::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 3;
     }
+#ifndef QT_NO_PROPERTIES
+      else if (_c == QMetaObject::ReadProperty) {
+        void *_v = _a[0];
+        switch (_id) {
+        case 0: *reinterpret_cast< QString*>(_v) = preRun(); break;
+        case 1: *reinterpret_cast< QString*>(_v) = postRun(); break;
+        }
+        _id -= 2;
+    } else if (_c == QMetaObject::WriteProperty) {
+        void *_v = _a[0];
+        switch (_id) {
+        case 0: setPreRun(*reinterpret_cast< QString*>(_v)); break;
+        case 1: setPostRun(*reinterpret_cast< QString*>(_v)); break;
+        }
+        _id -= 2;
+    } else if (_c == QMetaObject::ResetProperty) {
+        _id -= 2;
+    } else if (_c == QMetaObject::QueryPropertyDesignable) {
+        _id -= 2;
+    } else if (_c == QMetaObject::QueryPropertyScriptable) {
+        _id -= 2;
+    } else if (_c == QMetaObject::QueryPropertyStored) {
+        _id -= 2;
+    } else if (_c == QMetaObject::QueryPropertyEditable) {
+        _id -= 2;
+    } else if (_c == QMetaObject::QueryPropertyUser) {
+        _id -= 2;
+    }
+#endif // QT_NO_PROPERTIES
     return _id;
 }
 static const uint qt_meta_data_FormArray[] = {
@@ -3516,7 +3568,7 @@ static const uint qt_meta_data_DeviceTreeModel[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -3526,12 +3578,18 @@ static const uint qt_meta_data_DeviceTreeModel[] = {
  // slots: signature, parameters, type, tag, flags
       36,   17,   16,   16, 0x0a,
 
+ // methods: signature, parameters, type, tag, flags
+      84,   77,   73,   16, 0x02,
+     106,   16,   73,   16, 0x22,
+
        0        // eod
 };
 
 static const char qt_meta_stringdata_DeviceTreeModel[] = {
     "DeviceTreeModel\0\0name,driver,parent\0"
     "newNode(QString,QString,QModelIndex)\0"
+    "int\0parent\0rowCount(QModelIndex)\0"
+    "rowCount()\0"
 };
 
 void DeviceTreeModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3541,6 +3599,10 @@ void DeviceTreeModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         DeviceTreeModel *_t = static_cast<DeviceTreeModel *>(_o);
         switch (_id) {
         case 0: _t->newNode((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])),(*reinterpret_cast< const QModelIndex(*)>(_a[3]))); break;
+        case 1: { int _r = _t->rowCount((*reinterpret_cast< const QModelIndex(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 2: { int _r = _t->rowCount();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         default: ;
         }
     }
@@ -3578,9 +3640,9 @@ int DeviceTreeModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 3;
     }
     return _id;
 }
@@ -7688,6 +7750,306 @@ int RateOfChangeConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a
         if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
         _id -= 3;
+    }
+    return _id;
+}
+static const uint qt_meta_data_MergeSeries[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       3,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      21,   13,   12,   12, 0x05,
+
+ // slots: signature, parameters, type, tag, flags
+      42,   13,   12,   12, 0x0a,
+      59,   13,   12,   12, 0x0a,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_MergeSeries[] = {
+    "MergeSeries\0\0measure\0newData(Measurement)\0"
+    "in1(Measurement)\0in2(Measurement)\0"
+};
+
+void MergeSeries::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        MergeSeries *_t = static_cast<MergeSeries *>(_o);
+        switch (_id) {
+        case 0: _t->newData((*reinterpret_cast< Measurement(*)>(_a[1]))); break;
+        case 1: _t->in1((*reinterpret_cast< Measurement(*)>(_a[1]))); break;
+        case 2: _t->in2((*reinterpret_cast< Measurement(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData MergeSeries::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject MergeSeries::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_MergeSeries,
+      qt_meta_data_MergeSeries, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &MergeSeries::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *MergeSeries::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *MergeSeries::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_MergeSeries))
+        return static_cast<void*>(const_cast< MergeSeries*>(this));
+    return QObject::qt_metacast(_clname);
+}
+
+int MergeSeries::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 3)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 3;
+    }
+    return _id;
+}
+
+// SIGNAL 0
+void MergeSeries::newData(Measurement _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+static const uint qt_meta_data_DifferenceSeries[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       0,    0, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_DifferenceSeries[] = {
+    "DifferenceSeries\0"
+};
+
+void DifferenceSeries::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData DifferenceSeries::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject DifferenceSeries::staticMetaObject = {
+    { &MergeSeries::staticMetaObject, qt_meta_stringdata_DifferenceSeries,
+      qt_meta_data_DifferenceSeries, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &DifferenceSeries::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *DifferenceSeries::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *DifferenceSeries::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_DifferenceSeries))
+        return static_cast<void*>(const_cast< DifferenceSeries*>(this));
+    return MergeSeries::qt_metacast(_clname);
+}
+
+int DifferenceSeries::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = MergeSeries::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    return _id;
+}
+static const uint qt_meta_data_MeanSeries[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       0,    0, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_MeanSeries[] = {
+    "MeanSeries\0"
+};
+
+void MeanSeries::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData MeanSeries::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject MeanSeries::staticMetaObject = {
+    { &MergeSeries::staticMetaObject, qt_meta_stringdata_MeanSeries,
+      qt_meta_data_MeanSeries, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &MeanSeries::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *MeanSeries::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *MeanSeries::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_MeanSeries))
+        return static_cast<void*>(const_cast< MeanSeries*>(this));
+    return MergeSeries::qt_metacast(_clname);
+}
+
+int MeanSeries::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = MergeSeries::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    return _id;
+}
+static const uint qt_meta_data_MergeSeriesConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       4,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   34, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      30,   23,   22,   22, 0x08,
+      53,   23,   22,   22, 0x08,
+      76,   23,   22,   22, 0x08,
+     103,   98,   22,   22, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+     131,  119,   22,   22, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_MergeSeriesConfWidget[] = {
+    "MergeSeriesConfWidget\0\0column\0"
+    "updateColumn1(QString)\0updateColumn2(QString)\0"
+    "updateOutput(QString)\0type\0updateType(int)\0"
+    "model,index\0"
+    "MergeSeriesConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void MergeSeriesConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { MergeSeriesConfWidget *_r = new MergeSeriesConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        MergeSeriesConfWidget *_t = static_cast<MergeSeriesConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateColumn1((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->updateColumn2((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->updateOutput((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 3: _t->updateType((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData MergeSeriesConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject MergeSeriesConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_MergeSeriesConfWidget,
+      qt_meta_data_MergeSeriesConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &MergeSeriesConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *MergeSeriesConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *MergeSeriesConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_MergeSeriesConfWidget))
+        return static_cast<void*>(const_cast< MergeSeriesConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int MergeSeriesConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 4)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 4;
     }
     return _id;
 }

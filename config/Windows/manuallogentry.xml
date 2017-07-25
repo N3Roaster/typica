@@ -418,7 +418,27 @@
 				query.bind(":files", "{" + fileID + "}");
 				query.exec();
 			} else {
-				/* Production roast */
+				var q = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES (:time, ";
+				q += productionGreenTable.columnArray(0, 32);
+				q += ", ";
+				for(var i = 0; i < productionGreenTable.data(i, 1, 0).value != ""; i++) {
+					productionGreenTable.setData(i, 1, convertToPounds(parseFloat(productionGreenTable.data(i, 1, 0)), produtionGreenUnit.currentText), 32);
+				}
+				q += productionGreenTable.columnArray(1, 32);
+				q += ", ";
+				q += roastedItem.currentData();
+				q += ", ";
+				q += convertToPounds(parseFloat(roastedWeight.text), productionGreenUnit.currentText);
+				q += ", 'ROAST', :annotation, ";
+				q += selectedRoasterID;
+				q += ", :duration, TRUE, NULL, NULL, NULL, NULL, '{";
+				q += fileID;
+				q += "}')";
+				query.prepare(q);
+				query.bind(":time", roastTime.text);
+				query.bind(":annotation", notes.plainText);
+				query.bind(":duration", roastDuration.text);
+				query.exec();
 			}
 			query = query.invalidate();
 			window.close();

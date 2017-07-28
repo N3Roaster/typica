@@ -1079,7 +1079,10 @@ class ScriptQMainWindow : public QMainWindow@/
 ScriptQMainWindow::ScriptQMainWindow()@+: QMainWindow(NULL),
     cprompt(tr("Closing this window may result in loss of data. Continue?"))@/
 {
-    /* Nothing needs to be done here. */
+    if(!AppInstance->databaseConnected())
+    {
+	    statusBar()->addWidget(new QLabel(tr("Not connected to database")));
+    }
 }
 
 void ScriptQMainWindow::saveSizeAndPosition(const QString &key)
@@ -12822,19 +12825,23 @@ class Application : public QApplication@/
         QDomDocument* configuration();
         @<Device configuration members@>@;
         QSqlDatabase database();
+        Q_INVOKABLE bool databaseConnected();
         QScriptEngine *engine;@/
     @[public slots@]:@/
+	    void setDatabaseConnected(bool status);
         @<Extended Application slots@>@;
     private:@/
         @<Application private data members@>@;
         QDomDocument conf;
+        bool connectionStatus;
 };
 
 @ The constructor for this class handles a few things that had previously been
 handled in |main()|.
 
 @<Application Implementation@>=
-Application::Application(int &argc, char **argv) : QApplication(argc, argv)@/
+Application::Application(int &argc, char **argv) : QApplication(argc, argv),
+	connectionStatus(false)@/
 {
     @<Allow use of the default QSettings constructor@>@;
     @<Load translation objects@>@;
@@ -12900,6 +12907,20 @@ QSqlDatabase Application::database()
         connectionName = QUuid::createUuid().toString();
     } while (QSqlDatabase::connectionNames().contains(connectionName));
     return QSqlDatabase::cloneDatabase(connection, QString(connectionName));
+}
+
+@ Starting with version 1.8 there are methods for determining if a connection
+to the database was successfully established when Typica was opened.
+
+@<Application Implementation@>=
+void Application::setDatabaseConnected(bool status)
+{
+	connectionStatus = status;
+}
+
+bool Application::databaseConnected()
+{
+	return connectionStatus;
 }
 
 @** Table editor for ordered arrays with SQL relations.
@@ -13786,6 +13807,7 @@ void SqlConnectionSetup::testConnection()
         settings.setValue("database/user", user->text());
         settings.setValue("database/password", password->text());
         database.close();
+        AppInstance->setDatabaseConnected(true);
         accept();
     }
     else
@@ -13825,6 +13847,7 @@ if(!database.open())
 else
 {
     database.close();
+    AppInstance->setDatabaseConnected(true);
 }
 
 @** Viewing a record of batches.

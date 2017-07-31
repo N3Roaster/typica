@@ -73,6 +73,10 @@
     <menu name="Database">
         <item id="resetconnection">Forget Connection Details</item>
     </menu>
+	<menu name="Users">
+		<item id="switchuser">Switch User</item>
+		<item id="createuser">Create New Users</item>
+	</menu>
     <program>
         var window = this;
         var navigationwindow = window;
@@ -376,8 +380,23 @@
 				var newUserDialog = new NewTypicaUser();
 				newUserDialog.exec();
 			}
+			if(!Application.autoLogin()) {
+				var loginDialog = new LoginDialog();
+				loginDialog.exec();
+			}
 			query = query.invalidate();
 		}
+		
+		var switchuser = findChildObject(this, 'switchuser');
+		switchuser.triggered.connect(function() {
+			var loginDialog = new LoginDialog();
+			loginDialog.exec();
+		});
+		var createuser = findChildObject(this, 'createuser');
+		createuser.triggered.connect(function() {
+			var newUserDialog = new NewTypicaUser();
+			newUserDialog.exec();
+		});
         ]]>
     </program>
 </window>

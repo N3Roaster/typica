@@ -1083,6 +1083,10 @@ ScriptQMainWindow::ScriptQMainWindow()@+: QMainWindow(NULL),
     {
 	    statusBar()->addWidget(new QLabel(tr("Not connected to database")));
     }
+    else
+    {
+	    statusBar()->addWidget(new UserLabel);
+    }
 }
 
 void ScriptQMainWindow::saveSizeAndPosition(const QString &key)
@@ -12826,14 +12830,21 @@ class Application : public QApplication@/
         @<Device configuration members@>@;
         QSqlDatabase database();
         Q_INVOKABLE bool databaseConnected();
+        Q_INVOKABLE QString currentTypicaUser();
+        Q_INVOKABLE bool login(const QString &user, const QString &password);
+        Q_INVOKABLE bool autoLogin();
         QScriptEngine *engine;@/
     @[public slots@]:@/
 	    void setDatabaseConnected(bool status);
+	    void setCurrentTypicaUser(const QString &user);
         @<Extended Application slots@>@;
+    @[signals@]:@/
+	    void userChanged(const QString &user);
     private:@/
         @<Application private data members@>@;
         QDomDocument conf;
         bool connectionStatus;
+        QString currentUser;
 };
 
 @ The constructor for this class handles a few things that had previously been
@@ -12841,7 +12852,7 @@ handled in |main()|.
 
 @<Application Implementation@>=
 Application::Application(int &argc, char **argv) : QApplication(argc, argv),
-	connectionStatus(false)@/
+	connectionStatus(false), currentUser(QString())@/
 {
     @<Allow use of the default QSettings constructor@>@;
     @<Load translation objects@>@;

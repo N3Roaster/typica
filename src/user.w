@@ -5,6 +5,201 @@ are separated. This means that there must be controls for creating new users
 and for selecting the user to log in as. Other management interfaces can be
 implemented in configuration scripts.
 
+@* Application extensions for user handling.
+
+\noindent In order to present information about the currently logged in user
+globally, it was decided to provide a few methods in |Application| that can be
+used to report and change the current user.
+
+The first of these simply reports the currently logged in user.
+
+@<Application Implementation@>=
+QString Application::currentTypicaUser()
+{
+	return currentUser;
+}
+
+@ Next is a method that can be used to force the login of a specified user
+without checking for an entered password. This is used for users that are set
+to login automatically.
+
+@<Application Implementation@>=
+void Application::setCurrentTypicaUser(const QString &user)
+{
+	currentUser = user;
+	emit userChanged(currentUser);
+}
+
+@ A login method is provided which determines if a user exists that matches the
+user name and password specified and reports if the login attempt was
+successful.
+
+@<Application Implementation@>=
+bool Application::login(const QString &user, const QString &password)
+{
+	SqlQueryConnection h;
+	QSqlQuery *dbquery = h.operator->();
+	dbquery->prepare("SELECT 1 FROM typica_users WHERE name = :name AND password = :password AND active = TRUE");
+	dbquery->bindValue(":name", user);
+	dbquery->bindValue(":password", password);
+	dbquery->exec();
+	if(dbquery->next())
+	{
+		currentUser = user;
+		emit userChanged(currentUser);
+		return true;
+	}
+	return false;
+}
+
+@ A convenience method is also provided to attempt an automatic login if one is
+specified in the database.
+
+@<Application Implementation@>=
+bool Application::autoLogin()
+{
+	SqlQueryConnection h;
+	QSqlQuery *dbquery = h.operator->();
+	dbquery->exec("SELECT name FROM typica_users WHERE auto_login = TRUE");
+	if(dbquery->next())
+	{
+		currentUser = dbquery->value(0).toString();
+		emit userChanged(currentUser);
+		return true;
+	}
+	return false;
+}
+
+@* Login dialog.
+
+\noindent If there are no users set to log in automatically or any time a user
+change is requested, a login dialog should be presented.
+
+@<Class declarations@>=
+class LoginDialog : public QDialog
+{
+	Q_OBJECT
+	public:
+		LoginDialog();
+	public slots:
+		void attemptLogin();
+	private:
+		QLineEdit *user;
+		QLineEdit *password;
+		QLabel *warning;
+		QPushButton *login;
+};
+
+@ The constructor sets up the interface.
+
+@<LoginDialog implementation@>=
+LoginDialog::LoginDialog() : QDialog(),
+	user(new QLineEdit), password(new QLineEdit),
+	warning(new QLabel(tr("Log in failed."))),
+	login(new QPushButton(tr("Log In")))
+{
+	setModal(true);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	warning->setVisible(false);
+	password->setEchoMode(QLineEdit::Password);
+	QFormLayout *form = new QFormLayout;
+	form->addRow(tr("Name:"), user);
+	form->addRow(tr("Password:"), password);
+	form->addRow(warning);
+	QHBoxLayout *buttonBox = new QHBoxLayout;
+	buttonBox->addStretch();
+	buttonBox->addWidget(login);
+	mainLayout->addLayout(form);
+	mainLayout->addLayout(buttonBox);
+	connect(login, SIGNAL(clicked()), this, SLOT(attemptLogin()));
+	setLayout(mainLayout);
+}
+
+@ The log in button attempts to log in with the specified credentials.
+
+@<LoginDialog implementation@>=
+void LoginDialog::attemptLogin()
+{
+	if(AppInstance->login(user->text(), password->text()))
+	{
+		accept();
+	}
+	else
+	{
+		warning->setVisible(true);
+	}
+}
+
+@ Scripts must be able to create login dialogs.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructLoginDialog);
+value = engine->newQMetaObject(&LoginDialog::staticMetaObject, constructor);
+engine->globalObject().setProperty("LoginDialog", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructLoginDialog(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new LoginDialog);
+	return object;
+}
+
+@ A function prototype is required.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructLoginDialog(QScriptContext *context, QScriptEngine *engine);
+
+@* Currently logged in user.
+
+\noindent Every main window in \pn{} should be able to report on the currently
+logged in user and it should be possible to bring up an interface to switch
+users. An easy way to do this is through a widget inserted into the status bar
+of every window that listens for user change data from the |Application|
+instance.
+
+@<Class declarations@>=
+class UserLabel : public QLabel
+{
+	Q_OBJECT
+	public:
+		UserLabel();
+	public slots:
+		void updateLabel(const QString &user);
+	protected:
+		void mouseReleaseEvent(QMouseEvent *event);
+};
+
+@ On first instantiation, the constructor sets the displayed text to indicate
+the currently logged in user and starts listening for user change events.
+
+@<UserLabel implementation@>=
+UserLabel::UserLabel() : QLabel()
+{
+	setTextFormat(Qt::PlainText);
+	updateLabel(AppInstance->currentTypicaUser());
+	connect(AppInstance, SIGNAL(userChanged(QString)),
+	        this, SLOT(updateLabel(QString)));
+}
+
+@ When the currently logged in user changes, the label text updates itself.
+
+@<UserLabel implementation@>=
+void UserLabel::updateLabel(const QString &user)
+{
+	setText(QString(tr("Current operator: %1").arg(user)));
+}
+
+@ In order to handle clicks, |mouseReleaseEvent()| is implemented.
+
+@<UserLabel implementation@>=
+void UserLabel::mouseReleaseEvent(QMouseEvent *event)
+{
+	LoginDialog *dialog = new LoginDialog;
+	dialog->exec();
+}
+
 @* User Creation.
 
 \noindent The first time \pn{} is started with a database connection and a
@@ -144,7 +339,9 @@ QScriptValue constructNewTypicaUser(QScriptContext *, QScriptEngine *engine)
 @<Function prototypes for scripting@>=
 QScriptValue constructNewTypicaUser(QScriptContext *context, QScriptEngine *engine);
 
-@ Add class implementation to generated source file.
+@ Add class implementations to generated source file.
 
 @<Class implementations@>=
 @<NewTypicaUser implementation@>
+@<UserLabel implementation@>
+@<LoginDialog implementation@>

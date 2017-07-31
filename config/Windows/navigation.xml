@@ -365,6 +365,17 @@
 			{
 				DBCreateBase();
 			}
+			var promptNewUsers = true;
+			query.exec("SELECT count(1) FROM typica_users");
+			if(query.next()) {
+				if(Number(query.value(0)) > 0) {
+					promptNewUsers = false;
+				}
+			}
+			if(promptNewUsers) {
+				var newUserDialog = new NewTypicaUser();
+				newUserDialog.exec();
+			}
 			query = query.invalidate();
 		}
         ]]>

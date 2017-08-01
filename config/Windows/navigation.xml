@@ -239,7 +239,7 @@
 		   Typica 1.6 and later. */
 		var DBCreateSampleRoasting = function() {
 			var query = new QSqlQuery;
-			query.exec("CREATE TABLE IF NOT EXISTS item_attributes (id bigint PRIMARY KEY NOT NULL, name text NOT NULL)");
+			query.exec("CREATE TABLE IF NOT EXISTS item_attributes (id bigserial PRIMARY KEY NOT NULL, name text NOT NULL)");
 			query.exec("CREATE TABLE IF NOT EXISTS coffee_sample_items(arrival timestamp without time zone, vendor text, attribute_ids bigint[], attribute_values text[], item_id bigint) INHERITS (items)");
 			query.exec("INSERT INTO TypicaFeatures (feature, enabled, version) VALUES('sample-roasting', TRUE, 1)");
 			query = query.invalidate();
@@ -310,9 +310,8 @@
 			query.exec("CREATE OR REPLACE FUNCTION log_session_user() RETURNS trigger AS $$ BEGIN IF NEW.person IS NULL THEN NEW.person := session_user; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use (time, item, quantity, person) VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i], NEW.person); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE OR REPLACE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity, person) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity, NEW.person); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
-			
-			/* Uncomment before release */
-			// query.exec("UPDATE TypicaFeatures SET version = 7 WHERE feature = 'base-features'");
+			query.exec("CREATE TABLE IF NOT EXISTS sample_roast_profiles(\"time\" timestamp without time zone NOT NULL, profile_name TEXT NOT NULL, file bigint NOT NULL)");
+			query.exec("UPDATE TypicaFeatures SET version = 7 WHERE feature = 'base-features'");
 			query = query.invalidate();
 		};
 		if(Application.databaseConnected()) {
@@ -321,18 +320,6 @@
 			   table is created
 			   if required. */
 			query.exec("CREATE TABLE IF NOT EXISTS TypicaFeatures (feature TEXT PRIMARY KEY, enabled boolean, version bigint)");
-			query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'sample-roasting'");
-			if(query.next())
-			{
-				if(query.value(2) < 1)
-				{
-					DBCreateSampleRoasting();
-				}
-			}
-			else
-			{
-				DBCreateSampleRoasting();
-			}
 			query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'base-features'");
 			if(query.next())
 			{
@@ -368,6 +355,25 @@
 			else
 			{
 				DBCreateBase();
+				DBUpdateMultiUser();
+		        DBUpdateHistory();
+				DBUpdateNotifications();
+				DBUpdateTriggers();
+				DBUpdateReminders();
+				DBUpdateSpecification();
+				DBUpdate18();
+			}
+			query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'sample-roasting'");
+			if(query.next())
+			{
+				if(query.value(2) < 1)
+				{
+					DBCreateSampleRoasting();
+				}
+			}
+			else
+			{
+				DBCreateSampleRoasting();
 			}
 			var promptNewUsers = true;
 			query.exec("SELECT count(1) FROM typica_users");

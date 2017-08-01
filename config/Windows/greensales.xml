@@ -53,7 +53,7 @@
 			var submit = findChildObject(this, 'submit');
 			submit.clicked.connect(function() {
 				var query = new QSqlQuery();
-				query.prepare("INSERT INTO sale (time, item, quantity, customer) VALUES(:time, :item, :quantity, :customer)");
+				query.prepare("INSERT INTO sale (time, item, quantity, customer, person) VALUES(:time, :item, :quantity, :customer, :user)");
 				query.bind(":time", dateField.text);
 				if(customerField.text == "") {
 					query.bind(":customer", null);
@@ -62,6 +62,7 @@
 					query.bind(":customer", customerField.text);
 				}
 				var coffeesArray = sqlToArray(items.columnArray(0, 32));
+				query.bind(":user", Application.currentTypicaUser());
 				if(coffeesArray.length > 0)
 				{
 					for(var i = 0; i < coffeesArray.length; i++)

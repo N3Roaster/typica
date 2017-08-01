@@ -285,9 +285,7 @@
 		/* Update trigger functions to make column names explicit */
 		var DBUpdateTriggers = function() {
 			var query = new QSqlQuery;
-			query.exec("CREATE OR REPLACE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE OR REPLACE FUNCTION log_make_update() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity <> OLD.roasted_quantity AND NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
-			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use (time, item, quantity) VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("UPDATE TypicaFeatures SET version = 4 WHERE feature = 'base-features'");
 		};
         var DBUpdateReminders = function() {
@@ -310,6 +308,8 @@
 			query.exec("CREATE TABLE IF NOT EXISTS typica_users(name TEXT PRIMARY KEY NOT NULL, password TEXT, active boolean NOT NULL, auto_login boolean NOT NULL)");
 			/* Update session user logging to only use the database user when a Typica user is not explicitly provided. This maintains compatibility for mixed version use. */
 			query.exec("CREATE OR REPLACE FUNCTION log_session_user() RETURNS trigger AS $$ BEGIN IF NEW.person IS NULL THEN NEW.person := session_user; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use (time, item, quantity, person) VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i], NEW.person); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE OR REPLACE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity, person) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity, NEW.person); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			
 			/* Uncomment before release */
 			// query.exec("UPDATE TypicaFeatures SET version = 7 WHERE feature = 'base-features'");

@@ -585,7 +585,7 @@
                 checkQuery = checkQuery.invalidate();
                 query = new QSqlQuery();
                 var fileno = Number(filenofield.text);
-                var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, ";
+                var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files, person) VALUES(:time, ";
                 q2 = q2 + table.columnArray(0, 32);
                 q2 = q2 + ", ";
                 for(var i = 0; table.data(i, 1, 0).value != ""; i++)
@@ -603,13 +603,14 @@
                 q2 = q2 + selectedRoasterID;
                 q2 = q2 + ", :duration, :approval, NULL, NULL, NULL, NULL, '{";
                 q2 = q2 + fileno;
-                q2 = q2 + "}') RETURNING time";
+                q2 = q2 + "}', :user) RETURNING time";
                 query2 = new QSqlQuery();
                 query2.prepare(q2);
                 query2.bind(":time", timefield.text);
                 query2.bind(":annotation", notes.plainText);
                 query2.bind(":duration", duration.text);
                 query2.bind(":approval", approval.checked);
+				query2.bind(":user", Application.currentTypicaUser());
                 query2.exec();
                 if(!query2.next()) {
                     displayError(TTR("batchWindow", "Database Insert Failed"), TTR("batchWindow", "Failed to save batch to database. Please check inputs and connection and try again."));

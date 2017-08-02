@@ -48,3 +48,5 @@ ICON = resources/icons/appicons/logo.icns
 QMAKE_INFO_PLIST = resources/Info.plist
 
 CODECFORTR = UTF-8
+TRANSLATIONS = Translations/Typica.ts
+    Translations/Typica_de.ts

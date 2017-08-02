@@ -2496,21 +2496,38 @@ static const uint qt_meta_data_Application[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      18,   13,   12,   12, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      13,   12,   12,   12, 0x0a,
+      46,   39,   12,   12, 0x0a,
+      73,   13,   12,   12, 0x0a,
+     103,   12,   12,   12, 0x0a,
+
+ // methods: signature, parameters, type, tag, flags
+     134,   12,  129,   12, 0x02,
+     162,   12,  154,   12, 0x02,
+     196,  182,  129,   12, 0x02,
+     219,   12,  129,   12, 0x02,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Application[] = {
-    "Application\0\0saveDeviceConfiguration()\0"
+    "Application\0\0user\0userChanged(QString)\0"
+    "status\0setDatabaseConnected(bool)\0"
+    "setCurrentTypicaUser(QString)\0"
+    "saveDeviceConfiguration()\0bool\0"
+    "databaseConnected()\0QString\0"
+    "currentTypicaUser()\0user,password\0"
+    "login(QString,QString)\0autoLogin()\0"
 };
 
 void Application::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -2519,11 +2536,21 @@ void Application::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         Q_ASSERT(staticMetaObject.cast(_o));
         Application *_t = static_cast<Application *>(_o);
         switch (_id) {
-        case 0: _t->saveDeviceConfiguration(); break;
+        case 0: _t->userChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->setDatabaseConnected((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 2: _t->setCurrentTypicaUser((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 3: _t->saveDeviceConfiguration(); break;
+        case 4: { bool _r = _t->databaseConnected();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 5: { QString _r = _t->currentTypicaUser();
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 6: { bool _r = _t->login((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 7: { bool _r = _t->autoLogin();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData Application::staticMetaObjectExtraData = {
@@ -2558,11 +2585,18 @@ int Application::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 8;
     }
     return _id;
+}
+
+// SIGNAL 0
+void Application::userChanged(const QString & _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 static const uint qt_meta_data_SaltModel[] = {
 
@@ -8903,5 +8937,234 @@ void Annotator::annotation(QString _t1, int _t2, int _t3)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+static const uint qt_meta_data_LoginDialog[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       1,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      13,   12,   12,   12, 0x0a,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_LoginDialog[] = {
+    "LoginDialog\0\0attemptLogin()\0"
+};
+
+void LoginDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        LoginDialog *_t = static_cast<LoginDialog *>(_o);
+        switch (_id) {
+        case 0: _t->attemptLogin(); break;
+        default: ;
+        }
+    }
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData LoginDialog::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject LoginDialog::staticMetaObject = {
+    { &QDialog::staticMetaObject, qt_meta_stringdata_LoginDialog,
+      qt_meta_data_LoginDialog, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &LoginDialog::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *LoginDialog::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *LoginDialog::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_LoginDialog))
+        return static_cast<void*>(const_cast< LoginDialog*>(this));
+    return QDialog::qt_metacast(_clname);
+}
+
+int LoginDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QDialog::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 1)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 1;
+    }
+    return _id;
+}
+static const uint qt_meta_data_UserLabel[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       1,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      16,   11,   10,   10, 0x0a,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_UserLabel[] = {
+    "UserLabel\0\0user\0updateLabel(QString)\0"
+};
+
+void UserLabel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        UserLabel *_t = static_cast<UserLabel *>(_o);
+        switch (_id) {
+        case 0: _t->updateLabel((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData UserLabel::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject UserLabel::staticMetaObject = {
+    { &QLabel::staticMetaObject, qt_meta_stringdata_UserLabel,
+      qt_meta_data_UserLabel, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &UserLabel::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *UserLabel::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *UserLabel::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_UserLabel))
+        return static_cast<void*>(const_cast< UserLabel*>(this));
+    return QLabel::qt_metacast(_clname);
+}
+
+int UserLabel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QLabel::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 1)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 1;
+    }
+    return _id;
+}
+static const uint qt_meta_data_NewTypicaUser[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       4,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      15,   14,   14,   14, 0x0a,
+      32,   14,   14,   14, 0x0a,
+      49,   14,   14,   14, 0x0a,
+      60,   14,   14,   14, 0x0a,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_NewTypicaUser[] = {
+    "NewTypicaUser\0\0createAndReset()\0"
+    "createAndClose()\0validate()\0"
+    "cancelValidate()\0"
+};
+
+void NewTypicaUser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        NewTypicaUser *_t = static_cast<NewTypicaUser *>(_o);
+        switch (_id) {
+        case 0: _t->createAndReset(); break;
+        case 1: _t->createAndClose(); break;
+        case 2: _t->validate(); break;
+        case 3: _t->cancelValidate(); break;
+        default: ;
+        }
+    }
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData NewTypicaUser::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject NewTypicaUser::staticMetaObject = {
+    { &QDialog::staticMetaObject, qt_meta_stringdata_NewTypicaUser,
+      qt_meta_data_NewTypicaUser, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &NewTypicaUser::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *NewTypicaUser::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *NewTypicaUser::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_NewTypicaUser))
+        return static_cast<void*>(const_cast< NewTypicaUser*>(this));
+    return QDialog::qt_metacast(_clname);
+}
+
+int NewTypicaUser::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QDialog::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 4)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 4;
+    }
+    return _id;
 }
 QT_END_MOC_NAMESPACE

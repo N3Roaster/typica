@@ -1,4 +1,4 @@
-/*693:*/
+/*694:*/
 #line 30 "./daterangeselector.w"
 
 
@@ -9,7 +9,7 @@
 #ifndef TypicaDateRangeSelectorHeader
 #define TypicaDateRangeSelectorHeader
 
-/*695:*/
+/*696:*/
 #line 93 "./daterangeselector.w"
 
 class CustomDateRangePopup:public QWidget
@@ -31,7 +31,7 @@ QCalendarWidget*endDateSelector;
 QPushButton*applyButton;
 };
 
-/*:695*/
+/*:696*/
 #line 39 "./daterangeselector.w"
 
 
@@ -62,4 +62,4 @@ int lastIndex;
 
 #endif
 
-/*:693*/
+/*:694*/

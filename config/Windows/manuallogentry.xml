@@ -14,6 +14,9 @@
         <item id="15s">15 Second View</item>
         <item id="30s">30 Second View</item>
         <item id="1m">1 Minute View</item>
+		<separator />
+		<item id="showC">Display Celsius</item>
+		<item id="showF">Display Fahrenheit</item>
     </menu>
 	<layout type="vertical">
 		<tabbar id="tabs"/>
@@ -222,8 +225,27 @@
 		currenttemperature = findChildObject(this, 'currenttemperature');
 		currentnote = findChildObject(this, 'currentnote');
 		addmeasurement = findChildObject(this, 'addmeasurement');
+		var currentUnit = Units.Fahrenheit;
+		var showC = findChildObject(this, 'showC');
+        showC.triggered.connect(function() {
+            pluginContext.table.setDisplayUnits(Units.Celsius);
+            pluginContext.graph.showC();
+			QSettings.setValue("temperatureUnit", "C");
+			currentUnit = Units.Celsius;
+        });
+        var showF = findChildObject(this, 'showF');
+        showF.triggered.connect(function() {
+            pluginContext.table.setDisplayUnits(Units.Fahrenheit);
+            pluginContext.graph.showF();
+			QSettings.setValue("temperatureUnit", "F");
+			currentUnit = Units.Fahrenheit;
+        });
+		if(QSettings.value("temperatureUnit", "F") == "C") {
+			showC.trigger();
+		}
 		addmeasurement.clicked.connect(function() {
-			pluginContext.newMeasurement(new Measurement(Number(currenttemperature.text), currenttime.time), 1);
+			var fromUnit = 
+			pluginContext.newMeasurement(new Measurement(Units.convertTemperature(Number(currenttemperature.text), currentUnit, Units.Fahrenheit), currenttime.time), 1);
 			if(currentnote.text.length > 0) {
 				pluginContext.table.newAnnotation(currentnote.text, 1, 2);
 			}

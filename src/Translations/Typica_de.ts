@@ -59,7 +59,7 @@
     <message>
         <location filename="../typica.cpp" line="8357"/>
         <source>ModbusNG Port</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="8363"/>
@@ -498,22 +498,22 @@
     <message>
         <location filename="../typica.cpp" line="16887"/>
         <source>Log in failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Log in gescheitert</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16888"/>
         <source>Log In</source>
-        <translation type="unfinished"></translation>
+        <translation>Log In</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16895"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16896"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -529,32 +529,32 @@
     <message>
         <location filename="../typica.cpp" line="16594"/>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16595"/>
         <source>Mean</source>
-        <translation type="unfinished">Mittelwert</translation>
+        <translation>Mittelwert</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16596"/>
         <source>Series type:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16598"/>
         <source>First input column name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16600"/>
         <source>Second input column name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16602"/>
         <source>Output column name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -740,37 +740,37 @@
     <message>
         <location filename="../typica.cpp" line="14501"/>
         <source>Add Input Channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuer input Channel</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14502"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14503"/>
         <source>Baud rate:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14504"/>
         <source>Parity:</source>
-        <translation type="unfinished">Paritaet:</translation>
+        <translation>Paritaet:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14505"/>
         <source>Flow control:</source>
-        <translation type="unfinished">Ablaufsteuerung:</translation>
+        <translation>Ablaufsteuerung:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14506"/>
         <source>Stop bits:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14598"/>
         <source>Input</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -778,57 +778,57 @@
     <message>
         <location filename="../typica.cpp" line="14610"/>
         <source>Station ID</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14615"/>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funktion</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14617"/>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresse</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14619"/>
         <source>16 bits fixed point</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14620"/>
         <source>32 bits floating point (High Low)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14621"/>
         <source>32 bits floating point (Low High)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14622"/>
         <source>Data format</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14626"/>
         <source>Decimal places</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14632"/>
         <source>Unit</source>
-        <translation type="unfinished">Messung in</translation>
+        <translation>Messung in</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14634"/>
         <source>Column name</source>
-        <translation type="unfinished">Kanal Name</translation>
+        <translation>Kanal Name</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14635"/>
         <source>Hide this channel</source>
-        <translation type="unfinished">Diesen Kanal verdecken</translation>
+        <translation>Diesen Kanal verdecken</translation>
     </message>
 </context>
 <context>
@@ -971,37 +971,37 @@
     <message>
         <location filename="../typica.cpp" line="16762"/>
         <source>Log in automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatischer Log in</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16763"/>
         <source>Save and Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern und schliessen</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16764"/>
         <source>Save and Create Another</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern und neuen herstellen</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16765"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16771"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16773"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16782"/>
         <source>Create New User</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuen Benutzer eingeben</translation>
     </message>
 </context>
 <context>
@@ -1175,7 +1175,6 @@
         <source>CPhidget_waitForAttachment returns error %n</source>
         <translation>
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -1329,7 +1328,7 @@
         <location filename="../typica.cpp" line="12607"/>
         <location filename="../typica.cpp" line="12608"/>
         <source>Threshold Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="12620"/>
@@ -1374,12 +1373,12 @@
     <message>
         <location filename="../typica.cpp" line="12655"/>
         <source>Merge Series</source>
-        <translation type="unfinished"></translation>
+        <translation>Merge Serie</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="12656"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="12669"/>
@@ -1402,7 +1401,7 @@
     <message>
         <location filename="../typica.cpp" line="17160"/>
         <source>Not connected to database</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Datenbank verbindung</translation>
     </message>
 </context>
 <context>
@@ -1435,12 +1434,12 @@
     <message>
         <location filename="../typica.cpp" line="14164"/>
         <source>Weigh Command:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiegen Befehl:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="14170"/>
         <source>Command Terminator:</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehl Terminator:</translation>
     </message>
 </context>
 <context>
@@ -1527,32 +1526,32 @@
     <message>
         <location filename="../typica.cpp" line="15075"/>
         <source>Source column name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Herkunfts Kanal Name:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15080"/>
         <source>Threshold value:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15082"/>
         <source>Ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufsteigend</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15083"/>
         <source>Descending</source>
-        <translation type="unfinished"></translation>
+        <translation>Absteigend</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15084"/>
         <source>Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Direktion:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15086"/>
         <source>Annotation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bemerkungen:</translation>
     </message>
 </context>
 <context>
@@ -1593,7 +1592,7 @@
     <message>
         <location filename="../typica.cpp" line="13306"/>
         <source>Start of batch safety delay:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sicherheits Verzögerung der Charge:</translation>
     </message>
 </context>
 <context>
@@ -1647,7 +1646,7 @@
     <message>
         <location filename="../typica.cpp" line="16867"/>
         <source>Current operator: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktueller Benutzer:%1</translation>
     </message>
 </context>
 <context>

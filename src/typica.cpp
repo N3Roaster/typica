@@ -47,7 +47,7 @@
 #include "printerselector.h"
 
 /*:589*//*714:*/
-#line 489 "./daterangeselector.w"
+#line 487 "./daterangeselector.w"
 
 #include "daterangeselector.h"
 #line 14571 "./typica.w"
@@ -3407,7 +3407,7 @@ void setQTextEditProperties(QScriptValue value,QScriptEngine*engine);
 QScriptValue QTextEdit_print(QScriptContext*context,QScriptEngine*engine);
 
 /*:685*//*713:*/
-#line 482 "./daterangeselector.w"
+#line 480 "./daterangeselector.w"
 
 void addDateRangeToLayout(QDomElement element,
 QStack<QWidget*> *widgetStack,
@@ -20591,7 +20591,7 @@ addPrinterSelectorToLayout(currentElement,widgetStack,layoutStack);
 #line 12811 "./typica.w"
 
 /*:596*//*711:*/
-#line 453 "./daterangeselector.w"
+#line 451 "./daterangeselector.w"
 
 else if(currentElement.tagName()=="daterange")
 {
@@ -22801,7 +22801,7 @@ value.setProperty("print",engine->newFunction(QTextEdit_print));
 
 #line 1 "./plugins.w"
 /*:687*//*712:*/
-#line 463 "./daterangeselector.w"
+#line 461 "./daterangeselector.w"
 
 void addDateRangeToLayout(QDomElement element,QStack<QWidget*> *,
 QStack<QLayout*> *layoutStack)

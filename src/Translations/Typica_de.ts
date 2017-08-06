@@ -498,7 +498,7 @@
     <message>
         <location filename="../typica.cpp" line="16887"/>
         <source>Log in failed.</source>
-        <translation>Log in gescheitert</translation>
+        <translation>Log in gescheitert.</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16888"/>
@@ -529,7 +529,7 @@
     <message>
         <location filename="../typica.cpp" line="16594"/>
         <source>Difference</source>
-        <translation></translation>
+        <translation>Differenz</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16595"/>
@@ -539,7 +539,7 @@
     <message>
         <location filename="../typica.cpp" line="16596"/>
         <source>Series type:</source>
-        <translation></translation>
+        <translation>Serien Typ:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16598"/>
@@ -1531,7 +1531,7 @@
     <message>
         <location filename="../typica.cpp" line="15080"/>
         <source>Threshold value:</source>
-        <translation></translation>
+        <translation>Threshold Wert:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15082"/>

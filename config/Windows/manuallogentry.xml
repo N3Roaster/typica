@@ -448,10 +448,15 @@
 				var q = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files, person) VALUES (:time, ";
 				q += productionGreenTable.columnArray(0, 32);
 				q += ", ";
+				var greenSum = 0.0;
 				for(var i = 0; i < productionGreenTable.data(i, 1, 0).value != ""; i++) {
-					productionGreenTable.setData(i, 1, convertToPounds(parseFloat(productionGreenTable.data(i, 1, 0)), produtionGreenUnit.currentText), 32);
+					var greenWt = convertToPounds(parseFloat(productionGreenTable.data(i, 1, 0)), productionGreenUnit.currentText);
+					productionGreenTable.setData(i, 1, greenWt, 32);
+					greenSum += greenWt;
 				}
 				q += productionGreenTable.columnArray(1, 32);
+				q += ", ";
+				q += greenWt;
 				q += ", ";
 				q += roastedItem.currentData();
 				q += ", ";
@@ -459,7 +464,9 @@
 				q += ", 'ROAST', :annotation, ";
 				q += selectedRoasterID;
 				q += ", :duration, TRUE, NULL, NULL, NULL, NULL, '{";
-				q += fileID;
+				if(fileID > 0) {
+					q += fileID;
+				}
 				q += "}', :user)";
 				query.prepare(q);
 				query.bind(":time", roastTime.text);

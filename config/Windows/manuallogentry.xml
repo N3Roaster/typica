@@ -416,7 +416,7 @@
 				}
 				query.prepare("INSERT INTO coffee_sample_items(id, name, reference, unit, quantity, category, arrival, vendor, attribute_ids, attribute_values) VALUES (DEFAULT, :name, NULL, 'lb', 0, 'Coffee: Green Sample', :arrival, :vendor, :attrids, :attrvals) RETURNING id");
 				query.bind(":name", sampleGreenName.text);
-				query.bind(":arrival", sampleGreenArrival.date);
+				query.bind(":arrival", sampleGreenArrivalDate.date);
 				query.bind(":attrids", attributes.bindableColumnArray(0, 32));
 				query.bind(":attrvals", attributes.bindableQuotedColumnArray(1, 0));
 				query.exec();
@@ -437,7 +437,11 @@
 				query.bind(":note", notes.plainText);
 				query.bind(":machine", Number(selectedRoasterID));
 				query.bind(":duration", roastDuration.text);
-				query.bind(":files", "{" + fileID + "}");
+				if(fileID > 0) {
+					query.bind(":files", "{" + fileID + "}");
+				} else {
+					query.bind(":file", "{}");
+				}
 				query.bind(":user", Application.currentTypicaUser());
 				query.exec();
 			} else {

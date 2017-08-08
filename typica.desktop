@@ -1,8 +1,8 @@
 [Desktop Entry]
-Version=1.6.3
+Version=1.8.0
 Name=Typica
-GenericName=Coffee Roasting
-Comment=Data acquisition, reporting, and management for coffee roasters
+GenericName=Typica
+Comment=Coffee Roasting Operations
 Exec=typica
 Icon=typica
 Terminal=false

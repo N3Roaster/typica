@@ -81,7 +81,7 @@ class DateRangeSelector : public QWidget
 @<CustomDateRangePopup implementation@>
 @<DateRangeSelector implementation@>
 
-#ifdef __unix__
+#if __APPLE__
 #include "moc_daterangeselector.cpp"
 #endif
 

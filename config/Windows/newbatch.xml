@@ -1,4 +1,7 @@
 <window id="batchWindow">
+	<menu name="File">
+		<item id="print" shortcut="Ctrl+P">Print...</item>
+	</menu>
     <menu name="Batch">
         <item id="new" shortcut="Ctrl+N">New Batch...</item>
     </menu>
@@ -75,8 +78,19 @@
             </layout>
             <label>Specification Details</label>
             <textarea id="specnotes" />
+            <layout type="horizontal">
+                <label>File ID:</label>
+                <line id="filenofield" writable="false" />
+            </layout>
             <stretch />
         </layout>
+		<layout type="vertical">
+			<webview id="batchTag" />
+			<layout type="horizontal">
+				<printerselector id="printerlist" />
+				<button name="Print" id="printbutton" type="push" />
+			</layout>
+		</layout>
     </layout>
     <program>
         <![CDATA[
@@ -107,6 +121,7 @@
             roastwt.maximumWidth = 80;
             var scalesLayout = findChildObject(this, 'scales');
             scalesLayout.spacing = 10;
+			var batchTag = findChildObject(this, 'batchTag');
             if(navigationwindow.loggingWindow.scales.length > 0) {
                 for(var i = 0; i < navigationwindow.loggingWindow.scales.length; i++) {
                     var scale = navigationwindow.loggingWindow.scales[i];
@@ -378,8 +393,8 @@
                     lossspec.text = "";
                     specnotes.plainText = "";
                 }
-                roastestimate.text = "";
                 query = query.invalidate();
+				drawTag();
             });
             var validateCapacity = function() {
                 if(checkCapacity == "true") {
@@ -389,6 +404,8 @@
                 }
                 return true;
             }
+            var duration = findChildObject(this, 'duration');
+            var timefield = findChildObject(this, 'time');
             profilebutton.clicked.connect(function() {
                 var proceed = false;
                 if(validateCapacity()) {
@@ -396,6 +413,10 @@
                 } else {
                     proceed = displayWarning(TTR("batchWindow", "Suspicious Input"),
                     TTR("batchWindow", "Entered green coffee weight exceeds maximum batch size. Continue?"));
+                }
+                if((proceed == true) && (timefield.text.length != 0)) {
+                    proceed = displayWarning(TTR("batchWindow", "Batch Already Roasted"),
+                    TTR("batchWindow", "Roasting data already exists for this batch. Roasting another batch from this window will overwrite existing data. Are you sure you want to do this?"));
                 }
                 if(proceed) {
                     doLoadProfile();
@@ -480,6 +501,10 @@
                     proceed = displayWarning(TTR("batchWindow", "Suspicious Input"),
                     TTR("batchWindow", "Entered green coffee weight exceeds maximum batch size. Continue?"));
                 }
+                if((proceed == true) && (timefield.text.length != 0)) {
+                    proceed = displayWarning(TTR("batchWindow", "Batch Already Roasted"),
+                    TTR("batchWindow", "Roasting data already exists for this batch. Roasting another batch from this window will overwrite existing data. Are you sure you want to do this?"));
+                }
                 if(proceed) {
                     doNoProfile();
                 }
@@ -491,19 +516,24 @@
                 navigationwindow.loggingWindow.activateWindow();
             }
             var submitbutton = findChildObject(this, 'submit');
-            var timefield = findChildObject(this, 'time');
             var notes = findChildObject(this, 'annotation');
-            var duration = findChildObject(this, 'duration');
             var approval = findChildObject(this, 'approval');
             approval.checked = true;
             var target = findChildObject(this, 'target');
+            var greenCheck = function() {
+                var itemArray = table.columnArray(0, 32).split("\\s*,\\s*");
+                var weightArray = table.columnArray(1, 0).split("\\s*,\\s*");
+                return (itemArray.length == weightArray.length) && (itemArray.length > 0);
+            }
             var checkSubmitEnable = function () {
                 if(roasted.currentIndex > 0) {
                     if(timefield.text.length > 0) {
                         if(duration.text.length > 0) {
                             if(batch.tempData.length > 0) {
                                 if(green.text.length > 0) {
-                                    return true;
+                                    if(greenCheck()) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -528,6 +558,20 @@
                     }
                 }
             });
+            var filenofield = findChildObject(this, 'filenofield');
+            this.endBatch = function() {
+                var q = "INSERT INTO files (id, name, type, note, file) VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
+                var query = new QSqlQuery();
+                query.prepare(q);
+                query.bind(":name", timefield.text + " " + roasted.currentText);
+                query.bindFileData(":data", batch.tempData);
+                query.exec();
+                query.next();
+                filenofield.text = query.value(0);
+                var file = new QFile(batch.tempData);
+                file.remove();
+				drawTag();
+            }
             var doSubmit = function() {
                 checkQuery = new QSqlQuery();
                 checkQuery.exec("SELECT 1 FROM machine WHERE id = " + selectedRoasterID);
@@ -539,17 +583,9 @@
                     checkQuery.exec();
                 }
                 checkQuery = checkQuery.invalidate();
-                var q = "INSERT INTO files (id, name, type, note, file) VALUES(default, :name, 'profile', NULL, :data) RETURNING id";
                 query = new QSqlQuery();
-                query.prepare(q);
-                query.bind(":name", timefield.text + " " + roasted.currentText);
-                query.bindFileData(":data", batch.tempData);
-                query.exec();
-                query.next();
-                var fileno = query.value(0);
-                var file = new QFile(batch.tempData);
-                file.remove();
-                var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, ";
+                var fileno = Number(filenofield.text);
+                var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files, person) VALUES(:time, ";
                 q2 = q2 + table.columnArray(0, 32);
                 q2 = q2 + ", ";
                 for(var i = 0; table.data(i, 1, 0).value != ""; i++)
@@ -567,14 +603,21 @@
                 q2 = q2 + selectedRoasterID;
                 q2 = q2 + ", :duration, :approval, NULL, NULL, NULL, NULL, '{";
                 q2 = q2 + fileno;
-                q2 = q2 + "}')";
+                q2 = q2 + "}', :user) RETURNING time";
                 query2 = new QSqlQuery();
                 query2.prepare(q2);
                 query2.bind(":time", timefield.text);
                 query2.bind(":annotation", notes.plainText);
                 query2.bind(":duration", duration.text);
                 query2.bind(":approval", approval.checked);
+				query2.bind(":user", Application.currentTypicaUser());
                 query2.exec();
+                if(!query2.next()) {
+                    displayError(TTR("batchWindow", "Database Insert Failed"), TTR("batchWindow", "Failed to save batch to database. Please check inputs and connection and try again."));
+                    query2 = query2.invalidate();
+                    query = query.invalidate();
+                    return;
+                }
                 query2 = query2.invalidate();
                 if(target.checked) {
                     var q3 = "INSERT INTO item_files (time, item, files) VALUES(:time, :item, '{";
@@ -589,6 +632,72 @@
                 batch.windowModified = false;
                 batch.close();
             }
+			function drawTag() {
+				var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+				output.writeStartElement("head");
+				var styleFile = new QFile(QSettings.value("config") + "/Scripts/batchtag.css");
+				styleFile.open(1);
+				output.writeTextElement("style", styleFile.readToString());
+				styleFile.close();
+				output.writeStartElement("script");
+				scriptFile = new QFile(QSettings.value("config") + "/Scripts/qrcode.js");
+				scriptFile.open(1);
+				output.writeCDATA(scriptFile.readToString());
+				scriptFile.close();
+				output.writeEndElement();
+				output.writeEndElement();
+                output.writeStartElement("body");
+				output.writeStartElement("h1");
+				output.writeCharacters(roasted.currentText);
+				output.writeEndElement();
+				output.writeTextElement("span", "Roasted at: " + timefield.text);
+				output.writeTextElement("span", "On machine: " + machine.text);
+				output.writeTextElement("span", "Batch file: " + filenofield.text);
+				output.writeStartElement("div");
+				output.writeAttribute("id", "container");
+				output.writeEndElement();
+				output.writeStartElement("script");
+				var tag = {g: "Typica", m: Number(selectedRoasterID), v: 1};
+				if(timefield.text.length > 0) {
+					tag.t = timefield.text;
+				}
+				if(filenofield.text.length > 0) {
+					tag.f = Number(filenofield.text);
+				}
+				var scriptData = 'var width = document.getElementById("container").offsetWidth;';
+				scriptData += 'var qrcode = new QRCode({content: \'';
+				scriptData += JSON.stringify(tag);
+				scriptData += '\', width: width, height: width});';
+				scriptData += 'var svg = qrcode.svg();';
+				scriptData += 'document.getElementById("container").innerHTML = svg;';
+				output.writeCDATA(scriptData);
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndElement();
+				output.writeEndDocument();
+                batchTag.setContent(buffer);
+                buffer.close();
+			};
+			drawTag();
+			var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                batchTag.print();
+            });
+			var printers = findChildObject(this, 'printerlist');
+			printers.currentIndex = printers.findText(QSettings.value("script/batchtagprinter"));
+			printers['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/batchtagprinter", printers.currentText);
+            });
+			var printbutton = findChildObject(this, 'printbutton');
+			printbutton.clicked.connect(function() {
+				batchTag.print(printers.currentText);
+			});
         ]]>
     </program>
 </window>

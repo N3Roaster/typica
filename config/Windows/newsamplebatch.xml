@@ -132,6 +132,7 @@
 			newMenu.triggered.connect(function() {
 				createWindow("sampleRoastingBatch");
 			});
+            this.endBatch = function() {};
 			var batch = this;
 			batch.submitButton = submit;
 			var name = findChildObject(this, 'name');
@@ -179,27 +180,27 @@
 			stop.clicked.connect(function() {
 				submit.setEnabled(true);
 			});
-                        var validateCapacity = function() {
-                            if(checkCapacity == "true") {
-                                if(convertToPounds(parseFloat(green.text), GunitBox.currentText) > poundsCapacity) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        }
-                        roastButton.clicked.connect(function() {
-                            var proceed = false;
-                            if(validateCapacity()) {
-                                proceed = true;
-                            } else {
-                                proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
+            var validateCapacity = function() {
+                if(checkCapacity == "true") {
+                    if(convertToPounds(parseFloat(green.text), GunitBox.currentText) > poundsCapacity) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            roastButton.clicked.connect(function() {
+                var proceed = false;
+                if(validateCapacity()) {
+                    proceed = true;
+                } else {
+                    proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
                                 TTR("sampleRoastingBatch", "Entered green coffee weight exceeds maximum batch size. Continue?"));
-                            }
-                            if(proceed) {
-                                doRoast();
-                            }
-                        });
-                        var doRoast = function() {
+                }
+                if(proceed) {
+                    doRoast();
+                }
+                });
+                var doRoast = function() {
 				var lc = 1;
 				currentBatchInfo = batch;
 				query = new QSqlQuery();
@@ -270,19 +271,19 @@
 			var vendor = findChildObject(this, 'vendor');
 			var attributes = findChildObject(this, 'attributes');
 			var target = findChildObject(this, 'target');
-                        submit.clicked.connect(function() {
-                            var proceed = false;
-                            if(validateCapacity()) {
-                                proceed = true;
-                            } else {
-                                proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
+            submit.clicked.connect(function() {
+                var proceed = false;
+                if(validateCapacity()) {
+                    proceed = true;
+                } else {
+                    proceed = displayWarning(TTR("sampleRoastingBatch", "Suspicious Input"),
                                 TTR("sampleRoastingBatch", "Entered green coffee weight exceeds maximum batch size. Continue?"));
-                            }
-                            if(proceed) {
-                                doLoadProfile();
-                            }
-                        });
-                        var doSubmit = function() {
+                }
+                if(proceed) {
+                    doSubmit();
+                }
+            });
+            var doSubmit = function() {
 				query = new QSqlQuery();
 				query.prepare("INSERT INTO files (id, name, type, note, file) VALUES(DEFAULT, :name, 'profile', NULL, :data) RETURNING id");
 				query.bind(":name", timefield.text + " " + name.text + " " + profileName.currentText);
@@ -346,7 +347,7 @@
 				query.exec();
 				query.next();
 				var roastedId = query.value(0);
-				query.prepare("INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files) VALUES(:time, :unroastedids, :greens, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files)");
+				query.prepare("INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files, person) VALUES(:time, :unroastedids, :greens, :green, :roastedid, :roasted, 'SAMPLEROAST', :note, :machine, :duration, TRUE, NULL, NULL, NULL, NULL, :files, :user)");
 				query.bind(":time", timefield.text);
 				query.bind(":unroastedids", "{" + greenId + "}");
                                 query.bind(":greens", "{" + convertToPounds(parseFloat(green.text), GunitBox.currentText) + "}");
@@ -357,6 +358,7 @@
 				query.bind(":machine", Number(selectedRoasterID));
 				query.bind(":duration", duration.text);
 				query.bind(":files", "{" + fileno + "}");
+				query.bind(":user", Application.currentTypicaUser());
 				query.exec();
 				query = query.invalidate();
 				batch.close();

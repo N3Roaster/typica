@@ -1,325 +1,371 @@
 <window id="item_transactions">
-	<reporttitle>Inventory:->Item Transactions</reporttitle>
-	<layout type="vertical">
-		<layout type="horizontal">
-			<label>Item:</label>
-			<sqldrop id="item" data="0" display="1" showdata="true">
-				<null />
-				<query>SELECT id, name FROM items WHERE category = 'Coffee: Unroasted' ORDER BY name</query>
-			</sqldrop>
-			<label>Weight Unit:</label>
-			<sqldrop id="unit" />
-			<stretch />
-		</layout>
-		<webview id="report" />
-	</layout>
-	<menu name="File">
-		<item id="print" shortcut="Ctrl+P">Print</item>
-	</menu>
-	<program>
-		<![CDATA[
-			this.windowTitle = TTR("item_transactions", "Typica - Item Transactions");
-			var itemBox = findChildObject(this, 'item');
-			var unitBox = findChildObject(this, 'unit');
-			unitBox.addItem(TTR("item_transactions", "Kg"));
-			unitBox.addItem(TTR("item_transactions", "Lb"));
-			unitBox.currentIndex = QSettings.value("script/report_unit", 1);
-			unitBox['currentIndexChanged(int)'].connect(function() {
-				QSettings.setValue("script/report_unit", unitBox.currentIndex);
-				refresh();
-			});
-			var view = findChildObject(this, 'report');
-			var printMenu = findChildObject(this, 'print');
-			printMenu.triggered.connect(function() {
-				view.print();
-			});
-			itemBox['currentIndexChanged(int)'].connect(function() {
-				refresh();
-			});
-			function refresh() {
-				var buffer = new QBuffer;
-				buffer.open(3);
-				var output = new XmlWriter(buffer);
-				output.writeStartDocument("1.0");
-				output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
-				output.writeStartElement("html");
-				output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-				output.writeStartElement("head");
-				output.writeTextElement("title", TTR("item_transactions", "Item Transactions"));
-				output.writeStartElement("script");
-				var scriptFile = new QFile(QSettings.value("config") + "/Scripts/d3.min.js");
-				scriptFile.open(1);
-				output.writeCDATA(scriptFile.readToString());
-				scriptFile.close();
-				output.writeEndElement();
-				output.writeStartElement("style");
-				output.writeAttribute("type", "text/css");
-				output.writeCDATA("tr.PURCHASE {background-color: #77FF77}");
-				output.writeCDATA("tr.USE {background-color: #FFFFFF}");
-				output.writeCDATA("tr.INVENTORY {background-color: #7777FF}");
-				output.writeCDATA("tr.SALE {background-color: #FF77FF}");
-				output.writeCDATA("tr.LOSS {background-color: #FF7777}");
-				output.writeCDATA("tr.MAKE {background-color: #FFFF77}");
-				output.writeEndElement(); // style
-				
-				output.writeEndElement();
-				output.writeStartElement("body");
-				output.writeTextElement("h1", TTR("item_transactions", "Item Transactions:"));
-				output.writeStartElement("table");
-				output.writeStartElement("tr");
-				output.writeStartElement("td");
-				output.writeTextElement("strong", "Item: ")
-				output.writeTextElement("span", itemBox.currentText);
-				output.writeEndElement(); // td
-				var query = new QSqlQuery();
-				query.prepare("SELECT reference, category FROM items WHERE id = :item");
-				query.bind(":item", itemBox.currentData());
-				query.exec();
-				if(query.next()) {
-					output.writeStartElement("td");
-					output.writeTextElement("strong", TTR("item_transactions", "Reference: "));
-					output.writeTextElement("span", query.value(0));
-					output.writeEndElement(); // td
-					output.writeStartElement("td");
-					output.writeTextElement("strong", TTR("item_transactions", "Category: "));
-					output.writeTextElement("span", query.value(1));
-					output.writeEndElement(); //td
-					output.writeEndElement(); //tr
-					query.prepare("SELECT origin, region, producer, grade, milling, drying FROM coffees WHERE id = :item");
-					query.bind(":item", itemBox.currentData());
-					query.exec();
-					if(query.next()) {
-						output.writeStartElement("tr");
-						output.writeStartElement("td");
-						output.writeTextElement("strong", TTR("item_transactions", "Origin: "));
-						output.writeTextElement("span", query.value(0));
-						output.writeEndElement(); // td
-						output.writeStartElement("td");
-						output.writeTextElement("strong", TTR("item_transactions", "Region: "));
-						output.writeTextElement("span", query.value(1));
-						output.writeEndElement(); // td
-						output.writeStartElement("td");
-						output.writeTextElement("strong", TTR("item_transactions", "Producer: "));
-						output.writeTextElement("span", query.value(2));
-						output.writeEndElement(); // td
-						output.writeEndElement(); // tr
-						output.writeStartElement("tr");
-						output.writeStartElement("td");
-						output.writeTextElement("strong", TTR("item_transactions", "Grade: "));
-						output.writeTextElement("span", query.value(3));
-						output.writeEndElement(); // td
-						output.writeStartElement("td");
-						output.writeTextElement("strong", TTR("item_transactions", "Milling: "));
-						output.writeTextElement("span", query.value(4));
-						output.writeEndElement(); // td
-						output.writeStartElement("td");
-						output.writeTextElement("strong", TTR("item_transactions", "Drying: "));
-						output.writeTextElement("span", query.value(5));
-						output.writeEndElement(); // td
-						output.writeEndElement(); // tr
-						query.prepare("SELECT decaf_method FROM decaf_coffees WHERE id = :item");
-						query.bind(":item", itemBox.currentData());
-						query.exec();
-						if(query.next()) {
-							output.writeStartElement("tr");
-							output.writeStartElement("td");
-							output.writeAttribute("colspan", "3");
-							output.writeTextElement("strong", TTR("item_transactions", "Decaffeination Method: "));
-							output.writeTextElement("span", query.value(0));
-							output.writeEndElement(); // td
-							output.writeEndElement(); // tr
-						}
-					}
-					output.writeEndElement() // table
-					
-					output.writeStartElement("div");
-					output.writeAttribute("id", "chart");
-					output.writeEndElement();
-					
-					query.prepare("WITH q AS (SELECT roasted_id, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_quantity, generate_subscripts(unroasted_quantity, 1) AS s FROM roasting_log) SELECT (SELECT name FROM items WHERE id = roasted_id) AS name, roasted_id, SUM(unroasted_quantity[s]) AS total, COUNT(unroasted_quantity[s]), SUM((unroasted_quantity[s]/unroasted_total_quantity)*roasted_quantity)::numeric(12,3) AS roast_proportion FROM q WHERE unroasted_id[s] = :item1 GROUP BY roasted_id UNION SELECT 'Green Sales', NULL, SUM(quantity), COUNT(1), NULL FROM sale WHERE item = :item2 UNION SELECT 'Inventory Adjustment', NULL, ((SELECT SUM(quantity) FROM purchase WHERE item = :item3) - (SELECT quantity FROM items WHERE id = :item4) - (SELECT SUM(quantity) FROM all_transactions WHERE type != 'PURCHASE' AND type != 'INVENTORY' AND item = :item5)), (SELECT COUNT(1) FROM inventory WHERE item = :item6), NULL UNION SELECT 'Loss', NULL, SUM(quantity), COUNT(1), NULL FROM loss WHERE item = :item7 UNION SELECT 'Current Inventory', NULL, (SELECT quantity FROM items WHERE id = :item8), NULL, NULL ORDER BY total DESC");
-					query.bind(":item1", itemBox.currentData());
-					query.bind(":item2", itemBox.currentData());
-					query.bind(":item3", itemBox.currentData());
-					query.bind(":item4", itemBox.currentData());
-					query.bind(":item5", itemBox.currentData());
-					query.bind(":item6", itemBox.currentData());
-					query.bind(":item7", itemBox.currentData());
-					query.bind(":item8", itemBox.currentData());
-					query.exec();
-					var chartData = "var data = [";
-					var roastedCoffeeLines = "";
-					var adjustmentLines = "";
-					var currentInventoryLine = "";
-					var conversion = 1;
-					if(unitBox.currentIndex == 0) {
-						conversion = 2.2;
-					}
-					while(query.next()) {
-						if(Number(query.value(1)) > 0) {
-							roastedCoffeeLines += "['" + query.value(0).replace(/\'/g, "\\x27") + "'," + query.value(2) / conversion + "," + query.value(3) + "," + query.value(4) / conversion + "],";
-						} else if (query.value(0) == "Current Inventory") {
-							currentInventoryLine = "['Current Inventory'," + query.value(2) / conversion + "," + query.value(3) + "," + query.value(4) / conversion + "]";
-						} else {
-							if(Number(query.value(3)) > 0) {
-								adjustmentLines += "['" + query.value(0) + "'," + query.value(2) / conversion + "," + query.value(3) + "," + query.value(4) / conversion + "],";
-							}
-						}
-					}
-					chartData = chartData + roastedCoffeeLines + adjustmentLines + currentInventoryLine + "];";
-					
-					output.writeTextElement("script", chartData);
-					
-					output.writeStartElement("script");
-					scriptFile = new QFile(QSettings.value("config") + "/Scripts/greenusechart.js");
-					scriptFile.open(1);
-					output.writeCDATA(scriptFile.readToString());
-					scriptFile.close();
-					output.writeEndElement();
-					
-					query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason FROM item_history(:item)");
-					switch(unitBox.currentIndex)
-					{
-						case 0:
-							query.bind(":c1", 2.2);
-							query.bind(":c2", 2.2);
-							break;
-						case 1:
-							query.bind(":c1", 1);
-							query.bind(":c2", 1);
-							break;
-					}
-					query.bind(":item", itemBox.currentData());
-					query.exec();
-					output.writeStartElement("table");
-					output.writeStartElement("tr");
-					output.writeTextElement("th", TTR("item_transactions", "Date"));
-					output.writeTextElement("th", TTR("item_transactions", "Type"));
-					output.writeTextElement("th", TTR("item_transactions", "Quantity"));
-					output.writeTextElement("th", TTR("item_transactions", "Balance"));
-					output.writeTextElement("th", TTR("item_transactions", "Record"));
-					output.writeEndElement(); // tr
-					var prev_balance = "0";
-					var prev_prec = 0;
-					var cur_prec = 0;
-                                        var max_prec = 3;
-					while(query.next()) {
-						output.writeStartElement("tr");
-						output.writeAttribute("class", query.value(1));
-						output.writeTextElement("td", query.value(0));
-						output.writeTextElement("td", query.value(1));
-                                                var split = prev_balance.split('.');
-                                                if(split.length > 1) {
-                                                    prev_prec = split[1].length;
-                                                } else {
-                                                    prev_prec = 0;
-                                                }
-                                                split = query.value(2).split('.');
-                                                if(split.length > 1) {
-                                                    cur_prec = split[1].length;
-                                                } else {
-                                                    cur_prec = 0;
-                                                }
-                                                var prec = prev_prec > cur_prec ? prev_prec : cur_prec;
-                                                var prec = (prec > max_prec ? max_prec : prec);
-						if(query.value(1) == "INVENTORY") {
-                                                    output.writeTextElement("td", (Number(query.value(2)) - Number(prev_balance)).toFixed(prec));
-						} else {
-                                                    output.writeTextElement("td", (Number(query.value(2)).toFixed(prec)));
-						}
-						output.writeTextElement("td", (Number(query.value(3)).toFixed(prec)));
-						prev_balance = query.value(3);
-						if(query.value(1) == "PURCHASE") {
-							output.writeStartElement("td");
-							output.writeStartElement("a");
-							output.writeAttribute("href", "typica://script/i" + query.value(5));
-							output.writeCDATA(query.value(6) + " (" + query.value(5) + ")");
-							output.writeEndElement();
-							output.writeEndElement();
-						} else if(query.value(1) == "USE") {
-							output.writeStartElement("td");
-							output.writeStartElement("a");
-							output.writeAttribute("href", "typica://script/p" + query.value(4).slice(1,-1));
-							output.writeCDATA(query.value(7) + " " + query.value(4));
-							output.writeEndElement();
-							output.writeEndElement();
-                                                } else if(query.value(1) == "LOSS") {
-                                                    output.writeTextElement("td", query.value(9));
-                                                } else if(query.value(1) == "SALE") {
-                                                    output.writeTextElement("td", query.value(8));
-						} else {
-							output.writeTextElement("td", "");
-						}
-						output.writeEndElement(); // tr
-					}
-					output.writeEndElement(); // table
-					/* Put the rest of the report here. No sense running queries if
-					   the item doesn't exist. */
-				} else {
-					/* Close tags if item data not found. */
-					output.writeEndElement(); // tr
-					output.writeEndElement(); // table
-				}
-				
-				output.writeEndElement(); // body
-				output.writeEndElement(); // html
-				output.writeEndDocument();
-				view.setContent(buffer);
-				buffer.close();
-				query = query.invalidate();
-			}
-			if(itemBox.currentData() > 0) {
-				refresh();
-			}
-			
-			/* Open invoices */
-			var openInvoice = function(url) {
-				var arg = url.slice(1, url.length);
-				var info = createWindow("invoiceinfo");
-				info.setInvoiceID(arg);
-				var query = new QSqlQuery();
-				query.exec("SELECT time, invoice, vendor FROM invoices WHERE id = " + arg);
-				query.next();
-				var timefield = findChildObject(info, 'date');
-				timefield.text = query.value(0);
-				var vendorfield = findChildObject(info, 'vendor');
-				vendorfield.text = query.value(2);
-				var invoicefield = findChildObject(info, 'invoice');
-				invoicefield.text = query.value(1);
-				var itemtable = findChildObject(info, 'itemtable');
-				itemtable.setQuery("SELECT record_type, item_id, description, (SELECT reference FROM items WHERE id = item_id) AS reference, (SELECT cost FROM purchase WHERE item = item_id) AS unit_cost, (SELECT quantity FROM purchase WHERE item = item_id) AS quantity, ((SELECT quantity FROM purchase WHERE item = item_id)/(SELECT conversion FROM lb_bag_conversion WHERE item = item_id))::numeric(12,2) AS sacks, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'PURCHASE' UNION SELECT record_type, NULL, description, NULL, NULL, NULL, NULL, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'FEE' ORDER BY item_id");
-				query = query.invalidate();
-			};
-			
-			/* Open batch data */
-			var openProfile = function(url) {
-				var arg = url.slice(1, url.length);
-				var details = createWindow("batchDetails");
-				var fakeTable = new Object;
-				fakeTable.holding = new Array(7);
-				fakeTable.data = function(r, c) {
-					return this.holding[c];
-				};
-				var query = new QSqlQuery();
-				query.exec("SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration, annotation FROM roasting_log WHERE files = '{" + arg + "}'");
-				query.next();
-				for(var i = 0; i < 8; i++) {
-					fakeTable.holding[i] = query.value(i);
-				}
-				query = query.invalidate();
-				details.loadData(fakeTable, 0);
-			};
-			
-			view.scriptLinkClicked.connect(function(url) {
-				var linkType = url[0];
-				switch(linkType) {
-					case 'i':
-						openInvoice(url);
-						break;
-					case 'p':
-						openProfile(url);
-						break;
-				}
-			});
-		]]>
-	</program>
+    <reporttitle>Inventory:->Item Transactions</reporttitle>
+    <layout type="vertical">
+        <layout type="horizontal">
+            <daterange id="dates" initial="23" /><!-- Lifetime-->
+            <label>Item:</label>
+            <sqldrop id="item" data="0" display="1" showdata="true">
+            <null />
+            <query>SELECT id, name FROM items WHERE category = 'Coffee: Unroasted' ORDER BY name</query>
+            </sqldrop>
+            <label>Weight Unit:</label>
+            <sqldrop id="unit" />
+            <stretch />
+        </layout>
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print</item>
+    </menu>
+    <program>
+        <![CDATA[
+            this.windowTitle = TTR("item_transactions", "Typica - Item Transactions");
+            var dateSelect = findChildObject(this, 'dates');
+            var dateQuery = new QSqlQuery();
+            dateQuery.exec("SELECT time::date FROM transactions WHERE time = (SELECT min(time) FROM transactions) OR time = (SELECT max(time) FROM transactions) ORDER BY time ASC");
+            dateQuery.next();
+            var lifetimeStartDate = dateQuery.value(0);
+            var lifetimeEndDate;
+            if(dateQuery.next()) {
+                lifetimeEndDate = dateQuery.value(0);
+            } else {
+                lifetimeEndDate = lifetimeStartDate;
+            }
+            dateSelect.setLifetimeRange(lifetimeStartDate, lifetimeEndDate);
+            dateQuery = dateQuery.invalidate();
+            dateSelect.rangeUpdated.connect(function() {
+                refresh();
+            });
+            var itemBox = findChildObject(this, 'item');
+            var unitBox = findChildObject(this, 'unit');
+            unitBox.addItem(TTR("item_transactions", "Kg"));
+            unitBox.addItem(TTR("item_transactions", "Lb"));
+            unitBox.currentIndex = QSettings.value("script/report_unit", 1);
+            unitBox['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/report_unit", unitBox.currentIndex);
+                refresh();
+            });
+            var view = findChildObject(this, 'report');
+            var printMenu = findChildObject(this, 'print');
+            printMenu.triggered.connect(function() {
+                view.print();
+            });
+            itemBox['currentIndexChanged(int)'].connect(function() {
+                refresh();
+            });
+            function refresh() {
+                var dateRange = dateSelect.currentRange();
+                var startDate = dateRange[0];
+                var endDate = dateRange[dateRange.length - 1];
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                output.writeTextElement("title", TTR("item_transactions", "Item Transactions"));
+                output.writeStartElement("script");
+                var scriptFile = new QFile(QSettings.value("config") + "/Scripts/d3.min.js");
+                scriptFile.open(1);
+                output.writeCDATA(scriptFile.readToString());
+                scriptFile.close();
+                output.writeEndElement();
+                output.writeStartElement("style");
+                output.writeAttribute("type", "text/css");
+                output.writeCDATA("tr.PURCHASE {background-color: #77FF77}");
+                output.writeCDATA("tr.USE {background-color: #FFFFFF}");
+                output.writeCDATA("tr.INVENTORY {background-color: #7777FF}");
+                output.writeCDATA("tr.SALE {background-color: #FF77FF}");
+                output.writeCDATA("tr.LOSS {background-color: #FF7777}");
+                output.writeCDATA("tr.MAKE {background-color: #FFFF77}");
+                output.writeEndElement(); // style
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeTextElement("h1", TTR("item_transactions", "Item Transactions:"));
+                output.writeStartElement("table");
+                output.writeStartElement("tr");
+                output.writeStartElement("td");
+                output.writeTextElement("strong", "Item: ")
+                output.writeTextElement("span", itemBox.currentText);
+                output.writeEndElement(); // td
+                var query = new QSqlQuery();
+                query.prepare("SELECT reference, category FROM items WHERE id = :item");
+                query.bind(":item", itemBox.currentData());
+                query.exec();
+                if(query.next()) {
+                    output.writeStartElement("td");
+                    output.writeTextElement("strong", TTR("item_transactions", "Reference: "));
+                    output.writeTextElement("span", query.value(0));
+                    output.writeEndElement(); // td
+                    output.writeStartElement("td");
+                    output.writeTextElement("strong", TTR("item_transactions", "Category: "));
+                    output.writeTextElement("span", query.value(1));
+                    output.writeEndElement(); //td
+                    output.writeEndElement(); //tr
+                    query.prepare("SELECT origin, region, producer, grade, milling, drying FROM coffees WHERE id = :item");
+                    query.bind(":item", itemBox.currentData());
+                    query.exec();
+                    if(query.next()) {
+                        output.writeStartElement("tr");
+                        output.writeStartElement("td");
+                        output.writeTextElement("strong", TTR("item_transactions", "Origin: "));
+                        output.writeTextElement("span", query.value(0));
+                        output.writeEndElement(); // td
+                        output.writeStartElement("td");
+                        output.writeTextElement("strong", TTR("item_transactions", "Region: "));
+                        output.writeTextElement("span", query.value(1));
+                        output.writeEndElement(); // td
+                        output.writeStartElement("td");
+                        output.writeTextElement("strong", TTR("item_transactions", "Producer: "));
+                        output.writeTextElement("span", query.value(2));
+                        output.writeEndElement(); // td
+                        output.writeEndElement(); // tr
+                        output.writeStartElement("tr");
+                        output.writeStartElement("td");
+                        output.writeTextElement("strong", TTR("item_transactions", "Grade: "));
+                        output.writeTextElement("span", query.value(3));
+                        output.writeEndElement(); // td
+                        output.writeStartElement("td");
+                        output.writeTextElement("strong", TTR("item_transactions", "Milling: "));
+                        output.writeTextElement("span", query.value(4));
+                        output.writeEndElement(); // td
+                        output.writeStartElement("td");
+                        output.writeTextElement("strong", TTR("item_transactions", "Drying: "));
+                        output.writeTextElement("span", query.value(5));
+                        output.writeEndElement(); // td
+                        output.writeEndElement(); // tr
+                        query.prepare("SELECT decaf_method FROM decaf_coffees WHERE id = :item");
+                        query.bind(":item", itemBox.currentData());
+                        query.exec();
+                        if(query.next()) {
+                            output.writeStartElement("tr");
+                            output.writeStartElement("td");
+                            output.writeAttribute("colspan", "3");
+                            output.writeTextElement("strong", TTR("item_transactions", "Decaffeination Method: "));
+                            output.writeTextElement("span", query.value(0));
+                            output.writeEndElement(); // td
+                            output.writeEndElement(); // tr
+                        }
+                    }
+                    output.writeEndElement() // table
+                    output.writeStartElement("div");
+                    output.writeAttribute("id", "chart");
+                    output.writeEndElement();
+                    query.prepare("WITH q AS (SELECT roasted_id, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_quantity, generate_subscripts(unroasted_quantity, 1) AS s FROM roasting_log WHERE time >= :sd AND time < :ed ::date + interval '1 day') SELECT (SELECT name FROM items WHERE id = roasted_id) AS name, roasted_id, SUM(unroasted_quantity[s]) AS total, COUNT(unroasted_quantity[s]), SUM((unroasted_quantity[s]/unroasted_total_quantity)*roasted_quantity)::numeric(12,3) AS roast_proportion FROM q WHERE unroasted_id[s] = :item1 GROUP BY roasted_id UNION SELECT 'Green Sales', NULL, SUM(quantity), COUNT(1), NULL FROM sale WHERE item = :item2 UNION SELECT 'Inventory Adjustment', NULL, ((SELECT SUM(quantity) FROM purchase WHERE item = :item3) - (SELECT quantity FROM items WHERE id = :item4) - (SELECT SUM(quantity) FROM all_transactions WHERE type != 'PURCHASE' AND type != 'INVENTORY' AND item = :item5)), (SELECT COUNT(1) FROM inventory WHERE item = :item6), NULL UNION SELECT 'Loss', NULL, SUM(quantity), COUNT(1), NULL FROM loss WHERE item = :item7 UNION SELECT 'Current Inventory', NULL, (SELECT quantity FROM items WHERE id = :item8), NULL, NULL ORDER BY total DESC");
+                    query.bind(":sd", startDate);
+                    query.bind(":ed", endDate);
+                    query.bind(":item1", itemBox.currentData());
+                    query.bind(":item2", itemBox.currentData());
+                    query.bind(":item3", itemBox.currentData());
+                    query.bind(":item4", itemBox.currentData());
+                    query.bind(":item5", itemBox.currentData());
+                    query.bind(":item6", itemBox.currentData());
+                    query.bind(":item7", itemBox.currentData());
+                    query.bind(":item8", itemBox.currentData());
+                    query.exec();
+                    var chartData = "var data = [";
+                    var roastedCoffeeLines = "";
+                    var adjustmentLines = "";
+                    var currentInventoryLine = "";
+                    var conversion = 1;
+                    if(unitBox.currentIndex == 0) {
+                        conversion = 2.2;
+                    }
+                    while(query.next()) {
+                        if(Number(query.value(1)) > 0) {
+                            roastedCoffeeLines += "['" + query.value(0).replace(/\'/g, "\\x27") + "'," + query.value(2) / conversion + "," + query.value(3) + "," + query.value(4) / conversion + "],";
+                        } else if (query.value(0) == "Current Inventory") {
+                            currentInventoryLine = "['Current Inventory'," + query.value(2) / conversion + "," + query.value(3) + "," + query.value(4) / conversion + "]";
+                        } else {
+                            if(Number(query.value(3)) > 0) {
+                                adjustmentLines += "['" + query.value(0) + "'," + query.value(2) / conversion + "," + query.value(3) + "," + query.value(4) / conversion + "],";
+                            }
+                        }
+                    }
+                    chartData = chartData + roastedCoffeeLines + adjustmentLines + currentInventoryLine + "];";
+                    output.writeTextElement("script", chartData);
+                    output.writeStartElement("script");
+                    scriptFile = new QFile(QSettings.value("config") + "/Scripts/greenusechart.js");
+                    scriptFile.open(1);
+                    output.writeCDATA(scriptFile.readToString());
+                    scriptFile.close();
+                    output.writeEndElement();
+                    eval(chartData);
+                    output.writeStartElement("table");
+                    output.writeStartElement("tr");
+                    output.writeTextElement("th", "Item");
+                    output.writeTextElement("th", "Green");
+                    output.writeTextElement("th", "Roasted");
+                    output.writeTextElement("th", "Transactions");
+                    output.writeEndElement();
+                    for(var r = 0; r < data.length; r++)
+                    {
+                        output.writeStartElement("tr");
+                        output.writeTextElement("td", data[r][0]);
+                        output.writeTextElement("td", data[r][1]);
+                        output.writeTextElement("td", data[r][3]);
+                        output.writeTextElement("td", data[r][2]);
+                        output.writeEndElement();
+                    }
+                    output.writeStartElement("tr");
+                    output.writeTextElement("th", "Totals:");
+                    output.writeTextElement("td", data.reduce(function(prev, current){
+                        return +(current[1]) + prev;
+                    }, 0));
+                    output.writeTextElement("td", data.reduce(function(prev, current){
+                        return +(current[3]) + prev;
+                    }, 0));
+                    output.writeTextElement("td", data.reduce(function(prev, current){
+                        return +(current[2]) + prev;
+                    }, 0));
+                    output.writeEndElement();
+                    output.writeEndElement();
+                    query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason, (SELECT person FROM transactions WHERE time = item_history.time AND item = item_history.item) FROM item_history(:item) WHERE time >= :sd AND time < :ed ::date + interval '1 day'");
+                    query.bind(":sd", startDate);
+                    query.bind(":ed", endDate);
+                    switch(unitBox.currentIndex)
+                    {
+                        case 0:
+                            query.bind(":c1", 2.2);
+                            query.bind(":c2", 2.2);
+                            break;
+                        case 1:
+                            query.bind(":c1", 1);
+                            query.bind(":c2", 1);
+                            break;
+                    }
+                    query.bind(":item", itemBox.currentData());
+                    query.exec();
+                    output.writeStartElement("table");
+                    output.writeStartElement("tr");
+                    output.writeTextElement("th", TTR("item_transactions", "Date"));
+                    output.writeTextElement("th", TTR("item_transactions", "Type"));
+                    output.writeTextElement("th", TTR("item_transactions", "Quantity"));
+                    output.writeTextElement("th", TTR("item_transactions", "Balance"));
+                    output.writeTextElement("th", TTR("item_transactions", "Record"));
+					output.writeTextElement("th", TTR("item_transactions", "Person"));
+                    output.writeEndElement(); // tr
+                    var prev_balance = "0";
+                    var prev_prec = 0;
+                    var cur_prec = 0;
+                    var max_prec = 3;
+                    while(query.next()) {
+                        output.writeStartElement("tr");
+                        output.writeAttribute("class", query.value(1));
+                        output.writeTextElement("td", query.value(0));
+                        output.writeTextElement("td", query.value(1));
+                        var split = prev_balance.split('.');
+                        if(split.length > 1) {
+                            prev_prec = split[1].length;
+                        } else {
+                            prev_prec = 0;
+                        }
+                        split = query.value(2).split('.');
+                        if(split.length > 1) {
+                            cur_prec = split[1].length;
+                        } else {
+                            cur_prec = 0;
+                        }
+                        var prec = prev_prec > cur_prec ? prev_prec : cur_prec;
+                        var prec = (prec > max_prec ? max_prec : prec);
+                        if(query.value(1) == "INVENTORY") {
+                            output.writeTextElement("td", (Number(query.value(2)) - Number(prev_balance)).toFixed(prec));
+                        } else {
+                            output.writeTextElement("td", (Number(query.value(2)).toFixed(prec)));
+                        }
+                        output.writeTextElement("td", (Number(query.value(3)).toFixed(prec)));
+                                prev_balance = query.value(3);
+                        if(query.value(1) == "PURCHASE") {
+                            output.writeStartElement("td");
+                            output.writeStartElement("a");
+                            output.writeAttribute("href", "typica://script/i" + query.value(5));
+                            output.writeCDATA(query.value(6) + " (" + query.value(5) + ")");
+                            output.writeEndElement();
+                            output.writeEndElement();
+                        } else if(query.value(1) == "USE") {
+                            output.writeStartElement("td");
+                            output.writeStartElement("a");
+                            output.writeAttribute("href", "typica://script/p" + query.value(4).slice(1,-1));
+                            output.writeCDATA(query.value(7) + " " + query.value(4));
+                            output.writeEndElement();
+                            output.writeEndElement();
+                        } else if(query.value(1) == "LOSS") {
+                            output.writeTextElement("td", query.value(9));
+                        } else if(query.value(1) == "SALE") {
+                            output.writeTextElement("td", query.value(8));
+                        } else {
+                            output.writeTextElement("td", "");
+                        }
+						output.writeTextElement("td", query.value(10));
+                        output.writeEndElement(); // tr
+                    }
+                    output.writeEndElement(); // table
+                    /* Put the rest of the report here. No sense running queries if
+                    the item doesn't exist. */
+                } else {
+                    /* Close tags if item data not found. */
+                    output.writeEndElement(); // tr
+                    output.writeEndElement(); // table
+                }
+                output.writeEndElement(); // body
+                output.writeEndElement(); // html
+                output.writeEndDocument();
+                view.setContent(buffer);
+                buffer.close();
+                query = query.invalidate();
+            }
+            if(itemBox.currentData() > 0) {
+                refresh();
+            }
+            /* Open invoices */
+            var openInvoice = function(url) {
+                var arg = url.slice(1, url.length);
+                var info = createWindow("invoiceinfo");
+                info.setInvoiceID(arg);
+                var query = new QSqlQuery();
+                query.exec("SELECT time, invoice, vendor FROM invoices WHERE id = " + arg);
+                query.next();
+                var timefield = findChildObject(info, 'date');
+                timefield.text = query.value(0);
+                var vendorfield = findChildObject(info, 'vendor');
+                vendorfield.text = query.value(2);
+                var invoicefield = findChildObject(info, 'invoice');
+                invoicefield.text = query.value(1);
+                var itemtable = findChildObject(info, 'itemtable');
+                itemtable.setQuery("SELECT record_type, item_id, description, (SELECT reference FROM items WHERE id = item_id) AS reference, (SELECT cost FROM purchase WHERE item = item_id) AS unit_cost, (SELECT quantity FROM purchase WHERE item = item_id) AS quantity, ((SELECT quantity FROM purchase WHERE item = item_id)/(SELECT conversion FROM lb_bag_conversion WHERE item = item_id))::numeric(12,2) AS sacks, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'PURCHASE' UNION SELECT record_type, NULL, description, NULL, NULL, NULL, NULL, cost FROM invoice_items WHERE invoice_id = " + arg + " AND record_type = 'FEE' ORDER BY item_id");
+                query = query.invalidate();
+            };
+            /* Open batch data */
+            var openProfile = function(url) {
+                var arg = url.slice(1, url.length);
+                var details = createWindow("batchDetails");
+                var fakeTable = new Object;
+                fakeTable.holding = new Array(7);
+                fakeTable.data = function(r, c) {
+                    return this.holding[c];
+                };
+                var query = new QSqlQuery();
+                query.exec("SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration, annotation FROM roasting_log WHERE files = '{" + arg + "}'");
+                query.next();
+                for(var i = 0; i < 8; i++) {
+                    fakeTable.holding[i] = query.value(i);
+                }
+                query = query.invalidate();
+                details.loadData(fakeTable, 0);
+            };
+            view.scriptLinkClicked.connect(function(url) {
+                var linkType = url[0];
+                switch(linkType) {
+                    case 'i':
+                        openInvoice(url);
+                        break;
+                    case 'p':
+                        openProfile(url);
+                        break;
+                }
+            });
+        ]]>
+    </program>
 </window>

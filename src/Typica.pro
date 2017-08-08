@@ -26,7 +26,8 @@ HEADERS += moc_typica.cpp \
     scale.h \
     draglabel.h \
     daterangeselector.h \
-    licensewindow.h
+    licensewindow.h \
+    printerselector.h
 SOURCES += typica.cpp \
     helpmenu.cpp \
     abouttypica.cpp \
@@ -36,7 +37,8 @@ SOURCES += typica.cpp \
     scale.cpp \
     draglabel.cpp \
     daterangeselector.cpp \
-    licensewindow.cpp
+    licensewindow.cpp \
+    printerselector.cpp
 
 RESOURCES += \
     resources.qrc
@@ -46,3 +48,4 @@ ICON = resources/icons/appicons/logo.icns
 QMAKE_INFO_PLIST = resources/Info.plist
 
 CODECFORTR = UTF-8
+TRANSLATIONS = Translations/Typica_de.ts

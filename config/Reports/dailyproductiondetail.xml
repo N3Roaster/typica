@@ -307,19 +307,19 @@
 					output.writeEndElement();
 					output.writeEndElement();	
 					output.writeEndElement();
-                                        output.writeStartElement("td");
-                                        output.writeAttribute("colspan", "4");
-                                        if(query.value(14)) {
-                                            output.writeTextElement("strong", "Roast Specification Notes");
-                                            var specArray = query.value(14).split("\n");
-                                            for(var i = 0; i < noteArray.length; i++) {
-                                                output.writeStartElement("p");
-                                                output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
-                                                output.writeCharacters(specArray[i]);
-                                                output.writeEndElement();
-                                            }                                            
-                                        }
-                                        output.writeEndElement();
+                    output.writeStartElement("td");
+                    output.writeAttribute("colspan", "4");
+                    if(query.value(14)) {
+                        output.writeTextElement("strong", "Roast Specification Notes");
+                        var specArray = query.value(14).split("\n");
+                        for(var i = 0; i < specArray.length; i++) {
+                            output.writeStartElement("p");
+                            output.writeAttribute("style", "margin-top: 0; margin-bottom: 0");
+                            output.writeCharacters(specArray[i]);
+                            output.writeEndElement();
+                        }                                            
+                    }
+                    output.writeEndElement();
 					output.writeEndElement();
 				}
 				output.writeEndElement();

@@ -1,10 +1,10 @@
-/*279:*/
+/*291:*/
 #line 42 "./units.w"
 
 #include "units.h"
 #include <QtDebug> 
 
-/*:279*//*280:*/
+/*:291*//*292:*/
 #line 53 "./units.w"
 
 bool Units::isTemperatureUnit(Unit unit)
@@ -15,7 +15,7 @@ unit==Kelvin||
 unit==Rankine);
 }
 
-/*:280*//*281:*/
+/*:292*//*293:*/
 #line 71 "./units.w"
 
 double Units::convertTemperature(double value,Unit fromUnit,Unit toUnit)
@@ -113,7 +113,7 @@ break;
 return 0;
 }
 
-/*:281*//*282:*/
+/*:293*//*294:*/
 #line 169 "./units.w"
 
 double Units::convertRelativeTemperature(double value,Unit fromUnit,Unit toUnit)
@@ -211,7 +211,7 @@ break;
 return 0;
 }
 
-/*:282*//*283:*/
+/*:294*//*295:*/
 #line 267 "./units.w"
 
 double Units::convertWeight(double value,Unit fromUnit,Unit toUnit)
@@ -316,4 +316,4 @@ unit==Ounce||
 unit==Gram);
 }
 
-/*:283*/
+/*:295*/

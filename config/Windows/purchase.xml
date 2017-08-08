@@ -317,7 +317,7 @@
                     query.exec();
                     query.next();
                     var item_id = query.value(0);
-                    q = "INSERT INTO purchase (time, item, quantity, cost, vendor) VALUES(:time, :item, :quantity, :cost, :vendor)";
+                    q = "INSERT INTO purchase (time, item, quantity, cost, vendor, person) VALUES(:time, :item, :quantity, :cost, :vendor, :user)";
                     query.prepare(q);
                     query.bind(":time", dateField.date);
                     query.bind(":item", item_id);
@@ -332,6 +332,7 @@
                         query.bind(":cost", Number(costEntry.text) / convertToPounds(parseFloat(quantityEntry.text), unitEntry.currentText));
                     }
                     query.bind(":vendor", vendorField.currentText);
+					query.bind(":user", Application.currentTypicaUser());
                     query.exec();
                     q = "INSERT INTO lb_bag_conversion (item, conversion) VALUES(:item, :conversion)";
                     query.prepare(q);

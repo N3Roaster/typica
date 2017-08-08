@@ -65,8 +65,8 @@
             button.clicked.connect(function() {
                 q = "INSERT INTO ";
                 q += (types.currentIndex == 0 ?
-                    "inventory (time, item, quantity)" :
-                    "loss (time, item, quantity, reason)");
+                    "inventory (time, item, quantity, person)" :
+                    "loss (time, item, quantity, reason, person)");
                 q += " VALUES ('now', ";
                 q = q + items.currentData();
                 q = q + ", ";
@@ -82,10 +82,12 @@
                     q = q + ")";
                 }
                 q += (types.currentIndex == 0 ?
-                    ")" :
-                    ", '" + reason.text + "')");
+                    ", :user)" :
+                    ", '" + reason.text + "', :user)");
                 query = new QSqlQuery();
-                query.exec(q);
+                query.prepare(q);
+				query.bind(":user", Application.currentTypicaUser());
+				query.exec();
                 updateStatus();
             });
             items['currentIndexChanged(int)'].connect(updateStatus);

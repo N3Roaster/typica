@@ -1,5 +1,5 @@
-/*1008:*/
-#line 131 "./scales.w"
+/*1060:*/
+#line 135 "./scales.w"
 
 #include "scale.h"
 #include <QStringList> 
@@ -10,8 +10,8 @@ QextSerialPort(port,QextSerialPort::EventDriven)
 connect(this,SIGNAL(readyRead()),this,SLOT(dataAvailable()));
 }
 
-/*:1008*//*1009:*/
-#line 149 "./scales.w"
+/*:1060*//*1061:*/
+#line 153 "./scales.w"
 
 void SerialScale::dataAvailable()
 {
@@ -24,8 +24,8 @@ responseBuffer.clear();
 }
 else
 {
-/*1010:*/
-#line 189 "./scales.w"
+/*1062:*/
+#line 193 "./scales.w"
 
 QStringList responseParts= QString(responseBuffer.simplified()).split(' ');
 if(responseParts.size()> 2)
@@ -35,34 +35,34 @@ responseParts.replace(0,QString("-%1").arg(responseParts[0]));
 }
 double weight= responseParts[0].toDouble();
 Units::Unit unit= Units::Unitless;
-if(responseParts[1]=="lb")
+if(responseParts[1].compare("lb",Qt::CaseInsensitive)==0)
 {
 unit= Units::Pound;
 }
-else if(responseParts[1]=="kg")
+else if(responseParts[1].compare("kg",Qt::CaseInsensitive)==0)
 {
 unit= Units::Kilogram;
 }
-else if(responseParts[1]=="g")
+else if(responseParts[1].compare("g",Qt::CaseInsensitive)==0)
 {
 unit= Units::Gram;
 }
-else if(responseParts[1]=="oz")
+else if(responseParts[1].compare("oz",Qt::CaseInsensitive)==0)
 {
 unit= Units::Ounce;
 }
 emit newMeasurement(weight,unit);
 
-/*:1010*/
-#line 161 "./scales.w"
+/*:1062*/
+#line 165 "./scales.w"
 
 responseBuffer.clear();
 }
 }
 }
 
-/*:1009*//*1011:*/
-#line 220 "./scales.w"
+/*:1061*//*1063:*/
+#line 224 "./scales.w"
 
 void SerialScale::tare()
 {
@@ -71,7 +71,29 @@ write("!KT\x0D");
 
 void SerialScale::weigh()
 {
-write("!KP\x0D");
+
+write(weighCommand+commandTerminator);
 }
 
-/*:1011*/
+void SerialScale::setWeighCommand(const QString&command)
+{
+weighCommand= command.toAscii();
+}
+
+void SerialScale::setCommandTerminator(const QString&terminator)
+{
+if(terminator=="CRLF")
+{
+commandTerminator= "\x0D\x0A";
+}
+else if(terminator=="CR")
+{
+commandTerminator= "\x0D";
+}
+else if(terminator=="LF")
+{
+commandTerminator= "\x0A";
+}
+}
+
+/*:1063*/

@@ -13,6 +13,11 @@
                 <button name="Roast Coffee" id="roast" type="push" />
             </column>
         </row>
+		<row>
+			<column>
+				<button name="Manual Roasting Log Entry" id="manual" type="push" />
+			</column>
+		</row>
         <row>
             <column>
                 <button name="Purchase Green Coffee" id="green" type="push" />
@@ -68,6 +73,10 @@
     <menu name="Database">
         <item id="resetconnection">Forget Connection Details</item>
     </menu>
+	<menu name="Users">
+		<item id="switchuser">Switch User</item>
+		<item id="createuser">Create New Users</item>
+	</menu>
     <program>
         var window = this;
         var navigationwindow = window;
@@ -87,6 +96,10 @@
             QSettings.setValue("database/user", "");
             QSettings.setValue("database/password", "");
         });
+		var manual = findChildObject(this, 'manual');
+		manual.clicked.connect(function() {
+			createWindow("manualLogEntry");
+		});
         var profilehistory = findChildObject(this, 'profilehistory');
         profilehistory.clicked.connect(function() {
                 createWindow("profilehistory");
@@ -133,7 +146,7 @@
         var nrbutton = findChildObject(this, 'newroasted');
         nrbutton.clicked.connect(function() {
             var nrwindow = createWindow("newroasted");
-            nrwindow.windowTitle = "New Roasted Coffee Item";
+            nrwindow.windowTitle = "Manage Roasted Coffee Items";
         });
         var importb = findChildObject(this, 'target');
         importb.clicked.connect(function() {
@@ -226,7 +239,7 @@
 		   Typica 1.6 and later. */
 		var DBCreateSampleRoasting = function() {
 			var query = new QSqlQuery;
-			query.exec("CREATE TABLE IF NOT EXISTS item_attributes (id bigint PRIMARY KEY NOT NULL, name text NOT NULL)");
+			query.exec("CREATE TABLE IF NOT EXISTS item_attributes (id bigserial PRIMARY KEY NOT NULL, name text NOT NULL)");
 			query.exec("CREATE TABLE IF NOT EXISTS coffee_sample_items(arrival timestamp without time zone, vendor text, attribute_ids bigint[], attribute_values text[], item_id bigint) INHERITS (items)");
 			query.exec("INSERT INTO TypicaFeatures (feature, enabled, version) VALUES('sample-roasting', TRUE, 1)");
 			query = query.invalidate();
@@ -272,77 +285,124 @@
 		/* Update trigger functions to make column names explicit */
 		var DBUpdateTriggers = function() {
 			var query = new QSqlQuery;
-			query.exec("CREATE OR REPLACE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("CREATE OR REPLACE FUNCTION log_make_update() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity <> OLD.roasted_quantity AND NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
-			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use (time, item, quantity) VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i]); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
 			query.exec("UPDATE TypicaFeatures SET version = 4 WHERE feature = 'base-features'");
 		};
-                var DBUpdateReminders = function() {
-                    var query = new QSqlQuery;
-                    query.exec("CREATE TABLE IF NOT EXISTS reminders (id bigserial PRIMARY KEY NOT NULL, reminder text NOT NULL)");
-                    query.exec("UPDATE TypicaFeatures SET version = 5 WHERE feature = 'base-features'");
-                    query = query.invalidate();
-                };
+        var DBUpdateReminders = function() {
+            var query = new QSqlQuery;
+            query.exec("CREATE TABLE IF NOT EXISTS reminders (id bigserial PRIMARY KEY NOT NULL, reminder text NOT NULL)");
+            query.exec("UPDATE TypicaFeatures SET version = 5 WHERE feature = 'base-features'");
+            query = query.invalidate();
+        };
 		var DBUpdateSpecification = function() {
-                    var query = new QSqlQuery;
-                    query.exec("CREATE TABLE IF NOT EXISTS roasting_specification (\"time\" timestamp without time zone NOT NULL, item bigint NOT NULL, loss numeric, tolerance numeric, notes text)");
-                    query.exec("UPDATE TypicaFeatures SET version = 6 WHERE feature = 'base-features'");
-                    query = query.invalidate();
-                };
-                
-		query = new QSqlQuery();
-		/* A table keeps track of database versioning information. This table is created
-		   if required. */
-		query.exec("CREATE TABLE IF NOT EXISTS TypicaFeatures (feature TEXT PRIMARY KEY, enabled boolean, version bigint)");
-		/* At the moment everything we're interested in is covered in the base-features
-		   row, but this can be extended later if needed. Each row encodes if certain
-		database structures exist and what version of those structures exist. */
-		query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'base-features'");
-		if(query.next())
-		{
-                    if(query.value(2) < 1)
-                    {
-                            DBCreateBase();
-                    }
-                    if(query.value(2) < 2)
-                    {
-                            DBUpdateMultiUser();
-                            DBUpdateHistory();
-                    }
-                    if(query.value(2) < 3)
-                    {
-                            DBUpdateNotifications();
-                    }
-                    if(query.value(2) < 4)
-                    {
-                            DBUpdateTriggers();
-                    }
-                    if(query.value(2) < 5)
-                    {
-                        DBUpdateReminders();
-                    }
-                    if(query.value(2) < 6)
-                    {
-                        DBUpdateSpecification();
-                    }
-		}
-		else
-		{
-			DBCreateBase();
-		}
-		query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'sample-roasting'");
-		if(query.next())
-		{
-			if(query.value(2) < 1)
+            var query = new QSqlQuery;
+            query.exec("CREATE TABLE IF NOT EXISTS roasting_specification (\"time\" timestamp without time zone NOT NULL, item bigint NOT NULL, loss numeric, tolerance numeric, notes text)");
+            query.exec("UPDATE TypicaFeatures SET version = 6 WHERE feature = 'base-features'");
+            query = query.invalidate();
+        };
+		
+		/* Updates for Typica version 1.8 */
+		var DBUpdate18 = function() {
+			var query = new QSqlQuery;
+			/* Create a table for Typica users login data */
+			query.exec("CREATE TABLE IF NOT EXISTS typica_users(name TEXT PRIMARY KEY NOT NULL, password TEXT, active boolean NOT NULL, auto_login boolean NOT NULL)");
+			/* Update session user logging to only use the database user when a Typica user is not explicitly provided. This maintains compatibility for mixed version use. */
+			query.exec("CREATE OR REPLACE FUNCTION log_session_user() RETURNS trigger AS $$ BEGIN IF NEW.person IS NULL THEN NEW.person := session_user; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE OR REPLACE FUNCTION log_use() RETURNS trigger AS $$ DECLARE i integer := array_lower(NEW.unroasted_id, 1); u integer := array_upper(NEW.unroasted_id, 1); BEGIN IF NEW.transaction_type = 'ROAST' THEN WHILE i <= u LOOP INSERT INTO use (time, item, quantity, person) VALUES(NEW.time, NEW.unroasted_id[i], NEW.unroasted_quantity[i], NEW.person); i := i + 1; END LOOP; END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE OR REPLACE FUNCTION log_make() RETURNS trigger AS $$ BEGIN IF NEW.roasted_quantity IS NOT NULL THEN INSERT INTO make (time, item, quantity, person) VALUES(NEW.time, NEW.roasted_id, NEW.roasted_quantity, NEW.person); END IF; RETURN NEW; END; $$ LANGUAGE plpgsql");
+			query.exec("CREATE TABLE IF NOT EXISTS sample_roast_profiles(\"time\" timestamp without time zone NOT NULL, profile_name TEXT NOT NULL, file bigint NOT NULL)");
+			query.exec("UPDATE TypicaFeatures SET version = 7 WHERE feature = 'base-features'");
+			query = query.invalidate();
+		};
+		if(Application.databaseConnected()) {
+			query = new QSqlQuery();
+			/* A table keeps track of database versioning information. This
+			   table is created
+			   if required. */
+			query.exec("CREATE TABLE IF NOT EXISTS TypicaFeatures (feature TEXT PRIMARY KEY, enabled boolean, version bigint)");
+			query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'base-features'");
+			if(query.next())
+			{
+				if(query.value(2) < 1)
+				{
+				        DBCreateBase();
+				}
+				if(query.value(2) < 2)
+				{
+			        DBUpdateMultiUser();
+			        DBUpdateHistory();
+				}
+				if(query.value(2) < 3)
+				{
+			        DBUpdateNotifications();
+				}
+				if(query.value(2) < 4)
+				{
+			        DBUpdateTriggers();
+				}
+				if(query.value(2) < 5)
+				{
+				    DBUpdateReminders();
+				}
+				if(query.value(2) < 6)
+				{
+					DBUpdateSpecification();
+				}
+				if(query.value(2) < 7) {
+					DBUpdate18();
+				}
+			}
+			else
+			{
+				DBCreateBase();
+				DBUpdateMultiUser();
+		        DBUpdateHistory();
+				DBUpdateNotifications();
+				DBUpdateTriggers();
+				DBUpdateReminders();
+				DBUpdateSpecification();
+				DBUpdate18();
+			}
+			query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'sample-roasting'");
+			if(query.next())
+			{
+				if(query.value(2) < 1)
+				{
+					DBCreateSampleRoasting();
+				}
+			}
+			else
 			{
 				DBCreateSampleRoasting();
 			}
+			var promptNewUsers = true;
+			query.exec("SELECT count(1) FROM typica_users");
+			if(query.next()) {
+				if(Number(query.value(0)) > 0) {
+					promptNewUsers = false;
+				}
+			}
+			if(promptNewUsers) {
+				var newUserDialog = new NewTypicaUser();
+				newUserDialog.exec();
+			}
+			if(!Application.autoLogin()) {
+				var loginDialog = new LoginDialog();
+				loginDialog.exec();
+			}
+			query = query.invalidate();
 		}
-		else
-		{
-			DBCreateSampleRoasting();
-		}
-		query = query.invalidate();
+		
+		var switchuser = findChildObject(this, 'switchuser');
+		switchuser.triggered.connect(function() {
+			var loginDialog = new LoginDialog();
+			loginDialog.exec();
+		});
+		var createuser = findChildObject(this, 'createuser');
+		createuser.triggered.connect(function() {
+			var newUserDialog = new NewTypicaUser();
+			newUserDialog.exec();
+		});
         ]]>
     </program>
 </window>

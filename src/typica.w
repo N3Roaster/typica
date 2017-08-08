@@ -22,8 +22,8 @@
 \mark{\noexpand\nullsec0{A Note on Notation}}
 \def\pn{Typica}
 \def\filebase{typica}
-\def\version{1.7.0 \number\year-\number\month-\number\day}
-\def\years{2007--2016}
+\def\version{1.8.0 \number\year-\number\month-\number\day}
+\def\years{2007--2017}
 \def\title{\pn{} (Version \version)}
 \newskip\dangerskipb
 \newskip\dangerskip
@@ -609,6 +609,9 @@ generated file empty.
 @<SerialScaleConfWidget implementation@>@/
 @<ValueAnnotation implementation@>@/
 @<ValueAnnotationConfWidget implementation@>@/
+@<ModbusNG implementation@>@/
+@<ThresholdAnnotationConfWidget implementation@>@/
+@<Annotator implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
 various Qt modules.
@@ -807,15 +810,25 @@ The first of these is |QObject|.
 
 @<Function prototypes for scripting@>=
 void setQObjectProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QObject_setProperty(QScriptContext *context, QScriptEngine *engine);
 
-@ As there are no properties that need to be set for this class and as this
-class does not inherit any other class, nothing needs to be done in this method.
-It will, however, be called by subclasses in case this changes in the future.
+@ Attaching properties to a |QScriptValue| that wraps a |QObject| does not
+create a dynamic property on the underlying |QObject| by default. This can
+cause issues with certain interactions between script and native code. Rather
+than change every wrapper, we can instead expose a |setProperty()| method.
 
 @<Functions for scripting@>=
-void setQObjectProperties(QScriptValue, QScriptEngine *)
+void setQObjectProperties(QScriptValue value, QScriptEngine *engine)
 {
-    /* Nothing needs to be done here. */
+    value.setProperty("setProperty", engine->newFunction(QObject_setProperty));
+}
+
+QScriptValue QObject_setProperty(QScriptContext *context, QScriptEngine *)
+{
+	QObject *self = getself<QObject *>(context);
+	self->setProperty(argument<QString>(0, context).toUtf8().constData(),
+	                  argument<QVariant>(1, context));
+    return QScriptValue();
 }
 
 @ The same can be done for |QPaintDevice| and |QLayoutItem|.
@@ -836,6 +849,41 @@ void setQLayoutItemProperties(QScriptValue, QScriptEngine *)
 {
     /* Nothing needs to be done here. */
 }
+
+@* Timers.
+
+\noindent Some features in Typica require access to functionality similar to
+what |QTimer| provides from the host environment. This includes allowing
+script devices to periodically poll connected hardware and allowing a safety
+delay on profile translation.
+
+<@Function prototypes for scripting@>=
+void setQTimerProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue constructQTimer(QScriptContext *context, QScriptEngine *engine);
+
+@ The host environment is informed of the constructor.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQTimer);
+value = engine->newQMetaObject(&QTimer::staticMetaObject, constructor);
+engine->globalObject().setProperty("Timer", value);
+
+@ Everything that we are interested in here is a signal, slot, or property so
+there is little else to do.
+
+@<Functions for scripting@>=
+void setQTimerProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQObjectProperties(value, engine);
+}
+
+QScriptValue constructQTimer(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QTimer);
+	setQTimerProperties(object, engine);
+	return object;
+}
+
 
 @* Scripting QWidget.
 
@@ -991,6 +1039,15 @@ considered depreciated.
 Version 1.6 adds a new property for handling the |windowModified| property
 such that an appropriate prompt is provided to confirm or cancel close events.
 
+Version 1.8 adds a new |setupFinished()| slot which is called after the
+initial |show()| at the end of window creation. This emits a |windowReady()|
+signal. Scripts can connect to this signal to perform tasks that must happen
+after the window has fully finished opening. The initial use for this is
+validating that all required configuration has been performed for a given
+window to be useful and, if not, immediately closing that. Without this, a
+call to |close()| in the script is reversed when the function creating the
+window calls |show()|.
+
 @<Class declarations@>=
 class ScriptQMainWindow : public QMainWindow@/
 {@t\1@>@/
@@ -1004,12 +1061,14 @@ class ScriptQMainWindow : public QMainWindow@/
         void saveSizeAndPosition(const QString &key);
         void restoreSizeAndPosition(const QString &key);
         void displayStatus(const QString &message = QString());
-        void setClosePrompt(QString prompt);@/
+        void setClosePrompt(QString prompt);
+        void setupFinished();@/
+    signals:@/
+        void aboutToClose(void);
+        void windowReady(void);@/
     protected:@/
         void closeEvent(QCloseEvent *event);
         void showEvent(QShowEvent *event);@/
-    signals:@/
-        void aboutToClose(void);@/
     private:@/
         QString cprompt;@t\2@>@/
 }@t\kern-3pt@>;
@@ -1020,7 +1079,14 @@ class ScriptQMainWindow : public QMainWindow@/
 ScriptQMainWindow::ScriptQMainWindow()@+: QMainWindow(NULL),
     cprompt(tr("Closing this window may result in loss of data. Continue?"))@/
 {
-    /* Nothing needs to be done here. */
+    if(!AppInstance->databaseConnected())
+    {
+	    statusBar()->addWidget(new QLabel(tr("Not connected to database")));
+    }
+    else
+    {
+	    statusBar()->addWidget(new UserLabel);
+    }
 }
 
 void ScriptQMainWindow::saveSizeAndPosition(const QString &key)
@@ -1068,6 +1134,11 @@ void ScriptQMainWindow::showEvent(QShowEvent *event)
 void ScriptQMainWindow::show()
 {
     QMainWindow::show();
+}
+
+void ScriptQMainWindow::setupFinished()
+{
+	emit windowReady();
 }
 
 @ When a close event occurs, we check the |windowModified| property to
@@ -4329,6 +4400,9 @@ Starting with version 1.4, we check for a command line option with the path to
 the configuration file and load that instead of prompting for the information
 if possible.
 
+Starting with version 1.8, if there is not a -c argument, Typica will first
+search a small number of locations relative to the executable.
+
 @<Load the application configuration@>=
 QStringList arguments = QCoreApplication::arguments();
 int position = arguments.indexOf("-c");
@@ -4339,6 +4413,16 @@ if(position != -1)
     {
         filename = arguments.at(position + 1);
     }
+} else {
+	QDir checkPath(QCoreApplication::applicationDirPath() + "/../config/");
+	if(checkPath.exists("config.xml")) {
+		filename = checkPath.filePath("config.xml");
+	} else {
+		checkPath = QDir(QCoreApplication::applicationDirPath() + "/config/");
+		if(checkPath.exists("config.xml")) {
+			filename  = checkPath.filePath("config.xml");
+		}
+	}
 }
 if(filename.isEmpty())
 {
@@ -4363,6 +4447,8 @@ if(!filename.isEmpty())
     {
         app.configuration()->setContent(&file, true);
     }
+} else {
+	return 1;
 }
 @<Substitute included fragments@>@;
 
@@ -4533,6 +4619,8 @@ void addCalendarToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                          QStack<QLayout *> *layoutStack);
 void addSpinBoxToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                         QStack<QLayout *> *layoutStack);
+void addTimeEditToLayout(QDomElement element, QStack<QWidget *> *widgetStack,
+                         QStack<QLayout *> *layoutStack);
 
 @ The functions for creating windows must be made available to the scripting
 engine.
@@ -4641,6 +4729,7 @@ if(element.hasChildNodes())
 }
 @<Insert help menu@>@;
 window->show();
+window->setupFinished();
 
 @ Three element types make sense as top level children of a {\tt <window>}
 element. An element representing a layout element can be used to apply that
@@ -4764,6 +4853,10 @@ while(j < menuItems.count())
         {
             menu->addSeparator();
         }
+        else if(itemElement.tagName() == "plugins")
+        {
+	        @<Process plugin item@>@;
+        }
     }
     j++;
 }
@@ -4876,6 +4969,80 @@ void populateStackedLayout(QDomElement element, QStack<QWidget *> *widgetStack,
         }
     }
 }
+
+@ A common use of stacked layouts is in the creation of tabbed interfaces, but
+there are also many uses in \pn{} where the tabs are not required. Therefore,
+tab bar creation requires a separate XML element.
+
+@<Additional box layout elements@>=
+else if(currentElement.tagName() == "tabbar")
+{
+	addTabBarToLayout(currentElement, widgetStack, layoutStack);
+}
+
+@ The function used to create this follows the usual pattern.
+
+@<Functions for scripting@>=
+void addTabBarToLayout(QDomElement element, QStack<QWidget*> *, QStack<QLayout*> *layoutStack)
+{
+	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+	QTabBar *widget = new QTabBar;
+	layout->addWidget(widget);
+	if(!element.attribute("id").isEmpty())
+	{
+		widget->setObjectName(element.attribute("id"));
+	}
+}
+
+@ Rather than define the tab set in XML, this is left to the host environment.
+This means that some additional scripting support is required.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructQTabBar);
+value = engine->newQMetaObject(&QTabBar::staticMetaObject, constructor);
+engine->globalObject().setProperty("QTabBar", value);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructQTabBar(QScriptContext *, QScriptEngine *engine)
+{
+	QScriptValue object = engine->newQObject(new QTabBar);
+	setQTabBarProperties(object, engine);
+	return object;
+}
+
+@ There are many functions that I might want to some day add support for, but
+the immediate need is just creating the tabs in the first place.
+
+@<Functions for scripting@>=
+void setQTabBarProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQWidgetProperties(value, engine);
+	value.setProperty("addTab", engine->newFunction(QTabBar_addTab));
+}
+
+QScriptValue QTabBar_addTab(QScriptContext *context, QScriptEngine *)
+{
+	QTabBar *self = getself<QTabBar *>(context);
+	if(context->argumentCount() > 0)
+	{
+		self->addTab(argument<QString>(0, context));
+	}
+	else
+	{
+		context->throwError("Incorrect number of arguments passed to "@|
+		                    "QTabBar::addTab().");
+	}
+	return QScriptValue();
+}
+
+@ Function prototypes are needed.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructQTabBar(QScriptContext *context, QScriptEngine *engine);
+void setQTabBarProperties(QScriptValue value, QScriptEngine *engine);
+QScriptValue QTabBar_addTab(QScriptContext *context, QScriptEngine *engine);
 
 @ Using a grid layout is a bit different from using a box layout. Child elements
 with various attributes are required to take full advantage of this layout type.
@@ -5011,6 +5178,10 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
             else if(currentElement.tagName() == "calendar")
             {
                 addCalendarToLayout(currentElement, widgetStack, layoutStack);
+            }
+            else if(currentElement.tagName() == "timeedit")
+            {
+	            addTimeEditToLayout(currentElement, widgetStack, layoutStack);
             }
             else if(currentElement.tagName() == "decoration")
             {
@@ -6165,6 +6336,43 @@ QScriptValue QDateTimeEdit_month(QScriptContext *context,
 QScriptValue QDateTimeEdit_year(QScriptContext *context, QScriptEngine *engine);
 QScriptValue QDateTimeEdit_setToCurrentTime(QScriptContext *context, QScriptEngine *engine);
 
+@ Sometimes it can be useful to allow editing a time or duration value without
+a date field. For this, a |QTimeEdit| can be used.
+
+@<Functions for scripting@>=
+void addTimeEditToLayout(QDomElement element, QStack<QWidget *> *,@|
+                         QStack<QLayout *> *layoutStack)
+{
+	QTimeEdit *edit = new QTimeEdit;
+	if(element.hasAttribute("displayFormat"))
+	{
+		edit->setDisplayFormat(element.attribute("displayFormat"));
+	}
+	else
+	{
+		edit->setDisplayFormat("mm:ss.zzz");
+	}
+	if(element.hasAttribute("id"))
+	{
+		edit->setObjectName(element.attribute("id"));
+	}
+	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
+	layout->addWidget(edit);
+}
+
+@ Additional properties are added as a |QTimeEdit| is a |QDateTimeEdit|.
+
+@<Functions for scripting@>=
+void setQTimeEditProperties(QScriptValue value, QScriptEngine *engine)
+{
+	setQDateTimeEditProperties(value, engine);
+}
+
+@ A function prototype is needed.
+
+@<Function prototypes for scripting@>=
+void setQTimeEditProperties(QScriptValue value, QScriptEngine *engine);
+
 @ In order to get to objects created from the XML description, it is necessary
 to provide a function that can be called to retrieve children of a given widget.
 When providing such an object to the script, it is necessary to determine the
@@ -6303,6 +6511,14 @@ else if(className == "QLineEdit")
 else if(className == "QSvgWidget")
 {
     setQSvgWidgetProperties(value, engine);
+}
+else if(className == "QTabBar")
+{
+	setQTabBarProperties(value, engine);
+}
+else if(className == "PrinterSelector")
+{
+	setQComboBoxProperties(value, engine);
 }
 
 @ In the list of classes, the SaltTable entry is for a class which does not
@@ -8219,6 +8435,7 @@ class ThresholdDetector : public QObject@/
     signals:@/
         void timeForValue(double);
     private:@/
+        bool previousValueValid;
         double previousValue;
         double threshold;
         EdgeDirection currentDirection;
@@ -8227,12 +8444,19 @@ class ThresholdDetector : public QObject@/
 @ This class emits the time in seconds when a given measurement crosses the
 threshold value in the appropriate direction.
 
+This was previously written with |previousValue| initialized negative and a
+check that |previousValue| was non-negative. When the |ThresholdDetector| is
+connected to a data source representing temperature measurements this is a
+reasonable choice, however it breaks when connected to a rate of change series.
+To make this more generally correct, a boolean is checked to determine if a
+previous value has been set.
+
 @<ThresholdDetector Implementation@>=
 void ThresholdDetector::newMeasurement(Measurement measure)
 {
     if((currentDirection == Ascending && previousValue < threshold &&
-       previousValue >= 0) || (currentDirection == Descending &&
-       previousValue > threshold && previousValue >= 0))
+       previousValueValid) || (currentDirection == Descending &&
+       previousValue > threshold && previousValueValid))
     {
         if((currentDirection == Ascending && measure.temperature() >= threshold) ||
            (currentDirection == Descending && measure.temperature() <= threshold))
@@ -8245,9 +8469,11 @@ void ThresholdDetector::newMeasurement(Measurement measure)
         }
     }
     previousValue = measure.temperature();
+    previousValueValid = true;
 }
 
 ThresholdDetector::ThresholdDetector(double value) : QObject(NULL),
+    previousValueValid(false),
     previousValue(-1), threshold(value), currentDirection(Ascending)
 {
     /* Nothing needs to be done here. */
@@ -8956,6 +9182,9 @@ space, but it is very fast and simple to code.
 Starting in version 1.4, column sizes are persisted automatically using the
 same method as described in the section on |SqlQueryView|.
 
+Starting in version 1.8, |rowCount()| is |Q_INVOKABLE|. This allows the manual
+log entry interface to easily determine if any roasting data exists to save.
+
 @<Class declarations@>=
 class MeasurementModel;@/
 class ZoomLog : public QTableView@/
@@ -8970,7 +9199,7 @@ class ZoomLog : public QTableView@/
     public:@/
         ZoomLog();
         QVariant data(int row, int column) const;
-        int rowCount();
+        @[Q_INVOKABLE@,@, int rowCount();
         bool saveXML(QIODevice *device);
         bool saveCSV(QIODevice *device);
         QString lastTime(int series);
@@ -9102,11 +9331,11 @@ annotation associated with it. The solution in this case is to synthesize
 measurements so that the |ZoomLog| thinks it gets at least one measurement
 every second.
 
-The current approach simply replicates the last measurement every second until
-the time for the most recent measurement is reached, however it would likely be
-better to interpolate values between the two most recent real measurements as
-this would match the graphic representation rather than altering it when later
-reviewing the batch.
+Prior to version 1.8 this simply replicated the last measurement every second
+until the time for the most recent measurement was reached, however this yields
+problematic results when loading saved data or attempting to use this view for
+manual data entry. The current behavior performs a linear interpolation which
+will match the graph.
 
 @<Synthesize measurements for slow hardware@>=
 if(lastMeasurement.contains(tempcolumn))
@@ -9114,14 +9343,23 @@ if(lastMeasurement.contains(tempcolumn))
     if(lastMeasurement[tempcolumn].time() < measure.time())
     {
         QList<QTime> timelist;
+        QList<double> templist;
+        QTime z = QTime(0, 0, 0, 0);
+        double ptime = (double)(z.secsTo(lastMeasurement[tempcolumn].time()));
+        double ptemp = lastMeasurement[tempcolumn].temperature();
+        double ctime = (double)(z.secsTo(measure.time()));
+        double ctemp = measure.temperature();
         for(QTime i = lastMeasurement.value(tempcolumn).time().addSecs(1); i < measure.time(); i = i.addSecs(1))
         {
             timelist.append(i);
+            double v = ((ptemp * (ctime - z.secsTo(i))) + (ctemp * (z.secsTo(i) - ptime))) / (ctime - ptime);
+            templist.append(v);
         }
         for(int i = 0; i < timelist.size(); i++)
         {
             Measurement synthesized = measure;
             synthesized.setTime(timelist[i]);
+            synthesized.setTemperature(templist[i]);
             newMeasurement(synthesized, tempcolumn);
         }
     }
@@ -12569,6 +12807,8 @@ void CSVOutput::setDevice(QIODevice *device)
 
 @i webview.w
 
+@i printerselector.w
+
 @* The Application class.
 
 The |Application| class represents the \pn{} program. It is responsible for
@@ -12589,19 +12829,30 @@ class Application : public QApplication@/
         QDomDocument* configuration();
         @<Device configuration members@>@;
         QSqlDatabase database();
+        Q_INVOKABLE bool databaseConnected();
+        Q_INVOKABLE QString currentTypicaUser();
+        Q_INVOKABLE bool login(const QString &user, const QString &password);
+        Q_INVOKABLE bool autoLogin();
         QScriptEngine *engine;@/
     @[public slots@]:@/
+	    void setDatabaseConnected(bool status);
+	    void setCurrentTypicaUser(const QString &user);
         @<Extended Application slots@>@;
+    @[signals@]:@/
+	    void userChanged(const QString &user);
     private:@/
         @<Application private data members@>@;
         QDomDocument conf;
+        bool connectionStatus;
+        QString currentUser;
 };
 
 @ The constructor for this class handles a few things that had previously been
 handled in |main()|.
 
 @<Application Implementation@>=
-Application::Application(int &argc, char **argv) : QApplication(argc, argv)@/
+Application::Application(int &argc, char **argv) : QApplication(argc, argv),
+	connectionStatus(false), currentUser(QString())@/
 {
     @<Allow use of the default QSettings constructor@>@;
     @<Load translation objects@>@;
@@ -12667,6 +12918,20 @@ QSqlDatabase Application::database()
         connectionName = QUuid::createUuid().toString();
     } while (QSqlDatabase::connectionNames().contains(connectionName));
     return QSqlDatabase::cloneDatabase(connection, QString(connectionName));
+}
+
+@ Starting with version 1.8 there are methods for determining if a connection
+to the database was successfully established when Typica was opened.
+
+@<Application Implementation@>=
+void Application::setDatabaseConnected(bool status)
+{
+	connectionStatus = status;
+}
+
+bool Application::databaseConnected()
+{
+	return connectionStatus;
 }
 
 @** Table editor for ordered arrays with SQL relations.
@@ -13495,15 +13760,20 @@ SqlConnectionSetup::SqlConnectionSetup() :
     cancelButton(new QPushButton(tr("Cancel"))),
     connectButton(new QPushButton(tr("Connect")))@/
 {
+	QSettings settings;
     driver->addItem("PostgreSQL", "QPSQL");
     formLayout->addRow(tr("Database driver:"), driver);
     formLayout->addRow(tr("Host name:"), hostname);
+    hostname->setText(settings.value("database/hostname").toString());
     formLayout->addRow(tr("Port number:"), portnumber);
-    portnumber->setText("5432");
+    portnumber->setText(settings.value("database/portnumber", "5432").toString());
     formLayout->addRow(tr("Database name:"), dbname);
+    dbname->setText(settings.value("database/dbname").toString());
     formLayout->addRow(tr("User name:"), user);
+    user->setText(settings.value("database/user").toString());
     password->setEchoMode(QLineEdit::Password);
     formLayout->addRow(tr("Password:"), password);
+    password->setText(settings.value("database/password").toString());
     layout->addLayout(formLayout);
     buttons->addStretch(1);
     buttons->addWidget(cancelButton);
@@ -13548,6 +13818,7 @@ void SqlConnectionSetup::testConnection()
         settings.setValue("database/user", user->text());
         settings.setValue("database/password", password->text());
         database.close();
+        AppInstance->setDatabaseConnected(true);
         accept();
     }
     else
@@ -13587,6 +13858,7 @@ if(!database.open())
 else
 {
     database.close();
+    AppInstance->setDatabaseConnected(true);
 }
 
 @** Viewing a record of batches.
@@ -14292,6 +14564,8 @@ void setQTextEditProperties(QScriptValue value, QScriptEngine *engine)
     setQAbstractScrollAreaProperties(value, engine);
     value.setProperty("print", engine->newFunction(QTextEdit_print));
 }
+
+@i plugins.w
 
 @i daterangeselector.w
 
@@ -15325,7 +15599,7 @@ class DeviceTreeModel : public QAbstractItemModel@/
         QModelIndex index(int row, int column,
                           const QModelIndex &parent = QModelIndex()) const;
         QModelIndex parent(const QModelIndex &child) const;
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
         int columnCount(const QModelIndex &parent = QModelIndex()) const;
         bool setData(const QModelIndex &index, const QVariant &value,
                      int role);
@@ -17098,7 +17372,11 @@ StopSelector::StopSelector(QWidget *parent) : QComboBox(parent)
 
 @** Configuration of Serial Devices Using Modbus RTU.
 
-\noindent One protocol that is used across a broad class of devices is called
+\noindent The following sections contain the details of older code related to
+Modbus RTU support. While the various selector widgets are shared with the new
+code, the configuration widgets and device interfaces are being replaced.
+
+One protocol that is used across a broad class of devices is called
 Modbus RTU. This protocol allows multiple devices to be chained together on a
 two wire bus which can be connected to a single serial port. The communication
 protocol involves a single message which is sent from a master device (in this
@@ -18171,7 +18449,6 @@ ModbusRTUDevice::ModbusRTUDevice(DeviceTreeModel *model,@| const QModelIndex &in
 : QObject(NULL), messageDelayTimer(new QTimer), commTimeout(new QTimer), unitIsF(@[true@]), readingsv(@[false@]),
     waiting(@[false@])@/
 {@/
-qDebug() << "Initializing Modbus RTU Device";
     QDomElement portReferenceElement = model->referenceElement(model->data(index,
         Qt::UserRole).toString());
     QDomNodeList portConfigData = portReferenceElement.elementsByTagName("attribute");
@@ -18657,6 +18934,7 @@ void ModbusRTUDevice::sendNextMessage()
         char *check = (char*)&crc;
         message.append(check[0]);
         message.append(check[1]);
+        qDebug() << "Writing" << message.toHex();
         port->write(message);
         commTimeout->start(2000);
         messageDelayTimer->start(delayTime);
@@ -19330,6 +19608,8 @@ app.registerDeviceConfigurationWidget("modbusrtu", ModbusConfigurator::staticMet
 inserter = new NodeInserter(tr("Modbus RTU Device"), tr("Modbus RTU Device"), "modbusrtu", NULL);
 topLevelNodeInserters.append(inserter);
 
+@i modbus.w
+
 @i unsupportedserial.w
 
 @i phidgets.w
@@ -19898,9 +20178,11 @@ class TranslationConfWidget : public BasicDeviceConfigurationWidget
     @[private slots@]:@/
         void updateMatchingColumn(const QString &column);
         void updateTemperature();
+        void updateDelay();
     private:@/
         QDoubleSpinBox *temperatureValue;
         QComboBox *unitSelector;
+        QSpinBox *delaySelector;
 };
 
 @ The constructor sets up our user interface.
@@ -19908,7 +20190,8 @@ class TranslationConfWidget : public BasicDeviceConfigurationWidget
 @<TranslationConfWidget implementation@>=
 TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QModelIndex &index)
 : BasicDeviceConfigurationWidget(model, index),
-    temperatureValue(new QDoubleSpinBox), unitSelector(new QComboBox)
+    temperatureValue(new QDoubleSpinBox), unitSelector(new QComboBox),
+    delaySelector(new QSpinBox)
 {
     unitSelector->addItem("Fahrenheit");
     unitSelector->addItem("Celsius");
@@ -19919,6 +20202,7 @@ TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QMode
     layout->addRow(tr("Column to match:"), column);
     layout->addRow(tr("Unit:"), unitSelector);
     layout->addRow(tr("Value:"), temperatureValue);
+    layout->addRow(tr("Start of batch safety delay:"), delaySelector);
     @<Get device configuration data for current node@>@;
     for(int i = 0; i < configData.size(); i++)
     {
@@ -19935,12 +20219,18 @@ TranslationConfWidget::TranslationConfWidget(DeviceTreeModel *model, const QMode
         {
             temperatureValue->setValue(node.attribute("value").toDouble());
         }
+        else if(node.attribute("name") == "delay")
+        {
+	        delaySelector->setValue(node.attribute("value").toInt());
+        }
     }
     updateMatchingColumn(column->text());
     updateTemperature();
+    updateDelay();
     connect(column, SIGNAL(textEdited(QString)), this, SLOT(updateMatchingColumn(QString)));
     connect(unitSelector, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTemperature()));
     connect(temperatureValue, SIGNAL(valueChanged(double)), this, SLOT(updateTemperature()));
+    connect(delaySelector, SIGNAL(valueChanged(int)), this, SLOT(updateDelay()));
     setLayout(layout);
 }
 
@@ -19968,6 +20258,11 @@ void TranslationConfWidget::updateMatchingColumn(const QString &column)
     updateAttribute("column", column);
 }
 
+void TranslationConfWidget::updateDelay()
+{
+	updateAttribute("delay", QString("%1").arg(delaySelector->value()));
+}
+
 @ This is registered with the configuration system.
 
 @<Register device configuration widgets@>=
@@ -19975,11 +20270,17 @@ app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::stat
 
 @i rate.w
 
+@i mergeseries.w
+
 @i dataqsdk.w
 
 @i scales.w
 
 @i valueannotation.w
+
+@i thresholdannotation.w
+
+@i user.w
 
 @** Local changes.
 

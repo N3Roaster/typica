@@ -1,8 +1,0 @@
-#!/bin/bash
-
-cp -r src/resources/* output/
-
-for f in src/pages/*.m4; do
-m4 src/template.m4 "$f" | sed '/^$/d' > output/"`basename -s .m4 "$f"`.html";
-done;
-

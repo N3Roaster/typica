@@ -16870,7 +16870,7 @@ setText(QString(tr("Current operator: %1").arg(user)));
 /*:1119*//*1120:*/
 #line 196 "./user.w"
 
-void UserLabel::mouseReleaseEvent(QMouseEvent*event)
+void UserLabel::mouseReleaseEvent(QMouseEvent*)
 {
 LoginDialog*dialog= new LoginDialog;
 dialog->exec();

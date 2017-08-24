@@ -89,6 +89,8 @@ item = new QListWidgetItem("Tango Desktop Project", projects);
 item->setData(Qt::UserRole, QVariant(QUrl("qrc:/resources/html/licenses/tango.html")));
 item = new QListWidgetItem("QextSerialPort", projects);
 item->setData(Qt::UserRole, QVariant(QUrl("qrc:/resources/html/licenses/qextserialport.html")));
+item = new QListWidgetItem("qrcode-svg", projects);
+item->setData(Qt::UserRole, QVariant(QUrl("qrc:/resources/html/licenses/qrcode-svg.html")));
 item = new QListWidgetItem("Qt", projects);
 item->setData(Qt::UserRole, QVariant(QUrl("qrc:/resources/html/licenses/qt.html")));
 

@@ -16,12 +16,12 @@ QAction*aboutTypicaAction= new QAction(tr("About Typica"),this);
 aboutTypicaAction->setObjectName("aboutTypicaAction");
 addAction(aboutTypicaAction);
 connect(aboutTypicaAction,SIGNAL(triggered()),this,SLOT(displayAboutTypica()));
-#if 0
+
 QAction*licenseAction= new QAction(tr("License Information"),this);
 licenseAction->setObjectName("licenseAction");
 addAction(licenseAction);
 connect(licenseAction,SIGNAL(triggered()),this,SLOT(displayLicenseWindow()));
-#endif
+
 }
 
 /*:208*//*209:*/

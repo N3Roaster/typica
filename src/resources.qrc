@@ -31,5 +31,10 @@
         <file>resources/html/licenses/typica.html</file>
         <file>resources/html/licenses/tango.html</file>
         <file>resources/html/typica2logo96.png</file>
+        <file>resources/html/licenses/qt.html</file>
+        <file>resources/html/licenses/d3.html</file>
+        <file>resources/html/licenses/entypo.html</file>
+        <file>resources/html/licenses/qextserialport.html</file>
+        <file>resources/html/licenses/qrcode-svg.html</file>
     </qresource>
 </RCC>

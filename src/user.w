@@ -194,7 +194,7 @@ void UserLabel::updateLabel(const QString &user)
 @ In order to handle clicks, |mouseReleaseEvent()| is implemented.
 
 @<UserLabel implementation@>=
-void UserLabel::mouseReleaseEvent(QMouseEvent *event)
+void UserLabel::mouseReleaseEvent(QMouseEvent *)
 {
 	LoginDialog *dialog = new LoginDialog;
 	dialog->exec();

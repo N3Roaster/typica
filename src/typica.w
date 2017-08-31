@@ -523,7 +523,10 @@ generated file empty.
 #define PROGRAM_NAME "Typica"
 
 @<Header files to include@>@/
+@<Additional type definitions@>@/
+@<Additional function prototypes@>@/
 @<Class declarations@>@/
+@<Additional functions@>@/
 @<Function prototypes for scripting@>@/
 @<Logging function prototype@>@/
 @<Class implementations@>@/
@@ -19613,6 +19616,8 @@ topLevelNodeInserters.append(inserter);
 @i unsupportedserial.w
 
 @i phidgets.w
+
+@i phidget22.w
 
 @* Configuration widget for a calibrated data series.
 

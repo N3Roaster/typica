@@ -126,9 +126,14 @@ typedef int (CCONV *PhidgetPointer)(void *);
 typedef int (CCONV *PhidgetPointerStringOut)(void *, char **);
 typedef int (CCONV *PhidgetPointerIntOut)(void *, int *);
 typedef void (CCONV *PhidgetManagerCallback)(void *, void *, void *);
+typedef void (CCONV *PhidgetValueCallback)(void *, void *, double);
 typedef int (CCONV *PhidgetPointerCallbackPointer)(void *,
                                                    PhidgetManagerCallback,
                                                    void *);
+typedef int (CCONV *PhidgetPointerVCPointer)(void *,
+                                             PhidgetValueCallback,
+                                             void *);
+typedef int (CCONV *PhidgetPointerIntIn)(void *, int);
 
 @ These are used to define function pointers that will be used to
 communicate with the library.
@@ -478,7 +483,304 @@ void PhidgetChannelConfWidget::updateRTDWiring(int value)
 	updateAttribute("rtdwiring", rtdwiring->itemData(value).toString());
 }
 
+@ The hardware communnications code provides a single class that reads the
+saved configuration data, creates |Channel| objects for the logging view to
+connect various things to, and pushes data out on those channels. Internally,
+there is more variability in how these channels must be set up, so rather than
+just having a bunch of lists for the various properties, not all of which might
+be relevant, instead, the channel configuration data will all be kept in a
+structure.
+
+@<Class declarations@>=
+struct PhidgetChannelData
+{
+	Channel *channel;
+	QString columnName;
+	QString indicatorLabel;
+	int serialNumber;
+	int channelNumber;
+	int channelType;
+	int tcType;
+	int rtdType;
+	int wiring;
+	bool hidden;
+	void *device;
+};
+
+@ The host environment requires a class that handles communication with the
+hardware. The public interface has been kept the same as the phidget21 code to
+minimize changes required in the configuration files.
+
+@<Class declarations@>=
+class Phidget22 : public QObject
+{
+	Q_OBJECT
+	public:
+		Q_INVOKABLE Phidget22(const QModelIndex &deviceIndex);
+		Q_INVOKABLE int channelCount();
+		Channel* getChannel(int channel);
+		Q_INVOKABLE bool isChannelHidden(int channel);
+		Q_INVOKABLE QString channelColumnName(int channel);
+		Q_INVOKABLE QString channelIndicatorText(int channel);
+	public slots:
+		void start();
+		void stop();
+	private:
+		QList<PhidgetChannelData *> channelConfiguration;
+		QLibrary driver;
+		PhidgetPointer p_createTemperatureSensor;
+		PhidgetPointerIntIn p_setSerialNumber;
+		PhidgetPointerIntIn p_setChannelNumber;
+		PhidgetPointerIntIn p_setTCType;
+		PhidgetPointerIntIn p_setRTDType;
+		PhidgetPointerIntIn p_setRTDWiring;
+		PhidgetPointerVCPointer p_setNewDataCallback;
+		PhidgetPointerIntIn p_open;
+		PhidgetPointer p_close;
+		PhidgetPointer p_delete;
+};
+
+@ The constructor reads the previously saved hardware configuration data and
+uses that to create the relevant channels. The channels are not initialized
+until the device is started.
+
+@<Phidget implementation@>=
+Phidget22::Phidget22(const QModelIndex &index) : QObject(NULL)
+{
+	DeviceTreeModel *model = (DeviceTreeModel *)(index.model());
+	if(model->hasChildren(index))
+	{
+		for(int i = 0; i < model->rowCount(index); i++)
+		{
+			QModelIndex channelIndex = model->index(i, 0, index);
+			QDomElement channelReference = model->
+				referenceElement(model->data(channelIndex, 32).toString());
+			QDomElement channelReferenceElement = model->
+				referenceElement(model->
+					data(channelIndex, Qt::UserRole).toString());
+			QDomNodeList channelConfigData =
+				channelReferenceElement.elementsByTagName("attribute");
+			PhidgetChannelData *c = new PhidgetChannelData;
+			c->channel = new Channel;
+			c->indicatorLabel =
+				model->data(channelIndex, Qt::DisplayRole).toString();
+			c->device = NULL;
+			for(int j = 0; j < channelConfigData.size(); j++)
+			{
+				QDomElement node = channelConfigData.at(j).toElement();
+				if(node.attribute("name") == "serialnumber")
+				{
+					c->serialNumber = node.attribute("value").toInt();
+				}
+				else if(node.attribute("name") == "channel")
+				{
+					c->channelNumber = node.attribute("value").toInt();
+				}
+				else if(node.attribute("name") == "channeltype")
+				{
+					c->channelType = node.attribute("value").toInt();
+				}
+				else if(node.attribute("name") == "tctype")
+				{
+					c->tcType = node.attribute("value").toInt();
+				}
+				else if(node.attribute("name") == "rtdtype")
+				{
+					c->rtdType = node.attribute("value").toInt();
+				}
+				else if(node.attribute("name") == "rtdwiring")
+				{
+					c->wiring = node.attribute("value").toInt();
+				}
+				else if(node.attribute("name") == "hidden")
+				{
+					c->hidden = (node.attribute("value") == "true");
+				}
+				else if(node.attribute("name") == "columnname")
+				{
+					c->columnName = node.attribute("value");
+				}
+			}
+			channelConfiguration.append(c);
+		}
+	}
+}
+
+@ A bit of glue is needed to get the |Channel| objects out to the host
+environment.
+
+@<Phidget implementation@>=
+int Phidget22::channelCount()
+{
+	return channelConfiguration.length();
+}
+
+Channel* Phidget22::getChannel(int channel)
+{
+	return channelConfiguration.at(channel)->channel;
+}
+
+@ A little more glue allows the host environment to properly set up UI
+elements.
+
+TODO: Provide a configuration control for channel hiding and then change this
+to return whatever has been configured rather than assume all channels must be
+visible.
+
+@<Phidget implementation@>=
+bool Phidget22::isChannelHidden(int channel)
+{
+	// return channelConiguration.at(channel)->hidden;
+	return false;
+}
+
+QString Phidget22::channelColumnName(int channel)
+{
+	return channelConfiguration.at(channel)->columnName;
+}
+
+QString Phidget22::channelIndicatorText(int channel)
+{
+	return channelConfiguration.at(channel)->indicatorLabel;
+}
+
+@ Once the hardware configuration has been read and the UI has been set up, we
+can start talking to the hardware and start getting measurements.
+
+@<Phidget implementation@>=
+void Phidget22::start()
+{
+#if __APPLE__
+	driver.setFileName("Phidget22.framework/Phidget22");
+#else
+	driver.setFileName("phidget22");
+#endif
+	if(!driver.load())
+	{
+		QMessageBox::critical(NULL, tr("Typica: Driver not found"),
+		                      tr("Failed to find phidget22. Please install it."));
+		return;
+	}
+	if((p_createTemperatureSensor = (PhidgetPointer)driver.resolve("PhidgetTemperatureSensor_create")) == 0 ||
+		(p_setSerialNumber = (PhidgetPointerIntIn)driver.resolve("Phidget_setDeviceSerialNumber")) == 0 ||
+		(p_setChannelNumber = (PhidgetPointerIntIn)driver.resolve("Phidget_setChannel")) == 0 ||
+		(p_setTCType = (PhidgetPointerIntIn)driver.resolve("PhidgetTemperatureSensor_setThermocoupleType")) == 0 ||
+		(p_setRTDType = (PhidgetPointerIntIn)driver.resolve("PhidgetTemperatureSensor_setRTDType")) == 0 ||
+		(p_setRTDWiring = (PhidgetPointerIntIn)driver.resolve("PhidgetTemperatureSensor_setRTDWireSetup")) == 0 ||
+		(p_setNewDataCallback = (PhidgetPointerVCPointer)driver.resolve("PhidgetTemperatureSensor_setOnTemperatureChangeHandler")) == 0 ||
+		(p_open = (PhidgetPointerIntIn)driver.resolve("Phidget_openWaitForAttachment")) == 0 ||
+		(p_close = (PhidgetPointer)driver.resolve("Phidget_close")) == 0 ||
+		(p_delete = (PhidgetPointer)driver.resolve("PhidgetTemperatureSensor_delete")) == 0)
+	{
+		QMessageBox::critical(NULL, tr("Typica: Link error"),
+		                      tr("Failed to link a required symbol in phidget22."));
+		return;
+	}
+	for(int i = 0; i < channelConfiguration.length(); i++)
+	{
+		PhidgetChannelData *c = channelConfiguration.at(i);
+		p_createTemperatureSensor(&(c->device));
+		p_setSerialNumber(c->device, c->serialNumber);
+		p_setChannelNumber(c->device, c->channelNumber);
+		switch(c->channelType)
+		{
+			case 32:
+				p_setRTDType(c->device, c->rtdType);
+				p_setRTDWiring(c->device, c->wiring);
+				break;
+			case 33:
+				p_setTCType(c->device, c->tcType);
+				break;
+			default:
+				break;
+		}
+		p_setNewDataCallback(c->device, Phidget22ValueCallback, c->channel);
+		p_open(c->device, 5000);
+	}
+}
+
+@ New values are delivered to a callback function outside of the class, but
+with a pointer to the relevant |Channel| object. This means that all the
+callback needs to do is perform the unit conversion, assemble the |Measurement|
+and send that out.
+
+Unfortunately, there can be no guarantee that new measurements will be
+available on all channels simultaneously. Hopefully this will not be too
+problematic.
+
+@<Additional functions@>=
+void CCONV Phidget22ValueCallback(void *, void *context, double value)
+{
+	Channel *channel = (Channel*)context;
+	QTime time = QTime::currentTime();
+	Measurement measure(value * 9.0 / 5.0 + 32.0, time);
+	channel->input(measure);
+}
+
+@ A function prototype is provided.
+
+@<Additional function prototypes@>=
+void CCONV Phidget22ValueCallback(void *device, void *context, double value);
+
+@ When the logging window is closed, it is important to close all open channels
+and delete their handles.
+
+@<Phidget implementation@>=
+void Phidget22::stop()
+{
+	for(int i = 0; i < channelConfiguration.length(); i++)
+	{
+		PhidgetChannelData *c = channelConfiguration.at(i);
+		p_close(c->device);
+		p_delete(&(c->device));
+	}
+}
+
 @ Class implementations are currently folded into typica.cpp.
 
 @<Class implementations@>=
 @<Phidget implementation@>@;
+
+@ The hardware communications class needs to be available from the host
+environment.
+
+@<Set up the scripting engine@>=
+constructor = engine->newFunction(constructPhidget22);
+value = engine->newQMetaObject(&Phidget22::staticMetaObject, constructor);
+engine->globalObject().setProperty("Phidget22", value);
+
+@ Two function prototypes are needed.
+
+@<Function prototypes for scripting@>=
+QScriptValue constructPhidget22(QScriptContext *context, QScriptEngine *engine);
+QScriptValue Phidget22_getChannel(QScriptContext *context, QScriptEngine *engine);
+
+@ The constructor is trivial.
+
+@<Functions for scripting@>=
+QScriptValue constructPhidget22(QScriptContext *context, QScriptEngine *engine)
+{
+	if(context->argumentCount() != 1)
+	{
+		context->throwError("Incorrect number of arguments");
+	}
+	QScriptValue object = engine->newQObject(new Phidget22(argument<QModelIndex>(0, context)), QScriptEngine::ScriptOwnership);
+	setQObjectProperties(object, engine);
+	object.setProperty("getChannel", engine->newFunction(Phidget22_getChannel));
+	return object;
+}
+
+@ A wrapper is used for getting channels.
+
+@<Functions for scripting@>=
+QScriptValue Phidget22_getChannel(QScriptContext *context, QScriptEngine *engine)
+{
+	Phidget22 *self = getself<Phidget22 *>(context);
+	QScriptValue object;
+	if(self)
+	{
+		object = engine->newQObject(self->getChannel(argument<int>(0, context)));
+		setChannelProperties(object, engine);
+	}
+	return object;
+}

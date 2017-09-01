@@ -460,6 +460,27 @@
 					device.start();
 					pdevices.push(device);
 				}
+				else if(driverReference.driver == "phidget22")
+				{
+					var device = new Phidget22(driverIndex);
+					for(var j = 0; j < device.channelCount(); j++) {
+						channels.push(device.getChannel(j));
+						columnNames.push(device.channelColumnName(j));
+						channelType.push("T");
+						if(device.isChannelHidden(j)) {
+							channelVisibility.push(false);
+						} else {
+							channelVisibility.push(true);
+							var indicator = new TemperatureDisplay;
+							temperatureDisplays.push(indicator);
+							var decorator = new WidgetDecorator(indicator, device.channelIndicatorText(j), 2);
+							device.getChannel(j).newData.connect(indicator.setValue);
+							indicatorPanel.addWidget(decorator);
+						}
+					}
+					device.start();
+					pdevices.push(device);
+				}
 				else if(driverReference.driver == "annotationbutton")
 				{
 					var button = new AnnotationButton(driverReference.buttontext);

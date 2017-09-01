@@ -148,6 +148,7 @@ PhidgetPointerIntOut getDeviceSerialNumber;
 PhidgetPointerIntOut getChannel;
 PhidgetPointerIntOut getChannelClass;
 PhidgetPointerIntOut getChannelSubclass;
+PhidgetPointerIntOut getHubPort;
 PhidgetPointer closeManager;
 PhidgetPointer deleteManager;
 
@@ -163,6 +164,7 @@ if((createManager = (PhidgetPointer) driver.resolve("PhidgetManager_create")) ==
    (getChannel = (PhidgetPointerIntOut) driver.resolve("Phidget_getChannel")) == 0 ||
    (getChannelClass = (PhidgetPointerIntOut) driver.resolve("Phidget_getChannelClass")) == 0 ||
    (getChannelSubclass = (PhidgetPointerIntOut) driver.resolve("Phidget_getChannelSubclass")) == 0 ||
+   (getHubPort = (PhidgetPointerIntOut) driver.resolve("Phidget_getHubPort")) == 0 ||
    (closeManager = (PhidgetPointer) driver.resolve("PhidgetManager_close")) == 0 ||
    (deleteManager = (PhidgetPointer) driver.resolve("PhidgetManager_delete")) == 0)
 {
@@ -231,12 +233,14 @@ void PhidgetChannelSelector::addChannel(void *device)
 	int channel;
 	int channelClass;
 	int channelSubclass;
+	int hubPort;
 	
 	getDeviceName(device, &deviceName);
 	getDeviceSerialNumber(device, &deviceSerialNumber);
 	getChannel(device, &channel);
 	getChannelClass(device, &channelClass);
 	getChannelSubclass(device, &channelSubclass);
+	getHubPort(device, &hubPort);
 	
 	QMap<QString,QVariant> itemData;
 	
@@ -246,6 +250,7 @@ void PhidgetChannelSelector::addChannel(void *device)
 		itemData.insert("channel", QString("%1").arg(channel));
 		itemData.insert("class", QString("%1").arg(channelClass));
 		itemData.insert("subclass", QString("%1").arg(channelSubclass));
+		itemData.insert("hubport", QString("%1").arg(hubPort));
 		addItem(QString("%1: %2").arg(deviceName).arg(channel), QVariant(itemData));
 	}
 }
@@ -301,15 +306,18 @@ class PhidgetChannelConfWidget : public BasicDeviceConfigurationWidget
 		void changeSelectedChannel(int index);
 		void updateSerialNumber(const QString &value);
 		void updateChannel(const QString &value);
+		void updateHubPort(const QString &value);
 		void updateColumnName(const QString &value);
 		void updateChannelType(int value);
 		void updateTCType(int value);
 		void updateRTDType(int value);
 		void updateRTDWiring(int value);
+		void updateHidden(int value);
 	private:
 		PhidgetChannelSelector *channelSelector;
 		QLineEdit *serialNumber;
 		QLineEdit *channel;
+		QLineEdit *hubPort;
 		QComboBox *subtype;
 		QStackedLayout *subtypeLayout;
 		QComboBox *tctype;
@@ -326,6 +334,7 @@ PhidgetChannelConfWidget::PhidgetChannelConfWidget(DeviceTreeModel *model,
 	channelSelector(new PhidgetChannelSelector),
 	serialNumber(new QLineEdit),
 	channel(new QLineEdit),
+	hubPort(new QLineEdit),
 	subtype(new QComboBox),
 	subtypeLayout(new QStackedLayout),
 	tctype(new QComboBox),
@@ -340,7 +349,10 @@ PhidgetChannelConfWidget::PhidgetChannelConfWidget(DeviceTreeModel *model,
 	subtype->addItem(tr("Thermocouple"), QVariant(33));
 	layout->addRow(tr("Channels:"), channelSelector);
 	layout->addRow(tr("Column Name:"), columnName);
+	QCheckBox *hidden = new QCheckBox(tr("Hide channel"));
+	layout->addRow(hidden);
 	layout->addRow(tr("Serial Number:"), serialNumber);
+	layout->addRow(tr("Hub Port:"), hubPort);
 	layout->addRow(tr("Channel Number:"), channel);
 	layout->addRow(tr("Channel Type:"), subtype);
 	serialNumber->setEnabled(false);
@@ -409,6 +421,14 @@ PhidgetChannelConfWidget::PhidgetChannelConfWidget(DeviceTreeModel *model,
 		    rtdwiring->setCurrentIndex(rtdwiring->
 			    findData(QVariant(node.attribute("value").toInt())));
 	    }
+	    else if(node.attribute("name") == "hubport")
+	    {
+		    hubPort->setText(node.attribute("value"));
+	    }
+	    else if(node.attribute("name") == "hidden")
+	    {
+		    hidden->setCheckState(node.attribute("value") == "true" ? Qt::Checked : Qt::Unchecked);
+	    }
     }
     outerLayout->addLayout(subtypeLayout);
 	setLayout(outerLayout);
@@ -430,6 +450,10 @@ PhidgetChannelConfWidget::PhidgetChannelConfWidget(DeviceTreeModel *model,
             this, SLOT(updateRTDType(int)));
     connect(rtdwiring, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateRTDWiring(int)));
+    connect(hubPort, SIGNAL(textChanged(QString)),
+            this, SLOT(updateHubPort(QString)));
+    connect(hidden, SIGNAL(stateChanged(int)),
+            this, SLOT(updateHidden(int)));
 }
 
 @ The combo box provides a convenient way to populate required configuration
@@ -443,6 +467,7 @@ void PhidgetChannelConfWidget::changeSelectedChannel(int index)
 	channel->setText(data.value("channel").toString());
 	subtype->setCurrentIndex(subtype->
 		findData(QVariant(data.value("subclass").toString().toInt())));
+	hubPort->setText(data.value("hubport").toString());
 }
 
 @ Channel configuration settings are persisted as they are updated.
@@ -483,6 +508,16 @@ void PhidgetChannelConfWidget::updateRTDWiring(int value)
 	updateAttribute("rtdwiring", rtdwiring->itemData(value).toString());
 }
 
+void PhidgetChannelConfWidget::updateHubPort(const QString &value)
+{
+	updateAttribute("hubport", value);
+}
+
+void PhidgetChannelConfWidget::updateHidden(int value)
+{
+	updateAttribute("hidden", value == 0 ? "false" : "true");
+}
+
 @ The hardware communnications code provides a single class that reads the
 saved configuration data, creates |Channel| objects for the logging view to
 connect various things to, and pushes data out on those channels. Internally,
@@ -500,6 +535,7 @@ struct PhidgetChannelData
 	int serialNumber;
 	int channelNumber;
 	int channelType;
+	int hubPort;
 	int tcType;
 	int rtdType;
 	int wiring;
@@ -531,6 +567,7 @@ class Phidget22 : public QObject
 		PhidgetPointer p_createTemperatureSensor;
 		PhidgetPointerIntIn p_setSerialNumber;
 		PhidgetPointerIntIn p_setChannelNumber;
+		PhidgetPointerIntIn p_setHubPort;
 		PhidgetPointerIntIn p_setTCType;
 		PhidgetPointerIntIn p_setRTDType;
 		PhidgetPointerIntIn p_setRTDWiring;
@@ -565,6 +602,7 @@ Phidget22::Phidget22(const QModelIndex &index) : QObject(NULL)
 			c->indicatorLabel =
 				model->data(channelIndex, Qt::DisplayRole).toString();
 			c->device = NULL;
+			c->hubPort = -1;
 			for(int j = 0; j < channelConfigData.size(); j++)
 			{
 				QDomElement node = channelConfigData.at(j).toElement();
@@ -600,6 +638,10 @@ Phidget22::Phidget22(const QModelIndex &index) : QObject(NULL)
 				{
 					c->columnName = node.attribute("value");
 				}
+				else if(node.attribute("name") == "hubport")
+				{
+					c->hubPort = node.attribute("value").toInt();
+				}
 			}
 			channelConfiguration.append(c);
 		}
@@ -623,15 +665,10 @@ Channel* Phidget22::getChannel(int channel)
 @ A little more glue allows the host environment to properly set up UI
 elements.
 
-TODO: Provide a configuration control for channel hiding and then change this
-to return whatever has been configured rather than assume all channels must be
-visible.
-
 @<Phidget implementation@>=
 bool Phidget22::isChannelHidden(int channel)
 {
-	// return channelConiguration.at(channel)->hidden;
-	return false;
+	return channelConfiguration.at(channel)->hidden;
 }
 
 QString Phidget22::channelColumnName(int channel)
@@ -670,7 +707,8 @@ void Phidget22::start()
 		(p_setNewDataCallback = (PhidgetPointerVCPointer)driver.resolve("PhidgetTemperatureSensor_setOnTemperatureChangeHandler")) == 0 ||
 		(p_open = (PhidgetPointerIntIn)driver.resolve("Phidget_openWaitForAttachment")) == 0 ||
 		(p_close = (PhidgetPointer)driver.resolve("Phidget_close")) == 0 ||
-		(p_delete = (PhidgetPointer)driver.resolve("PhidgetTemperatureSensor_delete")) == 0)
+		(p_delete = (PhidgetPointer)driver.resolve("PhidgetTemperatureSensor_delete")) == 0 ||
+		(p_setHubPort = (PhidgetPointerIntIn)driver.resolve("Phidget_setHubPort")) == 0)
 	{
 		QMessageBox::critical(NULL, tr("Typica: Link error"),
 		                      tr("Failed to link a required symbol in phidget22."));
@@ -693,6 +731,10 @@ void Phidget22::start()
 				break;
 			default:
 				break;
+		}
+		if(c->hubPort >= 0)
+		{
+			p_setHubPort(c->device, c->hubPort);
 		}
 		p_setNewDataCallback(c->device, Phidget22ValueCallback, c->channel);
 		p_open(c->device, 5000);

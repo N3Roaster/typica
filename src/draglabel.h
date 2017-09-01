@@ -1,4 +1,4 @@
-/*1053:*/
+/*1085:*/
 #line 13 "./scales.w"
 
 #ifndef TypicaDragLabelInclude
@@ -17,4 +17,4 @@ void mousePressEvent(QMouseEvent*event);
 
 #endif
 
-/*:1053*/
+/*:1085*/

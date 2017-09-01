@@ -7157,6 +7157,357 @@ int PhidgetsTemperatureSensor::qt_metacall(QMetaObject::Call _c, int _id, void *
     }
     return _id;
 }
+static const uint qt_meta_data_PhidgetConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       1,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   19, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      19,   18,   18,   18, 0x08,
+
+ // constructors: signature, parameters, type, tag, flags
+      44,   32,   18,   18, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_PhidgetConfWidget[] = {
+    "PhidgetConfWidget\0\0addChannel()\0"
+    "model,index\0PhidgetConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void PhidgetConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { PhidgetConfWidget *_r = new PhidgetConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        PhidgetConfWidget *_t = static_cast<PhidgetConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->addChannel(); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData PhidgetConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject PhidgetConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_PhidgetConfWidget,
+      qt_meta_data_PhidgetConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &PhidgetConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *PhidgetConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *PhidgetConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_PhidgetConfWidget))
+        return static_cast<void*>(const_cast< PhidgetConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int PhidgetConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 1)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 1;
+    }
+    return _id;
+}
+static const uint qt_meta_data_PhidgetChannelSelector[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       0,    0, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_PhidgetChannelSelector[] = {
+    "PhidgetChannelSelector\0"
+};
+
+void PhidgetChannelSelector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData PhidgetChannelSelector::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject PhidgetChannelSelector::staticMetaObject = {
+    { &QComboBox::staticMetaObject, qt_meta_stringdata_PhidgetChannelSelector,
+      qt_meta_data_PhidgetChannelSelector, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &PhidgetChannelSelector::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *PhidgetChannelSelector::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *PhidgetChannelSelector::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_PhidgetChannelSelector))
+        return static_cast<void*>(const_cast< PhidgetChannelSelector*>(this));
+    return QComboBox::qt_metacast(_clname);
+}
+
+int PhidgetChannelSelector::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QComboBox::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    return _id;
+}
+static const uint qt_meta_data_PhidgetChannelConfWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+      10,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   64, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      32,   26,   25,   25, 0x0a,
+      65,   59,   25,   25, 0x0a,
+      93,   59,   25,   25, 0x0a,
+     116,   59,   25,   25, 0x0a,
+     139,   59,   25,   25, 0x0a,
+     165,   59,   25,   25, 0x0a,
+     188,   59,   25,   25, 0x0a,
+     206,   59,   25,   25, 0x0a,
+     225,   59,   25,   25, 0x0a,
+     246,   59,   25,   25, 0x0a,
+
+ // constructors: signature, parameters, type, tag, flags
+     276,  264,   25,   25, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_PhidgetChannelConfWidget[] = {
+    "PhidgetChannelConfWidget\0\0index\0"
+    "changeSelectedChannel(int)\0value\0"
+    "updateSerialNumber(QString)\0"
+    "updateChannel(QString)\0updateHubPort(QString)\0"
+    "updateColumnName(QString)\0"
+    "updateChannelType(int)\0updateTCType(int)\0"
+    "updateRTDType(int)\0updateRTDWiring(int)\0"
+    "updateHidden(int)\0model,index\0"
+    "PhidgetChannelConfWidget(DeviceTreeModel*,QModelIndex)\0"
+};
+
+void PhidgetChannelConfWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { PhidgetChannelConfWidget *_r = new PhidgetChannelConfWidget((*reinterpret_cast< DeviceTreeModel*(*)>(_a[1])),(*reinterpret_cast< const QModelIndex(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        PhidgetChannelConfWidget *_t = static_cast<PhidgetChannelConfWidget *>(_o);
+        switch (_id) {
+        case 0: _t->changeSelectedChannel((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 1: _t->updateSerialNumber((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->updateChannel((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 3: _t->updateHubPort((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->updateColumnName((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: _t->updateChannelType((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 6: _t->updateTCType((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 7: _t->updateRTDType((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 8: _t->updateRTDWiring((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 9: _t->updateHidden((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData PhidgetChannelConfWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject PhidgetChannelConfWidget::staticMetaObject = {
+    { &BasicDeviceConfigurationWidget::staticMetaObject, qt_meta_stringdata_PhidgetChannelConfWidget,
+      qt_meta_data_PhidgetChannelConfWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &PhidgetChannelConfWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *PhidgetChannelConfWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *PhidgetChannelConfWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_PhidgetChannelConfWidget))
+        return static_cast<void*>(const_cast< PhidgetChannelConfWidget*>(this));
+    return BasicDeviceConfigurationWidget::qt_metacast(_clname);
+}
+
+int PhidgetChannelConfWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = BasicDeviceConfigurationWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 10)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 10;
+    }
+    return _id;
+}
+static const uint qt_meta_data_Phidget22[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       6,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       1,   44, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      11,   10,   10,   10, 0x0a,
+      19,   10,   10,   10, 0x0a,
+
+ // methods: signature, parameters, type, tag, flags
+      30,   10,   26,   10, 0x02,
+      58,   50,   45,   10, 0x02,
+      87,   50,   79,   10, 0x02,
+     110,   50,   79,   10, 0x02,
+
+ // constructors: signature, parameters, type, tag, flags
+     148,  136,   10,   10, 0x0e,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_Phidget22[] = {
+    "Phidget22\0\0start()\0stop()\0int\0"
+    "channelCount()\0bool\0channel\0"
+    "isChannelHidden(int)\0QString\0"
+    "channelColumnName(int)\0channelIndicatorText(int)\0"
+    "deviceIndex\0Phidget22(QModelIndex)\0"
+};
+
+void Phidget22::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::CreateInstance) {
+        switch (_id) {
+        case 0: { Phidget22 *_r = new Phidget22((*reinterpret_cast< const QModelIndex(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast<QObject**>(_a[0]) = _r; } break;
+        }
+    } else if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        Phidget22 *_t = static_cast<Phidget22 *>(_o);
+        switch (_id) {
+        case 0: _t->start(); break;
+        case 1: _t->stop(); break;
+        case 2: { int _r = _t->channelCount();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 3: { bool _r = _t->isChannelHidden((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 4: { QString _r = _t->channelColumnName((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 5: { QString _r = _t->channelIndicatorText((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData Phidget22::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject Phidget22::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_Phidget22,
+      qt_meta_data_Phidget22, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &Phidget22::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *Phidget22::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *Phidget22::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_Phidget22))
+        return static_cast<void*>(const_cast< Phidget22*>(this));
+    return QObject::qt_metacast(_clname);
+}
+
+int Phidget22::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 6)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 6;
+    }
+    return _id;
+}
 static const uint qt_meta_data_LinearSplineInterpolationConfWidget[] = {
 
  // content:

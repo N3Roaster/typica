@@ -1,4 +1,4 @@
-/*1060:*/
+/*1092:*/
 #line 135 "./scales.w"
 
 #include "scale.h"
@@ -10,7 +10,7 @@ QextSerialPort(port,QextSerialPort::EventDriven)
 connect(this,SIGNAL(readyRead()),this,SLOT(dataAvailable()));
 }
 
-/*:1060*//*1061:*/
+/*:1092*//*1093:*/
 #line 153 "./scales.w"
 
 void SerialScale::dataAvailable()
@@ -24,7 +24,7 @@ responseBuffer.clear();
 }
 else
 {
-/*1062:*/
+/*1094:*/
 #line 193 "./scales.w"
 
 QStringList responseParts= QString(responseBuffer.simplified()).split(' ');
@@ -53,7 +53,7 @@ unit= Units::Ounce;
 }
 emit newMeasurement(weight,unit);
 
-/*:1062*/
+/*:1094*/
 #line 165 "./scales.w"
 
 responseBuffer.clear();
@@ -61,7 +61,7 @@ responseBuffer.clear();
 }
 }
 
-/*:1061*//*1063:*/
+/*:1093*//*1095:*/
 #line 224 "./scales.w"
 
 void SerialScale::tare()
@@ -96,4 +96,4 @@ commandTerminator= "\x0A";
 }
 }
 
-/*:1063*/
+/*:1095*/

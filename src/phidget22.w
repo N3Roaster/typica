@@ -432,6 +432,15 @@ PhidgetChannelConfWidget::PhidgetChannelConfWidget(DeviceTreeModel *model,
     }
     outerLayout->addLayout(subtypeLayout);
 	setLayout(outerLayout);
+	updateSerialNumber(serialNumber->text());
+	updateChannel(channel->text());
+	updateColumnName(columnName->text());
+	updateChannelType(subtype->currentIndex());
+	updateTCType(tctype->currentIndex());
+	updateRTDType(rtdtype->currentIndex());
+	updateRTDWiring(rtdwiring->currentIndex());
+	updateHubPort(hubPort->text());
+	updateHidden(hidden->checkState());
 	connect(channelSelector, SIGNAL(currentIndexChanged(int)),
 	        this, SLOT(changeSelectedChannel(int)));
     connect(subtype, SIGNAL(currentIndexChanged(int)),

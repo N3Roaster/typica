@@ -774,6 +774,11 @@ template<> QByteArray argument(int arg, QScriptContext *context)
     return qscriptvalue_cast<QByteArray>(context->argument(arg));
 }
 
+template<> bool argument(int arg, QScriptContext *context)
+{
+    return context->argument(arg).toBool();
+}
+
 @ The scripting engine is informed of a number of classes defined elsewhere in
 the program. Code related to scripting these classes is grouped with the code
 implementing the classes. Additionally, there are several classes from Qt which
@@ -1627,6 +1632,8 @@ QScriptValue QSplitter_restoreState(QScriptContext *context,
                                     QScriptEngine *engine);
 QScriptValue QSplitter_count(QScriptContext *context,
                              QScriptEngine *engine);
+QScriptValue QSplitter_setCollapsible(QScriptContext *context,
+                                      QScriptEngine *engine);
 void setQSplitterProperties(QScriptValue value, QScriptEngine *engine);
 
 @ Of these, the scripting engine must be informed of the constructor.
@@ -1654,6 +1661,7 @@ void setQSplitterProperties(QScriptValue value, QScriptEngine *engine)
     value.setProperty("restoreState",
                       engine->newFunction(QSplitter_restoreState));
     value.setProperty("count", engine->newFunction(QSplitter_count));
+    value.setProperty("setCollapsible", engine->newFunction(QSplitter_setCollapsible));
 }
 
 @ The |"addWidget"| property is a simple wrapper around
@@ -1742,6 +1750,25 @@ QScriptValue QSplitter_restoreState(QScriptContext *context, QScriptEngine *)
         context->throwError("Incorrect number of arguments passed to "@|
                             "QSplitter::restoreState(). This method takes "@|
                             "one string as an argument.");
+    }
+    return QScriptValue();
+}
+
+@ Sometimes a |QSplitter| is used to make it easy to hide optional elements. In
+this use case it can be useful to indicate that required elements cannot be
+collapsed.
+
+@<Functions for scripting@>=
+QScriptValue QSplitter_setCollapsible(QScriptContext *context, QScriptEngine *)
+{
+    if(context->argumentCount() == 2)
+    {
+        QSplitter *self = getself<QSplitter *>(context);
+        self->setCollapsible(argument<int>(0, context), argument<bool>(1, context));
+    }
+    else
+    {
+        context->throwError("Incorrect number of arguments");
     }
     return QScriptValue();
 }

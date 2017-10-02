@@ -5587,6 +5587,12 @@ otherwise empty widgets to be included in a splitter for cases where a splitter
 should manage several widgets together as a group. A row of annotation buttons
 is an example of such a layout.
 
+When splitters are used as a way to hide optional features it sometimes has the
+effect of forcing a window to stay larger than should be required. To fix this,
+it is possible to set the \tt{ignoreSizePolicy} attribute to true. While this
+does solve the window size issue, this technique is inconsistent with generally
+expected behavior and its use should generally be discouraged.
+
 @<Functions for scripting@>=
 void addWidgetToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
                          QStack<QLayout *> *layoutStack)
@@ -5596,6 +5602,13 @@ void addWidgetToSplitter(QDomElement element, QStack<QWidget *> *widgetStack,
     if(element.hasAttribute("id"))
     {
         widget->setObjectName(element.attribute("id"));
+    }
+    if(element.hasAttribute("ignoreSizePolicy"))
+    {
+        if(element.attribute("ignoreSizePolicy") == "true")
+        {
+            widget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+        }
     }
     splitter->addWidget(widget);
     if(element.hasChildNodes())

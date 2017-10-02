@@ -6,94 +6,110 @@
         <item id="new" shortcut="Ctrl+N">New Batch...</item>
     </menu>
     <layout type="horizontal">
-        <layout type="vertical">
-            <layout type="horizontal">
-                <label>Machine:</label>
-                <line id="machine" writable="false" />
-                <label>Unit:</label>
-                <sqldrop id="unit" />
-                <stretch />
-            </layout>
-            <layout type="horizontal">
-                <label>Roasted Coffee:</label>
-                <sqldrop data="0" display="1" showdata="true" id="roasted">
-                    <null />
-                    <query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
-                </sqldrop>
-                <stretch />
-            </layout>
-            <label>Green Coffee:</label>
-            <sqltablearray columns="3" id="greens">
-                <column name="Coffee" delegate="sql" showdata="true" null="true" nulltext="Delete" nulldata="delete" data="0" display="1">SELECT id, name FROM coffees WHERE quantity &lt;&gt; 0 ORDER BY name</column>
-                <column name="Weight" delegate="numeric" />
-                <column name="Remaining" />
-            </sqltablearray>
-            <layout type="horizontal">
-                <label>Green Weight:</label>
-                <line id="green" writable="false">0.0</line>
-            </layout>
-            <layout type="horizontal">
-                <button name="Load Profile" type="push" id="load" />
-                <button name="No Profile" type="push" id="noprofile" />
-            </layout>
-            <layout type="horizontal">
-                <label>Time:</label>
-                <line id="time" writable="false" />
-                <label>Duration:</label>
-                <line id="duration" writable="false" />
-            </layout>
-            <layout type="horizontal">
-                <label>Roasted Weight:</label>
-                <line id="roast" validator="numeric">0.0</line>
-                <label>Weight Loss:</label>
-                <line id="wloss" writable="false" />
-                <button type="check" id="approval" name="Approved" />
-            </layout>
-            <layout type="horizontal">
-                <label>Annotation:</label>
-                <textarea id="annotation" />
-            </layout>
-            <layout type="horizontal">
-                <button name="Submit" id="submit" type="push" />
-                <button name="Save log as target profile" type="check" id="target" />
-            </layout>
-        </layout>
-        <layout type="vertical">
-            <label>Connected Scales</label>
-            <layout type="vertical" id="scales" />
-            <label>Expected Weight Loss</label>
-            <line id="lossspec" writable="false" />
-            <label>Expected Roasted Weight</label>
-            <layout type="horizontal">
-                <label>Min:</label>
-                <line id="minroastweight" writable="false" />
-            </layout>
-            <layout type="horizontal">
-                <label>Expected:</label>
-                <line id="expectedroastweight" writable="false" />
-            </layout>
-            <layout type="horizontal">
-                <label>Max:</label>
-                <line id="maxroastweight" writable="false" />
-            </layout>
-            <label>Specification Details</label>
-            <textarea id="specnotes" />
-            <layout type="horizontal">
-                <label>File ID:</label>
-                <line id="filenofield" writable="false" />
-            </layout>
-            <stretch />
-        </layout>
-		<layout type="vertical">
-			<webview id="batchTag" />
-			<layout type="horizontal">
-				<printerselector id="printerlist" />
-				<button name="Print" id="printbutton" type="push" />
-			</layout>
-		</layout>
+        <splitter type="horizontal" id="splitter">
+            <widget id="required">
+                <layout type="vertical">
+                    <layout type="horizontal">
+                        <label>Machine:</label>
+                        <line id="machine" writable="false" />
+                        <label>Unit:</label>
+                        <sqldrop id="unit" />
+                        <stretch />
+                    </layout>
+                    <layout type="horizontal">
+                        <label>Roasted Coffee:</label>
+                        <sqldrop data="0" display="1" showdata="true" id="roasted">
+                            <null />
+                            <query>SELECT id, name FROM items WHERE category = 'Coffee: Roasted' AND id IN (SELECT item FROM current_items) ORDER BY name</query>
+                        </sqldrop>
+                        <stretch />
+                    </layout>
+                    <label>Green Coffee:</label>
+                    <sqltablearray columns="3" id="greens">
+                        <column name="Coffee" delegate="sql" showdata="true" null="true" nulltext="Delete" nulldata="delete" data="0" display="1">SELECT id, name FROM coffees WHERE quantity &lt;&gt; 0 ORDER BY name</column>
+                        <column name="Weight" delegate="numeric" />
+                        <column name="Remaining" />
+                    </sqltablearray>
+                    <layout type="horizontal">
+                        <label>Green Weight:</label>
+                        <line id="green" writable="false">0.0</line>
+                    </layout>
+                    <layout type="horizontal">
+                        <button name="Load Profile" type="push" id="load" />
+                        <button name="No Profile" type="push" id="noprofile" />
+                    </layout>
+                    <layout type="horizontal">
+                        <label>Time:</label>
+                        <line id="time" writable="false" />
+                        <label>Duration:</label>
+                        <line id="duration" writable="false" />
+                    </layout>
+                    <layout type="horizontal">
+                        <label>Roasted Weight:</label>
+                        <line id="roast" validator="numeric">0.0</line>
+                        <label>Weight Loss:</label>
+                        <line id="wloss" writable="false" />
+                        <button type="check" id="approval" name="Approved" />
+                        <stretch />
+                    </layout>
+                    <layout type="horizontal">
+                        <label>Annotation:</label>
+                        <textarea id="annotation" />
+                    </layout>
+                    <layout type="horizontal">
+                        <button name="Submit" id="submit" type="push" />
+                        <button name="Save log as target profile" type="check" id="target" />
+                    </layout>
+                </layout>
+            </widget>
+            <widget>
+                <layout type="vertical">
+                    <label>Connected Scales</label>
+                    <layout type="vertical" id="scales" />
+                    <label>Expected Weight Loss</label>
+                    <line id="lossspec" writable="false" />
+                    <label>Expected Roasted Weight</label>
+                    <layout type="horizontal">
+                        <label>Min:</label>
+                        <line id="minroastweight" writable="false" />
+                    </layout>
+                    <layout type="horizontal">
+                        <label>Expected:</label>
+                        <line id="expectedroastweight" writable="false" />
+                    </layout>
+                    <layout type="horizontal">
+                        <label>Max:</label>
+                        <line id="maxroastweight" writable="false" />
+                    </layout>
+                    <label>Specification Details</label>
+                    <textarea id="specnotes" />
+                    <layout type="horizontal">
+                        <label>File ID:</label>
+                        <line id="filenofield" writable="false" />
+                    </layout>
+                    <stretch />
+                </layout>
+            </widget>
+            <widget id="tagcontainer" ignoreSizePolicy="true">
+                <layout type="vertical">
+                    <webview id="batchTag" />
+                    <layout type="horizontal">
+                        <printerselector id="printerlist" />
+                        <button name="Print" id="printbutton" type="push" />
+                    </layout>
+                </layout>
+            </widget>
+        </splitter>
     </layout>
     <program>
         <![CDATA[
+            var window = this;
+            var splitter = findChildObject(this, 'splitter');
+            window.aboutToClose.connect(function() {
+                splitter.saveState("script/newbatch/splitter");
+            });
+            splitter.setCollapsible(0, false);
+            splitter.restoreState("script/newbatch/splitter");
             var unitBox = findChildObject(this, 'unit');
             unitBox.addItem("g");
             unitBox.addItem("Kg");

@@ -77,6 +77,8 @@
                 output.writeTextElement("title", TTR("productionreport", "Recent Average Coffee Production"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("productionreport", "Recent Average Coffee Production"));
                 switch(unitBox.currentIndex)
                 {

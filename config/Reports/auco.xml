@@ -71,6 +71,8 @@
                 output.writeTextElement("title", TTR("useandcostreport", "Recent Use and Cost by Origin"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("useandcostreport", "Average Use and Cost by Origin ") + startDate + " - " + endDate);
                 switch(unitBox.currentIndex)
                 {

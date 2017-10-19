@@ -65,6 +65,8 @@ output.writeStartElement("head");
 output.writeTextElement("style", ".box {font: 10px sans-serif;} .whisker {font: 10px sans-serif;} .axis {font: 12px sans-serif;} .axis path {fill: none; stroke: #000; shape-rendering: crispEdges;} .axis line {fill: none; stroke: #000; shape-rendering: crispEdges;} .x.axis path {fill: none; stroke: #000; shape-rendering: crispEdges;}");
 output.writeEndElement(); //head
 output.writeStartElement("body");
+var cdt = new Date(Date.now());
+output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
 function position(value, min, max) {
     return 300 - (((Number(value)-Number(min))/(Number(max)-Number(min)))*300);
 }

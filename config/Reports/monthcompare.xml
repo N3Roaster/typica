@@ -39,6 +39,8 @@
                 output.writeTextElement("title", TTR("pytdprodcomp", "Previous Year Production Comparison By Month"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("pytdprodcomp", "Previous Year Production Comparison By Month"));
                 switch(unitBox.currentIndex)
                 {

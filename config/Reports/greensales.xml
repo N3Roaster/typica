@@ -54,6 +54,8 @@
 				output.writeTextElement("title", TTR("greensales", "Green Coffee Sales"));
 				output.writeEndElement();
 				output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
 				var dateRange = dateSelect.currentRange();
 				var startDate = dateRange[0];
 				var endDate = dateRange[dateRange.length - 1];

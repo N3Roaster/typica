@@ -139,6 +139,8 @@
                 output.writeTextElement("title", TTR("remindersreport", "Reminders"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("remindersreport", "Reminders"));
                 output.writeStartElement("a");
                 output.writeAttribute("href", "typica://script/0");

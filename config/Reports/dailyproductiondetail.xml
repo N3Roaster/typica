@@ -52,6 +52,8 @@
 				output.writeTextElement("title", TTR("dailyproduction", "Daily Production Report"));
 				output.writeEndElement();
 				output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
 				var dateString = "" + dateField.year() + "-" + dateField.month() + "-" + dateField.day();
 				output.writeTextElement("h1", TTR("dailyproduction", "Daily Production Report: ") + dateString);
 				output.writeTextElement("h2", TTR("dailyproduction", "Batches Roasted"));

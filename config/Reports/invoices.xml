@@ -71,6 +71,8 @@
                 output.writeTextElement("title", TTR("invoicereport", "Invoices"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("invoicereport", "Invoices ") + startDate + " - " + endDate);
                 output.writeStartElement("table");
                 output.writeAttribute("style", "page-break-after: auto; text-align: left");

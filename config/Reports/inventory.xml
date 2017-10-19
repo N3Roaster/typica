@@ -53,6 +53,8 @@
                 output.writeTextElement("title", TTR("inventoryreport", "Current Inventory and Availability Projection"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("inventoryreport", "Current Inventory and Availability Projection"));
                 output.writeTextElement("p", TTR("inventoryreport", "This is a report showing how much of each coffee is available, the cost of that coffee, the daily rate of use for that coffee, and the date the coffee will be gone if use continues at the current rate."));
                 output.writeStartElement("table");

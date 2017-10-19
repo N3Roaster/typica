@@ -42,6 +42,8 @@
                 output.writeTextElement("title", TTR("greencost", "Cost of Green Coffee for Roasted Coffee"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 var unit = (unitBox.currentIndex == 0 ? TTR("greencost", "Kg") : 
                     TTR("greencost", "Lb"));
                 output.writeTextElement("h1", TTR("greencost", "Cost of Green Coffee for Roasted Coffee"));

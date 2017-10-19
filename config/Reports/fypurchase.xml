@@ -53,6 +53,8 @@
 				output.writeTextElement("title", TTR("fypurchase", "Coffee Purchase Previous Years Comparison"));
 				output.writeEndElement();
 				output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
 				output.writeTextElement("h1", TTR("fypurchase", "Coffee Purchase Previous Years Comparison"));
 				output.writeStartElement("table");
 				output.writeAttribute("style", "page-break-after: auto; text-align: left");

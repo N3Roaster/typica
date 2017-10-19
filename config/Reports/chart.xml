@@ -71,6 +71,8 @@
                 output.writeTextElement("title", TTR("pytdprodcomp", "Previous Year Production Comparison"));
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("pytdprodcomp", "Previous Year Production Comparison"));
                 output.writeTextElement("p", TTR("pytdprodcomp", "This report provides an itemized and overall comparison of roasted coffee production for the dates specified with those dates in the previous year. A chart of this data along with percent change and rolling average of the percent change is also produced."));
                 output.writeStartElement("table");

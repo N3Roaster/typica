@@ -63,6 +63,8 @@
                 output.writeTextElement("title", TTR("greenforroasted", "Green Coffees Used for Roasted Coffees"));
                 output.writeEndElement(); //head
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("greenforroasted", "Green Coffees Used for Roasted Coffees ") + startDate + "-" + endDate);
                 output.writeStartElement("ul");
                 var query = new QSqlQuery();

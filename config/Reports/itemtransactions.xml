@@ -83,6 +83,8 @@
                 output.writeEndElement(); // style
                 output.writeEndElement();
                 output.writeStartElement("body");
+                var cdt = new Date(Date.now());
+                output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
                 output.writeTextElement("h1", TTR("item_transactions", "Item Transactions:"));
                 output.writeStartElement("table");
                 output.writeStartElement("tr");

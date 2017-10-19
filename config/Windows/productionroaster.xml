@@ -1163,10 +1163,30 @@
 		if(QSettings.value("temperatureUnit", "F") == "C") {
 			showC.trigger();
 		}
+        window.postLoadColumnSetup = function(c) {
+			for(var i = 0; i < adapters.length; i++) {
+				adapters[i].setColumn(c + i + 1);
+				zeroemitters[i].setColumn(c + i + 1);
+				log.setHeaderData(c + i + 1, columnName(i));
+			}
+			log.setHeaderData(c + columnNames.length + 1 - channelSkip, TTR("basicWindow", "Note"));
+            stop.setTemperatureColumn(c + 1);
+			stop.setAnnotationColumn(c + columnNames.length + 1 - channelSkip);
+			for(var i = 0; i < annotationButtons.length; i++) {
+				annotationButtons[i].setTemperatureColumn(c + 1);
+				annotationButtons[i].setAnnotationColumn(c + columnNames.length + 1 - channelSkip);
+			}
+			log.clearCurrentColumnSet();
+			for(var i = 0; i < channels.length - channelSkip; i++) {
+				log.addToCurrentColumnSet(c + i + 1);
+			}
+			window.firstTempColumn = c + 1;
+			window.annotationColumn = c + columnNames.length - channelSkip + 1;
+		}
 		var clear = findChildObject(this, 'clear');
-        clear.triggered.connect(log.clear);
-        clear.triggered.connect(graph.clear);
-        clear.triggered.connect(function() {
+        window.clearLog = function() {
+            log.clear();
+            graph.clear();
             window.windowTitle = "Typica [*]";
 			log.setHeaderData(0, "Time");
             QSettings.setValue("liveColumn", 1);
@@ -1176,7 +1196,8 @@
 			}
 			resetTranslation.enabled = false;
 			setTranslation.enabled = false;
-        });
+        };
+        clear.triggered.connect(window.clearLog);
 		var openMenu = findChildObject(this, 'open');
         var compareMenu = findChildObject(this, 'compare');
         compareMenu.triggered.connect(function() {
@@ -1252,26 +1273,6 @@
 			}
 			return "";
 		};
-		window.postLoadColumnSetup = function(c) {
-			for(var i = 0; i < adapters.length; i++) {
-				adapters[i].setColumn(c + i + 1);
-				zeroemitters[i].setColumn(c + i + 1);
-				log.setHeaderData(c + i + 1, columnName(i));
-			}
-			log.setHeaderData(c + columnNames.length + 1 - channelSkip, TTR("basicWindow", "Note"));
-            stop.setTemperatureColumn(c + 1);
-			stop.setAnnotationColumn(c + columnNames.length + 1 - channelSkip);
-			for(var i = 0; i < annotationButtons.length; i++) {
-				annotationButtons[i].setTemperatureColumn(c + 1);
-				annotationButtons[i].setAnnotationColumn(c + columnNames.length + 1 - channelSkip);
-			}
-			log.clearCurrentColumnSet();
-			for(var i = 0; i < channels.length - channelSkip; i++) {
-				log.addToCurrentColumnSet(c + i + 1);
-			}
-			window.firstTempColumn = c + 1;
-			window.annotationColumn = c + columnNames.length - channelSkip + 1;
-		}
 		var saveMenu = findChildObject(this, 'save');
         saveMenu.triggered.connect(function() {
             var filename = QFileDialog.getSaveFileName(window, TTR("basicWindow", "Save Log As..."), QSettings.value("script/lastDir", "") + "/");

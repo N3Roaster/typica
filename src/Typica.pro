@@ -10,6 +10,8 @@ QT += scripttools
 QT += webkit
 QT += svg
 
+QMAKE_CXXFLAGS += -fPIC
+
 CONFIG += extserialport
 
 TEMPLATE = app

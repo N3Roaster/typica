@@ -28,8 +28,14 @@ class RateOfChange : public QObject
 	private:
 		int ct;
 		int st;
-		QList<Measurement> cache;
+		std::deque<Measurement> cache;
 };
+
+@ Changing from |QList<Measurement>| to |std::deque<Measurement>| requires
+another header.
+
+@<Header files to include@>=
+#include <deque>
 
 @ The interesting part of this class is in the |newMeasurement()| method. This
 is a slot method that will be called for every new measurement in the primary
@@ -39,7 +45,7 @@ temperature change.
 @<RateOfChange implementation@>=
 void RateOfChange::newMeasurement(Measurement measure)
 {
-	cache.append(measure);
+	cache.push_back(measure);
 	@<Remove stale measurements from rate cache@>@;
 	if(cache.size() >= 2)
 	{
@@ -69,11 +75,11 @@ if(cache.size() > 2)
 	{
 		if(cache.front().time().secsTo(cache.back().time()) > ct)
 		{
-			cache.removeFirst();
+			cache.pop_front();
 		}
 		else if(cache.back().time() < cache.front().time())
 		{
-			cache.removeFirst();
+			cache.pop_front();
 			done = true;
 		}
 		else

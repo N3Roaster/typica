@@ -82,13 +82,13 @@ MeasurementModel *model_10s;
 MeasurementModel *model_15s;
 MeasurementModel *model_30s;
 MeasurementModel *model_1m;
-QList<MeasurementModel *> modelSet;
-QHash<int, Measurement> lastMeasurement;
+std::vector<MeasurementModel *> modelSet;
+std::map<int, Measurement> lastMeasurement;
 MeasurementModel *currentModel;
-QList<int> saveTempCols;
-QList<int> saveControlCols;
-QList<int> saveNoteCols;
-QList<int> currentColumnSet;
+std::vector<int> saveTempCols;
+std::vector<int> saveControlCols;
+std::vector<int> saveNoteCols;
+std::vector<int> currentColumnSet;
 
 @ Most of the functionality this class provides is in getting measurements to
 the right models. Every measurement goes to the full detail model. We also keep
@@ -111,10 +111,10 @@ void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
         @<Synthesize measurements for slow hardware@>@;
     }
     model_ms->newMeasurement(measure, tempcolumn);
-    if(lastMeasurement.contains(tempcolumn))
+    if(lastMeasurement.count(tempcolumn) > 0)
     {
         if(measure.time().second() !=
-            lastMeasurement.value(tempcolumn).time().second())
+            lastMeasurement[tempcolumn].time().second())
         {
             Measurement adjusted = measure;
             QTime adjtime(0, measure.time().minute(), measure.time().second(), 0);
@@ -147,15 +147,14 @@ void ZoomLog::newMeasurement(Measurement measure, int tempcolumn)
     {
         @<Add the first measurement to every model@>@;
     }
-    lastMeasurement.insert(tempcolumn, measure);
+    lastMeasurement[tempcolumn] = measure;
 }
 
 @ The first measurement in a series should be the epoch measurement. This
 should exist in every level of detail.
 
 @<Add the first measurement to every model@>=
-MeasurementModel *m;
-foreach(m, modelSet)
+for(MeasurementModel *m: modelSet)
 {
     m->newMeasurement(measure, tempcolumn);
 }
@@ -178,7 +177,7 @@ manual data entry. The current behavior performs a linear interpolation which
 will match the graph.
 
 @<Synthesize measurements for slow hardware@>=
-if(lastMeasurement.contains(tempcolumn))
+if(lastMeasurement.count(tempcolumn) > 0)
 {
     if(lastMeasurement[tempcolumn].time() < measure.time())
     {
@@ -189,7 +188,7 @@ if(lastMeasurement.contains(tempcolumn))
         double ptemp = lastMeasurement[tempcolumn].temperature();
         double ctime = (double)(z.secsTo(measure.time()));
         double ctemp = measure.temperature();
-        for(QTime i = lastMeasurement.value(tempcolumn).time().addSecs(1); i < measure.time(); i = i.addSecs(1))
+        for(QTime i = lastMeasurement[tempcolumn].time().addSecs(1); i < measure.time(); i = i.addSecs(1))
         {
             timelist.append(i);
             double v = ((ptemp * (ctime - z.secsTo(i))) + (ctemp * (z.secsTo(i) - ptime))) / (ctime - ptime);
@@ -219,7 +218,7 @@ removes all columns from the set.
 @<ZoomLog Implementation@>=
 void ZoomLog::addToCurrentColumnSet(int column)
 {
-    currentColumnSet.append(column);
+    currentColumnSet.push_back(column);
 }
 
 void ZoomLog::clearCurrentColumnSet()
@@ -231,21 +230,20 @@ void ZoomLog::clearCurrentColumnSet()
 that this code will not be called for the first measurement in each column.
 
 @<Synthesize measurements for columns in set@>=
-if(currentColumnSet.contains(tempcolumn))
+if(std::find(currentColumnSet.begin(), currentColumnSet.end(), tempcolumn) != currentColumnSet.end())
 {
-    int replicationcolumn;
-    foreach(replicationcolumn, currentColumnSet)
+    for(int replicationcolumn: currentColumnSet)
     {
         if(replicationcolumn != tempcolumn)
         {
-            if(lastMeasurement.contains(replicationcolumn))
+            if(lastMeasurement.count(replicationcolumn) > 0)
             {
-                if(measure.time() > lastMeasurement.value(replicationcolumn).time())
+                if(measure.time() > lastMeasurement[replicationcolumn].time())
                 {
-                    Measurement synthetic = lastMeasurement.value(replicationcolumn);
+                    Measurement synthetic = lastMeasurement[replicationcolumn];
                     synthetic.setTime(measure.time());
                     model_ms->newMeasurement(synthetic, replicationcolumn);
-                    if(synthetic.time().second() != lastMeasurement.value(replicationcolumn).time().second())@/
+                    if(synthetic.time().second() != lastMeasurement[replicationcolumn].time().second())@/
                     {
                         Measurement adjusted = synthetic;
                         adjusted.setTime(QTime(0, synthetic.time().minute(), synthetic.time().second(), 0));
@@ -305,15 +303,14 @@ void ZoomLog::newAnnotation(QString annotation, int tempcolumn,
                             int annotationcolumn)
 {
     model_ms->newAnnotation(annotation, tempcolumn, annotationcolumn);
-    MeasurementModel *m;
-    if(lastMeasurement.contains(tempcolumn))
+    if(lastMeasurement.count(tempcolumn) > 0)
     {
-        foreach(m, modelSet)
+        for(MeasurementModel *m: modelSet)
         {
-            m->newMeasurement(lastMeasurement.value(tempcolumn), tempcolumn);
+            m->newMeasurement(lastMeasurement[tempcolumn], tempcolumn);
         }
     }
-    foreach(m, modelSet)
+    for(MeasurementModel *m: modelSet)
     {
         m->newAnnotation(annotation, tempcolumn, annotationcolumn);
     }
@@ -337,8 +334,7 @@ saving data.
 @<ZoomLog Implementation@>=
 void ZoomLog::clear()
 {
-    MeasurementModel *m;
-    foreach(m, modelSet)
+    for(MeasurementModel *m: modelSet)
     {
         m->clear();
     }
@@ -384,18 +380,17 @@ bool ZoomLog::saveXML(QIODevice *device)
         model_ms->setDisplayUnits(Units::Fahrenheit);
     }
     XMLOutput writer(model_ms, device, 0);
-    int c;
-    foreach(c, saveTempCols)
+    for(int c: saveTempCols)
     {
         writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
                                               toString(), c);
     }
-    foreach(c, saveControlCols)
+    for(int c: saveControlCols)
     {
         writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
                                           toString(), c);
     }
-    foreach(c, saveNoteCols)
+    for(int c: saveNoteCols)
     {
         writer.addAnnotationColumn(model_ms->headerData(c, Qt::Horizontal).
                                              toString(), c);
@@ -415,18 +410,17 @@ exported instead of XML.
 bool ZoomLog::saveCSV(QIODevice *device)
 {
     CSVOutput writer(currentModel, device, 0);
-    int c;
-    foreach(c, saveTempCols)
+    for(int c: saveTempCols)
     {
         writer.addTemperatureColumn(model_ms->headerData(c, Qt::Horizontal).
                                                          toString(), c);
     }
-    foreach(c, saveControlCols)
+    for(int c: saveControlCols)
     {
         writer.addControlColumn(model_ms->headerData(c, Qt::Horizontal).
                                                      toString(), c);
     }
-    foreach(c, saveNoteCols)
+    for(int c: saveNoteCols)
     {
         writer.addAnnotationColumn(model_ms->headerData(c, Qt::Horizontal).
                                              toString(), c);
@@ -511,7 +505,7 @@ time of the last inserted measurement in a given data series.
 @<ZoomLog Implementation@>=
 QString ZoomLog::lastTime(int series)
 {
-    Measurement measure = lastMeasurement.value(series);
+    Measurement measure = lastMeasurement[series];
     QTime time = measure.time();
     return time.toString("h:mm:ss.zzz");
 }
@@ -526,8 +520,13 @@ ZoomLog::ZoomLog() : QTableView(NULL), model_ms(new MeasurementModel(this)),
 {@/
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setSelectionMode(QAbstractItemView::NoSelection);
-    modelSet << model_ms << model_1s << model_5s << model_10s << model_15s <<
-        model_30s << model_1m;
+    modelSet.push_back(model_ms);
+    modelSet.push_back(model_1s);
+    modelSet.push_back(model_5s);
+    modelSet.push_back(model_10s);
+    modelSet.push_back(model_15s);
+    modelSet.push_back(model_30s);
+    modelSet.push_back(model_1m);
     currentModel = model_30s;
     setModel(currentModel);
     connect(currentModel, SIGNAL(rowChanged(int)), this, SLOT(centerOn(int)));
@@ -562,17 +561,17 @@ unit.
 @<ZoomLog Implementation@>=
 void ZoomLog::addOutputTemperatureColumn(int column)
 {
-    saveTempCols.append(column);
+    saveTempCols.push_back(column);
 }
 
 void ZoomLog::addOutputControlColumn(int column)
 {
-    saveControlCols.append(column);
+    saveControlCols.push_back(column);
 }
 
 void ZoomLog::addOutputAnnotationColumn(int column)
 {
-    saveNoteCols.append(column);
+    saveNoteCols.push_back(column);
 }
 
 void ZoomLog::clearOutputColumns()

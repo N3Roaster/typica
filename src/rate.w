@@ -31,12 +31,6 @@ class RateOfChange : public QObject
 		std::deque<Measurement> cache;
 };
 
-@ Changing from |QList<Measurement>| to |std::deque<Measurement>| requires
-another header.
-
-@<Header files to include@>=
-#include <deque>
-
 @ The interesting part of this class is in the |newMeasurement()| method. This
 is a slot method that will be called for every new measurement in the primary
 series. We require at least two measurements before calculating a rate of

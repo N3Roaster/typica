@@ -617,7 +617,7 @@ generated file empty.
 @<Annotator implementation@>@/
 
 @ A few headers are required for various parts of \pn{}. These allow the use of
-various Qt modules.
+various Qt modules and standard library features.
 
 @<Header files to include@>=
 #include <QtCore>
@@ -630,6 +630,11 @@ various Qt modules.
 #include <QtXmlPatterns>
 #include <QtWebKit>
 #include <QtSvg>
+
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <deque>
 
 @ New code is being written in separate files in a long term effort to improve
 organization of the code. The result of this is that some additional headers

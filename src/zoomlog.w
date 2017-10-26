@@ -181,8 +181,8 @@ if(lastMeasurement.count(tempcolumn) > 0)
 {
     if(lastMeasurement[tempcolumn].time() < measure.time())
     {
-        QList<QTime> timelist;
-        QList<double> templist;
+        std::vector<QTime> timelist;
+        std::vector<double> templist;
         QTime z = QTime(0, 0, 0, 0);
         double ptime = (double)(z.secsTo(lastMeasurement[tempcolumn].time()));
         double ptemp = lastMeasurement[tempcolumn].temperature();
@@ -190,11 +190,11 @@ if(lastMeasurement.count(tempcolumn) > 0)
         double ctemp = measure.temperature();
         for(QTime i = lastMeasurement[tempcolumn].time().addSecs(1); i < measure.time(); i = i.addSecs(1))
         {
-            timelist.append(i);
+            timelist.push_back(i);
             double v = ((ptemp * (ctime - z.secsTo(i))) + (ctemp * (z.secsTo(i) - ptime))) / (ctime - ptime);
-            templist.append(v);
+            templist.push_back(v);
         }
-        for(int i = 0; i < timelist.size(); i++)
+        for(unsigned int i = 0; i < timelist.size(); i++)
         {
             Measurement synthesized = measure;
             synthesized.setTime(timelist[i]);

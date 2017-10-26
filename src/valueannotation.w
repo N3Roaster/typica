@@ -178,10 +178,11 @@ class ValueAnnotation : public QObject
 	signals:
 		void annotation(QString annotation, int tempcolumn, int notecolumn);
 	private:
-		int lastIndex;
+        bool hasIndex;
+		unsigned int lastIndex;
 		int annotationColumn;
 		int measurementColumn;
-		QList<double> values;
+		std::vector<double> values;
 		QStringList annotations;
 		double tolerance;
 };
@@ -195,14 +196,15 @@ if the indices are different, the appropriate annotation is emitted.
 @<ValueAnnotation implementation@>=
 void ValueAnnotation::newMeasurement(Measurement measure)
 {
-	for(int i = 0; i < values.size(); i++)
+	for(unsigned int i = 0; i < values.size(); i++)
 	{
-		if(measure.temperature() > values.at(i) - tolerance &&
-		   measure.temperature() < values.at(i) + tolerance)
+		if(measure.temperature() > values[i] - tolerance &&
+		   measure.temperature() < values[i] + tolerance)
 		{
 			if(i != lastIndex)
 			{
 				lastIndex = i;
+				hasIndex = true;
 				emit annotation(annotations.at(i), measurementColumn, annotationColumn);
 			}
 		}
@@ -216,7 +218,7 @@ no state has yet been matched.
 @<ValueAnnotation implementation@>=
 void ValueAnnotation::annotate()
 {
-	if(lastIndex > -1)
+	if(hasIndex)
 	{
 		emit annotation(annotations.at(lastIndex), measurementColumn, annotationColumn);
 	}
@@ -228,7 +230,7 @@ appended. Entries are never removed from these lists.
 @<ValueAnnotation implementation@>=
 void ValueAnnotation::setAnnotation(double value, const QString &annotation)
 {
-	values.append(value);
+	values.push_back(value);
 	annotations.append(annotation);
 }
 
@@ -254,7 +256,7 @@ void ValueAnnotation::setTolerance(double epsilon)
 
 @<ValueAnnotation implementation@>=
 ValueAnnotation::ValueAnnotation() : QObject(),
-	lastIndex(-1), annotationColumn(2), measurementColumn(1), tolerance(0.05)
+	hasIndex(false), lastIndex(0), annotationColumn(2), measurementColumn(1), tolerance(0.05)
 {
 	/* Nothing needs to be done here. */
 }

@@ -10,7 +10,7 @@ QT += scripttools
 QT += webkit
 QT += svg
 
-QMAKE_CXXFLAGS += -fPIC
+QMAKE_CXXFLAGS += -fPIC -std=c++11
 
 CONFIG += extserialport
 

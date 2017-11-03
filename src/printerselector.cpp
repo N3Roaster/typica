@@ -1,9 +1,9 @@
-/*590:*/
+/*591:*/
 #line 45 "./printerselector.w"
 
 #include "printerselector.h"
 
-/*591:*/
+/*592:*/
 #line 53 "./printerselector.w"
 
 PrinterSelector::PrinterSelector():QComboBox(NULL)
@@ -15,8 +15,8 @@ addItem(info.printerName());
 }
 }
 
-/*:591*/
+/*:592*/
 #line 48 "./printerselector.w"
 
 
-/*:590*/
+/*:591*/

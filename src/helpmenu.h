@@ -1,4 +1,4 @@
-/*206:*/
+/*207:*/
 #line 16 "./helpmenu.w"
 
 #include <QMenu> 
@@ -18,4 +18,4 @@ void displayLicenseWindow();
 
 #endif
 
-/*:206*/
+/*:207*/

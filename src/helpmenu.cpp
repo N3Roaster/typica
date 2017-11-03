@@ -1,11 +1,11 @@
-/*207:*/
+/*208:*/
 #line 36 "./helpmenu.w"
 
 #include "helpmenu.h"
 #include "abouttypica.h"
 #include "licensewindow.h"
 
-/*208:*/
+/*209:*/
 #line 46 "./helpmenu.w"
 
 HelpMenu::HelpMenu():QMenu()
@@ -24,7 +24,7 @@ connect(licenseAction,SIGNAL(triggered()),this,SLOT(displayLicenseWindow()));
 
 }
 
-/*:208*//*209:*/
+/*:209*//*210:*/
 #line 66 "./helpmenu.w"
 
 void HelpMenu::displayAboutTypica()
@@ -33,7 +33,7 @@ AboutTypica*aboutBox= new AboutTypica;
 aboutBox->show();
 }
 
-/*:209*//*210:*/
+/*:210*//*211:*/
 #line 76 "./helpmenu.w"
 
 void HelpMenu::displayLicenseWindow()
@@ -42,11 +42,11 @@ LicenseWindow*window= new LicenseWindow;
 window->show();
 }
 
-#line 4868 "./typica.w"
+#line 4895 "./typica.w"
 
 #line 1 "./licensewindow.w"
-/*:210*/
+/*:211*/
 #line 41 "./helpmenu.w"
 
 
-/*:207*/
+/*:208*/

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'webview.h'
 **
-** Created by: The Qt Meta Object Compiler version 63 (Qt 4.8.6)
+** Created by: The Qt Meta Object Compiler version 63 (Qt 4.8.7)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,7 +10,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'webview.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.6. It"
+#error "This file was generated using the moc from 4.8.7. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -22,7 +22,7 @@ static const uint qt_meta_data_TypicaWebView[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -37,13 +37,14 @@ static const uint qt_meta_data_TypicaWebView[] = {
 
  // methods: signature, parameters, type, tag, flags
       70,   47,   14,   14, 0x02,
-      84,   14,   14,   14, 0x02,
-     105,   92,   14,   14, 0x02,
-     132,  127,   14,   14, 0x22,
-     156,  149,   14,   14, 0x02,
-     187,   14,  179,   14, 0x02,
-     209,   14,  197,   14, 0x02,
-     236,  227,  197,   14, 0x02,
+      96,   84,   14,   14, 0x02,
+     111,   14,   14,   14, 0x22,
+     132,  119,   14,   14, 0x02,
+     159,  154,   14,   14, 0x22,
+     183,  176,   14,   14, 0x02,
+     214,   14,  206,   14, 0x02,
+     236,   14,  224,   14, 0x02,
+     263,  254,  224,   14, 0x02,
 
        0        // eod
 };
@@ -51,7 +52,8 @@ static const uint qt_meta_data_TypicaWebView[] = {
 static const char qt_meta_stringdata_TypicaWebView[] = {
     "TypicaWebView\0\0link\0scriptLinkClicked(QString)\0"
     "url\0linkDelegate(QUrl)\0load(QString)\0"
-    "print()\0html,baseUrl\0setHtml(QString,QUrl)\0"
+    "printerName\0print(QString)\0print()\0"
+    "html,baseUrl\0setHtml(QString,QUrl)\0"
     "html\0setHtml(QString)\0device\0"
     "setContent(QIODevice*)\0QString\0saveXml()\0"
     "QWebElement\0documentElement()\0selector\0"
@@ -67,15 +69,16 @@ void TypicaWebView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 0: _t->scriptLinkClicked((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 1: _t->linkDelegate((*reinterpret_cast< const QUrl(*)>(_a[1]))); break;
         case 2: _t->load((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 3: _t->print(); break;
-        case 4: _t->setHtml((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QUrl(*)>(_a[2]))); break;
-        case 5: _t->setHtml((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 6: _t->setContent((*reinterpret_cast< QIODevice*(*)>(_a[1]))); break;
-        case 7: { QString _r = _t->saveXml();
+        case 3: _t->print((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->print(); break;
+        case 5: _t->setHtml((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QUrl(*)>(_a[2]))); break;
+        case 6: _t->setHtml((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 7: _t->setContent((*reinterpret_cast< QIODevice*(*)>(_a[1]))); break;
+        case 8: { QString _r = _t->saveXml();
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 8: { QWebElement _r = _t->documentElement();
+        case 9: { QWebElement _r = _t->documentElement();
             if (_a[0]) *reinterpret_cast< QWebElement*>(_a[0]) = _r; }  break;
-        case 9: { QWebElement _r = _t->findFirstElement((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 10: { QWebElement _r = _t->findFirstElement((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QWebElement*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -114,9 +117,9 @@ int TypicaWebView::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 11;
     }
     return _id;
 }

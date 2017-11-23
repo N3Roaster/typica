@@ -630,6 +630,7 @@ various Qt modules.
 #include <QtXmlPatterns>
 #include <QtWebKit>
 #include <QtSvg>
+#include <QtNetwork>
 
 @ New code is being written in separate files in a long term effort to improve
 organization of the code. The result of this is that some additional headers
@@ -12876,7 +12877,8 @@ class Application : public QApplication@/
         Q_INVOKABLE QString currentTypicaUser();
         Q_INVOKABLE bool login(const QString &user, const QString &password);
         Q_INVOKABLE bool autoLogin();
-        QScriptEngine *engine;@/
+        QScriptEngine *engine;
+        QNetworkAccessManager *network;@/
     @[public slots@]:@/
 	    void setDatabaseConnected(bool status);
 	    void setCurrentTypicaUser(const QString &user);
@@ -12897,6 +12899,7 @@ handled in |main()|.
 Application::Application(int &argc, char **argv) : QApplication(argc, argv),
 	connectionStatus(false), currentUser(QString())@/
 {
+    network = new QNetworkAccessManager(this);
     @<Allow use of the default QSettings constructor@>@;
     @<Load translation objects@>@;
     @<Register meta-types@>@;

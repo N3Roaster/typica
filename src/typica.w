@@ -20330,6 +20330,8 @@ app.registerDeviceConfigurationWidget("translation", TranslationConfWidget::stat
 
 @i user.w
 
+@i roastcoloredit.w
+
 @** Local changes.
 
 \noindent This is the end of \pn{} as distributed by its author. It is expected

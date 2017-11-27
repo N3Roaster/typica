@@ -7,16 +7,50 @@
                     <query>SELECT id, name FROM items WHERE id IN (SELECT item FROM current_items) ORDER BY name</query>
                 </sqldrop>
             </layout>
-            <layout type="horizontal">
-                <label>Expected % weight loss:</label>
-                <line validator="numeric" id="expectedloss" />
+            <tabbar id="tabs" />
+            <layout type="stack" id="pages">
+                <page>
+                    <layout type="vertical">
+                        <layout type="horizontal">
+                            <label>Expected % weight loss:</label>
+                            <line validator="numeric" id="expectedloss" />
+                        </layout>
+                        <layout type="horizontal">
+                            <label>Tolerance</label>
+                            <line validator="numeric" id="tolerance" />
+                        </layout>
+                        <stretch />
+                    </layout>
+                </page>
+                <page>
+                    <layout type="vertical">
+                        <layout type="horizontal">
+                            <label>Whole color:</label>
+                            <line validator="numeric" id="expectedwhole" />
+                        </layout>
+                        <layout type="horizontal">
+                            <label>Tolerance:</label>
+                            <line validator="numeric" id="wholetolerance" />
+                        </layout>
+                        <layout type="horizontal">
+                            <label>Ground color:</label>
+                            <line validator="numeric" id="expectedground" />
+                        </layout>
+                        <layout type="horizontal">
+                            <label>Tolerance:</label>
+                            <line validator="numeric" id="groundtolerance" />
+                        </layout>
+                        <stretch />
+                    </layout>
+                </page>
+                <page>
+                    <layout type="vertical">
+                        <label>Specification Notes:</label>
+                        <textarea id="notes" />
+                        <stretch />
+                    </layout>
+                </page>
             </layout>
-            <layout type="horizontal">
-                <label>Tolerance</label>
-                <line validator="numeric" id="tolerance" />
-            </layout>
-            <label>Specification Notes:</label>
-            <textarea id="notes" />
             <layout type="horizontal">
                 <stretch />
                 <button id="save" type="push" name="Save" />
@@ -27,14 +61,26 @@
         <![CDATA[
             var window = this;
             this.windowTitle = TTR("roastspec", "Typica - Edit Roasting Specification");
+            var tabs = findChildObject(this, 'tabs');
+            tabs.addTab("Weight Loss");
+            tabs.addTab("Color");
+            tabs.addTab("Notes");
+            var pages = findChildObject(this, 'pages');
+            tabs.currentChanged.connect(function(index) {
+                pages.setCurrentIndex(index);
+            });
             var selector = findChildObject(this, 'currentitems');
             var expected = findChildObject(this, 'expectedloss');
             var tolerance = findChildObject(this, 'tolerance');
             var notes = findChildObject(this, 'notes');
             var savebutton = findChildObject(this, 'save');
+            var wholecolor = findChildObject(this, 'expectedwhole');
+            var groundcolor = findChildObject(this, 'expectedground');
+            var wholetolerance = findChildObject(this, 'wholetolerance');
+            var groundtolerance = findChildObject(this, 'groundtolerance');
             var updateDisplay = function() {
                 var query = new QSqlQuery();
-                query.prepare("SELECT loss, tolerance, notes FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
+                query.prepare("SELECT loss, tolerance, notes, spec FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
                 query.bind(":id1", selector.currentData());
                 query.bind(":id2", selector.currentData());
                 query.exec();
@@ -50,11 +96,38 @@
                         tolerance.text = "";
                     }
                     notes.plainText = query.value(2);
+                    if(query.value(3).length > 0) {
+                        var spec = JSON.parse(query.value(3));
+                        if(spec.color.whole.expected === undefined) {
+                            wholecolor.text = "";
+                        } else {
+                            wholecolor.text = spec.color.whole.expected;
+                        }
+                        if(spec.color.whole.tolerance === undefined) {
+                            wholetolerance.text = "";
+                        } else {
+                            wholetolerance.text = spec.color.whole.tolerance;
+                        }
+                        if(spec.color.ground.expected === undefined) {
+                            groundcolor.text = "";
+                        } else {
+                            groundcolor.text = spec.color.ground.expected;
+                        }
+                        if(spec.color.ground.tolerance === undefined) {
+                            groundtolerance.text = "";
+                        } else {
+                            groundtolerance.text = spec.color.ground.tolerance;
+                        }
+                    }
                 } else {
                     expected.text = "";
                     tolerance.text = "";
                     notes.plainText = "";
-                }                
+                    wholecolor.text = "";
+                    wholetolerance.text = "";
+                    groundcolor.text = "";
+                    groundtolerance.text = "";
+                }
                 query = query.invalidate();
             };
             updateDisplay();
@@ -62,19 +135,47 @@
                 updateDisplay();
             });
             savebutton.clicked.connect(function() {
+                var specobject = new Object;
                 var query = new QSqlQuery();
                 var columnspec = "time, item, ";
                 var valuespec = "'now', :id, ";
                 if(expected.text.length > 0) {
                     columnspec += "loss, ";
                     valuespec += ":loss, ";
+                    var lossspec = new Object;
+                    lossspec.expected = expected.text;
+                    if(tolerance.text.length > 0) {
+                        columnspec += "tolerance, ";
+                        valuespec += ":tolerance, ";
+                        lossspec.tolerance = tolerance.text;
+                    }
+                    specobject.loss = lossspec;
                 }
-                if(tolerance.text.length > 0) {
-                    columnspec += "tolerance, ";
-                    valuespec += ":tolerance, ";
+                colorspec = new Object;
+                if(wholecolor.text.length > 0) {
+                    wholespec = new Object;
+                    wholespec.expected = wholecolor.text;
+                    if(wholetolerance.text.length > 0) {
+                        wholespec.tolerance = wholetolerance.text;
+                    }
+                    colorspec.whole = wholespec;
                 }
-                columnspec += "notes";
-                valuespec += ":notes";
+                if(groundcolor.text.length > 0) {
+                    groundspec = new Object;
+                    groundspec.expected = groundcolor.text;
+                    if(groundtolerance.text.length > 0) {
+                        groundspec.tolerance = groundtolerance.text;
+                    }
+                    colorspec.ground = groundspec;
+                }
+                if(colorspec.whole || colorspec.ground) {
+                    specobject.color = colorspec;
+                }
+                if(notes.plainText.length > 0) {
+                    specobject.notes = notes.plainText;
+                }
+                columnspec += "notes, spec";
+                valuespec += ":notes, :spec";
                 query.prepare("INSERT INTO roasting_specification (" + columnspec + ") VALUES (" + valuespec + ")");
                 query.bind(":id", selector.currentData());
                 if(expected.text.length > 0) {
@@ -84,8 +185,10 @@
                     query.bind(":tolerance", Number(tolerance.text) / 100);
                 }
                 query.bind(":notes", notes.plainText);
+                query.bind(":spec", JSON.stringify(specobject));
                 query.exec();
-                window.close();
+                displayInfo(TTR("roastspec", "New Specification Saved"),
+                            TTR("roastspec", "New roasting specification saved"));
             });
         ]]>
     </program>

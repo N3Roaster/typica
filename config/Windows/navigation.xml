@@ -318,6 +318,7 @@
         var DBUpdate19 = function() {
             var query = new QSqlQuery;
             query.exec("ALTER TABLE roasting_specification ADD COLUMN spec jsonb");
+            query.exec("ALTER TABLE roasting_log ADD COLUMN additional_data jsonb");
             query.exec("UPDATE TypicaFeatures SET version = 8 WHERE feature = 'base-features'");
             query = query.invalidate();
         };

@@ -314,6 +314,14 @@
 			query.exec("UPDATE TypicaFeatures SET version = 7 WHERE feature = 'base-features'");
 			query = query.invalidate();
 		};
+        /* Updates for Typica version 1.9 */
+        var DBUpdate19 = function() {
+            var query = new QSqlQuery;
+            query.exec("ALTER TABLE roasting_specification ADD COLUMN spec jsonb");
+            query.exec("UPDATE TypicaFeatures SET version = 8 WHERE feature = 'base-features'");
+            query = query.invalidate();
+        };
+        
 		if(Application.databaseConnected()) {
 			query = new QSqlQuery();
 			/* A table keeps track of database versioning information. This
@@ -351,6 +359,9 @@
 				if(query.value(2) < 7) {
 					DBUpdate18();
 				}
+                if(query.value(2) < 8) {
+                    DBUpdate19();
+                }
 			}
 			else
 			{
@@ -362,6 +373,7 @@
 				DBUpdateReminders();
 				DBUpdateSpecification();
 				DBUpdate18();
+                DBUpdate19();
 			}
 			query.exec("SELECT feature, enabled, version FROM TypicaFeatures WHERE feature = 'sample-roasting'");
 			if(query.next())

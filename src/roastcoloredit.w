@@ -96,7 +96,25 @@ void RoastColorEdit::readFinished()
     QByteArray response = networkReply->readAll();
     networkReply->deleteLater();
     networkReply = 0;
-    edit->setText(response.split('\n').last().split(',').at(2));
+    if(response.size() == 0)
+    {
+        return;
+    }
+    QList<QByteArray> lines = response.split('\n');
+    if(lines.last().size() == 0)
+    {
+        lines.removeLast();
+    }
+    if(lines.size() == 0)
+    {
+        return;
+    }
+    QList<QByteArray> fields = lines.last().split(',');
+    if(fields.size() < 3)
+    {
+        return;
+    }
+    edit->setText(QString(fields.at(2)));
 }
 
 @ Two methods provide access to the |QLineEdit|.
@@ -119,6 +137,10 @@ else if(currentElement.tagName() == "roastcoloredit")
 {
     QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
     RoastColorEdit *edit = new RoastColorEdit;
+    if(element.hasAttribute("id"))
+    {
+        edit->setObjectName(element.attribute("id"));
+    }
     layout->addWidget(edit);
 }
 

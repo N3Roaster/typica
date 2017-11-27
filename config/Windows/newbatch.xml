@@ -668,11 +668,11 @@
                 query2.bind(":user", Application.currentTypicaUser());
                 var extradata = new Object;
                 var colordata = new Object;
-                if(wholecolor.text.length > 0) {
-                    colordata.whole = wholecolor.text;
+                if(wholecolor.value.length > 0) {
+                    colordata.whole = wholecolor.value;
                 }
-                if(groundcolor.text.length > 0) {
-                    colordata.ground = groundcolor.text;
+                if(groundcolor.value.length > 0) {
+                    colordata.ground = groundcolor.value;
                 }
                 if(colordata.whole || colordata.ground) {
                     extradata.color = colordata;

@@ -5244,6 +5244,10 @@ void populateBoxLayout(QDomElement element, QStack<QWidget *> *widgetStack,
                 QLabel *label = new QLabel(QCoreApplication::translate(
                     "configuration",
                     currentElement.text().toUtf8().data()));
+                if(currentElement.hasAttribute("id"))
+                {
+                    label->setObjectName(currentElement.attribute("id"));
+                }
                 layout->addWidget(label);
             }
             else if(currentElement.tagName() == "lcdtemperature")

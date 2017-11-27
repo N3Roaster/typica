@@ -81,6 +81,13 @@
                         <label>Max:</label>
                         <line id="maxroastweight" writable="false" />
                     </layout>
+                    <label>Degree of Roast</label>
+                    <label>Whole Bean:</label>
+                    <roastcoloredit id="wholecolor" />
+                    <label id="wholespec">-</label>
+                    <label>Ground:</label>
+                    <roastcoloredit id="groundcolor" />
+                    <label id="groundspec">-</label>
                     <label>Specification Details</label>
                     <textarea id="specnotes" />
                     <layout type="horizontal">
@@ -322,6 +329,8 @@
             });
             var profilebutton = findChildObject(this, 'load');
             profilebutton.setEnabled(false);
+            var wholespec = findChildObject(this, 'wholespec');
+            var groundspec = findChildObject(this, 'groundspec');
             roasted['currentIndexChanged(int)'].connect(function() {
                 table.clear();
                 var query = new QSqlQuery();
@@ -383,7 +392,7 @@
                         }
                     }
                 }
-                query.prepare("SELECT loss, tolerance, notes FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
+                query.prepare("SELECT loss, tolerance, notes, spec FROM roasting_specification WHERE item = :id1 AND time = (SELECT max(time) FROM roasting_specification WHERE item = :id2)");
                 query.bind(":id1", roasted.currentData());
                 query.bind(":id2", roasted.currentData());
                 query.exec();
@@ -405,12 +414,40 @@
                     }
                     lossspec.text = lossSpecDescription;
                     specnotes.plainText = query.value(2);
+                    if(query.value(3).length > 0) {
+                        var spec = JSON.parse(query.value(3));
+                        var wholespectext = "";
+                        var groundspectext = "";
+                        if(spec.color.whole.expected != undefined) {
+                            wholespectext += spec.color.whole.expected;
+                            if(spec.color.whole.tolerance != undefined) {
+                                wholespectext += " +/- " + spec.color.whole.tolerance;
+                            }
+                            wholespec.text = wholespectext;
+                        } else {
+                            wholespec.text = "";
+                        }
+                        if(spec.color.ground.expected != undefined) {
+                            groundspectext += spec.color.ground.expected;
+                            if(spec.color.ground.tolerance != undefined) {
+                                groundspectext += " +/- " + spec.color.ground.tolerance;
+                            }
+                            groundspec.text = groundspectext;
+                        } else {
+                            groundspec.text = "";
+                        }
+                    } else {
+                        wholespec.text = "";
+                        groundspec.text = "";
+                    }
                 } else {
                     lossspec.text = "";
                     specnotes.plainText = "";
+                    wholespec.text = "";
+                    groundspec.text = "";
                 }
                 query = query.invalidate();
-				drawTag();
+                drawTag();
             });
             var validateCapacity = function() {
                 if(checkCapacity == "true") {
@@ -588,6 +625,8 @@
                 file.remove();
 				drawTag();
             }
+            var wholecolor = findChildObject(this, 'wholecolor');
+            var groundcolor = findChildObject(this, 'groundcolor');
             var doSubmit = function() {
                 checkQuery = new QSqlQuery();
                 checkQuery.exec("SELECT 1 FROM machine WHERE id = " + selectedRoasterID);
@@ -601,7 +640,7 @@
                 checkQuery = checkQuery.invalidate();
                 query = new QSqlQuery();
                 var fileno = Number(filenofield.text);
-                var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files, person) VALUES(:time, ";
+                var q2 = "INSERT INTO roasting_log (time, unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, transaction_type, annotation, machine, duration, approval, humidity, barometric, indoor_air, outdoor_air, files, person, additional_data) VALUES(:time, ";
                 q2 = q2 + table.columnArray(0, 32);
                 q2 = q2 + ", ";
                 for(var i = 0; table.data(i, 1, 0).value != ""; i++)
@@ -619,14 +658,26 @@
                 q2 = q2 + selectedRoasterID;
                 q2 = q2 + ", :duration, :approval, NULL, NULL, NULL, NULL, '{";
                 q2 = q2 + fileno;
-                q2 = q2 + "}', :user) RETURNING time";
+                q2 = q2 + "}', :user, :extradata) RETURNING time";
                 query2 = new QSqlQuery();
                 query2.prepare(q2);
                 query2.bind(":time", timefield.text);
                 query2.bind(":annotation", notes.plainText);
                 query2.bind(":duration", duration.text);
                 query2.bind(":approval", approval.checked);
-				query2.bind(":user", Application.currentTypicaUser());
+                query2.bind(":user", Application.currentTypicaUser());
+                var extradata = new Object;
+                var colordata = new Object;
+                if(wholecolor.text.length > 0) {
+                    colordata.whole = wholecolor.text;
+                }
+                if(groundcolor.text.length > 0) {
+                    colordata.ground = groundcolor.text;
+                }
+                if(colordata.whole || colordata.ground) {
+                    extradata.color = colordata;
+                }
+                query2.bind(":extradata", JSON.stringify(extradata));
                 query2.exec();
                 if(!query2.next()) {
                     displayError(TTR("batchWindow", "Database Insert Failed"), TTR("batchWindow", "Failed to save batch to database. Please check inputs and connection and try again."));

@@ -5866,6 +5866,86 @@ int GraphSettingsRelativeTab::qt_metacall(QMetaObject::Call _c, int _id, void **
     }
     return _id;
 }
+static const uint qt_meta_data_ColorSettingsWidget[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       3,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      28,   21,   20,   20, 0x0a,
+      55,   47,   20,   20, 0x0a,
+      85,   78,   20,   20, 0x0a,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_ColorSettingsWidget[] = {
+    "ColorSettingsWidget\0\0enable\0"
+    "updateEnable(bool)\0address\0"
+    "updateAddress(QString)\0sccale\0"
+    "updateScale(int)\0"
+};
+
+void ColorSettingsWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        ColorSettingsWidget *_t = static_cast<ColorSettingsWidget *>(_o);
+        switch (_id) {
+        case 0: _t->updateEnable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 1: _t->updateAddress((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: _t->updateScale((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData ColorSettingsWidget::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject ColorSettingsWidget::staticMetaObject = {
+    { &QWidget::staticMetaObject, qt_meta_stringdata_ColorSettingsWidget,
+      qt_meta_data_ColorSettingsWidget, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &ColorSettingsWidget::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *ColorSettingsWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *ColorSettingsWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_ColorSettingsWidget))
+        return static_cast<void*>(const_cast< ColorSettingsWidget*>(this));
+    return QWidget::qt_metacast(_clname);
+}
+
+int ColorSettingsWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 3)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 3;
+    }
+    return _id;
+}
 static const uint qt_meta_data_AdvancedSettingsWidget[] = {
 
  // content:
@@ -9516,6 +9596,117 @@ int NewTypicaUser::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
             qt_static_metacall(this, _c, _id, _a);
         _id -= 4;
     }
+    return _id;
+}
+static const uint qt_meta_data_RoastColorEdit[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       4,   14, // methods
+       1,   34, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+ // slots: signature, parameters, type, tag, flags
+      22,   16,   15,   15, 0x0a,
+      40,   15,   15,   15, 0x08,
+      52,   15,   15,   15, 0x08,
+      70,   15,   15,   15, 0x08,
+
+ // properties: name, type, flags
+      93,   85, 0x0a095103,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_RoastColorEdit[] = {
+    "RoastColorEdit\0\0color\0setValue(QString)\0"
+    "readColor()\0measureFinished()\0"
+    "readFinished()\0QString\0value\0"
+};
+
+void RoastColorEdit::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        RoastColorEdit *_t = static_cast<RoastColorEdit *>(_o);
+        switch (_id) {
+        case 0: _t->setValue((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->readColor(); break;
+        case 2: _t->measureFinished(); break;
+        case 3: _t->readFinished(); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData RoastColorEdit::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject RoastColorEdit::staticMetaObject = {
+    { &QWidget::staticMetaObject, qt_meta_stringdata_RoastColorEdit,
+      qt_meta_data_RoastColorEdit, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &RoastColorEdit::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *RoastColorEdit::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *RoastColorEdit::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_RoastColorEdit))
+        return static_cast<void*>(const_cast< RoastColorEdit*>(this));
+    return QWidget::qt_metacast(_clname);
+}
+
+int RoastColorEdit::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 4)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 4;
+    }
+#ifndef QT_NO_PROPERTIES
+      else if (_c == QMetaObject::ReadProperty) {
+        void *_v = _a[0];
+        switch (_id) {
+        case 0: *reinterpret_cast< QString*>(_v) = value(); break;
+        }
+        _id -= 1;
+    } else if (_c == QMetaObject::WriteProperty) {
+        void *_v = _a[0];
+        switch (_id) {
+        case 0: setValue(*reinterpret_cast< QString*>(_v)); break;
+        }
+        _id -= 1;
+    } else if (_c == QMetaObject::ResetProperty) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyDesignable) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyScriptable) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyStored) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyEditable) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyUser) {
+        _id -= 1;
+    }
+#endif // QT_NO_PROPERTIES
     return _id;
 }
 QT_END_MOC_NAMESPACE

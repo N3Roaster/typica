@@ -137,9 +137,9 @@ else if(currentElement.tagName() == "roastcoloredit")
 {
     QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
     RoastColorEdit *edit = new RoastColorEdit;
-    if(element.hasAttribute("id"))
+    if(currentElement.hasAttribute("id"))
     {
-        edit->setObjectName(element.attribute("id"));
+        edit->setObjectName(currentElement.attribute("id"));
     }
     layout->addWidget(edit);
 }

@@ -1,7 +1,7 @@
 <window id="batchWindow">
-	<menu name="File">
-		<item id="print" shortcut="Ctrl+P">Print...</item>
-	</menu>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print...</item>
+    </menu>
     <menu name="Batch">
         <item id="new" shortcut="Ctrl+N">New Batch...</item>
     </menu>
@@ -144,7 +144,7 @@
             roastwt.maximumWidth = 80;
             var scalesLayout = findChildObject(this, 'scales');
             scalesLayout.spacing = 10;
-			var batchTag = findChildObject(this, 'batchTag');
+            var batchTag = findChildObject(this, 'batchTag');
             if(navigationwindow.loggingWindow.scales.length > 0) {
                 for(var i = 0; i < navigationwindow.loggingWindow.scales.length; i++) {
                     var scale = navigationwindow.loggingWindow.scales[i];
@@ -623,7 +623,7 @@
                 filenofield.text = query.value(0);
                 var file = new QFile(batch.tempData);
                 file.remove();
-				drawTag();
+                drawTag();
             }
             var wholecolor = findChildObject(this, 'wholecolor');
             var groundcolor = findChildObject(this, 'groundcolor');
@@ -699,72 +699,72 @@
                 batch.windowModified = false;
                 batch.close();
             }
-			function drawTag() {
-				var buffer = new QBuffer;
+            function drawTag() {
+                var buffer = new QBuffer;
                 buffer.open(3);
                 var output = new XmlWriter(buffer);
                 output.writeStartDocument("1.0");
                 output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-				output.writeStartElement("head");
-				var styleFile = new QFile(QSettings.value("config") + "/Scripts/batchtag.css");
-				styleFile.open(1);
-				output.writeTextElement("style", styleFile.readToString());
-				styleFile.close();
-				output.writeStartElement("script");
-				scriptFile = new QFile(QSettings.value("config") + "/Scripts/qrcode.js");
-				scriptFile.open(1);
-				output.writeCDATA(scriptFile.readToString());
-				scriptFile.close();
-				output.writeEndElement();
-				output.writeEndElement();
+                output.writeStartElement("head");
+                var styleFile = new QFile(QSettings.value("config") + "/Scripts/batchtag.css");
+                styleFile.open(1);
+                output.writeTextElement("style", styleFile.readToString());
+                styleFile.close();
+                output.writeStartElement("script");
+                scriptFile = new QFile(QSettings.value("config") + "/Scripts/qrcode.js");
+                scriptFile.open(1);
+                output.writeCDATA(scriptFile.readToString());
+                scriptFile.close();
+                output.writeEndElement();
+                output.writeEndElement();
                 output.writeStartElement("body");
-				output.writeStartElement("h1");
-				output.writeCharacters(roasted.currentText);
-				output.writeEndElement();
-				output.writeTextElement("span", "Roasted at: " + timefield.text);
-				output.writeTextElement("span", "On machine: " + machine.text);
-				output.writeTextElement("span", "Batch file: " + filenofield.text);
-				output.writeStartElement("div");
-				output.writeAttribute("id", "container");
-				output.writeEndElement();
-				output.writeStartElement("script");
-				var tag = {g: "Typica", m: Number(selectedRoasterID), v: 1};
-				if(timefield.text.length > 0) {
-					tag.t = timefield.text;
-				}
-				if(filenofield.text.length > 0) {
-					tag.f = Number(filenofield.text);
-				}
-				var scriptData = 'var width = document.getElementById("container").offsetWidth;';
-				scriptData += 'var qrcode = new QRCode({content: \'';
-				scriptData += JSON.stringify(tag);
-				scriptData += '\', width: width, height: width});';
-				scriptData += 'var svg = qrcode.svg();';
-				scriptData += 'document.getElementById("container").innerHTML = svg;';
-				output.writeCDATA(scriptData);
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndElement();
-				output.writeEndDocument();
+                output.writeStartElement("h1");
+                output.writeCharacters(roasted.currentText);
+                output.writeEndElement();
+                output.writeTextElement("span", "Roasted at: " + timefield.text);
+                output.writeTextElement("span", "On machine: " + machine.text);
+                output.writeTextElement("span", "Batch file: " + filenofield.text);
+                output.writeStartElement("div");
+                output.writeAttribute("id", "container");
+                output.writeEndElement();
+                output.writeStartElement("script");
+                var tag = {g: "Typica", m: Number(selectedRoasterID), v: 1};
+                if(timefield.text.length > 0) {
+                    tag.t = timefield.text;
+                }
+                if(filenofield.text.length > 0) {
+                    tag.f = Number(filenofield.text);
+                }
+                var scriptData = 'var width = document.getElementById("container").offsetWidth;';
+                scriptData += 'var qrcode = new QRCode({content: \'';
+                scriptData += JSON.stringify(tag);
+                scriptData += '\', width: width, height: width});';
+                scriptData += 'var svg = qrcode.svg();';
+                scriptData += 'document.getElementById("container").innerHTML = svg;';
+                output.writeCDATA(scriptData);
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
                 batchTag.setContent(buffer);
                 buffer.close();
-			};
-			drawTag();
-			var printMenu = findChildObject(this, 'print');
+            };
+            drawTag();
+            var printMenu = findChildObject(this, 'print');
             printMenu.triggered.connect(function() {
                 batchTag.print();
             });
-			var printers = findChildObject(this, 'printerlist');
-			printers.currentIndex = printers.findText(QSettings.value("script/batchtagprinter"));
-			printers['currentIndexChanged(int)'].connect(function() {
+            var printers = findChildObject(this, 'printerlist');
+            printers.currentIndex = printers.findText(QSettings.value("script/batchtagprinter"));
+            printers['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("script/batchtagprinter", printers.currentText);
             });
-			var printbutton = findChildObject(this, 'printbutton');
-			printbutton.clicked.connect(function() {
-				batchTag.print(printers.currentText);
-			});
+            var printbutton = findChildObject(this, 'printbutton');
+            printbutton.clicked.connect(function() {
+                batchTag.print(printers.currentText);
+            });
         ]]>
     </program>
 </window>

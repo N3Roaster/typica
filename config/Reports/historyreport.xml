@@ -80,28 +80,7 @@
                 var arg = decodeURI(url.slice(2, url.length));
                 var key = arg.split("@");
                 var details = createWindow("batchDetails");
-                var fakeTable = new Object;
-                fakeTable.holding = new Array(7);
-                fakeTable.data = function(r, c) {
-                    return this.holding[c];
-                };
-                var conversion = 1;
-                if(unitBox.currentIndex == 0) {
-                    conversion = 2.2;
-                }
-                var query = new QSqlQuery();
-                var q = "SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity / " + conversion + " AS green, roasted_quantity  / " + conversion + " AS roasted, CASE WHEN unroasted_total_quantity = 0 THEN NULL ELSE ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) END AS weight_loss, duration, annotation FROM roasting_log WHERE machine = :machine AND time = :time";
-                query.prepare(q);
-                query.bind(":machine", key[0]);
-                query.bind(":time", key[1]);
-                query.exec();
-                query.next();
-                for(var i = 0; i < 8; i++) {
-                    fakeTable.holding[i] = query.value(i);
-                }
-                fakeTable.holding[0] = key[1];
-                query = query.invalidate();
-                details.loadData(fakeTable, 0);
+                details.loadBatch(key[0], key[1]);
             });
             var refresh = function() {
                 var dateRange = dateSelect.currentRange();

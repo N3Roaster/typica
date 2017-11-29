@@ -2,19 +2,126 @@
     <layout type="vertical">
         <layout type="horizontal">
             <button type="push" id="target" name="Load profile as target" />
-            <button type="push" id="viewprofile" name="View profile" />
             <button type="push" id="compare" name="Compare profile" />
-            <button type="push" id="edit" name="Edit" />
         </layout>
-        <webview id="view" />
+        <tabbar id="tabs" />
+        <layout type="stack" id="pages">
+            <page>
+                <layout type="vertical">
+                    <webview id="view" />
+                </layout>
+            </page>
+            <page>
+                <layout type="vertical">
+                    <splitter type="horizontal" id="logsplit">
+                        <measurementtable id="log">
+                            <column>Time</column>
+                            <column>Bean</column>
+                            <column>Air</column>
+                            <column>Note</column>
+                        </measurementtable>
+                        <graph id="graph" />
+                    </splitter>
+                </layout>
+            </page>
+            <page>
+                <layout type="vertical">
+                    <layout type="horizontal">
+                        <label>Roasted Weight: </label>
+                        <line id="roasted" validator="numeric" />
+                        <line id="roastunit" writable="false" />
+                        <stretch />
+                    </layout>
+                    <label>Degree of Roast</label>
+                    <layout type="horizontal">
+                        <label>Whole Bean:</label>
+                        <roastcoloredit id="wholecolor" />
+                        <stretch />
+                    </layout>
+                    <label id="wholespec">-</label>
+                    <layout type="horizontal">
+                        <label>Ground:</label>
+                        <roastcoloredit id="groundcolor" />
+                        <stretch />
+                    </layout>
+                    <label id="groundspec">-</label>
+                    <button type="check" name="Approved" id="approval" />
+                    <layout type="horizontal">
+                        <label>Annotation</label>
+                        <textarea id="annotation" />
+                    </layout>
+                    <button type="push" id="submit" name="Save" />
+                    <stretch />
+                </layout>
+            </page>
+            <page>
+                <layout type="vertical">
+                    
+                </layout>
+            </page>
+        </layout>
     </layout>
-	<menu name="File">
-            <item id="save" shortcut="Ctrl+S">Save...</item>
-            <item id="print" shortcut="Ctrl+P">Print...</item>
-	</menu>
+    <menu name="File">
+        <item id="save" shortcut="Ctrl+S">Save Profile...</item>
+        <item id="print" shortcut="Ctrl+P">Print Report...</item>
+    </menu>
+    <menu name="Log">
+        <item id="showC">Display Celsius</item>
+        <item id="showF">Display Fahrenheit</item>
+        <separator />
+        <item id="ms">Millisecond View</item>
+        <item id="1s">1 Second View</item>
+        <item id="5s">5 Second View</item>
+        <item id="10s">10 Second View</item>
+        <item id="15s">15 Second View</item>
+        <item id="30s">30 Second View</item>
+        <item id="1m">1 Minute View</item>
+    </menu>
     <program>
         <![CDATA[
             var window = this;
+            var tabs = findChildObject(this, 'tabs');
+            tabs.addTab("Report");
+            tabs.addTab("Profile");
+            tabs.addTab("Edit");
+            tabs.addTab("Batch Tag");
+            var pages = findChildObject(this, 'pages');
+            tabs.currentChanged.connect(function(index) {
+                pages.setCurrentIndex(index);
+            });
+            var log = findChildObject(this, 'log');
+            var graph = findChildObject(this, 'graph');
+            var showC = findChildObject(this, 'showC');
+            showC.triggered.connect(function() {
+                log.setDisplayUnits(Units.Celsius);
+                graph.showC();
+            });
+            var showF = findChildObject(this, 'showF');
+            showF.triggered.connect(function() {
+                log.setDisplayUnits(Units.Fahrenheit);
+                graph.showF();
+            });
+            var v1 = findChildObject(this, 'ms');
+            v1.triggered.connect(log.LOD_ms);
+            var v2 = findChildObject(this, '1s');
+            v2.triggered.connect(log.LOD_1s);
+            var v3 = findChildObject(this, '5s');
+            v3.triggered.connect(log.LOD_5s);
+            var v4 = findChildObject(this, '10s');
+            v4.triggered.connect(log.LOD_10s);
+            var v5 = findChildObject(this, '15s');
+            v5.triggered.connect(log.LOD_15s);
+            var v6 = findChildObject(this, '30s');
+            v6.triggered.connect(log.LOD_30s);
+            var v7 = findChildObject(this, '1m');
+            v7.triggered.connect(log.LOD_1m);
+            var splitter = findChildObject(this, 'logsplit');
+            splitter.restoreState("script/offlineViewSplitter");
+            window.saveTemperatureColumns = new Array();
+            window.saveAnnotationColumns = new Array();
+            this.aboutToClose.connect(function() {
+                splitter.saveState("script/batchdetails/profileSplitter");
+            });
             var unit = QSettings.value("script/history_unit", 1);
             var conversion = 1;
             if(unit == 0)
@@ -31,8 +138,6 @@
             var fileID;
             var target = findChildObject(this, 'target');
             var compare = findChildObject(this, 'compare');
-            var edit = findChildObject(this, 'edit');
-            edit.enabled = false;
             if(typeof(Windows.loggingWindow) == "undefined") {
                 compare.enabled = false;
                 target.enabled = false;
@@ -44,10 +149,6 @@
             var approval;
             var annotation;
             var roastWeight;
-            edit.clicked.connect(function() {
-                var editWindow = createWindow("editBatchDetails");
-                editWindow.loadData(window, tableReference, rowReference, batchTime, machine, approval, annotation, roastWeight, unit);
-            });
             compare.clicked.connect(function() {
                 var query = new QSqlQuery;
                 query.prepare("SELECT file, name FROM files WHERE id = :id");
@@ -113,58 +214,24 @@
                 log.newAnnotation(TTR("batchDetails", "End"), 1, lc);
                 query = query.invalidate();
             });
-            var viewbutton = findChildObject(this, 'viewprofile');
-            viewbutton.clicked.connect(function() {
-                var query = new QSqlQuery;
-                query.prepare("SELECT file, name FROM files WHERE id = :id");
-                query.bind(":id", Number(fileID));
+            var approvalButton = findChildObject(this, 'approval');
+            var annotationField = findChildObject(this, 'annotation');
+            var roastedEdit = findChildObject(this, 'roasted');
+            var unitEdit = findChildObject(this, 'roastunit');
+            var wholecolor = findChildObject(this, 'wholecolor');
+            var groundcolor = findChildObject(this, 'groundcolor');
+            window.loadBatch = function(mref, tref) {
+                machine = mref;
+                batchTime = tref;
+                var query = new QSqlQuery();
+                var q = "WITH names AS ( WITH greens AS ( SELECT unnest(unroasted_id) AS gitem, machine, time FROM roasting_log WHERE machine = :machine AND time = :time) SELECT array_agg((SELECT name FROM items WHERE id = greens.gitem) || ' (' || gitem || ')') AS names, max(greens.machine) AS machine, max(greens.time) AS time FROM greens LIMIT 1) SELECT (SELECT name FROM items WHERE id = roasted_id), duration, names, unroasted_quantity, (unroasted_total_quantity/:c1)::numeric(12,3), (roasted_quantity/:c2)::numeric(12,3), approval, files, annotation, (SELECT file FROM files WHERE id = files[1]) AS file, additional_data FROM names, roasting_log WHERE roasting_log.machine = names.machine AND roasting_log.time = names.time";
+                query.prepare(q);
+                query.bind(":machine", mref);
+                query.bind(":time", tref);
+                query.bind(":c1", conversion);
+                query.bind(":c2", conversion);
                 query.exec();
-                if(query.next()) {
-                    var viewer = createWindow('offline');
-                    var buffer = new QBuffer(query.value(0));
-                    var pname = query.value(1);
-                    query = query.invalidate();
-                    var input = new XMLInput(buffer, 1);
-                    var graph = findChildObject(viewer, 'graph');
-                    var log = findChildObject(viewer, 'log');
-                    input.newTemperatureColumn.connect(log.setHeaderData);
-                    input.newTemperatureColumn.connect(function(column) {
-                        viewer.saveTemperatureColumns.push(column);
-                    });
-                    input.newAnnotationColumn.connect(log.setHeaderData);
-                    input.newAnnotationColumn.connect(function(column) {
-                        viewer.saveAnnotationColumns.push(column);
-                    });
-                    input.measure.connect(graph.newMeasurement);
-                    input.measure.connect(log.newMeasurement);
-                    input.annotation.connect(log.newAnnotation);
-                    var lc;
-                    input.lastColumn.connect(function(c) {
-                        lc = c;
-                        if(c < 3) {
-                            log.setHeaderData(3, "");
-                        }
-                    });
-                    input.annotation.connect(function(note, tcol, ncol) {
-                        for(var i = tcol; i < ncol; i++) {
-                            log.newAnnotation(note, i, ncol);
-                        }
-                    });
-                    viewer.windowTitle = "Typica - " + pname;
-                    viewer.raise();
-                    viewer.activateWindow();
-                    graph.updatesEnabled = false;
-                    log.updatesEnabled = false;
-                    input.input();
-                    log.updatesEnabled = true;
-                    graph.updatesEnabled = true;
-                    log.newAnnotation("End", 1, lc);
-                }
-                query = query.invalidate();
-            });
-            window.loadData = function(table, row) {
-                tableReference = table;
-                rowReference = row;
+                query.next();
                 var buffer = new QBuffer;
                 buffer.open(3);
                 var output = new XmlWriter(buffer);
@@ -173,26 +240,25 @@
                 output.writeStartElement("html");
                 output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
                 output.writeStartElement("head");
-                output.writeTextElement("title", TTR("batchDetails", "Batch Details"));
+                output.writeTextElement("title", "Batch Details");
                 output.writeEndElement();
                 output.writeStartElement("body");
                 output.writeStartElement("div");
                 output.writeAttribute("style", "float: left; padding-right: 10px");
                 output.writeStartElement("p");
                 output.writeTextElement("strong", TTR("batchDetails", "Roasted Coffee: "));
-                output.writeTextElement("span", table.data(row, 2));
+                output.writeTextElement("span", query.value(0));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("div");
                 output.writeAttribute("style", "float: left");
                 output.writeStartElement("p");
-                output.writeTextElement("strong", TTR("batchDetails", "Roasted On: "));
-                batchTime = table.data(row, 0);
+                output.writeTextElement("strong", TTR("batchDetails", "Roasted At: "));
                 output.writeTextElement("span", batchTime);
                 output.writeEndElement();
                 output.writeStartElement("p");
                 output.writeTextElement("strong", TTR("batchDetails", "Batch Duration: "));
-                output.writeTextElement("span", table.data(row, 6));
+                output.writeTextElement("span", query.value(1));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("div");
@@ -202,38 +268,21 @@
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
                 output.writeTextElement("th", TTR("batchDetails", "Green Coffee"));
-                output.writeTextElement("th", TTR("batchDetails", "Weight (") + unitText + ")");
+                output.writeTextElement("th", TTR("batchDetails", "Weight") + "(" + unitText + ")");
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tbody");
-                var query = new QSqlQuery();
-                query.prepare("SELECT unroasted_id, unroasted_quantity, approval, files, annotation, (unroasted_total_quantity/:c1)::numeric(12,3), (roasted_quantity/:c2)::numeric(12,3) FROM roasting_log WHERE time = :time AND machine = :machine");
-                query.bind(":time", batchTime);
-                query.bind(":c1", conversion);
-                query.bind(":c2", conversion);
-                machine = table.data(row, 1);
-                query.bind(":machine", machine);
-                query.exec();
-                query.next();
-                approval = query.value(2);
-                annotation = query.value(4);
-                var items = sqlToArray(query.value(0));
-                var quantities = sqlToArray(query.value(1));
-                var nameQuery = new QSqlQuery();
-                nameQuery.prepare("SELECT name FROM items WHERE id = :id");
+                var items = sqlToArray(query.value(2));
+                var quantities = sqlToArray(query.value(3));
                 for(var i = 0; i < items.length; i++) {
                     output.writeStartElement("tr");
-                    nameQuery.bind(":id", items[i]);
-                    nameQuery.exec();
-                    nameQuery.next();
-                    output.writeTextElement("td", nameQuery.value(0) + " (" + items[i] + ")");
+                    output.writeTextElement("td", items[i]);
                     output.writeStartElement("td");
                     output.writeAttribute("align", "center");
-                    output.writeCharacters((Number(quantities[i])/conversion).toFixed(3));
+                    output.writeCharacters(Number(quantities[i]/conversion).toFixed(3));
                     output.writeEndElement();
                     output.writeEndElement();
                 }
-                nameQuery = nameQuery.invalidate();
                 output.writeEndElement();
                 output.writeStartElement("tfoot");
                 output.writeStartElement("tr");
@@ -243,7 +292,7 @@
                 output.writeEndElement();
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
-                output.writeCharacters(query.value(5));
+                output.writeCharacters(query.value(4));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tr");
@@ -253,8 +302,7 @@
                 output.writeEndElement();
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
-                output.writeCharacters(query.value(6));
-                roastWeight = query.value(6);
+                output.writeCharacters(query.value(5));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("tr");
@@ -264,23 +312,27 @@
                 output.writeEndElement();
                 output.writeStartElement("td");
                 output.writeAttribute("align", "center");
-                output.writeCharacters(table.data(row, 5));
-                output.writeCharacters("%");
+                if(Number(query.value(4)) > 0) {
+                    output.writeCharacters(Number(((Number(query.value(4)) - Number(query.value(5)))/Number(query.value(4))) * 100).toFixed(2));
+                    output.writeCharacters("%");
+                } else {
+                    output.writeCharacters("unknown");
+                }
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeStartElement("p");
                 output.writeTextElement("strong", TTR("batchDetails", "Approved: "));
-                output.writeCharacters(approval);
+                output.writeCharacters(query.value(6));
                 output.writeEndElement();
                 output.writeStartElement("p");
                 output.writeTextElement("strong", TTR("batchDetails", "Files: "));
-                output.writeCharacters(query.value(3));
+                output.writeCharacters(query.value(7));
                 output.writeEndElement();
                 output.writeStartElement("p");
                 output.writeTextElement("strong", TTR("batchDetails", "Annotations:"));
-                var files = sqlToArray(query.value(3));
+                var files = sqlToArray(query.value(7));
                 var annotations = annotationFromRecord(files[0]);
                 fileID = files[0];
                 var buffer2 = new QBuffer("<points>"+annotations+"</points>");
@@ -301,16 +353,16 @@
                 output.writeStartElement("thead");
                 output.writeStartElement("tr");
                 for(var i = 0; i < seriesHeaders.length; i++) {
-                        output.writeTextElement("th", seriesHeaders[i]);
+                    output.writeTextElement("th", seriesHeaders[i]);
                 }
                 output.writeEndElement();
                 output.writeEndElement();
                 buffer2.open(1);
                 var rq = 'for $t in doc($profile) //tuple return (string($t/time), ";", ';
                 for(var i = 0; i < seriesHeaders.length - 2; i++) {
-                        rq = rq + 'string($t/temperature[' + Number(i+1) + ']), ";", ';
+                    rq += 'string($t/temperature[' + Number(i+1) + ']), ";", ';
                 }
-                rq = rq + 'string($t/annotation), "~")';
+                rq += 'string($t/annotation), "~")';
                 colQuery.setQuery(rq);
                 var annotationData = colQuery.exec();
                 colQuery = colQuery.invalidate();
@@ -328,8 +380,7 @@
                         }
                         if(j > 0 && j < annotationRow.length - 1) {
                             output.writeCharacters(Number(annotationRow[j].replace(/^\s+|\s+$/g,"")).toFixed(2));
-                        }
-                        else {
+                        } else {
                             output.writeCharacters(annotationRow[j].replace(/^\s+|\s+$/g,""));
                         }
                         output.writeEndElement();
@@ -338,22 +389,97 @@
                 }
                 output.writeEndElement();
                 output.writeEndElement();
-                output.writeCharacters(annotation);
+                output.writeCharacters(query.value(8));
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndDocument();
                 dataView.setContent(buffer);
                 buffer.close();
+                log.clear();
+                graph.clear();
+                var buffer3 = new QBuffer(query.value(9));
+                var input = new XMLInput(buffer3, 1);
+                input.newTemperatureColumn.connect(log.setHeaderData);
+                input.newAnnotationColumn.connect(log.setHeaderData);
+                var lc;
+                input.lastColumn.connect(function(c) {
+                    lc = c;
+                    if(c < 3) {
+                        log.setHeaderData(3, "");
+                    }
+                });
+                input.measure.connect(graph.newMeasurement);
+                input.measure.connect(log.newMeasurement);
+                input.annotation.connect(function(note,tcol,ncol) {
+                    for(var i = tcol; i < ncol; i++) {
+                        log.newAnnotation(note, i, ncol);
+                    }
+                });
+                graph.updatesEnabled = false;
+                log.updatesEnabled = false;
+                input.input();
+                log.updatesEnabled = true;
+                graph.updatesEnabled = true;
+                log.newAnnotation("End", 1, lc);
+                if(query.value(6) == "true") {
+                    approvalButton.checked = true;
+                }
+                annotationField.plainText = query.value(8);
+                unitEdit.text = unitText;
+                roastedEdit.text = query.value(5);
+                if(query.value(10).length > 0) {
+                    var extradata = JSON.parse(query.value(10));
+                    if(extradata.color) {
+                        if(extradata.color.whole) {
+                            wholecolor.value = extradata.color.whole;
+                        } else {
+                            wholecolor.value = "";
+                        }
+                        if(extradata.color.ground) {
+                            groundcolor.value = extradata.color.ground;
+                        } else {
+                            groundcolor.value = "";
+                        }
+                    } else {
+                        wholecolor.value = "";
+                        groundcolor.value = "";
+                    }
+                }
                 query = query.invalidate();
-                edit.enabled = true;
-            };
+            }
             var saveMenu = findChildObject(this, 'save');
             saveMenu.triggered.connect(function() {
                 var filename = QFileDialog.getSaveFileName(window, TTR("batchDetails", "Save Log As..."), QSettings.value("script/lastDir", "") + "/");
                 if(filename != "") {
                     saveFileFromDatabase(fileID, filename);
                 }
+            });
+            var submit = findChildObject(this, 'submit');
+            submit.clicked.connect(function() {
+                var query = new QSqlQuery;
+                query.prepare("UPDATE roasting_log SET roasted_quantity = :roasted, approval = :approval, annotation = :annotation, additional_data = :extradata WHERE time = :time AND machine = :machine");
+                query.bind(":approval", approvalButton.checked);
+                query.bind(":annotation", annotationField.plainText);
+                query.bind(":roasted", Number(Number(roastedEdit.text)*conversion));
+                var extradata = new Object;
+                var colordata = new Object;
+                if(wholecolor.value.length > 0) {
+                    colordata.whole = wholecolor.value;
+                }
+                if(groundcolor.value.length > 0) {
+                    colordata.ground = groundcolor.value;
+                }
+                if(colordata.whole || colordata.ground) {
+                    extradata.color = colordata;
+                }
+                query.bind(":extradata", JSON.stringify(extradata));
+                query.bind(":time", batchTime);
+                query.bind(":machine", Number(machine));
+                query.exec();
+                window.loadBatch(machine, batchTime);
+                displayInfo(TTR("batchDetails", "Batch Data Saved"),
+                            TTR("roastspec", "New batch details saved"));
             });
         ]]>
     </program>

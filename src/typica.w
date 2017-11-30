@@ -2856,6 +2856,7 @@ when we want the latter.
 QScriptValue constructQBuffer(QScriptContext *context, QScriptEngine *engine);
 void setQBufferProperties(QScriptValue value, QScriptEngine *engine);
 QScriptValue QBuffer_setData(QScriptContext *context, QScriptEngine *engine);
+QScriptValue QBuffer_data(QScriptContext *context, QScriptEngine *engine);
 
 @ The host environment needs to be aware of the constructor.
 
@@ -2879,6 +2880,7 @@ void setQBufferProperties(QScriptValue value, QScriptEngine *engine)
 {
     setQIODeviceProperties(value, engine);
     value.setProperty("setData", engine->newFunction(QBuffer_setData));
+    value.setProperty("data", engine->newFunction(QBuffer_data));
 }
 
 QScriptValue QBuffer_setData(QScriptContext *context, QScriptEngine *)
@@ -2886,6 +2888,12 @@ QScriptValue QBuffer_setData(QScriptContext *context, QScriptEngine *)
     QBuffer *self = getself<QBuffer *>(context);
     self->setData(argument<QString>(0, context).toAscii());
     return QScriptValue();
+}
+
+QScriptValue QBuffer_data(QScriptContext *context, QScriptEngine *)
+{
+    QBuffer *self = getself<QBuffer *>(context);
+    return QScriptValue(QString(self->data()));
 }
 
 @* Scripting QXmlQuery.

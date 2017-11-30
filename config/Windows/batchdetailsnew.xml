@@ -3,6 +3,9 @@
         <layout type="horizontal">
             <button type="push" id="target" name="Load profile as target" />
             <button type="push" id="compare" name="Compare profile" />
+            <stretch />
+            <label>Search:</label>
+            <line id="search" />
         </layout>
         <tabbar id="tabs" />
         <layout type="stack" id="pages">
@@ -354,9 +357,10 @@
                         wholecolor.value = "";
                         groundcolor.value = "";
                     }
+                } else {
+                    wholecolor.value = "";
+                    groundcolor.value = "";
                 }
-                
-                
                 output.writeStartElement("p");
                 output.writeTextElement("strong", TTR("batchDetails", "Approved: "));
                 output.writeCharacters(query.value(6));
@@ -495,6 +499,7 @@
                 query.bind(":time", batchTime);
                 query.bind(":machine", Number(machine));
                 query.exec();
+                query = query.invalidate();
                 window.loadBatch(machine, batchTime);
                 displayInfo(TTR("batchDetails", "Batch Data Saved"),
                             TTR("roastspec", "New batch details saved"));
@@ -557,6 +562,28 @@
                 batchTag.setContent(buffer);
                 buffer.close();
             };
+            var search = findChildObject(this, 'search');
+            search.returnPressed.connect(function() {
+                if(search.text.length == 0) {
+                    return;
+                }
+                if(Number(search.text)) {
+                    var query = new QSqlQuery();
+                    query.prepare("SELECT machine, time FROM roasting_log WHERE files[1] = :file");
+                    query.bind(":file", Number(search.text));
+                    query.exec();
+                    if(query.next()) {
+                        window.loadBatch(query.value(0), query.value(1));
+                    }
+                    query = query.invalidate();
+                } else {
+                    var tag = JSON.parse(search.text);
+                    if(tag.m != undefined && tag.t != undefined) {
+                        window.loadBatch(tag.m, tag.t);
+                    }
+                }
+                search.text = "";
+            });
         ]]>
     </program>
 </window>

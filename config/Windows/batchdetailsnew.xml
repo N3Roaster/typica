@@ -56,7 +56,11 @@
             </page>
             <page>
                 <layout type="vertical">
-                    
+                    <webview id="batchTag" />
+                    <layout type="horizontal">
+                        <printerselector id="printerlist" />
+                        <button name="Print" id="printbutton" type="push" />
+                    </layout>
                 </layout>
             </page>
         </layout>
@@ -224,7 +228,7 @@
                 machine = mref;
                 batchTime = tref;
                 var query = new QSqlQuery();
-                var q = "WITH names AS ( WITH greens AS ( SELECT unnest(unroasted_id) AS gitem, machine, time FROM roasting_log WHERE machine = :machine AND time = :time) SELECT array_agg((SELECT name FROM items WHERE id = greens.gitem) || ' (' || gitem || ')') AS names, max(greens.machine) AS machine, max(greens.time) AS time FROM greens LIMIT 1) SELECT (SELECT name FROM items WHERE id = roasted_id), duration, names, unroasted_quantity, (unroasted_total_quantity/:c1)::numeric(12,3), (roasted_quantity/:c2)::numeric(12,3), approval, files, annotation, (SELECT file FROM files WHERE id = files[1]) AS file, additional_data FROM names, roasting_log WHERE roasting_log.machine = names.machine AND roasting_log.time = names.time";
+                var q = "WITH names AS ( WITH greens AS ( SELECT unnest(unroasted_id) AS gitem, machine, time FROM roasting_log WHERE machine = :machine AND time = :time) SELECT array_agg((SELECT name FROM items WHERE id = greens.gitem) || ' (' || gitem || ')') AS names, max(greens.machine) AS machine, max(greens.time) AS time FROM greens LIMIT 1) SELECT (SELECT name FROM items WHERE id = roasted_id), duration, names, unroasted_quantity, (unroasted_total_quantity/:c1)::numeric(12,3), (roasted_quantity/:c2)::numeric(12,3), approval, files, annotation, (SELECT file FROM files WHERE id = files[1]) AS file, additional_data, roasted_id FROM names, roasting_log WHERE roasting_log.machine = names.machine AND roasting_log.time = names.time";
                 query.prepare(q);
                 query.bind(":machine", mref);
                 query.bind(":time", tref);
@@ -459,6 +463,7 @@
                 annotationField.plainText = query.value(8);
                 unitEdit.text = unitText;
                 roastedEdit.text = query.value(5);
+                drawTag(query.value(11), query.value(0));
                 query = query.invalidate();
             }
             var saveMenu = findChildObject(this, 'save');
@@ -494,6 +499,64 @@
                 displayInfo(TTR("batchDetails", "Batch Data Saved"),
                             TTR("roastspec", "New batch details saved"));
             });
+            var batchTag = findChildObject(this, 'batchTag');
+            var printers = findChildObject(this, 'printerlist');
+            printers.currentIndex = printers.findText(QSettings.value("script/batchtagprinter"));
+            printers['currentIndexChanged(int)'].connect(function() {
+                QSettings.setValue("script/batchtagprinter", printers.currentText);
+            });
+            var printbutton = findChildObject(this, 'printbutton');
+            printbutton.clicked.connect(function() {
+                batchTag.print(printers.currentText);
+            });
+            function drawTag(item, name) {
+                var buffer = new QBuffer;
+                buffer.open(3);
+                var output = new XmlWriter(buffer);
+                output.writeStartDocument("1.0");
+                output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+                output.writeStartElement("html");
+                output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+                output.writeStartElement("head");
+                var styleFile = new QFile(QSettings.value("config") + "/Scripts/batchtag.css");
+                styleFile.open(1);
+                output.writeTextElement("style", styleFile.readToString());
+                styleFile.close();
+                output.writeStartElement("script");
+                scriptFile = new QFile(QSettings.value("config") + "/Scripts/qrcode.js");
+                scriptFile.open(1);
+                output.writeCDATA(scriptFile.readToString());
+                scriptFile.close();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeStartElement("body");
+                output.writeStartElement("h1");
+                output.writeCharacters(name + " (" + item + ")");
+                output.writeEndElement();
+                output.writeTextElement("span", "Roasted at: " + batchTime);
+                output.writeTextElement("span", "On machine: " + machine);
+                output.writeTextElement("span", "Batch file: " + fileID);
+                output.writeStartElement("div");
+                output.writeAttribute("id", "container");
+                output.writeEndElement();
+                output.writeStartElement("script");
+                var tag = {g: "Typica", m: Number(machine), v: 1};
+                tag.t = batchTime;
+                tag.f = Number(fileID);
+                var scriptData = 'var width = document.getElementById("container").offsetWidth;';
+                scriptData += 'var qrcode = new QRCode({content: \'';
+                scriptData += JSON.stringify(tag);
+                scriptData += '\', width: width, height: width});';
+                scriptData += 'var svg = qrcode.svg();';
+                scriptData += 'document.getElementById("container").innerHTML = svg;';
+                output.writeCDATA(scriptData);
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndElement();
+                output.writeEndDocument();
+                batchTag.setContent(buffer);
+                buffer.close();
+            };
         ]]>
     </program>
 </window>

@@ -1,0 +1,29 @@
+/*==============================================================
+                CODE 128 styles
+===============================================================*/
+
+.barcode128h  {
+    clear: both;
+    padding: 0 10px /*quiet zone*/;
+    overflow: auto;
+    height: 0.35in   /*size*/;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+ 
+.barcode128h div {
+    /*float: left;*/
+    height: 0.2 in  /*size*/;
+    display: inline;
+}
+ 
+.barcode128h .bar1 { border-left: 2px solid black }
+.barcode128h .bar2 { border-left: 4px solid black }
+.barcode128h .bar3 { border-left: 6px solid black }
+.barcode128h .bar4 { border-left: 8px solid black }
+.barcode128h .space0 { margin-right: 0px }
+.barcode128h .space1 { margin-right: 2px }
+.barcode128h .space2 { margin-right: 4px }
+.barcode128h .space3 { margin-right: 6px }
+.barcode128h .space4 { margin-right: 8px }
+ 

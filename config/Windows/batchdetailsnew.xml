@@ -527,12 +527,26 @@
                 styleFile.open(1);
                 output.writeTextElement("style", styleFile.readToString());
                 styleFile.close();
+                
+                styleFile = new QFile(QSettings.value("config") + "/Scripts/barcode.css");
+                styleFile.open(1);
+                output.writeTextElement("style", styleFile.readToString());
+                styleFile.close();
+                
                 output.writeStartElement("script");
                 scriptFile = new QFile(QSettings.value("config") + "/Scripts/qrcode.js");
                 scriptFile.open(1);
                 output.writeCDATA(scriptFile.readToString());
                 scriptFile.close();
                 output.writeEndElement();
+                
+                output.writeStartElement("script");
+                scriptFile = new QFile(QSettings.value("config") + "/Scripts/barcode.js");
+                scriptFile.open(1);
+                output.writeCDATA(scriptFile.readToString());
+                scriptFile.close();
+                output.writeEndElement();
+                
                 output.writeEndElement();
                 output.writeStartElement("body");
                 output.writeStartElement("h1");
@@ -541,6 +555,21 @@
                 output.writeTextElement("span", "Roasted at: " + batchTime);
                 output.writeTextElement("span", "On machine: " + machine);
                 output.writeTextElement("span", "Batch file: " + fileID);
+                
+                output.writeStartElement("div");
+                output.writeAttribute("id", "barcode");
+                output.writeAttribute("class", "barcode128h");
+                output.writeAttribute("align", "center");
+                output.writeEndElement();
+                
+                output.writeStartElement("script");
+                var c128data = 'var strBarcodeHTML = code128("';
+                c128data += fileID;
+                c128data += '", "C");'
+                c128data += 'document.getElementById("barcode").innerHTML = strBarcodeHTML;';
+                output.writeCDATA(c128data);
+                output.writeEndElement();
+                
                 output.writeStartElement("div");
                 output.writeAttribute("id", "container");
                 output.writeEndElement();

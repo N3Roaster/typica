@@ -322,6 +322,37 @@
                 output.writeEndElement();
                 output.writeEndElement();
                 output.writeEndElement();
+                if(query.value(10).length > 0) {
+                    var extradata = JSON.parse(query.value(10));
+                    if(extradata.color) {
+                        output.writeStartElement("p");
+                        output.writeTextElement("strong", TTR("batchDetails", "Degree of Roast"));
+                        output.writeEndElement();
+                        if(extradata.color.whole) {
+                            wholecolor.value = extradata.color.whole;
+                            output.writeStartElement("p");
+                            output.writeTextElement("strong", TTR("batchDetails", "Whole Bean: "));
+                            output.writeTextElement("span", extradata.color.whole);
+                            output.writeEndElement();
+                        } else {
+                            wholecolor.value = "";
+                        }
+                        if(extradata.color.ground) {
+                            groundcolor.value = extradata.color.ground;
+                            output.writeStartElement("p");
+                            output.writeTextElement("strong", TTR("batchDetails", "Ground: "));
+                            output.writeTextElement("span", extradata.color.ground);
+                            output.writeEndElement();
+                        } else {
+                            groundcolor.value = "";
+                        }
+                    } else {
+                        wholecolor.value = "";
+                        groundcolor.value = "";
+                    }
+                }
+                
+                
                 output.writeStartElement("p");
                 output.writeTextElement("strong", TTR("batchDetails", "Approved: "));
                 output.writeCharacters(query.value(6));
@@ -428,24 +459,6 @@
                 annotationField.plainText = query.value(8);
                 unitEdit.text = unitText;
                 roastedEdit.text = query.value(5);
-                if(query.value(10).length > 0) {
-                    var extradata = JSON.parse(query.value(10));
-                    if(extradata.color) {
-                        if(extradata.color.whole) {
-                            wholecolor.value = extradata.color.whole;
-                        } else {
-                            wholecolor.value = "";
-                        }
-                        if(extradata.color.ground) {
-                            groundcolor.value = extradata.color.ground;
-                        } else {
-                            groundcolor.value = "";
-                        }
-                    } else {
-                        wholecolor.value = "";
-                        groundcolor.value = "";
-                    }
-                }
                 query = query.invalidate();
             }
             var saveMenu = findChildObject(this, 'save');

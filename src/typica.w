@@ -12887,6 +12887,7 @@ define a macro that returns the |Application| instance.
 
 class NodeInserter;
 class DeviceTreeModel;
+class DatabaseNotification;
 class Application : public QApplication@/
 {@/
     @[Q_OBJECT@]@;
@@ -12900,10 +12901,12 @@ class Application : public QApplication@/
         Q_INVOKABLE bool login(const QString &user, const QString &password);
         Q_INVOKABLE bool autoLogin();
         QScriptEngine *engine;
-        QNetworkAccessManager *network;@/
+        QNetworkAccessManager *network;
+        DatabaseNotification *subscribe(const QString &notification);@/
     @[public slots@]:@/
 	    void setDatabaseConnected(bool status);
 	    void setCurrentTypicaUser(const QString &user);
+	    void notify(const QString &notification);
         @<Extended Application slots@>@;
     @[signals@]:@/
 	    void userChanged(const QString &user);
@@ -12912,6 +12915,8 @@ class Application : public QApplication@/
         QDomDocument conf;
         bool connectionStatus;
         QString currentUser;
+        QMap<QString, DatabaseNotification*> notifiers;
+        QSqlDriver *notificationDriver;
 };
 
 @ The constructor for this class handles a few things that had previously been
@@ -12956,11 +12961,11 @@ if(app->load(QString("%1_%2").arg("Typica").arg(QLocale::system().name()), QStri
 }
 
 @ We also want to be able to access the application instance from within the
-scripting engine. We don'@q'@>t need to be able to create new instances, just access
-the one that already exists.
+scripting engine. We don'@q'@>t need to be able to create new instances, just access the one that already exists.
 
 @<Set up the scripting engine@>=
 value = engine->newQObject(AppInstance);
+value.setProperty("subscribe", engine->newFunction(Application_subscribe));
 engine->globalObject().setProperty("Application", value);
 
 @ The |configuration()| method provides access to an XML document containing the
@@ -13000,6 +13005,102 @@ void Application::setDatabaseConnected(bool status)
 bool Application::databaseConnected()
 {
 	return connectionStatus;
+}
+
+@ Database notifications allow various parts of Typica to be aware when data in
+the database may have been changed by another instance of Typica running on a
+different computer or by another program that uses the same database. To pass
+notifications to the various places that may be interested in these and not
+bother notification aware controls that are uninterested in unrelated
+notifications, a notification object is created for each notification.
+
+@<Application Implementation@>=
+DatabaseNotification* Application::subscribe(const QString &notification)
+{
+    DatabaseNotification *retval;
+    if(notifiers.contains(notification))
+    {
+        retval = notifiers.value(notification);
+    }
+    else
+    {
+        if(notifiers.size() == 0)
+        {
+            notificationDriver = QSqlDatabase::database().driver();
+            connect(notificationDriver, SIGNAL(notification(QString)), this, SLOT(notify(QString)));
+        }
+        retval = new DatabaseNotification;
+        connect(this, SIGNAL(aboutToQuit()), retval, SLOT(deleteLater()));
+        if(notifiers.size() !=
+            notificationDriver->subscribedToNotifications().size())
+        {
+            for(int i = 0; i < notifiers.size(); i++)
+            {
+                notificationDriver->subscribeToNotification(notifiers.keys().at(i));
+            }
+        }
+        notifiers.insert(notification, retval);
+        notificationDriver->subscribeToNotification(notification);
+    }
+    return retval;
+}
+
+@ As the various parts of \pn{} operate mostly indepent of each other and
+notifications from the current instance may not be immediately returned, it is
+generally a good idea for operations that would generate a notification to also
+signal that notification within the application.
+
+@<Application Implementation@>=
+void Application::notify(const QString &notification)
+{
+    if(notifiers.contains(notification))
+    {
+        DatabaseNotification *notifier = notifiers.value(notification);
+        notifier->forwardNotification(notification);
+    }
+}
+
+@ A function is provided to allow subscribing to notifications from scripts.
+@<Function prototypes for scripting@>=
+QScriptValue Application_subscribe(QScriptContext *context,
+                                   QScriptEngine *engine);
+
+@ The implementation is trivial.
+
+@<Functions for scripting@>=
+QScriptValue Application_subscribe(QScriptContext *context,
+                                   QScriptEngine *engine)
+{
+    return engine->newQObject(
+        AppInstance->subscribe(argument<QString>(0, context)));
+}
+
+@ The DatabaseNotification object just needs a signal that interested objects
+can connect to.
+
+@<Class declarations@>=
+class DatabaseNotification : public QObject
+{
+    Q_OBJECT
+    public:
+        DatabaseNotification();
+    public slots:
+        void forwardNotification(const QString &notification);
+    signals:
+        void notify(const QString &notification);
+};
+
+@ The implementation is trivial.
+
+@<Class declarations@>=
+DatabaseNotification::DatabaseNotification() : QObject(NULL)
+{
+    /* Nothing needs to be done here. */
+}
+
+void DatabaseNotification::forwardNotification(const QString &notification)
+{
+    emit notify(notification);
 }
 
 @** Table editor for ordered arrays with SQL relations.

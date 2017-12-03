@@ -296,7 +296,7 @@
                 buffer.close();
             };
             refresh();
-            var notifier = Application.subscribe("RoastingLogChange");
+            var notifier = Application.subscribe("roastinglogchange");
             notifier.notify.connect(function() {
                 refresh();
             });

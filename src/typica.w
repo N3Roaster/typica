@@ -13014,6 +13014,11 @@ notifications to the various places that may be interested in these and not
 bother notification aware controls that are uninterested in unrelated
 notifications, a notification object is created for each notification.
 
+Note that the notification channel is an identifier and unquoted identifiers
+will be converted to lowercase while \pn{} will attempt to match subscribed to
+notifications exactly. This means that it is generally a good idea to subscribe
+with the channel specified in lowercase.
+
 @<Application Implementation@>=
 DatabaseNotification* Application::subscribe(const QString &notification)
 {
@@ -13986,7 +13991,6 @@ void SqlConnectionSetup::testConnection()
         settings.setValue("database/dbname", dbname->text());
         settings.setValue("database/user", user->text());
         settings.setValue("database/password", password->text());
-        database.close();
         AppInstance->setDatabaseConnected(true);
         accept();
     }
@@ -14026,7 +14030,6 @@ if(!database.open())
 }
 else
 {
-    database.close();
     AppInstance->setDatabaseConnected(true);
 }
 
@@ -18782,7 +18785,6 @@ void ModbusRTUDevice::decimalResponse(QByteArray response)
     tchar[0] = response.at(4);
     decimalPosition = temp;
     emit SVDecimalChanged(decimalPosition);
-    qDebug() << "Received decimal response";
 }
 
 void ModbusRTUDevice::unitResponse(QByteArray response)
@@ -18800,7 +18802,6 @@ void ModbusRTUDevice::unitResponse(QByteArray response)
     {
         unitIsF = @[false@];
     }
-    qDebug() << "Received unit response";
 }
 
 void ModbusRTUDevice::svlResponse(QByteArray response)
@@ -18815,7 +18816,6 @@ void ModbusRTUDevice::svlResponse(QByteArray response)
         outputSVLower /= 10;
     }
     emit SVLowerChanged(outputSVLower);
-    qDebug() << "Received set value lower bound response";
 }
 
 void ModbusRTUDevice::svuResponse(QByteArray response)
@@ -18830,7 +18830,6 @@ void ModbusRTUDevice::svuResponse(QByteArray response)
         outputSVUpper /= 10;
     }
     emit SVUpperChanged(outputSVUpper);
-    qDebug() << "Received set value upper bound response";
 }
 
 void ModbusRTUDevice::requestMeasurement()
@@ -19103,7 +19102,6 @@ void ModbusRTUDevice::sendNextMessage()
         char *check = (char*)&crc;
         message.append(check[0]);
         message.append(check[1]);
-        qDebug() << "Writing" << message.toHex();
         port->write(message);
         commTimeout->start(2000);
         messageDelayTimer->start(delayTime);

@@ -2496,7 +2496,7 @@ static const uint qt_meta_data_Application[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -2509,13 +2509,14 @@ static const uint qt_meta_data_Application[] = {
  // slots: signature, parameters, type, tag, flags
       46,   39,   12,   12, 0x0a,
       73,   13,   12,   12, 0x0a,
-     103,   12,   12,   12, 0x0a,
+     116,  103,   12,   12, 0x0a,
+     132,   12,   12,   12, 0x0a,
 
  // methods: signature, parameters, type, tag, flags
-     134,   12,  129,   12, 0x02,
-     162,   12,  154,   12, 0x02,
-     196,  182,  129,   12, 0x02,
-     219,   12,  129,   12, 0x02,
+     163,   12,  158,   12, 0x02,
+     191,   12,  183,   12, 0x02,
+     225,  211,  158,   12, 0x02,
+     248,   12,  158,   12, 0x02,
 
        0        // eod
 };
@@ -2524,6 +2525,7 @@ static const char qt_meta_stringdata_Application[] = {
     "Application\0\0user\0userChanged(QString)\0"
     "status\0setDatabaseConnected(bool)\0"
     "setCurrentTypicaUser(QString)\0"
+    "notification\0notify(QString)\0"
     "saveDeviceConfiguration()\0bool\0"
     "databaseConnected()\0QString\0"
     "currentTypicaUser()\0user,password\0"
@@ -2539,14 +2541,15 @@ void Application::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 0: _t->userChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 1: _t->setDatabaseConnected((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 2: _t->setCurrentTypicaUser((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 3: _t->saveDeviceConfiguration(); break;
-        case 4: { bool _r = _t->databaseConnected();
+        case 3: _t->notify((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->saveDeviceConfiguration(); break;
+        case 5: { bool _r = _t->databaseConnected();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 5: { QString _r = _t->currentTypicaUser();
+        case 6: { QString _r = _t->currentTypicaUser();
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 6: { bool _r = _t->login((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
+        case 7: { bool _r = _t->login((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 7: { bool _r = _t->autoLogin();
+        case 8: { bool _r = _t->autoLogin();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -2585,15 +2588,100 @@ int Application::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 9;
     }
     return _id;
 }
 
 // SIGNAL 0
 void Application::userChanged(const QString & _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+static const uint qt_meta_data_DatabaseNotification[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       2,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      35,   22,   21,   21, 0x05,
+
+ // slots: signature, parameters, type, tag, flags
+      51,   22,   21,   21, 0x0a,
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_DatabaseNotification[] = {
+    "DatabaseNotification\0\0notification\0"
+    "notify(QString)\0forwardNotification(QString)\0"
+};
+
+void DatabaseNotification::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        DatabaseNotification *_t = static_cast<DatabaseNotification *>(_o);
+        switch (_id) {
+        case 0: _t->notify((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->forwardNotification((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData DatabaseNotification::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject DatabaseNotification::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_DatabaseNotification,
+      qt_meta_data_DatabaseNotification, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &DatabaseNotification::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *DatabaseNotification::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *DatabaseNotification::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_DatabaseNotification))
+        return static_cast<void*>(const_cast< DatabaseNotification*>(this));
+    return QObject::qt_metacast(_clname);
+}
+
+int DatabaseNotification::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 2)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 2;
+    }
+    return _id;
+}
+
+// SIGNAL 0
+void DatabaseNotification::notify(const QString & _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

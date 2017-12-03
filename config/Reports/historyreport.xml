@@ -296,6 +296,10 @@
                 buffer.close();
             };
             refresh();
+            var notifier = Application.subscribe("RoastingLogChange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
         ]]>
     </program>
 </window>

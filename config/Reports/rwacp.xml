@@ -183,6 +183,10 @@
                 QSettings.setValue("script/report_unit", unitBox.currentIndex);
                 refresh();
             });
+            var notifier = Application.subscribe("roastinglogchange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
         ]]>
     </program>
 </window>

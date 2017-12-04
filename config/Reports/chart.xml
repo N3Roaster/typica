@@ -558,6 +558,10 @@
             avgField.editingFinished.connect(function() {
                 refresh();
             });
+            var notifier = Application.subscribe("roastinglogchange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
         ]]>
     </program>
 </window>

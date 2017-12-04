@@ -168,6 +168,14 @@
                 buffer.close();
             };
             refresh();
+            var notifier = Application.subscribe("roastinglogchange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
+            var notifier2 = Application.subscribe("purchasechange");
+            notifier2.notify.connect(function() {
+                refresh();
+            });
         ]]>
     </program>
 </window>

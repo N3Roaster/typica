@@ -175,6 +175,10 @@
             var doRefresh = function() {
                 refresh();
             }
+            var notifier = Application.subscribe("roastinglogchange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
             report.scriptLinkClicked.connect(function(url) {
                 var reminder = createWindow("editreminder");
                 if(url != "0")

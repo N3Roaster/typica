@@ -322,6 +322,11 @@
             query.exec("CREATE TABLE IF NOT EXISTS scheduled_roasts (id bigserial PRIMARY KEY, machine bigint, \"time\" timestamp without time zone, data jsonb NOT NULL)");
             query.exec("CREATE OR REPLACE FUNCTION notify_scheduled_roasts_changed() RETURNS trigger AS $$ BEGIN NOTIFY ScheduledRoastsChange; RETURN NULL; END; $$ LANGUAGE plpgsql");
             query.exec("CREATE TRIGGER notify_scheduled_roasts_changed AFTER INSERT OR UPDATE OR DELETE OR TRUNCATE ON scheduled_roasts FOR EACH STATEMENT EXECUTE PROCEDURE notify_scheduled_roasts_changed()");
+            query.exec("CREATE OR REPLACE FUNCTION notify_transactions_changed() RETURNS trigger AS $$ BEGIN NOTIFY TransactionsChange; RETURN NULL; END; $$ LANGUAGE plpgsql");
+            query.exec("CREATE TRIGGER notify_transactions_changed AFTER INSERT OR UPDATE OR DELETE ON transactions FOR EACH STATEMENT EXECUTE PROCEDURE notify_transactions_changed()");
+            query.exec("CREATE OR REPLACE FUNCTION notify_purchase_changed() RETURNS trigger AS $$ BEGIN NOTIFY PurchaseChange; RETURN NULL; END; $$ LANGUAGE plpgsql");
+            query.exec("CREATE TRIGGER notify_purchase_changed AFTER INSERT OR UPDATE OR DELETE ON purchase FOR EACH STATEMENT EXECUTE PROCEDURE notify_purchase_changed()");
+            
             query.exec("UPDATE TypicaFeatures SET version = 8 WHERE feature = 'base-features'");
             query = query.invalidate();
         };

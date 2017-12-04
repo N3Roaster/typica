@@ -177,6 +177,10 @@
             }
             refresh();
             dateSelect.rangeUpdated.connect(refresh);
+            var notifier = Application.subscribe("roastinglogchange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
             view.scriptLinkClicked.connect(function(url) {
                 var arg = url.slice(1, url.length).split("-");
                 var details = createReport("dailyproductiondetail.xml");

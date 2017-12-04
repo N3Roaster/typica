@@ -213,6 +213,10 @@
                 QSettings.setValue("auco_sort", sortBox.currentIndex);
                 refresh();
             });
+            var notifier = Application.subscribe("transactionschange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
             report.scriptLinkClicked.connect(function(url) {
                 if(url[0] == 'i') {
                     url = url.slice(1, url.length);

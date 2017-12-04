@@ -201,7 +201,52 @@
             var feesTable = findChildObject(this, 'fees');
             var submitButton = findChildObject(this, 'submit');
             var dateField = findChildObject(this, 'date');
+            var validate = function() {
+                if(vendorField.currentText == '') {
+                    displayError(TTR("purchase", "Missing Input"),
+                                 TTR("purchase", "Vendor is a required field."));
+                    return false;
+                }
+                for(var i = 0; i < form.elements(); i++) {
+                    if(findChildObject(form.elementAt(i), 'name').text == '') {
+                        displayError(TTR("purchase", "Missing Input"),
+                                     TTR("purchase", "Item is a required field."));
+                        return false;
+                    }
+                    if(findChildObject(form.elementAt(i), 'quantity').text == '') {
+                        displayError(TTR("purchase", "Missing Input"),
+                                     TTR("purchase", "Quantity is a required field."));
+                        return false;
+                    }
+                    if(findChildObject(form.elementAt(i), 'cost').text == '') {
+                        displayError(TTR("purchase", "Missing Input"),
+                                     TTR("purchase", "Cost is a required field."));
+                        return false;
+                    }
+                    if(findChildObject(form.elementAt(i), 'origin').currentText == '') {
+                        displayError(TTR("purchase", "Missing Input"),
+                                     TTR("purchase", "Origin is a required field."));
+                        return false;
+                    }
+                    if(findChildObject(form.elementAt(i), 'bags').text == '') {
+                        displayError(TTR("purchase", "Missing Input"),
+                                     TTR("purchase", "Bags is a required field."));
+                        return false;
+                    }
+                    if(findChildObject(form.elementAt(i), 'isDecaf').checked) {
+                        if(findChildObject(form.elementAt(i), 'decafEntry').currentText) {
+                            displayError(TTR("purchase", "Missing Input"),
+                                         TTR("purchase", "Decaffeination method is a required field for decaffeinated coffees."));
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            };
             submitButton.clicked.connect(function() {
+                if(!validate()) {
+                    return;
+                }
                 var query = new QSqlQuery;
                 var q = "INSERT INTO invoices (id, invoice, vendor, time) VALUES (default, :invoice, :vendor, :date) RETURNING id";
                 query.prepare(q);

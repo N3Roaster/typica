@@ -131,6 +131,10 @@
 				buffer.close();
 			}
 			refresh();
+            var notifier = Application.subscribe("purchasechange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
 			/* Update report as needed. */
 			dateSelect.rangeUpdated.connect(function() {
 				refresh();

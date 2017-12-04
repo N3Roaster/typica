@@ -1,109 +1,114 @@
 <window id="invoiceitemdetail">
-	<layout type="vertical">
-		<layout type="grid">
-			<row>
-				<column><label>Name</label></column>
-				<column><line id="name" /></column>
-			</row>
-			<row>
-				<column><label>Reference</label></column>
-				<column><line id="reference" /></column>
-			</row>
-			<row>
-				<column><label>Unit Cost</label></column>
-				<column><line validator="numeric" id="cost" /></column>
-			</row>
-			<row>
-				<column><label>Quantity</label></column>
-				<column><line validator="numeric" id="quantity" /></column>
-			</row>
-			<row>
-				<column><label>Bags</label></column>
-				<column><line validator="numeric" id="bags" /></column>
-			</row>
-		</layout>
-		<button name="Submit" type="push" id="submit" />
-	</layout>
-	<program>
-		<![CDATA[
-			window = this;
-			this.windowTitle = 'Typica - Item Detail';
-			var nameField = findChildObject(this, 'name');
-			var referenceField = findChildObject(this, 'reference');
-			var costField = findChildObject(this, 'cost');
-			var quantityField = findChildObject(this, 'quantity');
-			var bagsField = findChildObject(this, 'bags');
-			this.dataSet = function() {
-				nameField.text = window.rowData[2];
-				referenceField.text = window.rowData[3];
-				costField.text = window.rowData[4];
-				quantityField.text = window.rowData[5];
-				bagsField.text = window.rowData[6];
-			};
-			button = findChildObject(this, 'submit');
-			button.clicked.connect(function() {
-				var query = new QSqlQuery();
-				if(nameField.text != window.rowData[2]) {
-					query.prepare("UPDATE items SET name = :name WHERE id = :id");
-					query.bind(":name", nameField.text);
-					query.bind(":id", Number(window.rowData[1]));
-					query.exec();
-					query.prepare("UPDATE invoice_items SET description = :name WHERE item_id = :id");
-					query.bind(":name", nameField.text);
-					query.bind(":id", Number(window.rowData[1]));
-					query.exec();
-					window.rowData[2] = nameField.text;
-				}
-				if(referenceField.text != window.rowData[3]) {
-					query.prepare("UPDATE items SET reference = :ref WHERE id = :id");
-					query.bind(":ref", referenceField.text);
-					query.bind(":id", Number(window.rowData[1]));
-					query.exec();
-					window.rowData[3] = referenceField.text;
-				}
-				var cqupdated = false;
-				var qbupdated = false;
-				if(costField.text != window.rowData[4]) {
-					cqupdated = true;
-					query.prepare("UPDATE purchase SET cost = :cost WHERE item = :id");
-					query.bind(":cost", Number(costField.text));
-					query.bind(":id", Number(window.rowData[1]));
-					query.exec();
-					window.rowData[4] = costField.text;
-				}
-				if(quantityField.text != window.rowData[5]) {
-					cqupdated = true;
-					qbupdated = true;
-					query.prepare("UPDATE purchase SET quantity = :qty WHERE item = :id");
-					query.bind(":qty", Number(quantityField.text));
-					query.bind(":id", Number(window.rowData[1]));
-					query.exec();
-					window.rowData[5] = quantityField.text;
-					query.prepare("UPDATE items SET quantity = (SELECT balance FROM item_history(:id) WHERE time = (SELECT max(time) FROM item_history(:id2))) WHERE id = :id3");
-					query.bind(":id", Number(window.rowData[1]));
-					query.bind(":id2", Number(window.rowData[1]));
-					query.bind(":id3", Number(window.rowData[1]));
-					query.exec();
-				}
-				if(bagsField.text != window.rowData[6]) {
-					qbupdated = true;
-					window.rowData[6] = bagsField.text;
-				}
-				if(cqupdated) {
-					query.prepare("UPDATE invoice_items SET cost = :total WHERE item_id = :id");
-					query.bind(":total", Number(window.rowData[5]) * Number(window.rowData[4]));
-					query.bind(":id", Number(window.rowData[1]));
-					query.exec();
-				}
-				if(qbupdated) {
-					query.prepare("UPDATE lb_bag_conversion SET conversion = :conv WHERE item = :id");
-					query.bind(":conv", Number(window.rowData[5]) / Number(window.rowData[6]));
-					query.bind(":id", Number(window.rowData[1]));
-					query.exec();
-				}
-				query = query.invalidate();
-				window.close();
-			});
-		]]>
-	</program>
+    <layout type="vertical">
+        <layout type="grid">
+            <row>
+                <column><label>Name</label></column>
+                <column><line id="name" /></column>
+            </row>
+            <row>
+                <column><label>Reference</label></column>
+                <column><line id="reference" /></column>
+            </row>
+            <row>
+                <column><label>Unit Cost</label></column>
+                <column><line validator="numeric" id="cost" /></column>
+            </row>
+            <row>
+                <column><label>Quantity</label></column>
+                <column><line validator="numeric" id="quantity" /></column>
+            </row>
+            <row>
+                <column><label>Bags</label></column>
+                <column><line validator="numeric" id="bags" /></column>
+            </row>
+        </layout>
+        <button name="Submit" type="push" id="submit" />
+    </layout>
+    <program>
+        <![CDATA[
+            window = this;
+            this.windowTitle = 'Typica - Item Detail';
+            var nameField = findChildObject(this, 'name');
+            var referenceField = findChildObject(this, 'reference');
+            var costField = findChildObject(this, 'cost');
+            var quantityField = findChildObject(this, 'quantity');
+            var bagsField = findChildObject(this, 'bags');
+            this.dataSet = function() {
+                nameField.text = window.rowData[2];
+                referenceField.text = window.rowData[3];
+                costField.text = window.rowData[4];
+                quantityField.text = window.rowData[5];
+                bagsField.text = window.rowData[6];
+            };
+            button = findChildObject(this, 'submit');
+            button.clicked.connect(function() {
+                var query = new QSqlQuery();
+                if(nameField.text != window.rowData[2]) {
+                    query.prepare("UPDATE items SET name = :name WHERE id = :id");
+                    query.bind(":name", nameField.text);
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.exec();
+                    query.prepare("UPDATE invoice_items SET description = :name WHERE item_id = :id");
+                    query.bind(":name", nameField.text);
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.exec();
+                    window.rowData[2] = nameField.text;
+                }
+                if(referenceField.text != window.rowData[3]) {
+                    query.prepare("UPDATE items SET reference = :ref WHERE id = :id");
+                    query.bind(":ref", referenceField.text);
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.exec();
+                    window.rowData[3] = referenceField.text;
+                }
+                var cqupdated = false;
+                var qbupdated = false;
+                if(costField.text != window.rowData[4]) {
+                    cqupdated = true;
+                    query.prepare("UPDATE purchase SET cost = :cost WHERE item = :id");
+                    query.bind(":cost", Number(costField.text));
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.exec();
+                    window.rowData[4] = costField.text;
+                }
+                if(quantityField.text != window.rowData[5]) {
+                    cqupdated = true;
+                    qbupdated = true;
+                    query.prepare("UPDATE purchase SET quantity = :qty WHERE item = :id");
+                    query.bind(":qty", Number(quantityField.text));
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.exec();
+                    window.rowData[5] = quantityField.text;
+                    query.prepare("UPDATE items SET quantity = (SELECT balance FROM item_history(:id) WHERE time = (SELECT max(time) FROM item_history(:id2))) WHERE id = :id3");
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.bind(":id2", Number(window.rowData[1]));
+                    query.bind(":id3", Number(window.rowData[1]));
+                    query.exec();
+                }
+                if(bagsField.text != window.rowData[6]) {
+                    qbupdated = true;
+                    window.rowData[6] = bagsField.text;
+                }
+                if(cqupdated) {
+                    query.prepare("UPDATE invoice_items SET cost = :total WHERE item_id = :id");
+                    query.bind(":total", Number(window.rowData[5]) * Number(window.rowData[4]));
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.exec();
+                }
+                if(qbupdated) {
+                    query.exec("SELECT 1 FROM lb_bag_conversion WHERE item = :id");
+                    if(query.next()) {
+                        query.prepare("UPDATE lb_bag_conversion SET conversion = :conv WHERE item = :id");
+                    } else {
+                        query.prepare("INSERT INTO lb_bag_conversion (item, conversion) VALUES (:id, :conv)");
+                    }
+                    query.bind(":conv", Number(window.rowData[5]) / Number(window.rowData[6]));
+                    query.bind(":id", Number(window.rowData[1]));
+                    query.exec();
+                }
+                query = query.invalidate();
+                window.close();
+            });
+        ]]>
+    </program>
 </window>

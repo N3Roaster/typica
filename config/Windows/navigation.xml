@@ -326,6 +326,8 @@
             query.exec("CREATE TRIGGER notify_transactions_changed AFTER INSERT OR UPDATE OR DELETE ON transactions FOR EACH STATEMENT EXECUTE PROCEDURE notify_transactions_changed()");
             query.exec("CREATE OR REPLACE FUNCTION notify_purchase_changed() RETURNS trigger AS $$ BEGIN NOTIFY PurchaseChange; RETURN NULL; END; $$ LANGUAGE plpgsql");
             query.exec("CREATE TRIGGER notify_purchase_changed AFTER INSERT OR UPDATE OR DELETE ON purchase FOR EACH STATEMENT EXECUTE PROCEDURE notify_purchase_changed()");
+            query.exec("CREATE OR REPLACE FUNCTION notify_sale_changed() RETURNS trigger AS $$ BEGIN NOTIFY SaleChange; RETURN NULL; END; $$ LANGUAGE plpgsql");
+            query.exec("CREATE TRIGGER notify_sale_changed AFTER INSERT OR UPDATE OR DELETE ON sale FOR EACH STATEMENT EXECUTE PROCEDURE notify_sale_changed()");
             
             query.exec("UPDATE TypicaFeatures SET version = 8 WHERE feature = 'base-features'");
             query = query.invalidate();

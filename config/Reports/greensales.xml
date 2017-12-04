@@ -122,6 +122,10 @@
 				query = query.invalidate();
 			}
 			refresh();
+            var notifier = Application.subscribe("salechange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
 			dateSelect.rangeUpdated.connect(refresh);
 		]]>
 	</program>

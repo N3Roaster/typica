@@ -321,6 +321,10 @@
             if(itemBox.currentData() > 0) {
                 refresh();
             }
+            var notifier = Application.subscribe("transactionschange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
             /* Open invoices */
             var openInvoice = function(url) {
                 var arg = url.slice(1, url.length);

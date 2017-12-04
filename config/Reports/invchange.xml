@@ -232,6 +232,10 @@
 				query = query.invalidate();
 			}
 			refresh();
+            var notifier = Application.subscribe("transactionschange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
 			dateSelect.rangeUpdated.connect(function() {
 				refresh();
 			});

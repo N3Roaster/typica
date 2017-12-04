@@ -187,6 +187,10 @@
                 buffer.close();
             }
             refresh();
+            var notifier = Application.subscribe("transactionschange");
+            notifier.notify.connect(function() {
+                refresh();
+            });
             sortBox['currentIndexChanged(int)'].connect(function() {
                 QSettings.setValue("inventory_sort", sortBox.currentIndex);
                 refresh();

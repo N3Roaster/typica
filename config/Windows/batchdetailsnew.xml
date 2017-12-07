@@ -87,6 +87,7 @@
     <program>
         <![CDATA[
             var window = this;
+            window.windowTitle = TTR("batchDetails", "Typica - Batch Details");
             var tabs = findChildObject(this, 'tabs');
             tabs.addTab("Report");
             tabs.addTab("Profile");

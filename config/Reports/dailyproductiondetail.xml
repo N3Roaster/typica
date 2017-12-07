@@ -58,7 +58,7 @@
 				output.writeTextElement("h1", TTR("dailyproduction", "Daily Production Report: ") + dateString);
 				output.writeTextElement("h2", TTR("dailyproduction", "Batches Roasted"));
 				var query = new QSqlQuery();
-				var q = "SELECT time, machine, (SELECT name FROM machine WHERE id = machine), (SELECT name FROM items WHERE id = roasted_id), unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, annotation, duration, files, (SELECT loss FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), (SELECT tolerance FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), (SELECT notes FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), approval FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1') ORDER BY time";
+				var q = "SELECT time, machine, (SELECT name FROM machine WHERE id = machine), (SELECT name FROM items WHERE id = roasted_id), unroasted_id, unroasted_quantity, unroasted_total_quantity, roasted_id, roasted_quantity, annotation, duration, files, (SELECT loss FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), (SELECT tolerance FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), (SELECT notes FROM roasting_specification WHERE item = roasted_id AND time = (SELECT max(time) FROM roasting_specification WHERE time <= roasting_log.time AND item = roasted_id)), approval, machine || '@' || time AS link FROM roasting_log WHERE time > '" + dateString + "' AND time < ('" + dateString + "'::date + integer '1') ORDER BY time";
 				query.exec(q);
 				var times = new Array();
 				var machines = new Array();
@@ -106,7 +106,7 @@
 					output.writeTextElement("td", query.value(2));
 					output.writeStartElement("td");
 					output.writeStartElement("a");
-					output.writeAttribute("href", "typica://script/p" + query.value(11).slice(1,-1));
+					output.writeAttribute("href", "typica://script/b/" + query.value(16));
 					output.writeCDATA(query.value(11));
 					output.writeEndElement();
 					output.writeEndElement();
@@ -475,21 +475,10 @@
             });
 			
 			view.scriptLinkClicked.connect(function(url) {
-				var arg = url.slice(1, url.length);
-				var details = createWindow("batchDetails");
-				var fakeTable = new Object;
-				fakeTable.holding = new Array(7);
-				fakeTable.data = function(r, c) {
-					return this.holding[c];
-				};
-				var query = new QSqlQuery();
-				query.exec("SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration, annotation FROM roasting_log WHERE files = '{" + arg + "}'");
-				query.next();
-				for(var i = 0; i < 8; i++) {
-					fakeTable.holding[i] = query.value(i);
-				}
-				query = query.invalidate();
-				details.loadData(fakeTable, 0);
+                var arg = decodeURI(url.slice(2, url.length));
+                var key = arg.split("@");
+                var details = createWindow("batchDetails");
+                details.loadBatch(key[0], key[1]);
 			});
 		]]>
 	</program>

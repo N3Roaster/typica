@@ -224,7 +224,7 @@
                     }, 0));
                     output.writeEndElement();
                     output.writeEndElement();
-                    query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason, (SELECT person FROM transactions WHERE time = item_history.time AND item = item_history.item) FROM item_history(:item) WHERE time >= :sd AND time < :ed ::date + interval '1 day'");
+                    query.prepare("SELECT time::date, type, quantity / :c1, balance / :c2, (SELECT files FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)), (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE'), (SELECT vendor || ' ' || invoice FROM invoices WHERE id = (SELECT invoice_id FROM invoice_items WHERE item = item_id AND item_history.type = 'PURCHASE')), (SELECT name FROM items WHERE id = (SELECT roasted_id FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id))), customer, reason, (SELECT person FROM transactions WHERE time = item_history.time AND item = item_history.item), (SELECT machine || '@' || time FROM roasting_log WHERE roasting_log.time = item_history.time AND item = ANY(unroasted_id)) AS link FROM item_history(:item) WHERE time >= :sd AND time < :ed ::date + interval '1 day'");
                     query.bind(":sd", startDate);
                     query.bind(":ed", endDate);
                     switch(unitBox.currentIndex)
@@ -289,7 +289,7 @@
                         } else if(query.value(1) == "USE") {
                             output.writeStartElement("td");
                             output.writeStartElement("a");
-                            output.writeAttribute("href", "typica://script/p" + query.value(4).slice(1,-1));
+                            output.writeAttribute("href", "typica://script/b/" + query.value(11));
                             output.writeCDATA(query.value(7) + " " + query.value(4));
                             output.writeEndElement();
                             output.writeEndElement();
@@ -345,21 +345,10 @@
             };
             /* Open batch data */
             var openProfile = function(url) {
-                var arg = url.slice(1, url.length);
+                var arg = decodeURI(url.slice(2, url.length));
+                var key = arg.split("@");
                 var details = createWindow("batchDetails");
-                var fakeTable = new Object;
-                fakeTable.holding = new Array(7);
-                fakeTable.data = function(r, c) {
-                    return this.holding[c];
-                };
-                var query = new QSqlQuery();
-                query.exec("SELECT time, machine, (SELECT name FROM items WHERE id = roasted_id) AS name, unroasted_total_quantity AS green, roasted_quantity AS roasted, ((unroasted_total_quantity - roasted_quantity) / unroasted_total_quantity * 100::numeric)::numeric(12,2) AS weight_loss, duration, annotation FROM roasting_log WHERE files = '{" + arg + "}'");
-                query.next();
-                for(var i = 0; i < 8; i++) {
-                    fakeTable.holding[i] = query.value(i);
-                }
-                query = query.invalidate();
-                details.loadData(fakeTable, 0);
+                details.loadBatch(key[0], key[1]);
             };
             view.scriptLinkClicked.connect(function(url) {
                 var linkType = url[0];
@@ -367,7 +356,7 @@
                     case 'i':
                         openInvoice(url);
                         break;
-                    case 'p':
+                    case 'b':
                         openProfile(url);
                         break;
                 }

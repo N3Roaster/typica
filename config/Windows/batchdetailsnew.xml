@@ -218,7 +218,11 @@
                 Windows.loggingWindow.windowTitle = "Typica - " + pname;
                 Windows.loggingWindow.raise();
                 Windows.loggingWindow.activateWindow();
+                graph.updatesEnabled = false;
+                log.updatesEnabled = false;
                 input.input();
+                log.updatesEnabled = true;
+                graph.updatesEnabled = true;
                 log.newAnnotation(TTR("batchDetails", "End"), 1, lc);
                 query = query.invalidate();
             });

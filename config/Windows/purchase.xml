@@ -159,7 +159,7 @@
 				}
 				return w;
 			};
-            this.windowTitle = 'Typica - Coffee Purchase';
+            this.windowTitle = TTR("purchase", "Typica - Coffee Purchase");
             var form = findChildObject(this, 'form');
             form.setMaximumElementHeight(320);
             var appendForm = function() {

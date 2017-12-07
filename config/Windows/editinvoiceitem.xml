@@ -27,7 +27,7 @@
     <program>
         <![CDATA[
             window = this;
-            this.windowTitle = 'Typica - Item Detail';
+            this.windowTitle = TTR("invoiceitemdetail", "Typica - Item Detail");
             var nameField = findChildObject(this, 'name');
             var referenceField = findChildObject(this, 'reference');
             var costField = findChildObject(this, 'cost');

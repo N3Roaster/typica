@@ -17,7 +17,7 @@
 	</menu>
 	<program>
 		<![CDATA[
-			this.windowTitle = "Typica - Daily Production Report";
+			this.windowTitle = TTR("dailyproduction", "Typica - Daily Production Report");
 			var dateField = findChildObject(this, 'reportdate');
 			var view = findChildObject(this, 'report');
 			var printMenu = findChildObject(this, 'print');

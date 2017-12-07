@@ -14,7 +14,7 @@
                 query.exec();
                 query.next();
                 var formwindow = createWindow("cuppingform");
-                formwindow.windowTitle = "Typica - Cupping";
+                formwindow.windowTitle = TTR("sessionlist", "Typica - Cupping");
                 var sessionfield = findChildObject(formwindow, 'session');
                 sessionfield.text = arg;
                 var eventfield = findChildObject(formwindow, 'event');

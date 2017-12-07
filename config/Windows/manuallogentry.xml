@@ -136,7 +136,7 @@
 	<program>
 	<![CDATA[
 		var window = this;
-		this.windowTitle = "Typica - Manual Log Entry";
+		this.windowTitle = TTR("manualLogEntry", "Typica - Manual Log Entry");
 		window.windowReady.connect(function() {
 			if(machineModel.rowCount() == 0) {
 				displayError(TTR("manualLogEntry", "Configuration Required"),

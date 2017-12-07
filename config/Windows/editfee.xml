@@ -16,7 +16,7 @@
 		<![CDATA[
 			window = this;
                         var invoiceID = 0;
-			this.windowTitle = 'Typica - Fee Detail';
+			this.windowTitle = TTR("invoicefeedetail", "Typica - Fee Detail");
 			var descField = findChildObject(this, 'description');
 			var costField = findChildObject(this, 'cost');
 			this.dataSet = function() {

@@ -549,7 +549,7 @@
 					nsparam.enabled = true;
 					nsparam.triggered.connect(function() {
 						var setParam = createWindow("sampleParameters");
-						setParam.windowTitle = "Typica - Set Sample Parameters";
+						setParam.windowTitle = TTR("basicWindow", "Typica - Set Sample Parameters");
 						setParam.button = button;
 					});
 				}

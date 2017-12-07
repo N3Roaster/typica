@@ -111,29 +111,29 @@
         var sumcup = findChildObject(this, 'sumcupping');
         sumcup.clicked.connect(function() {
             var sessionlist = createWindow("finsessionlist");
-            sessionlist.windowTitle = "Typica - Summarize Cupping Session";
+            sessionlist.windowTitle = TTR("navwindow", "Typica - Summarize Cupping Session");
         });
         var ncsbutton = findChildObject(this, 'createcupping')
         ncsbutton.clicked.connect(function() {
             var ncswindow = createWindow("session");
-            ncswindow.windowTitle = "Typica - New Cupping Session";
+            ncswindow.windowTitle = TTR("navwindow", "Typica - New Cupping Session");
         });
         var jcsbutton = findChildObject(this, 'joincupping')
         jcsbutton.clicked.connect(function() {
             var jcswindow = createWindow("sessionlist");
-            jcswindow.windowTitle = "Typica - Join Cupping Session";
+            jcswindow.windowTitle = TTR("navwindow", "Typica - Join Cupping Session");
         });
 		/*
         var nrbutton = findChildObject(this, 'newroaster');
         nrbutton.clicked.connect(function() {
             var nrwindow = createWindow("newroaster");
-            nrwindow.windowTitle = "Typica - New Roaster";
+            nrwindow.windowTitle = TTR("navwindow", "Typica - New Roaster");
         });
 		*/
         var inventory = findChildObject(this, 'inventory');
         inventory.clicked.connect(function() {
             var invwin = createWindow("inventory");
-            invwin.windowTitle = "Typica - Inventory";
+            invwin.windowTitle = TTR("navwindow", "Typica - Inventory");
         });
         var roastspecbutton = findChildObject(this, 'roastspec');
         roastspecbutton.clicked.connect(function() {
@@ -146,12 +146,12 @@
         var nrbutton = findChildObject(this, 'newroasted');
         nrbutton.clicked.connect(function() {
             var nrwindow = createWindow("newroasted");
-            nrwindow.windowTitle = "Manage Roasted Coffee Items";
+            nrwindow.windowTitle = TTR("navwindow", "Manage Roasted Coffee Items");
         });
         var importb = findChildObject(this, 'target');
         importb.clicked.connect(function() {
             var importWindow = createWindow("importTargets");
-            importWindow.windowTitle = "Typica - Import Target Roast Profiles";
+            importWindow.windowTitle = TTR("navwindow", "Typica - Import Target Roast Profiles");
         });
         var roastbutton = findChildObject(this, 'roast');
         roastbutton.clicked.connect(function() {

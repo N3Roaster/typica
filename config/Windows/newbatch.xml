@@ -131,7 +131,7 @@
             var newMenu = findChildObject(this, 'new');
             newMenu.triggered.connect(function() {
                 var bwindow = createWindow("batchWindow");
-                bwindow.windowTitle = "Typica - [*]New Batch";
+                bwindow.windowTitle = TTR("batchWindow", "Typica - [*]New Batch");
             });
             var batch = this;
             var table = findChildObject(this, 'greens');

@@ -1,0 +1,304 @@
+<window id="colorplots">
+    <reporttitle>Production:->Degree of Roast By Item</reporttitle>
+    <layout type="vertical">
+        <webview id="report" />
+    </layout>
+    <menu name="File">
+        <item id="print" shortcut="Ctrl+P">Print...</item>
+    </menu>
+    <program>
+        <![CDATA[
+this.windowTitle = TTR("colorplots", "Typica - Degree of Roast By Item");
+var report = findChildObject(this, 'report');
+var printMenu = findChildObject(this, 'print');
+printMenu.triggered.connect(function() {
+    report.print();
+});
+var refresh = function() {
+    var query = new QSqlQuery;
+    query.exec("WITH a AS (SELECT roasted_id, max(time) AS last_batch FROM roasting_log WHERE roasted_id IN (SELECT item FROM current_items) GROUP BY roasted_id), b AS (SELECT roasted_id, last_batch, (SELECT unroasted_id FROM roasting_log WHERE roasted_id = a.roasted_id AND time = last_batch) FROM a), c AS (SELECT roasting_log.roasted_id, (additional_data#>>'{color,whole}')::numeric AS whole, (additional_data#>>'{color,ground}')::numeric AS ground FROM roasting_log, b WHERE roasting_log.roasted_id = b.roasted_id AND roasting_log.unroasted_id = b.unroasted_id AND additional_data?'color' AND approval=true) SELECT roasted_id, (SELECT name FROM items WHERE id = roasted_id) AS name, count(whole), count(ground), min(whole), min(ground), percentile_cont(0.25) WITHIN GROUP (ORDER BY whole), percentile_cont(0.25) WITHIN GROUP (ORDER BY ground), percentile_cont(0.5) WITHIN GROUP (ORDER BY whole), percentile_cont(0.5) WITHIN GROUP (ORDER BY ground), percentile_cont(0.75) WITHIN GROUP (ORDER BY whole), percentile_cont(0.75) WITHIN GROUP (ORDER BY ground), max(whole), max(ground) FROM c GROUP BY roasted_id ORDER BY name ASC");
+    var buffer = new QBuffer;
+    buffer.open(3);
+    var output = new XmlWriter(buffer);
+    output.writeStartDocument("1.0");
+    output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+    output.writeStartElement("html");
+    output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+    output.writeStartElement("head");
+    output.writeTextElement("style", ".box {font: 10px sans-serif;} .whisker {font: 10px sans-serif;} .axis {font: 12px sans-serif;} .axis path {fill: none; stroke: #000; shape-rendering: crispEdges;} .axis line {fill: none; stroke: #000; shape-rendering: crispEdges;} .x.axis path {fill: none; stroke: #000; shape-rendering: crispEdges;}");
+    output.writeEndElement(); //head
+    output.writeStartElement("body");
+    var cdt = new Date(Date.now());
+    output.writeTextElement("p", cdt.toLocaleDateString(TTR("reports", "en-US")) + " " + cdt.toLocaleTimeString(TTR("reports", "en-US")));
+    function position(value, min, max) {
+        return 300 - (((Number(value)-Number(min))/(Number(max)-Number(min)))*300);
+    }
+    while(query.next()) {
+        output.writeStartElement("svg");
+        output.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
+        output.writeAttribute("height", "420");
+        output.writeAttribute("width", 84 + (2 * 179));
+        output.writeStartElement("g"); //plots
+        output.writeAttribute("transform", "translate(50,30)");
+        var plotMin = Math.min(Number(query.value(4)), Number(query.value(5)));
+        var plotMax = Math.max(Number(query.value(12)), Number(query.value(13)));
+
+        output.writeStartElement("g"); //plot (whole)
+        output.writeAttribute("transform", "translate(55,30)");
+        output.writeStartElement("line"); //center line
+        output.writeAttribute("class", "center");
+        output.writeAttribute("style", "fill: #000; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "27");
+        output.writeAttribute("x2", "27");
+        output.writeAttribute("y1", position(Number(query.value(4)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(12)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("rect"); //upper and lower quartiles box
+        output.writeAttribute("class", "box");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("width", "54");
+        output.writeAttribute("y", position(Number(query.value(10)), plotMin, plotMax));
+        output.writeAttribute("height", position(Number(query.value(6)), plotMin, plotMax) - position(Number(query.value(10)), plotMin, plotMax));
+        output.writeEndElement(); //rect
+        output.writeStartElement("line"); //median line
+        output.writeAttribute("class", "median");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "0");
+        output.writeAttribute("x2", "54");
+        output.writeAttribute("y1", position(Number(query.value(8)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(8)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("line"); //minimum whisker
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "0");
+        output.writeAttribute("x2", "54");
+        output.writeAttribute("y1", position(Number(query.value(4)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(4)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("line"); //maximum whisker
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "0");
+        output.writeAttribute("x2", "54");
+        output.writeAttribute("y1", position(Number(query.value(12)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(12)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("text"); //upper quartile label
+        output.writeAttribute("class", "box");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "-6");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("y", position(Number(query.value(10)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "end");
+        output.writeCharacters(query.value(10));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //lower quartile label
+        output.writeAttribute("class", "box");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "-6");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("y", position(Number(query.value(6)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "end");
+        output.writeCharacters(query.value(6));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //median label
+        output.writeAttribute("class", "box");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "6");
+        output.writeAttribute("x", "54");
+        output.writeAttribute("y", position(Number(query.value(8)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "start");
+        output.writeCharacters(query.value(8));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //minimum label
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "6");
+        output.writeAttribute("x", "54");
+        output.writeAttribute("y", position(Number(query.value(4)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "start");
+        output.writeCharacters(query.value(4));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //maximum label
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "6");
+        output.writeAttribute("x", "54");
+        output.writeAttribute("y", position(Number(query.value(12)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "start");
+        output.writeCharacters(query.value(12));
+        output.writeEndElement(); //text
+        output.writeEndElement(); //g
+        
+        output.writeStartElement("g"); //plot (ground)
+        output.writeAttribute("transform", "translate(234,30)");
+        output.writeStartElement("line"); //center line
+        output.writeAttribute("class", "center");
+        output.writeAttribute("style", "fill: #000; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "27");
+        output.writeAttribute("x2", "27");
+        output.writeAttribute("y1", position(Number(query.value(5)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(13)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("rect"); //upper and lower quartiles box
+        output.writeAttribute("class", "box");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("width", "54");
+        output.writeAttribute("y", position(Number(query.value(11)), plotMin, plotMax));
+        output.writeAttribute("height", position(Number(query.value(7)), plotMin, plotMax) - position(Number(query.value(11)), plotMin, plotMax));
+        output.writeEndElement(); //rect
+        output.writeStartElement("line"); //median line
+        output.writeAttribute("class", "median");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "0");
+        output.writeAttribute("x2", "54");
+        output.writeAttribute("y1", position(Number(query.value(9)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(9)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("line"); //minimum whisker
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "0");
+        output.writeAttribute("x2", "54");
+        output.writeAttribute("y1", position(Number(query.value(5)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(5)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("line"); //maximum whisker
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("style", "fill: #12DD11; stroke: #000; stroke-width: 1px;");
+        output.writeAttribute("x1", "0");
+        output.writeAttribute("x2", "54");
+        output.writeAttribute("y1", position(Number(query.value(13)), plotMin, plotMax));
+        output.writeAttribute("y2", position(Number(query.value(13)), plotMin, plotMax));
+        output.writeEndElement(); //line
+        output.writeStartElement("text"); //upper quartile label
+        output.writeAttribute("class", "box");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "-6");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("y", position(Number(query.value(11)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "end");
+        output.writeCharacters(query.value(11));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //lower quartile label
+        output.writeAttribute("class", "box");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "-6");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("y", position(Number(query.value(7)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "end");
+        output.writeCharacters(query.value(7));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //median label
+        output.writeAttribute("class", "box");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "6");
+        output.writeAttribute("x", "54");
+        output.writeAttribute("y", position(Number(query.value(9)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "start");
+        output.writeCharacters(query.value(9));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //minimum label
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "6");
+        output.writeAttribute("x", "54");
+        output.writeAttribute("y", position(Number(query.value(5)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "start");
+        output.writeCharacters(query.value(5));
+        output.writeEndElement(); //text
+        output.writeStartElement("text"); //maximum label
+        output.writeAttribute("class", "whisker");
+        output.writeAttribute("dy", ".3em");
+        output.writeAttribute("dx", "6");
+        output.writeAttribute("x", "54");
+        output.writeAttribute("y", position(Number(query.value(13)), plotMin, plotMax));
+        output.writeAttribute("text-anchor", "start");
+        output.writeCharacters(query.value(13));
+        output.writeEndElement(); //text
+        output.writeEndElement(); //g
+        
+        output.writeStartElement("g") //x axis
+        output.writeAttribute("class", "x axis");
+        output.writeAttribute("transform", "translate(0,340)");
+
+        output.writeStartElement("g"); //name and population size
+        output.writeAttribute("class", "tick");
+        output.writeAttribute("transform", "translate(82,0)");
+        output.writeStartElement("line"); //tick
+        output.writeAttribute("y2", "6");
+        output.writeAttribute("x2", "0");
+        output.writeEndElement(); //line
+        output.writeStartElement("text"); //label
+        output.writeAttribute("style", "text-anchor: middle");
+        output.writeAttribute("y", "9");
+        output.writeAttribute("x", "0");
+        output.writeStartElement("tspan");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("dy", ".71em");
+        output.writeCharacters(TTR("colorplots", "whole"));
+        output.writeEndElement(); //tspan
+        output.writeStartElement("tspan");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("dy", "1.42em");
+        output.writeCharacters("(n=" + query.value(2) + ")");
+        output.writeEndElement(); //tspan
+        output.writeEndElement(); //text
+        output.writeEndElement(); //g
+        
+        output.writeStartElement("g"); //name and population size
+        output.writeAttribute("class", "tick");
+        output.writeAttribute("transform", "translate(261,0)");
+        output.writeStartElement("line"); //tick
+        output.writeAttribute("y2", "6");
+        output.writeAttribute("x2", "0");
+        output.writeEndElement(); //line
+        output.writeStartElement("text"); //label
+        output.writeAttribute("style", "text-anchor: middle");
+        output.writeAttribute("y", "9");
+        output.writeAttribute("x", "0");
+        output.writeStartElement("tspan");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("dy", ".71em");
+        output.writeCharacters(TTR("colorplots", "ground"));
+        output.writeEndElement(); //tspan
+        output.writeStartElement("tspan");
+        output.writeAttribute("x", "0");
+        output.writeAttribute("dy", "1.42em");
+        output.writeCharacters("(n=" + query.value(3) + ")");
+        output.writeEndElement(); //tspan
+        output.writeEndElement(); //text
+        output.writeEndElement(); //g
+
+        output.writeStartElement("path");
+        output.writeAttribute("class", "domain");
+        output.writeAttribute("d", "M0,6V0H" + 342 + "V6");
+        output.writeEndElement(); //path
+        output.writeEndElement(); //g
+        output.writeStartElement("text") //chart title
+        output.writeAttribute("x", "174");
+        output.writeAttribute("y", "15");
+        output.writeAttribute("text-anchor", "middle");
+        output.writeAttribute("style", "font-size: 18px;");
+        output.writeCharacters(query.value(1));
+        output.writeEndElement(); //text
+        output.writeEndElement(); //g
+        output.writeEndElement(); //svg
+    }
+    output.writeEndElement(); //body
+    output.writeEndElement(); //html
+    output.writeEndDocument();
+    report.setContent(buffer);
+    buffer.close();
+};
+refresh();
+var notifier = Application.subscribe("roastinglogchange");
+notifier.notify.connect(function() {
+    refresh();
+});
+        ]]>
+    </program>
+</window>

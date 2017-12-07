@@ -238,67 +238,70 @@
                     output.writeEmptyElement("td");
                     if(query.value(17).length > 0) {
                         extradata = JSON.parse(query.value(17));
-                        wcolor = "#000000";
-                        gcolor = "#000000";
-                        wtitle = "";
-                        gtitle = "";
-                        if(query.value(18).length > 0) {
-                            specdata = JSON.parse(query.value(18));
-                            if(extradata.color.whole && specdata.color.whole.expected) {
-                                wmin = Number(specdata.color.whole.expected);
-                                wmax = wmin;
-                                wtitle += specdata.color.whole.expected;
-                                if(specdata.color.whole.tolerance) {
-                                    wmin -= Number(specdata.color.whole.tolerance);
-                                    wmax += Number(specdata.color.whole.tolerance);
-                                    wtitle += "±";
-                                    wtitle += specdata.color.whole.tolerance;
+                        if(extradata.color) {
+                            wcolor = "#000000";
+                            gcolor = "#000000";
+                            wtitle = "";
+                            gtitle = "";
+                            if(query.value(18).length > 0) {
+                                specdata = JSON.parse(query.value(18));
+                                if(extradata.color.whole && specdata.color.whole.expected) {
+                                    wmin = Number(specdata.color.whole.expected);
+                                    wmax = wmin;
+                                    wtitle += specdata.color.whole.expected;
+                                    if(specdata.color.whole.tolerance) {
+                                        wmin -= Number(specdata.color.whole.tolerance);
+                                        wmax += Number(specdata.color.whole.tolerance);
+                                        wtitle += "±";
+                                        wtitle += specdata.color.whole.tolerance;
+                                    }
+                                    if(Number(extradata.color.whole) < wmin || Number(extradata.color.whole) > wmax) {
+                                        wcolor = "#FF0000";
+                                    } else {
+                                        wcolor = "#00FF00";
+                                    }
                                 }
-                                if(Number(extradata.color.whole) < wmin || Number(extradata.color.whole) > wmax) {
-                                    wcolor = "#FF0000";
-                                } else {
-                                    wcolor = "#00FF00";
+                                if(extradata.color.ground && specdata.color.ground.expected) {
+                                    gmin = Number(specdata.color.ground.expected);
+                                    gmax = gmin;
+                                    gtitle += specdata.color.ground.expected;
+                                    if(specdata.color.ground.tolerance) {
+                                        gmin -= Number(specdata.color.ground.tolerance);
+                                        gmax += Number(specdata.color.ground.tolerance);
+                                        gtitle += "±";
+                                        gtitle += specdata.color.ground.tolerance;
+                                    }
+                                    if(Number(extradata.color.ground) < gmin || Number(extradata.color.ground) > gmax) {
+                                        gcolor = "#FF0000";
+                                    } else {
+                                        gcolor = "#00FF00";
+                                    }
                                 }
                             }
-                            if(extradata.color.ground && specdata.color.ground.expected) {
-                                gmin = Number(specdata.color.ground.expected);
-                                gmax = gmin;
-                                gtitle += specdata.color.ground.expected;
-                                if(specdata.color.ground.tolerance) {
-                                    gmin -= Number(specdata.color.ground.tolerance);
-                                    gmax += Number(specdata.color.ground.tolerance);
-                                    gtitle += "±";
-                                    gtitle += specdata.color.ground.tolerance;
-                                }
-                                if(Number(extradata.color.ground) < gmin || Number(extradata.color.ground) > gmax) {
-                                    gcolor = "#FF0000";
-                                } else {
-                                    gcolor = "#00FF00";
-                                }
+                            output.writeStartElement("td");
+                            if(extradata.color.whole) {
+                                output.writeStartElement("span");
+                                output.writeAttribute("style", "color:"+wcolor);
+                                output.writeAttribute("title", wtitle);
+                                output.writeCharacters(extradata.color.whole);
+                                output.writeEndElement();
                             }
-                        }
-                        if(extradata.color.whole) {
                             output.writeStartElement("span");
-                            output.writeAttribute("style", "color:"+wcolor);
-                            output.writeAttribute("title", wtitle);
-                            output.writeCharacters(extradata.color.whole);
+                            if(wcolor === gcolor) {
+                                output.writeAttribute("style", "color:"+wcolor);
+                            }
+                            output.writeCharacters("/");
                             output.writeEndElement();
-                        }
-                        output.writeStartElement("span");
-                        if(wcolor === gcolor) {
-                            output.writeAttribute("style", "color:"+wcolor);
-                        }
-                        output.writeCharacters("/");
-                        output.writeEndElement();
-                        if(extradata.color.ground) {
-                            output.writeStartElement("span");
-                            output.writeAttribute("style", "color:"+gcolor);
-                            output.writeAttribute("title", gtitle);
-                            output.writeCharacters(extradata.color.ground);
+                            if(extradata.color.ground) {
+                                output.writeStartElement("span");
+                                output.writeAttribute("style", "color:"+gcolor);
+                                output.writeAttribute("title", gtitle);
+                                output.writeCharacters(extradata.color.ground);
+                                output.writeEndElement();
+                            }
                             output.writeEndElement();
                         }
                     }
-                    output.writeEndElement();
                     output.writeEndElement();
                     output.writeStartElement("tr");
                     output.writeAttribute("valign", "top");

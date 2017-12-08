@@ -78,5 +78,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-CODE128 support inn batch tags is based on code from:
+CODE128 support in batch tags is based on code from:
 https://itlearnings.wordpress.com/2011/01/08/javascript-code128-barcode/

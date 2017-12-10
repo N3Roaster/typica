@@ -2978,34 +2978,39 @@ static const uint qt_meta_data_SqlQueryView[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       4,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
       18,   14,   13,   13, 0x05,
       41,   37,   13,   13, 0x05,
+      59,   14,   13,   13, 0x05,
+      80,   37,   13,   13, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      65,   59,   13,   13, 0x08,
-     109,   86,   13,   13, 0x08,
+     106,  100,   13,   13, 0x08,
+     150,  127,   13,   13, 0x08,
+     183,  100,   13,   13, 0x08,
 
  // methods: signature, parameters, type, tag, flags
-     167,  151,  142,   13, 0x02,
-     196,  185,  142,   13, 0x22,
+     231,  215,  206,   13, 0x02,
+     260,  249,  206,   13, 0x22,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SqlQueryView[] = {
     "SqlQueryView\0\0key\0openEntry(QString)\0"
-    "row\0openEntryRow(int)\0index\0"
+    "row\0openEntryRow(int)\0selectEntry(QString)\0"
+    "selectEntryRow(int)\0index\0"
     "openRow(QModelIndex)\0column,oldsize,newsize\0"
     "persistColumnResize(int,int,int)\0"
-    "QVariant\0row,column,role\0data(int,int,int)\0"
+    "selectRow(QModelIndex)\0QVariant\0"
+    "row,column,role\0data(int,int,int)\0"
     "row,column\0data(int,int)\0"
 };
 
@@ -3017,11 +3022,14 @@ void SqlQueryView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         switch (_id) {
         case 0: _t->openEntry((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 1: _t->openEntryRow((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 2: _t->openRow((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 3: _t->persistColumnResize((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
-        case 4: { QVariant _r = _t->data((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])));
+        case 2: _t->selectEntry((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 3: _t->selectEntryRow((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: _t->openRow((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 5: _t->persistColumnResize((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 6: _t->selectRow((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 7: { QVariant _r = _t->data((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< QVariant*>(_a[0]) = _r; }  break;
-        case 5: { QVariant _r = _t->data((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])));
+        case 8: { QVariant _r = _t->data((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QVariant*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -3060,9 +3068,9 @@ int SqlQueryView::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 9;
     }
     return _id;
 }
@@ -3079,6 +3087,20 @@ void SqlQueryView::openEntryRow(int _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
+}
+
+// SIGNAL 2
+void SqlQueryView::selectEntry(QString _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
+void SqlQueryView::selectEntryRow(int _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 static const uint qt_meta_data_ReportAction[] = {
 

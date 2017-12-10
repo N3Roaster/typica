@@ -34,6 +34,7 @@
     <include src="Windows/editreminder.xml" />
     <include src="Windows/roastspec.xml" />
 	<include src="Windows/manuallogentry.xml" />
+    <include src="Windows/schedule.xml" />
     <program>
         <![CDATA[
             Windows = new Object();

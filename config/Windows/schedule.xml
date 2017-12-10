@@ -110,7 +110,7 @@
         filters.clear();
         table.clear();
         green.text = "0.0";
-        pages.setCurrentIndex(0);
+        tabs.setCurrentIndex(0);
         editingstack.setCurrentIndex(1);
         var query = new QSqlQuery();
         query.exec("SELECT nextval('scheduled_roasts_id_seq'::regclass)");
@@ -154,7 +154,7 @@
     };
     batches.selectEntry.connect(function(id) {
         saved = true;
-        pages.setCurrentIndex(0);
+        tabs.setCurrentIndex(0);
         editingstack.setCurrentIndex(1);
         batch.text = id;
         var query = new QSqlQuery();

@@ -14061,12 +14061,15 @@ class SqlQueryView : public QTableView@/
                                   int role = Qt::DisplayRole);@t\2\2@>@/
     signals:@/
         void openEntry(QString key);
-        void openEntryRow(int row);@/
+        void openEntryRow(int row);
+        void selectEntry(QString key);
+        void selectEntryRow(int row);@/
     protected:@/
         virtual void showEvent(QShowEvent *event);@/
     @[private slots@]:@/
         void openRow(const QModelIndex &index);
-        void persistColumnResize(int column, int oldsize, int newsize);@/
+        void persistColumnResize(int column, int oldsize, int newsize);
+        void selectRow(const QModelIndex &index);@/
 };
 
 @ The constructor sets up the communication between the model and the view and
@@ -14081,6 +14084,8 @@ SqlQueryView::SqlQueryView(QWidget *parent) : QTableView(parent)
             this, SLOT(openRow(QModelIndex)));
     connect(horizontalHeader(), SIGNAL(sectionResized(int, int, int)),
             this, SLOT(persistColumnResize(int, int, int)));
+    connect(this, SIGNAL(activated(QModelIndex)),
+            this, SLOT(selectRow(QModelIndex)));
 }
 
 @ Column width persistance requires two methods. First we have a slot
@@ -14152,6 +14157,12 @@ void SqlQueryView::openRow(const QModelIndex &index)
 {
     emit openEntry(((QSqlQueryModel *)model())->record(index.row()).value(0).toString());
     emit openEntryRow(index.row());
+}
+
+void SqlQueryView::selectRow(const QModelIndex &index)
+{
+    emit selectEntry(((QSqlQueryModel *)model())->record(index.row()).value(0).toString());
+    emit selectEntryRow(index.row());
 }
 
 @ The other functions are wrappers around model methods.

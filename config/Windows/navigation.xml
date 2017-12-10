@@ -7,6 +7,11 @@
         </row>
         <row>
             <column>
+                <button name="Roasting Schedule" id="schedule" type="push" />
+            </column>
+        </row>
+        <row>
+            <column>
                 <sqldrop id="machineselector" />
             </column>
             <column>
@@ -95,6 +100,10 @@
             QSettings.setValue("database/dbname", "");
             QSettings.setValue("database/user", "");
             QSettings.setValue("database/password", "");
+        });
+        var schedule = findChildObject(this, 'schedule');
+        schedule.clicked.connect(function() {
+            createWindow("schedule");
         });
 		var manual = findChildObject(this, 'manual');
 		manual.clicked.connect(function() {

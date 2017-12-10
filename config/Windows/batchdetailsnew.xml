@@ -581,14 +581,25 @@
                     return;
                 }
                 if(Number(search.text)) {
-                    var query = new QSqlQuery();
-                    query.prepare("SELECT machine, time FROM roasting_log WHERE files[1] = :file");
-                    query.bind(":file", Number(search.text));
-                    query.exec();
-                    if(query.next()) {
-                        window.loadBatch(query.value(0), query.value(1));
+                    if(search.text.startsWith('00')) {
+                        var query = new QSqlQuery();
+                        query.prepare("SELECT machine, time FROM scheduled_roasts WHERE id = :id");
+                        query.bind(":id", Number(search.text));
+                        query.exec();
+                        if(query.next()) {
+                            window.loadBatch(query.value(0), query.value(1));
+                        }
+                        query = query.invalidate();
+                    } else {
+                        var query = new QSqlQuery();
+                        query.prepare("SELECT machine, time FROM roasting_log WHERE files[1] = :file");
+                        query.bind(":file", Number(search.text));
+                        query.exec();
+                        if(query.next()) {
+                            window.loadBatch(query.value(0), query.value(1));
+                        }
+                        query = query.invalidate();
                     }
-                    query = query.invalidate();
                 } else {
                     var tag = JSON.parse(search.text);
                     if(tag.m != undefined && tag.t != undefined) {

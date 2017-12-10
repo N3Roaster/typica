@@ -14201,6 +14201,8 @@ QScriptValue SqlQueryView_setQuery(QScriptContext *context,
                                    QScriptEngine *engine);
 QScriptValue SqlQueryView_setHeaderData(QScriptContext *context,
                                         QScriptEngine *engine);
+QScriptValue SqlQueryView_rows(QScriptContext *context,
+                               QScriptEngine *engine);
 
 @ The script constructor is passed to the host environment.
 
@@ -14226,6 +14228,7 @@ void setSqlQueryViewProperties(QScriptValue value, QScriptEngine *engine)
     value.setProperty("setHeaderData",
                       engine->newFunction(SqlQueryView_setHeaderData));
     value.setProperty("setQuery", engine->newFunction(SqlQueryView_setQuery));
+    value.setProperty("rows", engine->newFunction(SqlQueryView_rows));
 }
 
 @ The properties added are simplified wrappers around the class methods.
@@ -14248,6 +14251,12 @@ QScriptValue SqlQueryView_setHeaderData(QScriptContext *context,
     QString data = argument<QString>(1, context);
     self->setHeaderData(section, Qt::Horizontal, data, Qt::DisplayRole);
     return QScriptValue();
+}
+
+QScriptValue SqlQueryView_rows(QScriptContext *context, QScriptEngine *)
+{
+    SqlQueryView *self = getself<SqlQueryView *>(context);
+    return QScriptValue(self->model()->rowCount());
 }
 
 @** Reporting.

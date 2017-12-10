@@ -149,7 +149,6 @@
             tabs.currentChanged.connect(function(index) {
                 pages.setCurrentIndex(index);
             });
-            tabs.setCurrentIndex(1);
             var batches = findChildObject(this, 'batches');
             var filter = findChildObject(this, 'filter');
             var filtervalue = findChildObject(this, 'filtervalue');
@@ -177,6 +176,11 @@
                 updateSchedule();
             });
             updateSchedule();
+            if(batches.rows() > 0) {
+                tabs.setCurrentIndex(0);
+            } else {
+                tabs.setCurrentIndex(1);
+            }
             batches.setHeaderData(0, TTR("batchWindow", "ID"));
             batches.setHeaderData(1, TTR("batchWindow", "Roasted Coffee"));
             batches.setHeaderData(2, TTR("batchWindow", "Green Weight"));

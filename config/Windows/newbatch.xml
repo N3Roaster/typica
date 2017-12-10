@@ -156,16 +156,17 @@
             filter.setText(QSettings.value("script/newbatch/filter", ""));
             filtervalue.setText(QSettings.value("script/newbatch/filtervalue", ""));
             var updateSchedule = function() {
+                var filterclause = "";
                 if(filter.text.length > 0) {
-                    var filterclause = "WHERE filters->>'key' = '" + filter.text + "'";
+                    filterclause = " AND data->'filters' @> "
+                    filterclause += "'[{\"key\":\"" + filter.text + '"';
                     if(filtervalue.text.length > 0) {
-                        filterclause += " AND filters->>'value' = '" + filtervalue.text + "'";
+                        filterclause += ',"value":"' + filtervalue.text + '"';
                     }
-                    var q = "WITH q AS (SELECT id, data, jsonb_array_elements(data#>'{filters}') AS filters FROM scheduled_roasts WHERE machine IS NULL) SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM q " + filterclause;
-                    batches.setQuery(q);
-                } else {
-                    batches.setQuery("SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM scheduled_roasts WHERE machine IS NULL");
+                    filterclause += "}]'";
                 }
+                var q = "SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM scheduled_roasts WHERE machine IS NULL" + filterclause;
+                batches.setQuery(q);
             };
             filter.editingFinished.connect(function() {
                 QSettings.setValue("script/newbatch/filter", filter.text);

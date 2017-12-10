@@ -15,6 +15,13 @@
         <layout type="stack" id="pages">
             <page>
                 <layout type="vertical">
+                    <layout type="horizontal">
+                        <label>Filter:</label>
+                        <line id="filter" />
+                        <label>Value:</label>
+                        <line id="filtervalue" />
+                        <stretch />
+                    </layout>
                     <sqlview id="batches" />
                 </layout>
             </page>
@@ -144,7 +151,31 @@
             });
             tabs.setCurrentIndex(1);
             var batches = findChildObject(this, 'batches');
-            batches.setQuery("SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM scheduled_roasts WHERE machine IS NULL");
+            var filter = findChildObject(this, 'filter');
+            var filtervalue = findChildObject(this, 'filtervalue');
+            filter.setText(QSettings.value("script/newbatch/filter", ""));
+            filtervalue.setText(QSettings.value("script/newbatch/filtervalue", ""));
+            var updateSchedule = function() {
+                if(filter.text.length > 0) {
+                    var filterclause = "WHERE filters->>'key' = '" + filter.text + "'";
+                    if(filtervalue.text.length > 0) {
+                        filterclause += " AND filters->>'value' = '" + filtervalue.text + "'";
+                    }
+                    var q = "WITH q AS (SELECT id, data, jsonb_array_elements(data#>'{filters}') AS filters FROM scheduled_roasts WHERE machine IS NULL) SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM q " + filterclause;
+                    batches.setQuery(q);
+                } else {
+                    batches.setQuery("SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM scheduled_roasts WHERE machine IS NULL");
+                }
+            };
+            filter.editingFinished.connect(function() {
+                QSettings.setValue("script/newbatch/filter", filter.text);
+                updateSchedule();
+            });
+            filtervalue.editingFinished.connect(function() {
+                QSettings.setValue("script/newbatch/filtervalue", filtervalue.text);
+                updateSchedule();
+            });
+            updateSchedule();
             batches.setHeaderData(0, TTR("batchWindow", "ID"));
             batches.setHeaderData(1, TTR("batchWindow", "Roasted Coffee"));
             batches.setHeaderData(2, TTR("batchWindow", "Green Weight"));
@@ -154,7 +185,7 @@
             batches.editTreiggers = 0;
             var snotifier = Application.subscribe("scheduledroastschange");
             snotifier.notify.connect(function() {
-                batches.setQuery("SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM scheduled_roasts WHERE machine IS NULL");
+                updateSchedule();
             });
             var unitBox = findChildObject(this, 'unit');
             unitBox.addItem("g");

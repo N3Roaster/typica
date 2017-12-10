@@ -88,10 +88,10 @@
             var window = this;
             window.windowTitle = TTR("batchDetails", "Typica - Batch Details");
             var tabs = findChildObject(this, 'tabs');
-            tabs.addTab("Report");
-            tabs.addTab("Profile");
-            tabs.addTab("Edit");
-            tabs.addTab("Batch Tag");
+            tabs.addTab(TTR("batchDetails", "Report"));
+            tabs.addTab(TTR("batchDetails", "Profile"));
+            tabs.addTab(TTR("batchDetails", "Edit"));
+            tabs.addTab(TTR("batchDetails", "Batch Tag"));
             var pages = findChildObject(this, 'pages');
             tabs.currentChanged.connect(function(index) {
                 pages.setCurrentIndex(index);

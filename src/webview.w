@@ -191,12 +191,17 @@ void addWebViewToLayout(QDomElement element, QStack<QWidget *> *,
                         QStack<QLayout *> *layoutStack)
 {
 	TypicaWebView *view = new TypicaWebView;
+	int stretch = 0;
 	if(element.hasAttribute("id"))
 	{
 		view->setObjectName(element.attribute("id"));
 	}
+	if(element.hasAttribute("stretch"))
+	{
+        stretch = element.attribute("stretch").toInt();
+	}
 	QBoxLayout *layout = qobject_cast<QBoxLayout *>(layoutStack->top());
-	layout->addWidget(view);
+	layout->addWidget(view, stretch);
 }
 
 @ Prototypes must be provided for these functions.

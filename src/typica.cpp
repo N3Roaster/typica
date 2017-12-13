@@ -30,12 +30,12 @@
 
 #line 1 "./measurement.w"
 /*:304*//*575:*/
-#line 212 "./webview.w"
+#line 217 "./webview.w"
 
 #include "webview.h"
 
 /*:575*//*588:*/
-#line 390 "./webview.w"
+#line 395 "./webview.w"
 
 #include "webelement.h"
 
@@ -3637,7 +3637,7 @@ QScriptValue constructXMLInput(QScriptContext*context,QScriptEngine*engine);
 QScriptValue XMLInput_input(QScriptContext*context,QScriptEngine*engine);
 
 /*:555*//*574:*/
-#line 204 "./webview.w"
+#line 209 "./webview.w"
 
 QScriptValue constructWebView(QScriptContext*context,QScriptEngine*engine);
 void setQWebViewProperties(QScriptValue value,QScriptEngine*engine);
@@ -3645,13 +3645,13 @@ void addWebViewToLayout(QDomElement element,QStack<QWidget*> *widgetStack,
 QStack<QLayout*> *layoutStack);
 
 /*:574*//*577:*/
-#line 234 "./webview.w"
+#line 239 "./webview.w"
 
 QScriptValue QWebElement_toScriptValue(QScriptEngine*engine,const QWebElement&element);
 void QWebElement_fromScriptValue(const QScriptValue&value,QWebElement&element);
 
 /*:577*//*581:*/
-#line 292 "./webview.w"
+#line 297 "./webview.w"
 
 QScriptValue constructWebElement(QScriptContext*context,
 QScriptEngine*engine);
@@ -23678,16 +23678,21 @@ void addWebViewToLayout(QDomElement element,QStack<QWidget*> *,
 QStack<QLayout*> *layoutStack)
 {
 TypicaWebView*view= new TypicaWebView;
+int stretch= 0;
 if(element.hasAttribute("id"))
 {
 view->setObjectName(element.attribute("id"));
 }
+if(element.hasAttribute("stretch"))
+{
+stretch= element.attribute("stretch").toInt();
+}
 QBoxLayout*layout= qobject_cast<QBoxLayout*> (layoutStack->top());
-layout->addWidget(view);
+layout->addWidget(view,stretch);
 }
 
 /*:573*//*578:*/
-#line 240 "./webview.w"
+#line 245 "./webview.w"
 
 QScriptValue QWebElement_toScriptValue(QScriptEngine*engine,const QWebElement&element)
 {
@@ -23703,7 +23708,7 @@ element= value.toVariant().value<QWebElement> ();
 }
 
 /*:578*//*583:*/
-#line 305 "./webview.w"
+#line 310 "./webview.w"
 
 template<> QWebElement argument(int arg,QScriptContext*context)
 {
@@ -23711,7 +23716,7 @@ return qscriptvalue_cast<QWebElement> (context->argument(arg));
 }
 
 /*:583*//*584:*/
-#line 314 "./webview.w"
+#line 319 "./webview.w"
 
 QScriptValue constructWebElement(QScriptContext*context,
 QScriptEngine*engine)
@@ -25338,12 +25343,12 @@ value= engine->newQMetaObject(&TypicaWebView::staticMetaObject,constructor);
 engine->globalObject().setProperty("WebView",value);
 
 /*:571*//*579:*/
-#line 256 "./webview.w"
+#line 261 "./webview.w"
 
 qScriptRegisterMetaType(engine,QWebElement_toScriptValue,QWebElement_fromScriptValue);
 
 /*:579*//*582:*/
-#line 298 "./webview.w"
+#line 303 "./webview.w"
 
 constructor= engine->newFunction(constructWebElement);
 engine->globalObject().setProperty("WebElement",constructor);

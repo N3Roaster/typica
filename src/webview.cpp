@@ -99,7 +99,7 @@ QWebView::print(printer);
 }
 
 /*:570*//*576:*/
-#line 220 "./webview.w"
+#line 225 "./webview.w"
 
 QWebElement TypicaWebView::documentElement()
 {

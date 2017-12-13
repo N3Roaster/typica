@@ -1,4 +1,6 @@
 <window id="navwindow">
+    <layout type="horizontal">
+    <layout type="vertical">
     <layout type="grid">
         <row>
             <column>
@@ -74,6 +76,10 @@
             </column>
         </row>
     </layout>
+    <stretch />
+    </layout>
+    <webview id="dashboard" stretch="1" />
+    </layout>
     <menu name="Reports" type="reports" src="Reports" />
     <menu name="Database">
         <item id="resetconnection">Forget Connection Details</item>
@@ -105,10 +111,10 @@
         schedule.clicked.connect(function() {
             createWindow("schedule");
         });
-		var manual = findChildObject(this, 'manual');
-		manual.clicked.connect(function() {
-			createWindow("manualLogEntry");
-		});
+        var manual = findChildObject(this, 'manual');
+        manual.clicked.connect(function() {
+            createWindow("manualLogEntry");
+        });
         var profilehistory = findChildObject(this, 'profilehistory');
         profilehistory.clicked.connect(function() {
                 createWindow("profilehistory");
@@ -346,6 +352,8 @@
             query.exec("CREATE TRIGGER notify_transactions_changed AFTER INSERT OR UPDATE OR DELETE ON purchase FOR EACH STATEMENT EXECUTE PROCEDURE notify_transactions_changed()");
             query.exec("CREATE TRIGGER notify_transactions_changed AFTER INSERT OR UPDATE OR DELETE ON sale FOR EACH STATEMENT EXECUTE PROCEDURE notify_transactions_changed()");
             query.exec("CREATE TRIGGER notify_transactions_changed AFTER INSERT OR UPDATE OR DELETE ON use FOR EACH STATEMENT EXECUTE PROCEDURE notify_transactions_changed()");
+            query.exec("CREATE OR REPLACE FUNCTION notify_reminders_changed() RETURNS trigger AS $$ BEGIN NOTIFY RemindersChange; RETURN NULL; END; $$ LANGUAGE plpgsql");
+            query.exec("CREATE TRIGGER notify_reminders_changed AFTER INSERT OR UPDATE OR DELETE ON reminders FOR EACH STATEMENT EXECUTE PROCEDURE notify_reminders_changed()");
             
             query.exec("UPDATE TypicaFeatures SET version = 8 WHERE feature = 'base-features'");
             query = query.invalidate();
@@ -443,6 +451,297 @@
 			var newUserDialog = new NewTypicaUser();
 			newUserDialog.exec();
 		});
+        var dashboard = findChildObject(this, 'dashboard');
+        var refresh = function() {            
+            var buffer = new QBuffer;
+            buffer.open(3);
+            var output = new XmlWriter(buffer);
+            output.writeStartDocument("1.0");
+            output.writeDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg.dtd">');
+            output.writeStartElement("html");
+            output.writeAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+            output.writeStartElement("head");
+            
+            output.writeStartElement("link");
+            output.writeAttribute("rel", "stylesheet");
+            output.writeAttribute("href", QSettings.value("config") + "/Scripts/dashboard.css");
+            output.writeEndElement();
+            
+            output.writeEndElement(); // head
+            output.writeStartElement("body");
+            
+            output.writeStartElement("div");
+            output.writeAttribute("class", "container");
+            
+            var query = new QSqlQuery;
+            drawReminders(output, query);
+            drawSchedule(output, query);
+            drawLatest(output, query);
+            drawMostRoasted(output, query);
+            drawLeastRoasted(output, query);
+            query = query.invalidate();
+            
+            output.writeEndElement(); // End of container
+            
+            output.writeEndElement(); // body
+            output.writeEndElement(); // html
+            output.writeEndDocument();
+            
+            dashboard.setContent(buffer);
+            buffer.close();
+        }
+        var startCell = function(output, title) {
+            output.writeStartElement("div");
+            output.writeAttribute("class", "cell");
+            output.writeStartElement("div");
+            output.writeAttribute("class", "cell-wrapper");
+            output.writeStartElement("div");
+            output.writeAttribute("class", "cell-title");
+            output.writeCharacters(title);
+            output.writeEndElement();
+        }
+        var startStage = function(output) {
+            output.writeStartElement("div");
+            output.writeAttribute("class", "cell-stage");
+        }
+        var endStage = function(output) {
+            output.writeEndElement();
+        }
+        var endCell = function(output, summary) {
+            if(arguments.length > 1) {
+                output.writeStartElement("div");
+                output.writeAttribute("class", "cell-notes");
+                output.writeCharacters(summary);
+                output.writeEndElement();
+            }
+            output.writeEndElement();
+            output.writeEndElement();
+        }
+        var drawReminders = function(output, query) {
+            query.exec("SELECT id, reminder FROM reminders");
+            e = new Array();
+            while(query.next()) {
+                var reminder = JSON.parse(query.value(1));
+                reminder.dbid = query.value(0);
+                var start_time = "" + reminder.start_year + "-" + reminder.start_month + "-" + reminder.start_day + " " + reminder.start_time;
+                if(reminder.condition == "PRODUCTIONWEIGHT") {
+                    var convert = 1;
+                    var unittext = TTR("navwindow", " Lb");
+                    if(reminder.unit == "KG") {
+                        convert = 2.2;
+                        unittext = TTR("navwindow", " Kg");
+                    }
+                    var dq = new QSqlQuery;
+                    dq.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE time > :since");
+                    dq.bind(":conversion", convert);
+                    dq.bind(":since", start_time);
+                    dq.exec();
+                    dq.next();
+                    var proportion;
+                    var remain;
+                    if(reminder.value == 0 || (reminder.value < Number(dq.value(0)))) {
+                        proportion = 1;
+                    } else {
+                        proportion = Number(dq.value(0)) / reminder.value;
+                    }
+                    remain = (reminder.value - Number(dq.value(0))).toFixed(0);
+                    reminder.completion = proportion;
+                    reminder.detail = remain + unittext;
+                    dq = dq.invalidate();
+                } else if (reminder.condition == "DAYS") {
+                    var dq = new QSqlQuery;
+                    dq.prepare("SELECT 'now'::date - :since::date");
+                    dq.bind(":since", start_time);
+                    dq.exec();
+                    dq.next();
+                    var proportion;
+                    var remain;
+                    if(reminder.value == 0 || (reminder.value < Number(dq.value(0)))) {
+                        proportion = 1;
+                    } else {
+                        proportion = Number(dq.value(0)) / reminder.value;
+                    }
+                    remain = reminder.value - Number(dq.value(0));
+                    reminder.completion = proportion;
+                    reminder.detail = remain + TTR("navwindow", " Days");
+                    dq = dq.invalidate();
+                } else if (reminder.condition == "PRODUCTIONBATCHES") {
+                    var dq = new QSqlQuery;
+                    dq.prepare("SELECT count(1) FROM roasting_log WHERE time > :since");
+                    dq.bind(":since", start_time);
+                    dq.exec();
+                    dq.next();
+                    var proportion;
+                    var remain;
+                    if(reminder.value == 0 || (reminder.value < Number(dq.value(0)))) {
+                        proportion = 1;
+                    } else {
+                        proportion = Number(dq.value(0)) / reminder.value;
+                    }
+                    remain = reminder.value - Number(dq.value(0));
+                    reminder.completion = proportion;
+                    reminder.detail = remain + TTR("navwindow", " Batches");
+                    dq = dq.invalidate();
+                } else if (reminder.condition == "PRODUCTIONHOURS") {
+                    var dq = new QSqlQuery;
+                    dq.prepare("SELECT extract(epoch FROM (SELECT sum(duration) FROM roasting_log WHERE time > :since) / 3600)");
+                    dq.bind(":since", start_time);
+                    dq.exec();
+                    dq.next();
+                    var proportion;
+                    var remain;
+                    if(reminder.value == 0 || (reminder.value < Number(dq.value(0)))) {
+                        proportion = 1;
+                    } else {
+                        proportion = Number(dq.value(0)) / reminder.value;
+                    }
+                    remain = reminder.value - Number(dq.value(0));
+                    reminder.completion = proportion;
+                    reminder.detail = remain.toFixed(1) + TTR("navwindow", " Hours");
+                    dq = dq.invalidate();
+                }
+                e[reminder.dbid] = reminder;
+            }
+            var s = e.filter(function(n) {
+            return n.hasOwnProperty("completion")}).sort(function(a, b) {
+                return b.completion - a.completion});
+            var c = 0;
+            var so = 0;
+            s.forEach(function(item) {
+                if(item.completion >= 1) {
+                    c += 1;
+                } else if (item.completion >= 0.8) {
+                    so += 1;
+                }
+            });
+            if(c > 0 || s > 0) {
+                output.writeStartElement("a");
+                output.writeAttribute("href", "typica://script/reminders");
+                startCell(output, TTR("navwindow", "Reminders"));
+                startStage(output);
+                var summaryText;
+                if(c > 0) {
+                    summaryText = "" + c + TTR("navwindow", " reminders due");
+                } else {
+                    summaryText = "" + s + TTR("navwindow", " reminders due soon");
+                }
+                output.writeTextElement("p", s[0].title);
+                output.writeTextElement("p", Math.floor(s[0].completion * 100) + "%");
+                output.writeTextElement("p", s[0].detail);
+                endStage(output);
+                endCell(output, summaryText);
+                output.writeEndElement();
+            }
+        }
+        var kilounit = TTR("navwindow", "Kg");
+        var poundunit = TTR("navwindow", "Lb");
+        var unitData = function() {
+            var retval = new Object;
+            if(Number(QSettings.value("script/report_unit")) == 0) {
+                retval.conversion = 2.2;
+                retval.unittext = "Kg";
+            } else {
+                retval.conversion = 1;
+                retval.unittext = "Lb";
+            }
+            return retval;
+        }
+        var drawSchedule = function(output, query) {
+            var c = 0;
+            var u = unitData();
+            query.prepare("SELECT (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric/:conversion FROM scheduled_roasts WHERE machine IS NULL");
+            query.bind(":conversion", u.conversion);
+            query.exec();
+            if(query.next()) {
+                output.writeStartElement("a");
+                output.writeAttribute("href", "typica://script/schedule");
+                startCell(output, TTR("navwindow", "Scheduled Roasts"));
+                startStage(output);
+                do {
+                    c += 1;
+                    output.writeTextElement("p", query.value(1) + u.unittext + " " + query.value(0));
+                } while(query.next());
+                endStage(output);
+                endCell(output, "" + c + TTR("navwindow", " batches scheduled"));
+                output.writeEndElement();
+            }
+        }
+        var drawLatest = function(output, query) {
+            var u = unitData();
+            query.prepare("SELECT time, roasted_quantity/:conversion, (SELECT name FROM items WHERE id = roasted_id), approval FROM roasting_log ORDER BY time DESC LIMIT 5");
+            query.bind(":conversion", u.conversion);
+            query.exec();
+            if(query.next()) {
+                output.writeStartElement("a");
+                output.writeAttribute("href", "typica://script/log");
+                startCell(output, TTR("navwindow", "Latest Batches"));
+                startStage(output);
+                do {
+                    output.writeStartElement("p");
+                    if(query.value(3) == "false") {
+                        output.writeAttribute("style", "color: #FF0000;");
+                    }
+                    output.writeCharacters(query.value(0).replace("T", " ") + " " + query.value(1) + u.unittext + " " + query.value(2));
+                    output.writeEndElement();
+                } while(query.next());
+                endStage(output);
+                endCell(output);
+                output.writeEndElement();
+            }
+        }
+        var drawMostRoasted = function(output, query) {
+            var u = unitData();
+            query.prepare("SELECT (sum(roasted_quantity)/:conversion) AS sum, (SELECT name FROM items WHERE id = roasted_id) FROM roasting_log WHERE time > 'now'::date - '28 days'::interval AND approval = true GROUP BY roasted_id ORDER BY sum DESC LIMIT 5");
+            query.bind(":conversion", u.conversion);
+            query.exec();
+            if(query.next()) {
+                startCell(output, TTR("navwindow", "Most Roasted Items (Last 28 Days)"));
+                startStage(output);
+                do {
+                    output.writeTextElement("p", query.value(0) + u.unittext + " " + query.value(1));
+                } while(query.next());
+                endStage(output);
+                endCell(output);
+            }
+        }
+        var drawLeastRoasted = function(output, query) {
+            var u = unitData();
+            query.prepare("SELECT (sum(roasted_quantity)/:conversion) AS sum, (SELECT name FROM items WHERE id = roasted_id) FROM roasting_log WHERE time > 'now'::date - '28 days'::interval AND approval = true GROUP BY roasted_id ORDER BY sum ASC LIMIT 5");
+            query.bind(":conversion", u.conversion);
+            query.exec();
+            if(query.next()) {
+                startCell(output, TTR("navwindow", "Least Roasted Items (Last 28 Days)"));
+                startStage(output);
+                do {
+                    output.writeTextElement("p", query.value(0) + u.unittext + " " + query.value(1));
+                } while(query.next());
+                endStage(output);
+                endCell(output);
+            }
+        }
+        refresh();
+        dashboard.scriptLinkClicked.connect(function(url) {
+            if(url == "reminders") {
+                createReport("reminders.xml");
+            } else if(url == "log") {
+                createReport("historyreport.xml");
+            } else if(url == "schedule") {
+                createWindow("schedule");
+            }
+        });
+        
+        var remindernotification = Application.subscribe("reminderschange");
+        remindernotification.notify.connect(function() {
+            refresh();
+        });
+        var schedulenotification = Application.subscribe("scheduledroastschange");
+        schedulenotification.notify.connect(function() {
+            refresh();
+        });
+        var lognotification = Application.subscribe("roastinglogchange");
+        lognotification.notify.connect(function() {
+            refresh();
+        });
         ]]>
     </program>
 </window>

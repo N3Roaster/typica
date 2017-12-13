@@ -1,0 +1,95 @@
+html {
+    /* background: #82B3AE; */
+    background: #EFF0F1;
+}
+
+.container {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media screen and (min-width: 500px) {
+    .cell {
+        max-width: 100%;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .cell {
+        max-width: 50%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .cell {
+        max-width: 33%;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .cell {
+        max-width: 25%;
+    }
+}
+
+@media screen and (min-width: 2000px) {
+    .cell {
+        max-width: 20%;
+    }
+}
+
+.cell {
+    float: left;
+    width: 100%;
+    min-width: 350px;
+}
+
+.cell-title {
+    background: #230F2B;
+}
+
+.cell-wrapper {
+    background: #FFFFFF;
+    border: 1px solid #e2e2e2;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.cell-wrapper .cell-title {
+    border-bottom: 1px solid #d7d7d7;
+    color: #EBEBBC;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 10px 4px;
+}
+
+.cell-wrapper .cell-stage {
+    overflow: hidden;
+    padding: 5px 10px;
+    position: relative;
+}
+
+.cell-wrapper .cell-notes {
+    background: #F21D41;
+    border-top: 1px solid #e2e2e2;
+    color: #EBEBBC;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 10px 5px;
+}
+
+.cell-wrapper .cell-stage .cell-title {
+    border: medium none;
+}
+
+.container a {
+    color: #000000;
+}
+
+.cell-stage p {
+    margin: 0;
+    padding: 0;
+}

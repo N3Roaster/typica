@@ -477,6 +477,9 @@
             drawReminders(output, query);
             drawSchedule(output, query);
             drawLatest(output, query);
+            drawRecentlyOut(output, query);
+            drawLeastAvailable(output, query);
+            drawUnused(output, query);
             drawMostRoasted(output, query);
             drawLeastRoasted(output, query);
             query = query.invalidate();
@@ -717,6 +720,58 @@
                 } while(query.next());
                 endStage(output);
                 endCell(output);
+            }
+        }
+        var drawLeastAvailable = function(output, query) {
+            var u = unitData();
+            query.prepare("SELECT name, (quantity / :conversion)::numeric(12,2) AS quantity, (SELECT out FROM coffee_history WHERE coffee_history.id = items.id) AS out FROM items WHERE quantity > 0 ORDER BY out ASC LIMIT 5");
+            query.bind(":conversion", u.conversion);
+            query.exec();
+            if(query.next()) {
+                startCell(output, TTR("navwindow", "Least Available Coffes"));
+                startStage(output);
+                output.writeStartElement("table");
+                do {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", query.value(1) + u.unittext);
+                    output.writeTextElement("td", query.value(0));
+                    output.writeTextElement("td", query.value(2));
+                    output.writeEndElement();
+                } while(query.next());
+                output.writeEndElement();
+                endStage(output);
+                endCell(output);
+            }
+        }
+        var drawRecentlyOut = function(output, query) {
+            query.exec("SELECT (SELECT name FROM items WHERE id = item), max(time)::date AS last_transaction FROM transactions WHERE item IN (SELECT id FROM items WHERE quantity = 0) GROUP BY item ORDER BY last_transaction DESC LIMIT 5");
+            if(query.next()) {
+                startCell(output, TTR("navwindow", "Latest Out of Stock Coffees"));
+                startStage(output);
+                output.writeStartElement("table");
+                do {
+                    output.writeStartElement("tr");
+                    output.writeTextElement("td", query.value(1));
+                    output.writeTextElement("td", query.value(0));
+                    output.writeEndElement();
+                } while(query.next());
+                output.writeEndElement();
+                endStage(output);
+                endCell(output);
+            }
+        }
+        var drawUnused = function(output, query) {
+            query.exec("SELECT name FROM coffees WHERE id NOT IN (SELECT item FROM use) AND quantity > 0");
+            var c = 0;
+            if(query.next()) {
+                c += 1;
+                startCell(output, TTR("navwindow", "Unused Coffees"));
+                startStage(output);
+                do {
+                    output.writeTextElement("p", query.value(0));
+                } while(query.next());
+                endStage(output);
+                endCell(output, "" + c + TTR("navwindow", " unused coffees"));
             }
         }
         refresh();

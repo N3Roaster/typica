@@ -764,10 +764,10 @@
             query.exec("SELECT name FROM coffees WHERE id NOT IN (SELECT item FROM use) AND quantity > 0");
             var c = 0;
             if(query.next()) {
-                c += 1;
                 startCell(output, TTR("navwindow", "Unused Coffees"));
                 startStage(output);
                 do {
+                    c += 1;
                     output.writeTextElement("p", query.value(0));
                 } while(query.next());
                 endStage(output);
@@ -793,7 +793,7 @@
         schedulenotification.notify.connect(function() {
             refresh();
         });
-        var lognotification = Application.subscribe("roastinglogchange");
+        var lognotification = Application.subscribe("transactionschange");
         lognotification.notify.connect(function() {
             refresh();
         });

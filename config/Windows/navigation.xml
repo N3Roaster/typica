@@ -699,7 +699,7 @@
             query.bind(":conversion", u.conversion);
             query.exec();
             if(query.next()) {
-                startCell(output, TTR("navwindow", "Most Roasted Items (Last 28 Days)"));
+                startCell(output, TTR("navwindow", "Most Roasted Coffees (Last 28 Days)"));
                 startStage(output);
                 do {
                     output.writeTextElement("p", query.value(0) + u.unittext + " " + query.value(1));
@@ -714,7 +714,7 @@
             query.bind(":conversion", u.conversion);
             query.exec();
             if(query.next()) {
-                startCell(output, TTR("navwindow", "Least Roasted Items (Last 28 Days)"));
+                startCell(output, TTR("navwindow", "Least Roasted Coffees (Last 28 Days)"));
                 startStage(output);
                 do {
                     output.writeTextElement("p", query.value(0) + u.unittext + " " + query.value(1));

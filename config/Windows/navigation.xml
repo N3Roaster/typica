@@ -476,6 +476,7 @@
             var query = new QSqlQuery;
             drawReminders(output, query);
             drawSchedule(output, query);
+            drawProductionTrends(output, query);
             drawLatest(output, query);
             drawRecentlyOut(output, query);
             drawLeastAvailable(output, query);
@@ -773,6 +774,78 @@
                 endStage(output);
                 endCell(output, "" + c + TTR("navwindow", " unused coffees"));
             }
+        }
+        var calculateChange = function(current, previous) {
+            var difference = Number(current) - Number(previous);
+            var retval;
+            if(difference > 0) {
+                retval = "+";
+            } else if(difference < 0) {
+                retval = "-";
+            }
+            retval += ((difference/Number(previous)) * 100).toFixed(1);
+            retval += "%";
+            return retval;
+        }
+        var outputChange = function(output, value) {
+            output.writeStartElement("td");
+            if(value[0] == '+') {
+                output.writeAttribute("style", "color: #008B00");
+            } else if(value[0] == '-') {
+                output.writeAttribute("style", "color: #8B0000");
+            }
+            output.writeCharacters(value);
+            output.writeEndElement();
+        }
+        var outputChangeRow = function(output, query, p1, p2) {
+            var u = unitData();
+            query.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE time > 'now'::date - '" + p1 + " days'::interval");
+            query.bind(":conversion", u.conversion);
+            query.exec();
+            query.next();
+            var current = Number(query.value(0));
+            output.writeTextElement("td", "" + current.toFixed(0) + u.unittext);
+            query.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE time > 'now'::date - '" + p2 + " days'::interval AND time < 'now'::date - '" + p1 + " days'::interval");
+            query.bind(":conversion", u.conversion);
+            query.exec();
+            query.next();
+            var previous = Number(query.value(0));
+            output.writeTextElement("td", "" + previous.toFixed(0) + u.unittext);
+            outputChange(output, calculateChange(current, previous));
+        }
+        var drawProductionTrends= function(output, query) {
+            startCell(output, TTR("navwindow", "Production Trends"));
+            startStage(output);
+            output.writeStartElement("table");
+            output.writeStartElement("tr");
+            output.writeTextElement("th", TTR("navwindow", "Period"));
+            output.writeTextElement("th", TTR("navwindow", "Production"));
+            output.writeTextElement("th", TTR("navwindow", "Previous"));
+            output.writeTextElement("th", TTR("navwindow", "Change"));
+            output.writeEndElement();
+            output.writeStartElement("tr");
+            output.writeTextElement("th", TTR("navwindow", "Today"));
+            outputChangeRow(output, query, 0, 1);
+            output.writeEndElement();
+            output.writeStartElement("tr");
+            output.writeTextElement("th", TTR("navwindow", "Last 7 Days"));
+            outputChangeRow(output, query, 6, 13);
+            output.writeEndElement();
+            output.writeStartElement("tr");
+            output.writeTextElement("th", TTR("navwindow", "Last 30 Days"));
+            outputChangeRow(output, query, 29, 59);
+            output.writeEndElement();
+            output.writeStartElement("tr");
+            output.writeTextElement("th", TTR("navwindow", "Last 90 Days"));
+            outputChangeRow(output, query, 89, 179);
+            output.writeEndElement();
+            output.writeStartElement("tr");
+            output.writeTextElement("th", TTR("navwindow", "Last 365 Days"));
+            outputChangeRow(output, query, 364, 729);
+            output.writeEndElement();
+            output.writeEndElement();
+            endStage(output);
+            endCell(output);
         }
         refresh();
         dashboard.scriptLinkClicked.connect(function(url) {

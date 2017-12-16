@@ -799,13 +799,13 @@
         }
         var outputChangeRow = function(output, query, p1, p2) {
             var u = unitData();
-            query.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE time > 'now'::date - '" + p1 + " days'::interval");
+            query.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE approval = true AND time > 'now'::date - '" + p1 + " days'::interval");
             query.bind(":conversion", u.conversion);
             query.exec();
             query.next();
             var current = Number(query.value(0));
             output.writeTextElement("td", "" + current.toFixed(0) + u.unittext);
-            query.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE time > 'now'::date - '" + p2 + " days'::interval AND time < 'now'::date - '" + p1 + " days'::interval");
+            query.prepare("SELECT sum(roasted_quantity)/:conversion FROM roasting_log WHERE approval = true AND time > 'now'::date - '" + p2 + " days'::interval AND time < 'now'::date - '" + p1 + " days'::interval");
             query.bind(":conversion", u.conversion);
             query.exec();
             query.next();

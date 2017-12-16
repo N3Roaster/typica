@@ -581,7 +581,7 @@
                     return;
                 }
                 if(Number(search.text)) {
-                    if(search.text.startsWith('00')) {
+                    if(search.text[0] == '0' && search.text[1] == '0') {
                         var query = new QSqlQuery();
                         query.prepare("SELECT machine, time FROM scheduled_roasts WHERE id = :id");
                         query.bind(":id", Number(search.text));

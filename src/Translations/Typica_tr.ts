@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="tr_TR" sourcelanguage="en">
-<defaultcodec>UTF-8</defaultcodec>
+<TS version="2.1" language="tr_TR" sourcelanguage="en">
 <context>
     <name>AdvancedSettingsWidget</name>
     <message>
@@ -75,7 +74,7 @@
     <message>
         <location filename="../typica.cpp" line="8697"/>
         <source>Phidget22</source>
-        <translation type="unfinished"></translation>
+        <translation>Phidget22</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="8707"/>
@@ -117,17 +116,17 @@
     <message>
         <location filename="../typica.cpp" line="15681"/>
         <source>Enable Javalytics communication</source>
-        <translation type="unfinished"></translation>
+        <translation>Javalytics Iletisim Devrede</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15694"/>
         <source>IP Address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ip Adresi:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="15695"/>
         <source>Scale Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Terazi Numarası:</translation>
     </message>
 </context>
 <context>
@@ -1153,22 +1152,22 @@
     <message>
         <location filename="../typica.cpp" line="16976"/>
         <source>Typica: Driver not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Typica: Sürücü bulunamadı</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16977"/>
         <source>Failed to find phidget22. Please install it.</source>
-        <translation type="unfinished">phidget21 bulunamadı. Lütfen yükleyiniz. {22.?}</translation>
+        <translation>phidget22 bulunamadı. Lütfen yükleyiniz.</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16992"/>
         <source>Typica: Link error</source>
-        <translation type="unfinished">Typica: Bağlantı hatası</translation>
+        <translation>Typica: Bağlantı hatası</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16993"/>
         <source>Failed to link a required symbol in phidget22.</source>
-        <translation type="unfinished">phidget21 için gerekli sembol bağlantı hatası. {22.?}</translation>
+        <translation>phidget22 için gerekli sembol bağlantı hatası.</translation>
     </message>
 </context>
 <context>
@@ -1176,122 +1175,122 @@
     <message>
         <location filename="../typica.cpp" line="16672"/>
         <source>IC</source>
-        <translation type="unfinished"></translation>
+        <translation>IC</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16673"/>
         <source>RTD</source>
-        <translation type="unfinished"></translation>
+        <translation>RTD</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16674"/>
         <source>Thermocouple</source>
-        <translation type="unfinished"></translation>
+        <translation>Termokupl</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16675"/>
         <source>Channels:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanallar:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16676"/>
         <source>Column Name:</source>
-        <translation type="unfinished">Sütun İsmi:</translation>
+        <translation>Sütun İsmi:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16677"/>
         <source>Hide channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanalı Gizle</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16679"/>
         <source>Serial Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seri No:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16680"/>
         <source>Hub Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hub Portu:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16681"/>
         <source>Channel Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanal Numarası:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16682"/>
         <source>Channel Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanal Tipi</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16690"/>
         <source>PT100 with .00385 curve</source>
-        <translation type="unfinished"></translation>
+        <translation>PT100 .00385 Eğimli</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16691"/>
         <source>PT1000 with .00385 curve</source>
-        <translation type="unfinished"></translation>
+        <translation>PT1000 .00385 Eğimli</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16692"/>
         <source>PT100 with .00392 curve</source>
-        <translation type="unfinished"></translation>
+        <translation>PT100 .00392 Eğimli</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16693"/>
         <source>PT1000 with .00392 curve</source>
-        <translation type="unfinished"></translation>
+        <translation>PT1000 .00392 eğimli</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16694"/>
         <source>RTD type:</source>
-        <translation type="unfinished"></translation>
+        <translation>RTD tipi:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16695"/>
         <source>2 wire</source>
-        <translation type="unfinished"></translation>
+        <translation>2 kablo</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16696"/>
         <source>3 wire</source>
-        <translation type="unfinished"></translation>
+        <translation>3 kablo</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16697"/>
         <source>4 wire</source>
-        <translation type="unfinished"></translation>
+        <translation>4 kablo</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16698"/>
         <source>RTD wiring:</source>
-        <translation type="unfinished"></translation>
+        <translation>RTD kablolama:</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16702"/>
         <source>Type J</source>
-        <translation type="unfinished"></translation>
+        <translation>J TİPİ</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16703"/>
         <source>Type K</source>
-        <translation type="unfinished"></translation>
+        <translation>K TİPİ</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16704"/>
         <source>Type E</source>
-        <translation type="unfinished"></translation>
+        <translation>E TİPİ</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16705"/>
         <source>Type T</source>
-        <translation type="unfinished"></translation>
+        <translation>T TİPİ</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16706"/>
         <source>Thermocouple type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Termokupl tipi:</translation>
     </message>
 </context>
 <context>
@@ -1299,22 +1298,22 @@
     <message>
         <location filename="../typica.cpp" line="16556"/>
         <source>Typica: Driver not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Typica: Sürücü Bulunamadı</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16557"/>
         <source>Failed to find phidget22. Please install it.</source>
-        <translation type="unfinished">phidget21 bulunamadı. Lütfen yükleyiniz. {22.?}</translation>
+        <translation>phidget22 bulunamadı. Lütfen yükleyiniz. {22.?}</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16576"/>
         <source>Typica: Link error</source>
-        <translation type="unfinished">Typica: Bağlantı hatası</translation>
+        <translation>Typica: Bağlantı hatası</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16577"/>
         <source>Failed to link a required symbol in phidget22.</source>
-        <translation type="unfinished">phidget21 için gerekli sembol bağlantı hatası. {22.?}</translation>
+        <translation>phidget22 için gerekli sembol bağlantı hatası.</translation>
     </message>
 </context>
 <context>
@@ -1322,12 +1321,12 @@
     <message>
         <location filename="../typica.cpp" line="16533"/>
         <source>Add Channel</source>
-        <translation type="unfinished">Kanal Ekle</translation>
+        <translation>Kanal Ekle</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="16541"/>
         <source>Channel</source>
-        <translation type="unfinished">Kanal</translation>
+        <translation>Kanal</translation>
     </message>
 </context>
 <context>
@@ -1495,7 +1494,7 @@
     <message>
         <location filename="../typica.cpp" line="17879"/>
         <source>Measure</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçüm</translation>
     </message>
 </context>
 <context>
@@ -1670,7 +1669,7 @@
     <message>
         <location filename="../typica.cpp" line="13885"/>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk</translation>
     </message>
     <message>
         <location filename="../typica.cpp" line="13887"/>

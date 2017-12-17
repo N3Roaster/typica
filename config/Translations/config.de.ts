@@ -52,6 +52,11 @@
         <translation>Sitzungs Noten</translation>
     </message>
     <message>
+        <location filename="Reports/colorplots.xml" line="2"/>
+        <source>Production:-&gt;Degree of Roast By Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="35"/>
         <source>Use Rate Ascending</source>
         <translation>Verbrauchsrate absteigend</translation>
@@ -60,7 +65,7 @@
         <location filename="Windows/productionroaster.xml" line="1175"/>
         <location filename="Windows/offline.xml" line="84"/>
         <source>Typica - Export XHTML+SVG</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/batchdetailsnew.xml" line="182"/>
@@ -77,7 +82,7 @@
         <location filename="Windows/cuppingform.xml" line="223"/>
         <location filename="Windows/cuppingform.xml" line="23"/>
         <source>Aroma</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="228"/>
@@ -107,6 +112,16 @@
         <translation>Lb Eingekauft</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="824"/>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/editinvoiceitem.xml" line="30"/>
+        <source>Typica - Item Detail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/optime.xml" line="11"/>
         <source>Start Time:</source>
         <translation>Startzeit:</translation>
@@ -134,7 +149,7 @@
     <message>
         <location filename="Windows/greeninventory.xml" line="54"/>
         <source> Kg), </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/dailyproductiondetail.xml" line="331"/>
@@ -147,6 +162,11 @@
         <location filename="Windows/editreminder.xml" line="7"/>
         <source>Description:</source>
         <translation>Beschreibung:</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="733"/>
+        <source>Least Available Coffes</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="1256"/>
@@ -199,6 +219,11 @@
         <translation>Zeit (minuten)</translation>
     </message>
     <message>
+        <location filename="Windows/schedule.xml" line="27"/>
+        <source>Scheduled Batch ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/print.xml" line="286"/>
         <location filename="Windows/export.xml" line="291"/>
         <source>Temperature (°F)</source>
@@ -241,7 +266,7 @@
         <location filename="Windows/setsampleparameters.xml" line="9"/>
         <location filename="Windows/success.xml" line="4"/>
         <source>Okay</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="91"/>
@@ -249,10 +274,20 @@
         <translation>aktuell (Lb)</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="247"/>
+        <source>Roasted At: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="71"/>
         <location filename="Reports/chart.xml" line="74"/>
         <source>Previous Year Production Comparison</source>
         <translation>Vorheriges Jahr Produktions Vergleich</translation>
+    </message>
+    <message>
+        <location filename="Windows/schedule.xml" line="15"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="64"/>
@@ -301,6 +336,11 @@
         <translation>Roh Kaffee Einkauf</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="170"/>
+        <source>Typica - Import Target Roast Profiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/greenforroasted.xml" line="17"/>
         <source>Typica - Green Coffees Used for Roasted Coffees</source>
         <translation>Typica-Rohkaffee für gerösteten Kaffee</translation>
@@ -320,7 +360,7 @@
         <location filename="Reports/productionsummary.xml" line="5"/>
         <location filename="Reports/rwacp.xml" line="9"/>
         <source>Batch Type: </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="19"/>
@@ -359,14 +399,34 @@
         <translation>Säcke:</translation>
     </message>
     <message>
+        <location filename="Windows/purchase.xml" line="239"/>
+        <source>Decaffeination method is a required field for decaffeinated coffees.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="436"/>
         <source>April </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="33"/>
         <source>New Sample Parameters</source>
         <translation>Neue Batch Parameter</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="832"/>
+        <source>Last 7 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Reports/colorplots.xml" line="11"/>
+        <source>Typica - Degree of Roast By Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="10"/>
+        <source>Scheduled Batch ID:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/roastspec.xml" line="18"/>
@@ -421,7 +481,7 @@
     <message>
         <location filename="Windows/roastmanager.xml" line="27"/>
         <source>Ready.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="1296"/>
@@ -472,6 +532,16 @@
         <translation>Dieser Bericht liefert eine detaillierte und Gesamtvergleich von gerösteten Kaffeeproduktion für die mit diesen Zeitpunkten im Vorjahr festgelegten Terminen. Ein Diagramm dieser Daten zusammen mit prozentuale Veränderung und gleitenden Durchschnitt der prozentualen Veränderung wird auch produziert.</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="71"/>
+        <source>Save Profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="162"/>
+        <source>Typica - Coffee Purchase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="38"/>
         <source>Availability Longest-Shortest</source>
         <translation>Verfügbarkeit längste-kürzeste</translation>
@@ -486,6 +556,11 @@
         <location filename="Windows/newbatch.xml" line="36"/>
         <source>Load Profile</source>
         <translation>Profil Laden</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="140"/>
+        <source>Typica - Join Cupping Session</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/manuallogentry.xml" line="285"/>
@@ -522,7 +597,7 @@
         <location filename="Windows/editreminder.xml" line="4"/>
         <location filename="Windows/manuallogentry.xml" line="36"/>
         <source>Name:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="18"/>
@@ -532,7 +607,7 @@
     <message>
         <location filename="Reports/monthcompare.xml" line="77"/>
         <source>September</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="100"/>
@@ -542,7 +617,7 @@
     <message>
         <location filename="Windows/newsamplebatch.xml" line="7"/>
         <source>Sample Details:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/rwacp.xml" line="90"/>
@@ -586,20 +661,31 @@
         <translation>Dies ist ein Bericht des durchschnittlichen Verbrauchs in Kilogram pro Tag und die Kosten der nicht gerösteten Kaffees.</translation>
     </message>
     <message>
+        <location filename="Windows/roastspec.xml" line="28"/>
+        <source>Whole color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="541"/>
         <source>Average % Change</source>
         <translation>Durchschnitt%Wechsel</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="146"/>
+        <location filename="Windows/schedule.xml" line="5"/>
+        <source>Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/productionroaster.xml" line="21"/>
         <location filename="Windows/offline.xml" line="16"/>
         <source>Export CSV...</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="7"/>
         <source>Start Batch</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/inventory.xml" line="2"/>
@@ -614,6 +700,16 @@
         <translation>Quantität</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="152"/>
+        <source>Typica - Inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="233"/>
+        <source>Bags is a required field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/historyreport.xml" line="195"/>
         <source>Batch Notes</source>
         <translation>Batch Noten</translation>
@@ -621,7 +717,7 @@
     <message>
         <location filename="Windows/purchase.xml" line="61"/>
         <source>Region:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingsessionsummary.xml" line="5"/>
@@ -637,12 +733,17 @@
         <location filename="Reports/greensales.xml" line="78"/>
         <location filename="Reports/invchange.xml" line="106"/>
         <source>ID</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Reports/colorplots.xml" line="272"/>
+        <source>ground</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/itemtransactions.xml" line="248"/>
         <source>Person</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="227"/>
@@ -657,7 +758,7 @@
     <message>
         <location filename="Windows/cuppingform.xml" line="92"/>
         <source>Level</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/editreminder.xml" line="12"/>
@@ -670,9 +771,15 @@
         <translation>Sitzungs Datum:</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="94"/>
+        <location filename="Windows/schedule.xml" line="208"/>
+        <source>Batch Tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/reminders.xml" line="35"/>
         <source> Kg</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="19"/>
@@ -685,6 +792,16 @@
         <location filename="Reports/greensales.xml" line="54"/>
         <source>Green Coffee Sales</source>
         <translation>Roh Kaffee Verkauf</translation>
+    </message>
+    <message>
+        <location filename="Windows/batchdetailsnew.xml" line="489"/>
+        <source>New batch details saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/roastspec.xml" line="190"/>
+        <source>New Specification Saved</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="210"/>
@@ -705,7 +822,7 @@
     <message>
         <location filename="Reports/reminders.xml" line="31"/>
         <source> Lb</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="528"/>
@@ -756,7 +873,7 @@
     <message>
         <location filename="Reports/auco.xml" line="233"/>
         <source>Id</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/editreminder.xml" line="59"/>
@@ -791,6 +908,11 @@
         <translation>Akten:</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="836"/>
+        <source>Last 30 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/newsamplebatch.xml" line="68"/>
         <location filename="Windows/manuallogentry.xml" line="100"/>
         <source>Notes:</source>
@@ -810,6 +932,11 @@
         <location filename="Reports/inventory.xml" line="37"/>
         <source>Availability Shortest-Longest</source>
         <translation>Verfügbarkeit kürzeste längste</translation>
+    </message>
+    <message>
+        <location filename="Windows/schedule.xml" line="62"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="57"/>
@@ -841,7 +968,7 @@
     <message>
         <location filename="Windows/cuppingsession.xml" line="10"/>
         <source>Blind</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="34"/>
@@ -868,7 +995,7 @@
         <location filename="Windows/editbatchdetails.xml" line="43"/>
         <location filename="Windows/editreminder.xml" line="55"/>
         <source>Kg</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="42"/>
@@ -918,7 +1045,7 @@
         <location filename="Windows/editbatchdetails.xml" line="46"/>
         <location filename="Windows/editreminder.xml" line="56"/>
         <source>Lb</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/cogr.xml" line="147"/>
@@ -929,6 +1056,11 @@
         <location filename="Reports/itemtransactions.xml" line="146"/>
         <source>Decaffeination Method: </source>
         <translation>Entkoffeinierung Verfahren:</translation>
+    </message>
+    <message>
+        <location filename="Windows/batchdetailsnew.xml" line="334"/>
+        <source>Ground: </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/purchase.xml" line="43"/>
@@ -990,9 +1122,19 @@
         <translation>Konfiguration erforderlich</translation>
     </message>
     <message>
+        <location filename="Windows/schedule.xml" line="207"/>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/greenforroasted.xml" line="2"/>
         <source>Production:-&gt;Green Coffees Used for Roasted Coffees</source>
         <translation>Produktion:-&gt;Rohkaffes benutzt fürgeröstete Kaffees</translation>
+    </message>
+    <message>
+        <location filename="Reports/lossplots.xml" line="11"/>
+        <source>Typica - Weight Loss By Item and Operator</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/batchdetailsnew.xml" line="5"/>
@@ -1026,9 +1168,19 @@
         <translation>Tage</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="325"/>
+        <source>Whole Bean: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/purchase.xml" line="118"/>
         <source>Add Certification</source>
         <translation>Bescheinigung hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="228"/>
+        <source>Origin is a required field.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="46"/>
@@ -1078,9 +1230,19 @@
         <translation>Vorheriges Jahr Produktions Vergleich bei Monat</translation>
     </message>
     <message>
+        <location filename="Windows/purchase.xml" line="223"/>
+        <source>Cost is a required field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/itemtransactions.xml" line="22"/>
         <source>Typica - Item Transactions</source>
         <translation>Artikel-Transaktion</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="751"/>
+        <source>Latest Out of Stock Coffees</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="40"/>
@@ -1168,6 +1330,11 @@
         <translation>Inventur Kost absteigend</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="92"/>
+        <source>Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/productionroaster.xml" line="31"/>
         <location filename="Windows/offline.xml" line="21"/>
         <location filename="Windows/profilehistory.xml" line="32"/>
@@ -1183,6 +1350,11 @@
         <location filename="Windows/roastmanager.xml" line="14"/>
         <source>Remove Item</source>
         <translation>Artikel Entfernen</translation>
+    </message>
+    <message>
+        <location filename="Windows/editfee.xml" line="19"/>
+        <source>Typica - Fee Detail</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/reminders.xml" line="152"/>
@@ -1233,6 +1405,17 @@
         <translation>Täglicher Produktions Bericht</translation>
     </message>
     <message>
+        <location filename="Windows/purchase.xml" line="213"/>
+        <source>Item is a required field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="109"/>
+        <location filename="Windows/batchdetailsnew.xml" line="45"/>
+        <source>Ground:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/productionroaster.xml" line="1179"/>
         <location filename="Windows/importprofiles.xml" line="14"/>
         <source>Open Log...</source>
@@ -1280,7 +1463,7 @@
         <location filename="Reports/itemtransactions.xml" line="246"/>
         <location filename="Windows/cuppingform.xml" line="108"/>
         <source>Balance</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/purchase.xml" line="7"/>
@@ -1301,6 +1484,11 @@
         <translation>Sektionen</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="135"/>
+        <source>Typica - New Cupping Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/itemtransactions.xml" line="135"/>
         <source>Drying: </source>
         <translation>Trocknung:</translation>
@@ -1313,7 +1501,7 @@
     <message>
         <location filename="Reports/monthcompare.xml" line="76"/>
         <source>August</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="557"/>
@@ -1337,10 +1525,15 @@
         <translation>Typica-Musterröstung: [*]</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="91"/>
+        <source>Report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="5"/>
         <location filename="Windows/manuallogentry.xml" line="24"/>
         <source>Batch Type:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/fypurchase.xml" line="64"/>
@@ -1350,7 +1543,7 @@
     <message>
         <location filename="Reports/productionsummary.xml" line="138"/>
         <source>Batches</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/historyreport.xml" line="280"/>
@@ -1366,7 +1559,7 @@
     <message>
         <location filename="Reports/reminders.xml" line="99"/>
         <source> Batches</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="81"/>
@@ -1379,12 +1572,12 @@
         <location filename="Reports/invoices.xml" line="143"/>
         <location filename="Reports/rwacp.xml" line="151"/>
         <source>Total:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/monthcompare.xml" line="79"/>
         <source>November</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/invchange.xml" line="119"/>
@@ -1401,12 +1594,17 @@
         <location filename="Windows/cuppingform.xml" line="8"/>
         <location filename="Windows/cuppingsessionsummary.xml" line="9"/>
         <source>Event:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/historyreport.xml" line="2"/>
         <source>Production:-&gt;Batch Log</source>
         <translation>Produktion:-&gt;Röst Buch</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="718"/>
+        <source>Least Roasted Coffees (Last 28 Days)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/itemtransactions.xml" line="2"/>
@@ -1470,6 +1668,11 @@
         <translation>Roh Gewicht (Lb)</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="670"/>
+        <source> batches scheduled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/greensales.xml" line="60"/>
         <source>Green Coffee Sales: </source>
         <translation>Roh Kaffee Verkauf:</translation>
@@ -1501,6 +1704,11 @@
         <translation>Gewicht:</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="823"/>
+        <source>Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/greensales.xml" line="24"/>
         <source>Typica - Enter Green Coffee Sales</source>
         <translation>Typica -Roh Kaffee Verkauf Eintragung</translation>
@@ -1517,6 +1725,11 @@
         <location filename="Reports/inventory.xml" line="56"/>
         <source>Current Inventory and Availability Projection</source>
         <translation>Aktuelles Inventar und Verfügbarkeit Projection</translation>
+    </message>
+    <message>
+        <location filename="Reports/dailyproductiondetail.xml" line="20"/>
+        <source>Typica - Daily Production Report</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/invchange.xml" line="115"/>
@@ -1551,6 +1764,11 @@
         <translation>Muster ID:</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="703"/>
+        <source>Most Roasted Coffees (Last 28 Days)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="34"/>
         <source>Stock Cost Descending</source>
         <translation>Inventur Kost aufsteigend</translation>
@@ -1577,6 +1795,11 @@
         <translation>Beschreibung</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="19"/>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/navigation.xml" line="74"/>
         <source>Forget Connection Details</source>
         <translation>Datenbank trennen</translation>
@@ -1584,7 +1807,7 @@
     <message>
         <location filename="Windows/manuallogentry.xml" line="154"/>
         <source>Import</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="42"/>
@@ -1647,6 +1870,11 @@
         <translation>Sack größe (durchschnitt)</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="488"/>
+        <source>Batch Data Saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="42"/>
         <location filename="Reports/historyreport.xml" line="54"/>
         <location filename="Reports/productionsummary.xml" line="45"/>
@@ -1668,7 +1896,7 @@
     <message>
         <location filename="Reports/itemtransactions.xml" line="117"/>
         <source>Region: </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/editreminder.xml" line="10"/>
@@ -1691,6 +1919,11 @@
         <translation>Lager Kost</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="682"/>
+        <source>Latest Batches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/rwacp.xml" line="24"/>
         <source>Typica - Recent Average Coffee Production</source>
         <translation>Typica - Durchschnittliche Kaffeeproduktion</translation>
@@ -1708,7 +1941,7 @@
     <message>
         <location filename="Reports/chart.xml" line="451"/>
         <source>September </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/dailyproductiondetail.xml" line="92"/>
@@ -1759,9 +1992,29 @@
         <translation>Kost des Rohkaffee zum Röstkaffee</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="631"/>
+        <source> reminders due soon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="76"/>
         <source>Use Rate</source>
         <translation>Verbrauchs Rate</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="663"/>
+        <source>Scheduled Roasts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="207"/>
+        <source>Vendor is a required field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/schedule.xml" line="6"/>
+        <source>Delete All</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="46"/>
@@ -1814,6 +2067,11 @@
         <translation>Neue Sitzung</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="72"/>
+        <source>Print Report...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/itemtransactions.xml" line="103"/>
         <source>Category: </source>
         <translation>Kategorie:</translation>
@@ -1844,7 +2102,7 @@
     <message>
         <location filename="Reports/itemtransactions.xml" line="244"/>
         <source>Type</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/setsampleparameters.xml" line="16"/>
@@ -1882,6 +2140,11 @@
         <location filename="Reports/invchange.xml" line="121"/>
         <source>Ending (</source>
         <translation>Endend (</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="769"/>
+        <source>Unused Coffees</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="84"/>
@@ -1950,12 +2213,12 @@
         <location filename="Windows/productionroaster.xml" line="22"/>
         <location filename="Windows/offline.xml" line="17"/>
         <source>Export XHTML+SVG...</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/greeninventory.xml" line="25"/>
         <source>Update</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="6"/>
@@ -1996,7 +2259,7 @@
     <message>
         <location filename="Windows/productionroaster.xml" line="910"/>
         <source>Batch Timer</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newsamplebatch.xml" line="24"/>
@@ -2060,6 +2323,12 @@
         <translation>Momentanes Gewicht überschreitet maximum Maschinen Spezifikation! Bist Du sicher?</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="106"/>
+        <location filename="Windows/batchdetailsnew.xml" line="39"/>
+        <source>Whole Bean:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/roastmanager.xml" line="17"/>
         <source>Discontinued Items:</source>
         <translation>Auslaufartikel:</translation>
@@ -2073,6 +2342,11 @@
         <location filename="Windows/newbatch.xml" line="29"/>
         <source>Remaining</source>
         <translation>Rest</translation>
+    </message>
+    <message>
+        <location filename="Windows/cuppingsessionlist.xml" line="17"/>
+        <source>Typica - Cupping</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/cogr.xml" line="148"/>
@@ -2099,6 +2373,16 @@
         <location filename="Reports/greensales.xml" line="80"/>
         <source>Origin</source>
         <translation>Herkunft</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="840"/>
+        <source>Last 90 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="21"/>
+        <source>Value:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="2"/>
@@ -2137,6 +2421,29 @@
         <translation>Bearbeiten</translation>
     </message>
     <message>
+        <location filename="Reports/auco.xml" line="75"/>
+        <location filename="Reports/chart.xml" line="75"/>
+        <location filename="Reports/cogr.xml" line="46"/>
+        <location filename="Reports/colorplots.xml" line="32"/>
+        <location filename="Reports/dailyproductiondetail.xml" line="56"/>
+        <location filename="Reports/fypurchase.xml" line="57"/>
+        <location filename="Reports/greenforroasted.xml" line="67"/>
+        <location filename="Reports/greensales.xml" line="58"/>
+        <location filename="Reports/historyreport.xml" line="144"/>
+        <location filename="Reports/invchange.xml" line="57"/>
+        <location filename="Reports/inventory.xml" line="57"/>
+        <location filename="Reports/invoices.xml" line="75"/>
+        <location filename="Reports/itemtransactions.xml" line="87"/>
+        <location filename="Reports/lossplots.xml" line="70"/>
+        <location filename="Reports/monthcompare.xml" line="43"/>
+        <location filename="Reports/productionsummary.xml" line="79"/>
+        <location filename="Reports/reminders.xml" line="143"/>
+        <location filename="Reports/rwacp.xml" line="81"/>
+        <location filename="Windows/schedule.xml" line="383"/>
+        <source>en-US</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="36"/>
         <source>Use Rate Descending</source>
         <translation>Verbrauchsrate aufsteigend</translation>
@@ -2167,6 +2474,11 @@
         <translation>Verdächtiger Eintrag</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="822"/>
+        <source>Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/newsamplebatch.xml" line="130"/>
         <source>Typica - New Sample Roasting Batch</source>
         <translation>Typica- Neue Musterröstung</translation>
@@ -2174,7 +2486,7 @@
     <message>
         <location filename="Reports/productionsummary.xml" line="125"/>
         <source> batches.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/purchase.xml" line="11"/>
@@ -2213,7 +2525,7 @@
     <message>
         <location filename="Windows/batchdetailsnew.xml" line="176"/>
         <source>Batch Details</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="204"/>
@@ -2260,7 +2572,7 @@
     <message>
         <location filename="Windows/newbatch.xml" line="68"/>
         <source>Min:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/navigation.xml" line="33"/>
@@ -2290,18 +2602,18 @@
     <message>
         <location filename="Reports/monthcompare.xml" line="72"/>
         <source>April</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="235"/>
         <source>Rate</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="234"/>
         <location filename="Windows/editinvoiceitem.xml" line="5"/>
         <source>Name</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/dailyproductiondetail.xml" line="369"/>
@@ -2340,6 +2652,16 @@
         <translation>Grad:</translation>
     </message>
     <message>
+        <location filename="Windows/roastspec.xml" line="36"/>
+        <source>Ground color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="776"/>
+        <source> unused coffees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/roastmanager.xml" line="6"/>
         <source>Add New Coffee</source>
         <translation>Neues Produkt akzeptieren</translation>
@@ -2353,6 +2675,11 @@
         <location filename="Windows/newbatch.xml" line="66"/>
         <source>Expected Roasted Weight</source>
         <translation>Erwartet End Gewicht</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="146"/>
+        <source>Typica - New Roaster</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="30"/>
@@ -2418,7 +2745,7 @@
     <message>
         <location filename="Windows/export.xml" line="75"/>
         <source>Export XHTML+SVG As...</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="2"/>
@@ -2443,10 +2770,20 @@
         <translation>Fehler in Daten Eingabe</translation>
     </message>
     <message>
+        <location filename="Reports/colorplots.xml" line="153"/>
+        <source>whole</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/print.xml" line="693"/>
         <location filename="Windows/export.xml" line="697"/>
         <source>Green</source>
         <translation>Roh</translation>
+    </message>
+    <message>
+        <location filename="Reports/lossplots.xml" line="2"/>
+        <source>Production:-&gt;Weight Loss By Item and Operator</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="92"/>
@@ -2461,12 +2798,23 @@
     <message>
         <location filename="Reports/dailyproductiondetail.xml" line="71"/>
         <source>Batch ID</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/navigation.xml" line="78"/>
         <source>Create New Users</source>
         <translation>Neue Benutzer erstellen</translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="206"/>
+        <location filename="Windows/purchase.xml" line="212"/>
+        <location filename="Windows/purchase.xml" line="217"/>
+        <location filename="Windows/purchase.xml" line="222"/>
+        <location filename="Windows/purchase.xml" line="227"/>
+        <location filename="Windows/purchase.xml" line="232"/>
+        <location filename="Windows/purchase.xml" line="238"/>
+        <source>Missing Input</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/manuallogentry.xml" line="140"/>
@@ -2500,6 +2848,11 @@
         <translation>Durschnittspunkte per Sample:</translation>
     </message>
     <message>
+        <location filename="Windows/schedule.xml" line="91"/>
+        <source>Typica - Roasting Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/manuallogentry.xml" line="49"/>
         <source>Arrival Date:</source>
         <translation>Ankunfts Datum:</translation>
@@ -2512,13 +2865,18 @@
     <message>
         <location filename="Reports/monthcompare.xml" line="75"/>
         <source>July</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/print.xml" line="690"/>
         <location filename="Windows/export.xml" line="694"/>
         <source>Roasted</source>
         <translation>Geröstet</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="12"/>
+        <source>Roasting Schedule</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="99"/>
@@ -2538,7 +2896,7 @@
     <message>
         <location filename="Reports/historyreport.xml" line="173"/>
         <source>Operator</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/optime.xml" line="18"/>
@@ -2569,6 +2927,11 @@
         <translation>Röst Gewicht (Kg)</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="844"/>
+        <source>Last 365 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/monthcompare.xml" line="71"/>
         <source>March</source>
         <translation>März</translation>
@@ -2593,6 +2956,15 @@
         <location filename="Reports/rwacp.xml" line="80"/>
         <source>Recent Average Coffee Production</source>
         <translation>Durchschnittliche Kaffeeproduktion</translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="105"/>
+        <location filename="Reports/dailyproductiondetail.xml" line="106"/>
+        <location filename="Reports/historyreport.xml" line="174"/>
+        <location filename="Windows/batchdetailsnew.xml" line="37"/>
+        <location filename="Windows/batchdetailsnew.xml" line="320"/>
+        <source>Degree of Roast</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/monthcompare.xml" line="80"/>
@@ -2640,6 +3012,11 @@
         <location filename="Windows/offline.xml" line="7"/>
         <source>Air</source>
         <translation>Luft</translation>
+    </message>
+    <message>
+        <location filename="Windows/manuallogentry.xml" line="139"/>
+        <source>Typica - Manual Log Entry</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/purchase.xml" line="130"/>
@@ -2698,7 +3075,7 @@
     <message>
         <location filename="Windows/greeninventory.xml" line="52"/>
         <source> Lb (</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/navigation.xml" line="76"/>
@@ -2728,12 +3105,17 @@
     <message>
         <location filename="Windows/cuppingform.xml" line="4"/>
         <source>Grader:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/greeninventory.xml" line="18"/>
         <source>Reason: </source>
         <translation>Grund:</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="818"/>
+        <source>Production Trends</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/invoices.xml" line="6"/>
@@ -2743,12 +3125,12 @@
     <message>
         <location filename="Windows/cuppingform.xml" line="34"/>
         <source>Break</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="76"/>
         <source>Max:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="80"/>
@@ -2759,6 +3141,11 @@
         <location filename="Windows/navigation.xml" line="43"/>
         <source>New Cupping Session</source>
         <translation>Neue Cupping Sitzung</translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="932"/>
+        <source>Search Failed</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/batchdetailsnew.xml" line="274"/>
@@ -2781,6 +3168,11 @@
         <translation>Säcke aufsteigend</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="6"/>
+        <source>Search:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/newbatch.xml" line="11"/>
         <location filename="Windows/optime.xml" line="4"/>
         <location filename="Windows/newsamplebatch.xml" line="33"/>
@@ -2794,7 +3186,12 @@
         <location filename="Windows/batchdetailsnew.xml" line="113"/>
         <location filename="Windows/newsamplebatch.xml" line="256"/>
         <source>End</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="828"/>
+        <source>Today</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/greeninventory.xml" line="37"/>
@@ -2810,6 +3207,16 @@
         <location filename="Windows/profilehistory.xml" line="20"/>
         <source>Set as Current Target Roast Profile</source>
         <translation>Als Zielprofil laden</translation>
+    </message>
+    <message>
+        <location filename="Windows/roastspec.xml" line="191"/>
+        <source>New roasting specification saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="218"/>
+        <source>Quantity is a required field.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/historyreport.xml" line="161"/>
@@ -2872,7 +3279,7 @@
     <message>
         <location filename="Reports/chart.xml" line="457"/>
         <source>November </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="43"/>
@@ -2905,7 +3312,7 @@
     <message>
         <location filename="Windows/cuppingform.xml" line="109"/>
         <source>Aftertaste</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="41"/>
@@ -2920,6 +3327,16 @@
         <translation>Alle</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="933"/>
+        <source>Scheduled batch ID not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/productionroaster.xml" line="552"/>
+        <source>Typica - Set Sample Parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/rwacp.xml" line="31"/>
         <source>Roasted Coffee A-Z</source>
         <translation>Röstkaffee A-Z</translation>
@@ -2932,7 +3349,7 @@
     <message>
         <location filename="Windows/productionroaster.xml" line="45"/>
         <source>Graph</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/navigation.xml" line="58"/>
@@ -2996,6 +3413,11 @@
         <location filename="Reports/invchange.xml" line="111"/>
         <source>Purchase (</source>
         <translation>Einkauf (</translation>
+    </message>
+    <message>
+        <location filename="Windows/batchdetailsnew.xml" line="89"/>
+        <source>Typica - Batch Details</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="50"/>

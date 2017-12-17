@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="tr_TR" sourcelanguage="en">
+<TS version="2.0" language="tr_TR" sourcelanguage="en">
 <context>
     <name>configuration</name>
     <message>
@@ -49,6 +49,11 @@
         <location filename="Windows/cuppingsessionsummary.xml" line="22"/>
         <source>Session Notes</source>
         <translation>Oturum Notları</translation>
+    </message>
+    <message>
+        <location filename="Reports/colorplots.xml" line="2"/>
+        <source>Production:-&gt;Degree of Roast By Item</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/inventory.xml" line="35"/>
@@ -106,6 +111,16 @@
         <translation>Lb Alınan</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="824"/>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/editinvoiceitem.xml" line="30"/>
+        <source>Typica - Item Detail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/optime.xml" line="11"/>
         <source>Start Time:</source>
         <translation>Başlama Zamanı:</translation>
@@ -146,6 +161,11 @@
         <location filename="Windows/editreminder.xml" line="7"/>
         <source>Description:</source>
         <translation>Açıklama:</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="733"/>
+        <source>Least Available Coffes</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="1256"/>
@@ -198,6 +218,11 @@
         <translation>Zaman (dakika)</translation>
     </message>
     <message>
+        <location filename="Windows/schedule.xml" line="27"/>
+        <source>Scheduled Batch ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/print.xml" line="286"/>
         <location filename="Windows/export.xml" line="291"/>
         <source>Temperature (°F)</source>
@@ -248,10 +273,20 @@
         <translation>Mevcut (Lb)</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="247"/>
+        <source>Roasted At: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="71"/>
         <location filename="Reports/chart.xml" line="74"/>
         <source>Previous Year Production Comparison</source>
         <translation>Önceki Yıl Üretim Karşılaştırması</translation>
+    </message>
+    <message>
+        <location filename="Windows/schedule.xml" line="15"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="64"/>
@@ -298,6 +333,11 @@
         <location filename="Windows/navigation.xml" line="23"/>
         <source>Purchase Green Coffee</source>
         <translation>Yeşil Çekirdek Satın Al</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="170"/>
+        <source>Typica - Import Target Roast Profiles</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/greenforroasted.xml" line="17"/>
@@ -358,6 +398,11 @@
         <translation>Çuvallar:</translation>
     </message>
     <message>
+        <location filename="Windows/purchase.xml" line="239"/>
+        <source>Decaffeination method is a required field for decaffeinated coffees.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="436"/>
         <source>April </source>
         <translation>Nisan</translation>
@@ -366,6 +411,21 @@
         <location filename="Windows/productionroaster.xml" line="33"/>
         <source>New Sample Parameters</source>
         <translation>Yeni Numune Parametreleri</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="832"/>
+        <source>Last 7 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Reports/colorplots.xml" line="11"/>
+        <source>Typica - Degree of Roast By Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="10"/>
+        <source>Scheduled Batch ID:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/roastspec.xml" line="18"/>
@@ -471,6 +531,16 @@
         <translation>Bu raporda, kavrulmuş kahve üretiminin bir önceki yıldaki belirtilen tarihlere göre detaylandırılmış ve genel bir karşılaştırması yapılmaktadır. Bu verilerin grafikte yüzde değişimi ve yüzdesel değişimin ortalaması da bulunmaktadır.</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="71"/>
+        <source>Save Profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="162"/>
+        <source>Typica - Coffee Purchase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="38"/>
         <source>Availability Longest-Shortest</source>
         <translation>En Uzun-En Kısa Kullanılırlık</translation>
@@ -485,6 +555,11 @@
         <location filename="Windows/newbatch.xml" line="36"/>
         <source>Load Profile</source>
         <translation>Profil Yükle</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="140"/>
+        <source>Typica - Join Cupping Session</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/manuallogentry.xml" line="285"/>
@@ -585,9 +660,20 @@
         <translation>Kavrulmamış kahvenin günlük ortalama kullanım oranı ve maliyeti raporu.</translation>
     </message>
     <message>
+        <location filename="Windows/roastspec.xml" line="28"/>
+        <source>Whole color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="541"/>
         <source>Average % Change</source>
         <translation>Ortalama % Değişim</translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="146"/>
+        <location filename="Windows/schedule.xml" line="5"/>
+        <source>Schedule</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="21"/>
@@ -611,6 +697,16 @@
         <location filename="Windows/editinvoiceitem.xml" line="17"/>
         <source>Quantity</source>
         <translation>Miktar</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="152"/>
+        <source>Typica - Inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="233"/>
+        <source>Bags is a required field.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/historyreport.xml" line="195"/>
@@ -637,6 +733,11 @@
         <location filename="Reports/invchange.xml" line="106"/>
         <source>ID</source>
         <translation>ID</translation>
+    </message>
+    <message>
+        <location filename="Reports/colorplots.xml" line="272"/>
+        <source>ground</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/itemtransactions.xml" line="248"/>
@@ -669,6 +770,12 @@
         <translation>Oturum Tarihi:</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="94"/>
+        <location filename="Windows/schedule.xml" line="208"/>
+        <source>Batch Tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/reminders.xml" line="35"/>
         <source> Kg</source>
         <translation>Kg</translation>
@@ -684,6 +791,16 @@
         <location filename="Reports/greensales.xml" line="54"/>
         <source>Green Coffee Sales</source>
         <translation>Yeşil Kahve Satışları</translation>
+    </message>
+    <message>
+        <location filename="Windows/batchdetailsnew.xml" line="489"/>
+        <source>New batch details saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/roastspec.xml" line="190"/>
+        <source>New Specification Saved</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="210"/>
@@ -790,6 +907,11 @@
         <translation>Dosyalar:</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="836"/>
+        <source>Last 30 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/newsamplebatch.xml" line="68"/>
         <location filename="Windows/manuallogentry.xml" line="100"/>
         <source>Notes:</source>
@@ -809,6 +931,11 @@
         <location filename="Reports/inventory.xml" line="37"/>
         <source>Availability Shortest-Longest</source>
         <translation>Kullanılabilirlik En Kısa-En Uzun</translation>
+    </message>
+    <message>
+        <location filename="Windows/schedule.xml" line="62"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="57"/>
@@ -930,6 +1057,11 @@
         <translation>Kafeinsizleştirme Yöntemi:</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="334"/>
+        <source>Ground: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/purchase.xml" line="43"/>
         <source>Cost:</source>
         <translation>Maliyet:</translation>
@@ -989,9 +1121,19 @@
         <translation>Gerekli Ayarlamalar</translation>
     </message>
     <message>
+        <location filename="Windows/schedule.xml" line="207"/>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/greenforroasted.xml" line="2"/>
         <source>Production:-&gt;Green Coffees Used for Roasted Coffees</source>
         <translation>Üretim:-&gt;Kavurma İçin Kullanılan Yeşil Kahve</translation>
+    </message>
+    <message>
+        <location filename="Reports/lossplots.xml" line="11"/>
+        <source>Typica - Weight Loss By Item and Operator</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/batchdetailsnew.xml" line="5"/>
@@ -1025,9 +1167,19 @@
         <translation>Gün</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="325"/>
+        <source>Whole Bean: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/purchase.xml" line="118"/>
         <source>Add Certification</source>
         <translation>Sertifika Ekle</translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="228"/>
+        <source>Origin is a required field.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="46"/>
@@ -1077,9 +1229,19 @@
         <translation>Aylık Geçen Yıl Üretimi Karşılaştırması</translation>
     </message>
     <message>
+        <location filename="Windows/purchase.xml" line="223"/>
+        <source>Cost is a required field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/itemtransactions.xml" line="22"/>
         <source>Typica - Item Transactions</source>
         <translation>Typica - Öğe İşlemleri</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="751"/>
+        <source>Latest Out of Stock Coffees</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="40"/>
@@ -1167,6 +1329,11 @@
         <translation>Stok Maliyeti [Artan]</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="92"/>
+        <source>Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/productionroaster.xml" line="31"/>
         <location filename="Windows/offline.xml" line="21"/>
         <location filename="Windows/profilehistory.xml" line="32"/>
@@ -1182,6 +1349,11 @@
         <location filename="Windows/roastmanager.xml" line="14"/>
         <source>Remove Item</source>
         <translation>Öğeyi Sil</translation>
+    </message>
+    <message>
+        <location filename="Windows/editfee.xml" line="19"/>
+        <source>Typica - Fee Detail</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/reminders.xml" line="152"/>
@@ -1230,6 +1402,17 @@
         <location filename="Reports/dailyproductiondetail.xml" line="52"/>
         <source>Daily Production Report</source>
         <translation>Günlük Üretim Raporu</translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="213"/>
+        <source>Item is a required field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="109"/>
+        <location filename="Windows/batchdetailsnew.xml" line="45"/>
+        <source>Ground:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="1179"/>
@@ -1300,6 +1483,11 @@
         <translation>Bölümler</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="135"/>
+        <source>Typica - New Cupping Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/itemtransactions.xml" line="135"/>
         <source>Drying: </source>
         <translation>Kurutma:</translation>
@@ -1334,6 +1522,11 @@
         <location filename="Windows/newsamplebatch.xml" line="260"/>
         <source>Typica - Sample Roasting: [*]</source>
         <translation>Typica - Numune Kavurma: [*]</translation>
+    </message>
+    <message>
+        <location filename="Windows/batchdetailsnew.xml" line="91"/>
+        <source>Report</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="5"/>
@@ -1408,6 +1601,11 @@
         <translation>Üretim:-&gt; Kavurma Kaydı</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="718"/>
+        <source>Least Roasted Coffees (Last 28 Days)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/itemtransactions.xml" line="2"/>
         <source>Inventory:-&gt;Item Transactions</source>
         <translation>Envanter:-&gt; Öğe İşlemleri</translation>
@@ -1469,6 +1667,11 @@
         <translation>Yeşil Ağırlığı (Lb)</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="670"/>
+        <source> batches scheduled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/greensales.xml" line="60"/>
         <source>Green Coffee Sales: </source>
         <translation>Yeşil Kahve Satışları:</translation>
@@ -1500,6 +1703,11 @@
         <translation>Ağırlık:</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="823"/>
+        <source>Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/greensales.xml" line="24"/>
         <source>Typica - Enter Green Coffee Sales</source>
         <translation>Typica - Yeşil Kahve Satışı Gir</translation>
@@ -1516,6 +1724,11 @@
         <location filename="Reports/inventory.xml" line="56"/>
         <source>Current Inventory and Availability Projection</source>
         <translation>Mevcut Envanter ve Kullanılabilirlik Projeksiyonu</translation>
+    </message>
+    <message>
+        <location filename="Reports/dailyproductiondetail.xml" line="20"/>
+        <source>Typica - Daily Production Report</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/invchange.xml" line="115"/>
@@ -1550,6 +1763,11 @@
         <translation>Numune ID:</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="703"/>
+        <source>Most Roasted Coffees (Last 28 Days)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="34"/>
         <source>Stock Cost Descending</source>
         <translation>Stok Maliyeti [Azalan]</translation>
@@ -1574,6 +1792,11 @@
         <location filename="Reports/historyreport.xml" line="197"/>
         <source>Specification Notes</source>
         <translation>Özellik Notları</translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="19"/>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/navigation.xml" line="74"/>
@@ -1646,6 +1869,11 @@
         <translation>Çuval Ölçüsü (ort)</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="488"/>
+        <source>Batch Data Saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/chart.xml" line="42"/>
         <location filename="Reports/historyreport.xml" line="54"/>
         <location filename="Reports/productionsummary.xml" line="45"/>
@@ -1688,6 +1916,11 @@
         <location filename="Reports/inventory.xml" line="75"/>
         <source>Stock Cost</source>
         <translation>Stok Maliyeti</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="682"/>
+        <source>Latest Batches</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/rwacp.xml" line="24"/>
@@ -1758,9 +1991,29 @@
         <translation>Kavrulmuş Kahvenin Yeşil Kahve Maliyeti</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="631"/>
+        <source> reminders due soon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="76"/>
         <source>Use Rate</source>
         <translation>Kullanım Oranı</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="663"/>
+        <source>Scheduled Roasts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="207"/>
+        <source>Vendor is a required field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/schedule.xml" line="6"/>
+        <source>Delete All</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/productionroaster.xml" line="46"/>
@@ -1811,6 +2064,11 @@
         <location filename="Windows/cuppingsession.xml" line="40"/>
         <source>Create Session</source>
         <translation>Oturum Oluştur</translation>
+    </message>
+    <message>
+        <location filename="Windows/batchdetailsnew.xml" line="72"/>
+        <source>Print Report...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/itemtransactions.xml" line="103"/>
@@ -1881,6 +2139,11 @@
         <location filename="Reports/invchange.xml" line="121"/>
         <source>Ending (</source>
         <translation>Bitiş (</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="769"/>
+        <source>Unused Coffees</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="84"/>
@@ -2059,6 +2322,12 @@
         <translation>Girilen yeşil kahve miktarı maksimum kavurma miktarından fazla. Devam mı?</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="106"/>
+        <location filename="Windows/batchdetailsnew.xml" line="39"/>
+        <source>Whole Bean:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/roastmanager.xml" line="17"/>
         <source>Discontinued Items:</source>
         <translation>İndirimli Öğeler:</translation>
@@ -2072,6 +2341,11 @@
         <location filename="Windows/newbatch.xml" line="29"/>
         <source>Remaining</source>
         <translation>Kalan</translation>
+    </message>
+    <message>
+        <location filename="Windows/cuppingsessionlist.xml" line="17"/>
+        <source>Typica - Cupping</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/cogr.xml" line="148"/>
@@ -2098,6 +2372,16 @@
         <location filename="Reports/greensales.xml" line="80"/>
         <source>Origin</source>
         <translation>Orijin</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="840"/>
+        <source>Last 90 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/newbatch.xml" line="21"/>
+        <source>Value:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="2"/>
@@ -2136,6 +2420,29 @@
         <translation>Düzenle</translation>
     </message>
     <message>
+        <location filename="Reports/auco.xml" line="75"/>
+        <location filename="Reports/chart.xml" line="75"/>
+        <location filename="Reports/cogr.xml" line="46"/>
+        <location filename="Reports/colorplots.xml" line="32"/>
+        <location filename="Reports/dailyproductiondetail.xml" line="56"/>
+        <location filename="Reports/fypurchase.xml" line="57"/>
+        <location filename="Reports/greenforroasted.xml" line="67"/>
+        <location filename="Reports/greensales.xml" line="58"/>
+        <location filename="Reports/historyreport.xml" line="144"/>
+        <location filename="Reports/invchange.xml" line="57"/>
+        <location filename="Reports/inventory.xml" line="57"/>
+        <location filename="Reports/invoices.xml" line="75"/>
+        <location filename="Reports/itemtransactions.xml" line="87"/>
+        <location filename="Reports/lossplots.xml" line="70"/>
+        <location filename="Reports/monthcompare.xml" line="43"/>
+        <location filename="Reports/productionsummary.xml" line="79"/>
+        <location filename="Reports/reminders.xml" line="143"/>
+        <location filename="Reports/rwacp.xml" line="81"/>
+        <location filename="Windows/schedule.xml" line="383"/>
+        <source>en-US</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/inventory.xml" line="36"/>
         <source>Use Rate Descending</source>
         <translation>Azalan Oran Kullan</translation>
@@ -2164,6 +2471,11 @@
         <location filename="Windows/newsamplebatch.xml" line="279"/>
         <source>Suspicious Input</source>
         <translation>Şüpheli Girdi</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="822"/>
+        <source>Period</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newsamplebatch.xml" line="130"/>
@@ -2339,6 +2651,16 @@
         <translation>Kalite:</translation>
     </message>
     <message>
+        <location filename="Windows/roastspec.xml" line="36"/>
+        <source>Ground color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="776"/>
+        <source> unused coffees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/roastmanager.xml" line="6"/>
         <source>Add New Coffee</source>
         <translation>Yeni Kahve Ekle</translation>
@@ -2352,6 +2674,11 @@
         <location filename="Windows/newbatch.xml" line="66"/>
         <source>Expected Roasted Weight</source>
         <translation>Beklenen Kavrulmuş Ağırlık</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="146"/>
+        <source>Typica - New Roaster</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/cuppingform.xml" line="30"/>
@@ -2442,10 +2769,20 @@
         <translation>Veri Giriş Hatası</translation>
     </message>
     <message>
+        <location filename="Reports/colorplots.xml" line="153"/>
+        <source>whole</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/print.xml" line="693"/>
         <location filename="Windows/export.xml" line="697"/>
         <source>Green</source>
         <translation>Yeşil</translation>
+    </message>
+    <message>
+        <location filename="Reports/lossplots.xml" line="2"/>
+        <source>Production:-&gt;Weight Loss By Item and Operator</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/chart.xml" line="92"/>
@@ -2466,6 +2803,17 @@
         <location filename="Windows/navigation.xml" line="78"/>
         <source>Create New Users</source>
         <translation>Yeni Kullanıcı Oluştur</translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="206"/>
+        <location filename="Windows/purchase.xml" line="212"/>
+        <location filename="Windows/purchase.xml" line="217"/>
+        <location filename="Windows/purchase.xml" line="222"/>
+        <location filename="Windows/purchase.xml" line="227"/>
+        <location filename="Windows/purchase.xml" line="232"/>
+        <location filename="Windows/purchase.xml" line="238"/>
+        <source>Missing Input</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/manuallogentry.xml" line="140"/>
@@ -2499,6 +2847,11 @@
         <translation>Numuneye göre ortalama puanlar:</translation>
     </message>
     <message>
+        <location filename="Windows/schedule.xml" line="91"/>
+        <source>Typica - Roasting Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/manuallogentry.xml" line="49"/>
         <source>Arrival Date:</source>
         <translation>Ulaşma Tarihi:</translation>
@@ -2518,6 +2871,11 @@
         <location filename="Windows/export.xml" line="694"/>
         <source>Roasted</source>
         <translation>Kavrulmuş</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="12"/>
+        <source>Roasting Schedule</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/auco.xml" line="99"/>
@@ -2568,6 +2926,11 @@
         <translation>Kavrulmuş Ağırlık (Kg)</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="844"/>
+        <source>Last 365 Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/monthcompare.xml" line="71"/>
         <source>March</source>
         <translation>Mart</translation>
@@ -2594,9 +2957,23 @@
         <translation>Güncel Ortalama Kahve Üretimi</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="105"/>
+        <location filename="Reports/dailyproductiondetail.xml" line="106"/>
+        <location filename="Reports/historyreport.xml" line="174"/>
+        <location filename="Windows/batchdetailsnew.xml" line="37"/>
+        <location filename="Windows/batchdetailsnew.xml" line="320"/>
+        <source>Degree of Roast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/monthcompare.xml" line="80"/>
         <source>December</source>
         <translation>Aralık</translation>
+    </message>
+    <message>
+        <location filename="Windows/navigation.xml" line="629"/>
+        <source> reminders due</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/profilehistory.xml" line="35"/>
@@ -2639,6 +3016,11 @@
         <location filename="Windows/offline.xml" line="7"/>
         <source>Air</source>
         <translation>Hava</translation>
+    </message>
+    <message>
+        <location filename="Windows/manuallogentry.xml" line="139"/>
+        <source>Typica - Manual Log Entry</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/purchase.xml" line="130"/>
@@ -2735,6 +3117,11 @@
         <translation>Sebep:</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="818"/>
+        <source>Production Trends</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/invoices.xml" line="6"/>
         <source>Vendor: </source>
         <translation>Tedarikçi:</translation>
@@ -2760,6 +3147,11 @@
         <translation>Yeni Cupping Oturumu</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="932"/>
+        <source>Search Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/batchdetailsnew.xml" line="274"/>
         <source>Approved: </source>
         <translation>Onaylı:</translation>
@@ -2780,6 +3172,11 @@
         <translation>Torbalar Azalan</translation>
     </message>
     <message>
+        <location filename="Windows/batchdetailsnew.xml" line="6"/>
+        <source>Search:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/newbatch.xml" line="11"/>
         <location filename="Windows/optime.xml" line="4"/>
         <location filename="Windows/newsamplebatch.xml" line="33"/>
@@ -2796,6 +3193,11 @@
         <translation>Bitiş</translation>
     </message>
     <message>
+        <location filename="Windows/navigation.xml" line="828"/>
+        <source>Today</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Windows/greeninventory.xml" line="37"/>
         <source>bag</source>
         <translation>çuval</translation>
@@ -2809,6 +3211,16 @@
         <location filename="Windows/profilehistory.xml" line="20"/>
         <source>Set as Current Target Roast Profile</source>
         <translation>Hedef Kavurma Profili Yap</translation>
+    </message>
+    <message>
+        <location filename="Windows/roastspec.xml" line="191"/>
+        <source>New roasting specification saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/purchase.xml" line="218"/>
+        <source>Quantity is a required field.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Reports/historyreport.xml" line="161"/>
@@ -2919,6 +3331,16 @@
         <translation>Herhangi</translation>
     </message>
     <message>
+        <location filename="Windows/newbatch.xml" line="933"/>
+        <source>Scheduled batch ID not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Windows/productionroaster.xml" line="552"/>
+        <source>Typica - Set Sample Parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Reports/rwacp.xml" line="31"/>
         <source>Roasted Coffee A-Z</source>
         <translation>Kavrulmuş Kahve A-Z</translation>
@@ -2995,6 +3417,11 @@
         <location filename="Reports/invchange.xml" line="111"/>
         <source>Purchase (</source>
         <translation>Alım (</translation>
+    </message>
+    <message>
+        <location filename="Windows/batchdetailsnew.xml" line="89"/>
+        <source>Typica - Batch Details</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Windows/newbatch.xml" line="50"/>

@@ -781,7 +781,7 @@
             if(difference > 0) {
                 retval = "+";
             } else if(difference < 0) {
-                retval = "-";
+                retval = "";
             }
             retval += ((difference/Number(previous)) * 100).toFixed(1);
             retval += "%";

@@ -6,6 +6,7 @@
     <menu name="File">
         <item id="print" shortcut="Ctrl+P">Print...</item>
     </menu>
+    <menu name="Reports" type="reports" src="Reports" />
     <program>
         <![CDATA[
 this.windowTitle = TTR("lossplots", "Typica - Weight Loss By Item and Operator");

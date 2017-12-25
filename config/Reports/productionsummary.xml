@@ -16,6 +16,7 @@
     <menu name="File">
         <item id="print" shortcut="Ctrl+P">Print</item>
     </menu>
+    <menu name="Reports" type="reports" src="Reports" />
     <program>
         <![CDATA[
             this.windowTitle = TTR("dailyproduction", "Typica - Production Summary");

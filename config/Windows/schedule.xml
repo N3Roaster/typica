@@ -480,6 +480,15 @@
     notifier.notify.connect(function() {
         batches.setQuery("SELECT id, (SELECT name FROM items WHERE id = (data#>>'{roasted}')::numeric), (data#>>'{green_weight}')::numeric FROM scheduled_roasts WHERE machine IS NULL");
     });
+    var deleteall = findChildObject(this, 'deleteall');
+    deleteall.triggered.connect(function() {
+        var query = QSqlQuery();
+        query.exec("DELETE FROM scheduled_roasts WHERE machine IS NULL");
+        query = query.invalidate();
+        editingstack.setCurrentIndex(0);
+        saved = false;
+        deletebutton.enabled = false;
+    });
 ]]>
     </program>
 </window>

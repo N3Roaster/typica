@@ -82,7 +82,7 @@
                 output.writeEndElement();
                 output.writeStartElement("tbody");
                 var query = new QSqlQuery();
-                var q = "SELECT name, (quantity / :conversion)::numeric(12,2) AS quantity, (quantity / (SELECT conversion FROM lb_bag_conversion WHERE item = id))::numeric(12,2) AS sacks, (SELECT cost * :conversion2 FROM purchase WHERE item = id)::numeric(12,2) AS cost, (quantity * (SELECT cost FROM purchase WHERE item = id))::numeric(12,2) AS stock_cost, (SELECT rate / :conversion3 FROM coffee_history WHERE coffee_history.id = items.id)::numeric(12,2) AS rate, (SELECT out FROM coffee_history WHERE coffee_history.id = items.id) AS out FROM items WHERE quantity > 0 ";
+                var q = "SELECT name || ' (' || id || ')', (quantity / :conversion)::numeric(12,2) AS quantity, (quantity / (SELECT conversion FROM lb_bag_conversion WHERE item = id))::numeric(12,2) AS sacks, (SELECT cost * :conversion2 FROM purchase WHERE item = id)::numeric(12,2) AS cost, (quantity * (SELECT cost FROM purchase WHERE item = id))::numeric(12,2) AS stock_cost, (SELECT rate / :conversion3 FROM coffee_history WHERE coffee_history.id = items.id)::numeric(12,2) AS rate, (SELECT out FROM coffee_history WHERE coffee_history.id = items.id) AS out FROM items WHERE quantity > 0 ";
                 switch(sortBox.currentIndex)
                 {
                     case 0:

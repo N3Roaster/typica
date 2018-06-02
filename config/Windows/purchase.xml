@@ -234,7 +234,7 @@
                         return false;
                     }
                     if(findChildObject(form.elementAt(i), 'isDecaf').checked) {
-                        if(findChildObject(form.elementAt(i), 'decafEntry').currentText) {
+                        if(findChildObject(form.elementAt(i), 'decafMethod').text == '') {
                             displayError(TTR("purchase", "Missing Input"),
                                          TTR("purchase", "Decaffeination method is a required field for decaffeinated coffees."));
                             return false;

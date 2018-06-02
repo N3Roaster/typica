@@ -618,7 +618,7 @@
                     so += 1;
                 }
             });
-            if(c > 0 || s > 0) {
+            if(c > 0 || so > 0) {
                 output.writeStartElement("a");
                 output.writeAttribute("href", "typica://script/reminders");
                 startCell(output, TTR("navwindow", "Reminders"));
@@ -626,12 +626,25 @@
                 var summaryText;
                 if(c > 0) {
                     summaryText = "" + c + TTR("navwindow", " reminders due");
+                    for(var i = 0; i < c; i++) {
+                        output.writeStartElement("div");
+                        output.writeAttribute("class", "reminder");
+                        output.writeTextElement("p", s[i].title);
+                        output.writeTextElement("p", Math.floor(s[i].completion * 100) + "%");
+                        output.writeTextElement("p", s[i].detail);
+                        output.writeEndElement();
+                    }
                 } else {
-                    summaryText = "" + s + TTR("navwindow", " reminders due soon");
+                    summaryText = "" + so + TTR("navwindow", " reminders due soon");
+                    for(var i = 0; i < so; i++) {
+                        output.writeStartElement("div");
+                        output.writeAttribute("class", "reminder");
+                        output.writeTextElement("p", s[i].title);
+                        output.writeTextElement("p", Math.floor(s[i].completion * 100) + "%");
+                        output.writeTextElement("p", s[i].detail);
+                        output.writeEndElement();
+                    }
                 }
-                output.writeTextElement("p", s[0].title);
-                output.writeTextElement("p", Math.floor(s[0].completion * 100) + "%");
-                output.writeTextElement("p", s[0].detail);
                 endStage(output);
                 endCell(output, summaryText);
                 output.writeEndElement();
@@ -781,7 +794,7 @@
             if(difference > 0) {
                 retval = "+";
             } else if(difference < 0) {
-                retval = "-";
+                retval = "";
             }
             retval += ((difference/Number(previous)) * 100).toFixed(1);
             retval += "%";

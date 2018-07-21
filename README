@@ -1,6 +1,12 @@
 Typica is a free cross platform application for coffee roasting operations.
 More information is available on the project web site: https://typica.us/
 
+Please be aware that this repository is out of date. The most recent source
+code for Typica can be found at: https://code.typica.us/neal/Typica
+
+Those building Typica from source should either update their remote or get
+a fresh clone from the new repo.
+
 Typica is free software released under the MIT license as follows:
 
 Copyright 2007-2017 Neal Evan Wilson
